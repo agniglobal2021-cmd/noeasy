@@ -806,52 +806,19 @@ resizeGrain(); window.addEventListener('resize', resizeGrain);
 })();
 
 // ── DATA ──
-const works = [
-  {
-    title: 'Vigil', meta: 'Mixed media', year: 2024,
-    style: 'Mixed', workType: 'Personal', avail: ['Print'],
-    links: [{ label: 'Print', url: '#' }],
-    src: '', ph: { color: '#b89b7e', ratio: '125%' }
-  },
-  {
-    title: 'Fragment III', meta: 'Ink on paper', year: 2024,
-    style: 'Graphic', workType: 'Personal', avail: ['Print', 'Crypto Art'],
-    links: [{ label: 'Print', url: '#' }, { label: 'Crypto Art', url: '#' }],
-    src: '', ph: { color: '#8a7060', ratio: '80%' }
-  },
-  {
-    title: 'Saints', meta: 'Digital', year: 2024,
-    style: 'Digital Painting', workType: 'Commission', avail: [], links: [],
-    src: '', ph: { color: '#9b7b6e', ratio: '56%' }
-  },
-  {
-    title: 'Thorn', meta: 'Ink on paper', year: 2023,
-    style: 'Graphic', workType: 'Personal', avail: ['Print'],
-    links: [{ label: 'Print', url: '#' }],
-    src: '', ph: { color: '#7e6e5a', ratio: '140%' }
-  },
-  {
-    title: 'Untitled I', meta: 'Ink on paper', year: 2023,
-    style: 'Mixed', workType: 'Personal', avail: [], links: [],
-    src: '', ph: { color: '#c4a882', ratio: '70%' }
-  },
-  {
-    title: 'Ritual II', meta: 'Acrylic on canvas', year: 2023,
-    style: 'Mixed', workType: 'Commission', avail: [], links: [],
-    src: '', ph: { color: '#7a8a7a', ratio: '100%' }
-  },
-  {
-    title: 'Devotion', meta: 'Watercolor', year: 2022,
-    style: 'Digital Painting', workType: 'Personal', avail: ['Crypto Art'],
-    links: [{ label: 'Crypto Art', url: '#' }],
-    src: '', ph: { color: '#a07878', ratio: '90%' }
-  },
-  {
-    title: 'Lament', meta: 'Oil on canvas', year: 2022,
-    style: 'Graphic', workType: 'Commission', avail: [], links: [],
-    src: '', ph: { color: '#707898', ratio: '75%' }
-  },
-];
+let works = [];
+
+async function loadWorks() {
+  try {
+    const r = await fetch('gallery/works.json');
+    if (!r.ok) throw new Error('not found');
+    works = await r.json();
+  } catch(e) {
+    // Fallback: empty gallery
+    works = [];
+  }
+  loadWorks();
+}
 
 // ── State ──
 let sortAsc     = false;
@@ -863,8 +830,20 @@ let isGrid      = false;
 let lbIndex     = -1;
 let currentList = [];
 
+function fmtDate(dateStr, yearFallback) {
+  if (dateStr) {
+    const d = new Date(dateStr + 'T00:00:00');
+    if (!isNaN(d)) return d.toLocaleString('en-US', { month: 'long', year: 'numeric' });
+  }
+  return yearFallback || '';
+}
+
 function getSorted() {
-  return [...works].sort((a, b) => sortAsc ? a.year - b.year : b.year - a.year);
+  return [...works].sort((a, b) => {
+    const da = a.date || String(a.year || 0);
+    const db = b.date || String(b.year || 0);
+    return sortAsc ? da.localeCompare(db) : db.localeCompare(da);
+  });
 }
 function getFiltered() {
   return getSorted().filter(w => {
@@ -969,7 +948,7 @@ function render(scrollTop = false) {
 
     const titleRow = document.createElement('div');
     titleRow.className = 'work-title-row';
-    titleRow.innerHTML = `<span class="work-title">${work.title}</span><span class="work-year">${work.year}</span>`;
+    titleRow.innerHTML = `<span class="work-title">${work.title}</span><span class="work-year">${fmtDate(work.date, work.year)}</span>`;
     left.appendChild(titleRow);
 
     const tagsEl = document.createElement('div');
