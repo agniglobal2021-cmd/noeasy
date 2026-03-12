@@ -1,0 +1,98 @@
+[
+  {
+    "title": "Vigil",
+    "meta": "Mixed media",
+    "date": "2024-01-01",
+    "year": 2024,
+    "style": "Mixed",
+    "workType": "Personal",
+    "avail": ["Print"],
+    "links": [{"label": "Print", "url": "#"}],
+    "src": "",
+    "ph": {"color": "#b89b7e", "ratio": "125%"}
+  },
+  {
+    "title": "Fragment III",
+    "meta": "Ink on paper",
+    "date": "2024-01-01",
+    "year": 2024,
+    "style": "Graphic",
+    "workType": "Personal",
+    "avail": ["Print", "Crypto Art"],
+    "links": [{"label": "Print", "url": "#"}, {"label": "Crypto Art", "url": "#"}],
+    "src": "",
+    "ph": {"color": "#8a7060", "ratio": "80%"}
+  },
+  {
+    "title": "Saints",
+    "meta": "Digital",
+    "date": "2024-01-01",
+    "year": 2024,
+    "style": "Digital Painting",
+    "workType": "Commission",
+    "avail": [],
+    "links": [],
+    "src": "",
+    "ph": {"color": "#9b7b6e", "ratio": "56%"}
+  },
+  {
+    "title": "Thorn",
+    "meta": "Ink on paper",
+    "date": "2023-01-01",
+    "year": 2023,
+    "style": "Graphic",
+    "workType": "Personal",
+    "avail": ["Print"],
+    "links": [{"label": "Print", "url": "#"}],
+    "src": "",
+    "ph": {"color": "#7e6e5a", "ratio": "140%"}
+  },
+  {
+    "title": "Untitled I",
+    "meta": "Ink on paper",
+    "date": "2023-01-01",
+    "year": 2023,
+    "style": "Mixed",
+    "workType": "Personal",
+    "avail": [],
+    "links": [],
+    "src": "",
+    "ph": {"color": "#c4a882", "ratio": "70%"}
+  },
+  {
+    "title": "Ritual II",
+    "meta": "Acrylic on canvas",
+    "date": "2023-01-01",
+    "year": 2023,
+    "style": "Mixed",
+    "workType": "Commission",
+    "avail": [],
+    "links": [],
+    "src": "",
+    "ph": {"color": "#7a8a7a", "ratio": "100%"}
+  },
+  {
+    "title": "Devotion",
+    "meta": "Watercolor",
+    "date": "2022-01-01",
+    "year": 2022,
+    "style": "Digital Painting",
+    "workType": "Personal",
+    "avail": ["Crypto Art"],
+    "links": [{"label": "Crypto Art", "url": "#"}],
+    "src": "",
+    "ph": {"color": "#a07878", "ratio": "90%"}
+  },
+  {
+    "title": "Lament",
+    "meta": "Oil on canvas",
+    "date": "2022-01-01",
+    "year": 2022,
+    "style": "Graphic",
+    "workType": "Commission",
+    "avail": [],
+    "links": [],
+    "src": "",
+    "ph": {"color": "#707898", "ratio": "75%"}
+  }
+]
