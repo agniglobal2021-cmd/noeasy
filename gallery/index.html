@@ -982,21 +982,20 @@ function render(scrollTop = false) {
 
     if (work.src) {
       const img = document.createElement('img');
-      img.alt = work.title; img.loading = 'lazy';
+      img.alt = work.title;
+      // NOTE: no loading="lazy" — clip-path hides the element so lazy never triggers
 
-      // Retry with exponential back-off (up to 3 attempts), then show fallback
       let retries = 0;
       const MAX_RETRIES = 3;
       let retryTimer = null;
 
       img.addEventListener('error', () => {
-        if (retryTimer) return; // already scheduled
+        if (retryTimer) return;
         if (retries < MAX_RETRIES) {
           retries++;
-          const delay = 800 * Math.pow(2, retries - 1); // 800, 1600, 3200 ms
+          const delay = 800 * Math.pow(2, retries - 1);
           retryTimer = setTimeout(() => {
             retryTimer = null;
-            // Cache-bust only on retry, not first load
             img.src = work.src + `?r=${retries}`;
           }, delay);
         } else {
@@ -1008,7 +1007,7 @@ function render(scrollTop = false) {
         }
       });
 
-      img.src = work.src; // простое прямое присваивание
+      img.src = work.src;
 
       wrap.appendChild(img);
       wrap.addEventListener('click', () => { lbIndex = i; openLb(); });
@@ -1057,27 +1056,31 @@ function render(scrollTop = false) {
         </div>
         <span class="skel-line" style="--sd:0.18s;width:55%;height:8px;border-radius:2px;"></span>`;
 
-      // Footer needs relative positioning for the overlay
       footer.style.position = 'relative';
-      // Hide real text initially
       left.style.opacity = '0';
-
       footer.appendChild(skelOverlay);
 
-      // Resolve: fade skeleton out, reveal real text
       const imgEl = wrap.querySelector('img');
+      const revealFooter = () => {
+        skelOverlay.style.transition = 'opacity 0.4s ease';
+        skelOverlay.style.opacity = '0';
+        left.style.transition = 'opacity 0.4s ease 0.1s';
+        left.style.opacity = '1';
+        setTimeout(() => skelOverlay.remove(), 450);
+      };
+
       if (imgEl) {
-        const revealFooter = () => {
-          skelOverlay.style.transition = 'opacity 0.4s ease';
-          skelOverlay.style.opacity = '0';
-          left.style.transition = 'opacity 0.4s ease 0.1s';
-          left.style.opacity = '';
-          setTimeout(() => skelOverlay.remove(), 450);
-        };
-        imgEl.addEventListener('load', revealFooter, { once: true });
-        imgEl.addEventListener('error', revealFooter, { once: true });
-        // Safety net — reveal after 5 s no matter what
-        setTimeout(revealFooter, 5000);
+        if (imgEl.complete && imgEl.naturalWidth > 0) {
+          // Already cached — reveal immediately
+          revealFooter();
+        } else {
+          imgEl.addEventListener('load',  revealFooter, { once: true });
+          imgEl.addEventListener('error', revealFooter, { once: true });
+          setTimeout(revealFooter, 5000); // safety net
+        }
+      } else {
+        // No img found — just show the text
+        revealFooter();
       }
     }
 
