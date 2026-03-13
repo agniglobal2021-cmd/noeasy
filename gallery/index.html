@@ -725,7 +725,7 @@
         <a href="index.html">Home</a>
         <a href="about.html">About</a>
         <a href="gallery.html" class="current">Gallery</a>
-        <a href="links.html">Links</a>
+        <a href="https://noeasy.xyz/links/">Links</a>
       </div>
     </div>
   </div>
@@ -810,7 +810,7 @@ let works = [];
 
 async function loadWorks() {
   try {
-    const r = await fetch('gallery/works.json');
+    const r = await fetch('works.json');
     if (!r.ok) throw new Error('not found');
     works = await r.json();
   } catch(e) {
