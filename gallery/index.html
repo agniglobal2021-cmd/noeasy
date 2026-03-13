@@ -987,25 +987,28 @@ function render(scrollTop = false) {
       // Retry with exponential back-off (up to 3 attempts), then show fallback
       let retries = 0;
       const MAX_RETRIES = 3;
-      function loadImg() {
-        img.src = '';                 // force re-request
-        img.src = work.src + (retries ? `?r=${retries}` : '');
-      }
+      let retryTimer = null;
+
       img.addEventListener('error', () => {
+        if (retryTimer) return; // already scheduled
         if (retries < MAX_RETRIES) {
           retries++;
           const delay = 800 * Math.pow(2, retries - 1); // 800, 1600, 3200 ms
-          setTimeout(loadImg, delay);
+          retryTimer = setTimeout(() => {
+            retryTimer = null;
+            // Cache-bust only on retry, not first load
+            img.src = work.src + `?r=${retries}`;
+          }, delay);
         } else {
-          // Final fallback — replace broken img with a styled placeholder
           const fb = document.createElement('div');
           fb.className = 'img-placeholder img-error';
           fb.style.paddingTop = '100%';
           fb.innerHTML = '<span class="img-error-label">image unavailable</span>';
           img.replaceWith(fb);
         }
-      }, { once: false });
-      loadImg();
+      });
+
+      img.src = work.src; // простое прямое присваивание
 
       wrap.appendChild(img);
       wrap.addEventListener('click', () => { lbIndex = i; openLb(); });
