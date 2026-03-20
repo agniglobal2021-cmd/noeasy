@@ -157,6 +157,28 @@
     }
   },
   {
+    "title": "Seeking Light",
+    "meta": "Digital Painting",
+    "date": "2022-12-27",
+    "year": 2022,
+    "style": "Digital Painting",
+    "workType": "Personal",
+    "avail": [
+      "Crypto Art"
+    ],
+    "links": [
+      {
+        "label": "NFT",
+        "url": "https://superrare.com/artwork/eth/0xa9cF3fB2C4538Ac95e0C822758eC745fCfed8360/271?tab=activity"
+      }
+    ],
+    "src": "images/seeking-light.JPG",
+    "ph": {
+      "color": "#9b9b9b",
+      "ratio": "100%"
+    }
+  },
+  {
     "title": "Alone in the Dark",
     "meta": "Digital Painting",
     "date": "2022-12-07",
