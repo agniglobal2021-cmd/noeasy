@@ -408,6 +408,28 @@
     }
   },
   {
+    "title": "Yama’s Gate",
+    "meta": "Digital Painting",
+    "date": "2021-08-20",
+    "year": 2021,
+    "style": "Digital Painting",
+    "workType": "Personal",
+    "avail": [
+      "Crypto Art"
+    ],
+    "links": [
+      {
+        "label": "NFT",
+        "url": "https://www.foundation.app/mint/eth/0x3B3ee1931Dc30C1957379FAc9aba94D1C48a5405/74898"
+      }
+    ],
+    "src": "images/yama-s-gate.JPG",
+    "ph": {
+      "color": "#9b9b9b",
+      "ratio": "100%"
+    }
+  },
+  {
     "title": "Super Ego",
     "meta": "Graphic",
     "date": "2019-04-02",
