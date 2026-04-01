@@ -206,28 +206,6 @@
     }
   },
   {
-    "title": "Shadow Souls",
-    "meta": "Mixed",
-    "date": "2023-03-12",
-    "year": 2023,
-    "style": "Mixed",
-    "workType": "Personal",
-    "avail": [
-      "Crypto Art"
-    ],
-    "links": [
-      {
-        "label": "NFT",
-        "url": "https://objkt.com/tokens/KT1MfMkT9FbSEsxBX4UuzJB3pYvF8sjCK5iK/0"
-      }
-    ],
-    "src": "images/shadow-souls.PNG",
-    "ph": {
-      "color": "#9b9b9b",
-      "ratio": "100%"
-    }
-  },
-  {
     "title": "Calling Wisdom",
     "meta": "Digital Painting",
     "date": "2023-01-20",
@@ -330,6 +308,28 @@
       }
     ],
     "src": "images/dark-night-of-the-soul.JPG",
+    "ph": {
+      "color": "#9b9b9b",
+      "ratio": "100%"
+    }
+  },
+  {
+    "title": "Shadow Souls",
+    "meta": "Mixed",
+    "date": "2022-03-12",
+    "year": 2022,
+    "style": "Mixed",
+    "workType": "Personal",
+    "avail": [
+      "Crypto Art"
+    ],
+    "links": [
+      {
+        "label": "NFT",
+        "url": "https://objkt.com/tokens/KT1MfMkT9FbSEsxBX4UuzJB3pYvF8sjCK5iK/0"
+      }
+    ],
+    "src": "images/shadow-souls.PNG",
     "ph": {
       "color": "#9b9b9b",
       "ratio": "100%"
