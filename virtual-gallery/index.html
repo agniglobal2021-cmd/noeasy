@@ -1,35 +1,24 @@
-```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>Gothic Gallery Optimized</title>
+<title>Gothic Gallery Mobile Optimized</title>
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
-body { background: #000; overflow: hidden; font-family: 'Georgia', serif; }
+body { background: #000; overflow: hidden; font-family: sans-serif; }
 canvas { display: block; }
 #ui { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 10; }
-#crosshair { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 16px; height: 16px; opacity: 1; }
-#crosshair::before, #crosshair::after { content: ''; position: absolute; background: rgba(255,220,150,0.7); }
-#crosshair::before { width: 2px; height: 16px; left: 7px; top: 0; }
-#crosshair::after { width: 16px; height: 2px; top: 7px; left: 0; }
-#controls { position: absolute; bottom: 2rem; left: 50%; transform: translateX(-50%); font-size: 0.65rem; letter-spacing: 0.3em; text-transform: uppercase; color: rgba(255,200,100,0.3); text-align: center; line-height: 2; pointer-events: none; }
-#roomLabel { position: absolute; top: 2rem; left: 50%; transform: translateX(-50%); font-size: 0.65rem; letter-spacing: 0.5em; text-transform: uppercase; color: rgba(255,200,100,0.35); pointer-events: none; }
+#roomLabel { position: absolute; top: 2rem; left: 50%; transform: translateX(-50%); font-size: 0.7rem; letter-spacing: 0.4em; text-transform: uppercase; color: rgba(255,200,100,0.5); }
 #joystick-zone { display: none; position: fixed; bottom: 0; left: 0; width: 50%; height: 50%; z-index: 20; pointer-events: all; }
-#joystick-base { position: absolute; bottom: 40px; left: 40px; width: 100px; height: 100px; border-radius: 50%; border: 1.5px solid rgba(255,200,100,0.25); background: rgba(0,0,0,0.3); pointer-events: none; }
-#joystick-knob { position: absolute; width: 42px; height: 42px; border-radius: 50%; background: rgba(255,200,100,0.35); border: 1px solid rgba(255,200,100,0.5); top: 50%; left: 50%; transform: translate(-50%,-50%); pointer-events: none; }
+#joystick-base { position: absolute; bottom: 40px; left: 40px; width: 80px; height: 80px; border-radius: 50%; border: 1px solid rgba(255,200,100,0.3); background: rgba(0,0,0,0.3); }
+#joystick-knob { position: absolute; width: 30px; height: 30px; border-radius: 50%; background: rgba(255,200,100,0.4); top: 50%; left: 50%; transform: translate(-50%,-50%); }
 #look-zone { display: none; position: fixed; bottom: 0; right: 0; width: 50%; height: 100%; z-index: 20; pointer-events: all; }
 body.mobile #joystick-zone, body.mobile #look-zone { display: block; }
-body.mobile #crosshair, body.mobile #controls { display: none; }
 </style>
 </head>
 <body>
-<div id="ui">
-  <div id="crosshair"></div>
-  <div id="roomLabel">Main Hall</div>
-  <div id="controls">WASD — move &nbsp;|&nbsp; Mouse — look</div>
-</div>
+<div id="ui"><div id="roomLabel">Main Hall</div></div>
 <div id="joystick-zone"><div id="joystick-base"><div id="joystick-knob"></div></div></div>
 <div id="look-zone"></div>
 
@@ -45,190 +34,143 @@ if (isMobile) document.body.classList.add('mobile');
 
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0x020202);
-scene.fog = new THREE.FogExp2(0x030205, 0.012); // Reduced density
+scene.fog = new THREE.FogExp2(0x030205, 0.015);
 
-const camera = new THREE.PerspectiveCamera(72, innerWidth/innerHeight, 0.1, 200);
+const camera = new THREE.PerspectiveCamera(70, innerWidth/innerHeight, 0.1, 150);
 camera.position.set(0, 1.7, 0);
 
-const renderer = new THREE.WebGLRenderer({ antialias: false, powerPreference: "high-performance" });
-renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5)); // Capped pixel ratio
+const renderer = new THREE.WebGLRenderer({ antialias: false });
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.2)); // Жёсткое ограничение для mobile
 renderer.setSize(innerWidth, innerHeight);
-renderer.shadowMap.enabled = false; // Shadows disabled
-renderer.toneMapping = THREE.NoToneMapping; // Simplified tone mapping
+renderer.shadowMap.enabled = false;
 document.body.appendChild(renderer.domElement);
 
-// --- OPTIMIZED MATERIALS ---
+// --- МАТЕРИАЛЫ (Lambert быстрее для mobile) ---
 const MAT = {
   wall:    new THREE.MeshLambertMaterial({ color: 0x1a1a1e }),
   rib:     new THREE.MeshLambertMaterial({ color: 0x252528 }),
   floor:   new THREE.MeshLambertMaterial({ color: 0x111113 }),
-  ceiling: new THREE.MeshLambertMaterial({ color: 0x0e0e10 }),
-  window:  new THREE.MeshLambertMaterial({ color: 0x3a2200, emissive: 0x7a4500, emissiveIntensity: 1.0 }),
-  arch:    new THREE.MeshLambertMaterial({ color: 0x1e1e22 }),
+  window:  new THREE.MeshLambertMaterial({ color: 0x3a2200, emissive: 0x7a4500, emissiveIntensity: 1.2 })
 };
 
-// --- INSTANCING SYSTEM ---
-const instances = {
-  rib: { geo: new THREE.BoxGeometry(1, 1, 1), mat: MAT.rib, transforms: [] },
-  wall: { geo: new THREE.BoxGeometry(1, 1, 1), mat: MAT.wall, transforms: [] },
-  window: { geo: new THREE.BoxGeometry(1, 1, 1), mat: MAT.window, transforms: [] }
+// --- ИНСТАНСИНГ ---
+const instData = {
+  wall: { geo: new THREE.BoxGeometry(1,1,1), mat: MAT.wall, matrices: [] },
+  rib:  { geo: new THREE.BoxGeometry(1,1,1), mat: MAT.rib, matrices: [] },
+  win:  { geo: new THREE.BoxGeometry(1,1,1), mat: MAT.window, matrices: [] }
 };
 
-function addInstance(type, x, y, z, sx, sy, sz, rx=0, ry=0, rz=0) {
-  const matrix = new THREE.Matrix4().compose(
+const colliders = [];
+function addObj(type, x, y, z, sx, sy, sz, rx=0, ry=0, rz=0, collide=true) {
+  const m = new THREE.Matrix4().compose(
     new THREE.Vector3(x, y, z),
     new THREE.Quaternion().setFromEuler(new THREE.Euler(rx, ry, rz)),
     new THREE.Vector3(sx, sy, sz)
   );
-  instances[type].transforms.push(matrix);
+  instData[type].matrices.push(m);
+  if (collide) colliders.push(new THREE.Box3().setFromCenterAndSize(new THREE.Vector3(x,y,z), new THREE.Vector3(sx,sy,sz)));
 }
 
-const colliders = [];
-function addCollider(x, y, z, sx, sy, sz) {
-  const bb = new THREE.Box3();
-  bb.setFromCenterAndSize(new THREE.Vector3(x, y, z), new THREE.Vector3(sx, sy, sz));
-  colliders.push(bb);
+// --- СЦЕНА ---
+// Пол и потолок
+addObj('wall', 0, 0, 0, 40, 0.1, 80, 0, 0, 0, false); 
+addObj('wall', 0, 10, 0, 40, 0.1, 80, 0, 0, 0, false);
+
+// Колонны (Ribs)
+for(let z = -30; z <= 30; z += 10) {
+    addObj('rib', -5, 5, z, 0.5, 10, 0.5);
+    addObj('rib', 5, 5, z, 0.5, 10, 0.5);
 }
 
-// --- GEOMETRY WRAPPERS ---
-function box(w, h, d, type, x, y, z, rx=0, ry=0, rz=0, collide=true) {
-  addInstance(type, x, y, z, w, h, d, rx, ry, rz);
-  if (collide) addCollider(x, y, z, w, h, d);
+// Окна (Emissive boxes вместо света)
+for(let z = -25; z <= 25; z += 10) {
+    addObj('win', -5.1, 5, z, 0.1, 4, 2, 0, 0, 0, false);
+    addObj('win', 5.1, 5, z, 0.1, 4, 2, 0, 0, 0, false);
 }
 
-function plane(w, h, type, x, y, z, rx=0, ry=0, rz=0) {
-  // Use box with minimal thickness for plane-like batching
-  box(w, 0.05, h, type, x, y, z, rx, ry, rz, false);
-}
-
-// --- CONSTRUCTION HELPERS ---
-function createCeilingVault(cx, cz, width, depth, height) {
-  plane(width, depth, 'ceiling', cx, height, cz, 0, 0, 0);
-  // Diagonal ribs (simplified as single crossed boxes)
-  const diagLen = Math.sqrt(width*width + depth*depth);
-  const angle = Math.atan2(depth, width);
-  box(diagLen, 0.2, 0.2, 'rib', cx, height - 0.1, cz, 0, angle, 0, false);
-  box(diagLen, 0.2, 0.2, 'rib', cx, height - 0.1, cz, 0, -angle, 0, false);
-}
-
-function createFloor(cx, cz, w, d) {
-  plane(w, d, 'floor', cx, 0, cz);
-}
-
-function createArchedDoor(cx, cz, axis, roomHeight) {
-  const dw = 4, dh = 8, jw = 0.4, jh = dh * 0.75, jd = 0.5;
-  if (axis === 'z') {
-    box(jw, jh, jd, 'rib', cx - 2.2, jh/2, cz);
-    box(jw, jh, jd, 'rib', cx + 2.2, jh/2, cz);
-    box(dw + jw*2, roomHeight - dh, jd, 'wall', cx, dh + (roomHeight-dh)/2, cz);
-  } else {
-    box(jd, jh, jw, 'rib', cx, jh/2, cz - 2.2);
-    box(jd, jh, jw, 'rib', cx, jh/2, cz + 2.2);
-    box(jd, roomHeight - dh, dw + jw*2, 'wall', cx, dh + (roomHeight-dh)/2, cz);
-  }
-}
-
-// --- SCENE GENERATION ---
-function buildScene() {
-  // Main Hall
-  createFloor(0, 0, 20, 20);
-  createCeilingVault(0, 0, 20, 20, 30);
-  // Columns
-  [[-8,-8],[8,-8],[8,8],[-8,8]].forEach(([x,z]) => box(0.8, 30, 0.8, 'rib', x, 15, z));
-  
-  // Windows (Emissive only)
-  [[-7.5, 10],[4.5, 10]].forEach(x => {
-    box(0.1, 8, 1.4, 'window', x, 9, 10);
-    box(0.1, 8, 1.4, 'window', x, 9, -10);
-  });
-  
-  createArchedDoor(0, 10, 'z', 30);
-  createArchedDoor(0, -10, 'z', 30);
-  createArchedDoor(10, 0, 'x', 30);
-  createArchedDoor(-10, 0, 'x', 30);
-
-  // Corridor + Entrance Simplified
-  createFloor(0, -18, 12, 12);
-  createCeilingVault(0, -18, 12, 12, 12);
-  box(12, 12, 0.1, 'wall', 0, 6, -24);
-}
-
-buildScene();
-
-// Finalizing Instanced Meshes
-Object.keys(instances).forEach(key => {
-  const data = instances[key];
-  const imesh = new THREE.InstancedMesh(data.geo, data.mat, data.transforms.length);
-  data.transforms.forEach((m, i) => imesh.setMatrixAt(i, m));
-  scene.add(imesh);
+// Инициализация инстансов
+Object.keys(instData).forEach(key => {
+    const d = instData[key];
+    const imesh = new THREE.InstancedMesh(d.geo, d.mat, d.matrices.length);
+    d.matrices.forEach((m, i) => imesh.setMatrixAt(i, m));
+    scene.add(imesh);
 });
 
-// --- LIGHTING (RADICALLY REDUCED) ---
-const amb = new THREE.AmbientLight(0x151218, 1.5);
-scene.add(amb);
-const dirLight = new THREE.DirectionalLight(0x443355, 0.5);
-dirLight.position.set(1, 2, 1);
-scene.add(dirLight);
+// Свет (всего 2 источника на всю сцену)
+scene.add(new THREE.AmbientLight(0x101015, 1.0));
+const point = new THREE.PointLight(0x443322, 1.5, 50);
+point.position.set(0, 5, 0);
+scene.add(point);
 
-// --- CONTROLS & CAMERA ---
-const euler = new THREE.Euler(0, 0, 0, 'YXZ');
+// --- УПРАВЛЕНИЕ ---
+let euler = new THREE.Euler(0, 0, 0, 'YXZ');
 const keys = {};
-if (!isMobile) {
-  document.addEventListener('keydown', e => keys[e.code] = true);
-  document.addEventListener('keyup', e => keys[e.code] = false);
-  renderer.domElement.addEventListener('click', () => renderer.domElement.requestPointerLock());
-  document.addEventListener('mousemove', e => {
-    if (document.pointerLockElement === renderer.domElement) {
-      euler.y -= e.movementX * 0.002;
-      euler.x = Math.max(-1.2, Math.min(1.2, euler.x - e.movementY * 0.002));
-      camera.quaternion.setFromEuler(euler);
-    }
-  });
-}
-
-// Mobile Joystick Logic (Omitted for brevity, kept same as original logic but applied to new camera)
 const joyState = { active: false, dx: 0, dy: 0 };
-// ... (Original joystick event listeners from provided code)
+const lookState = { lx: 0, ly: 0 };
 
-// --- RENDER LOOP ---
-const clock = new THREE.Clock();
-const moveDir = new THREE.Vector3();
-const playerBox = new THREE.Box3();
+if (!isMobile) {
+    window.addEventListener('keydown', e => keys[e.code] = true);
+    window.addEventListener('keyup', e => keys[e.code] = false);
+    renderer.domElement.addEventListener('click', () => renderer.domElement.requestPointerLock());
+    window.addEventListener('mousemove', e => {
+        if (document.pointerLockElement) {
+            euler.y -= e.movementX * 0.002;
+            euler.x -= e.movementY * 0.002;
+            euler.x = Math.max(-1.5, Math.min(1.5, euler.x));
+        }
+    });
+} else {
+    const jz = document.getElementById('joystick-zone');
+    const jk = document.getElementById('joystick-knob');
+    jz.addEventListener('touchstart', e => { joyState.active = true; });
+    jz.addEventListener('touchmove', e => {
+        const t = e.touches[0];
+        const rect = jz.getBoundingClientRect();
+        joyState.dx = ((t.clientX - (rect.left + 40)) / 40);
+        joyState.dy = ((t.clientY - (rect.bottom - 40)) / 40);
+        jk.style.transform = `translate(calc(-50% + ${joyState.dx*20}px), calc(-50% + ${joyState.dy*20}px))`;
+    });
+    jz.addEventListener('touchend', () => { joyState.active = false; joyState.dx = 0; joyState.dy = 0; jk.style.transform = 'translate(-50%,-50%)'; });
 
-function animate() {
-  requestAnimationFrame(animate);
-  const dt = Math.min(clock.getDelta(), 0.05);
-  
-  moveDir.set(0, 0, 0);
-  if (keys['KeyW']) moveDir.z -= 1;
-  if (keys['KeyS']) moveDir.z += 1;
-  if (keys['KeyA']) moveDir.x -= 1;
-  if (keys['KeyD']) moveDir.x += 1;
-  
-  if (moveDir.lengthSq() > 0) {
-    moveDir.normalize().applyEuler(new THREE.Euler(0, euler.y, 0));
-    const nextPos = camera.position.clone().addScaledVector(moveDir, 6 * dt);
-    
-    playerBox.setFromCenterAndSize(nextPos, new THREE.Vector3(0.7, 1.8, 0.7));
-    const collision = colliders.some(c => playerBox.intersectsBox(c));
-    if (!collision) {
-      camera.position.x = nextPos.x;
-      camera.position.z = nextPos.z;
-    }
-  }
-
-  renderer.render(scene, camera);
+    const lz = document.getElementById('look-zone');
+    lz.addEventListener('touchstart', e => { lookState.lx = e.touches[0].clientX; lookState.ly = e.touches[0].clientY; });
+    lz.addEventListener('touchmove', e => {
+        const t = e.touches[0];
+        euler.y -= (t.clientX - lookState.lx) * 0.005;
+        euler.x -= (t.clientY - lookState.ly) * 0.005;
+        lookState.lx = t.clientX; lookState.ly = t.clientY;
+    });
 }
+
+const pBox = new THREE.Box3();
+function animate() {
+    requestAnimationFrame(animate);
+    const dt = 0.16;
+    const move = new THREE.Vector3();
+
+    if (keys['KeyW'] || joyState.dy < -0.2) move.z -= 1;
+    if (keys['KeyS'] || joyState.dy > 0.2)  move.z += 1;
+    if (keys['KeyA'] || joyState.dx < -0.2) move.x -= 1;
+    if (keys['KeyD'] || joyState.dx > 0.2)  move.x += 1;
+
+    if (move.lengthSq() > 0) {
+        move.normalize().applyEuler(new THREE.Euler(0, euler.y, 0));
+        const next = camera.position.clone().addScaledVector(move, 0.15);
+        pBox.setFromCenterAndSize(next, new THREE.Vector3(0.6, 1.8, 0.6));
+        if (!colliders.some(c => pBox.intersectsBox(c))) {
+            camera.position.copy(next);
+        }
+    }
+    camera.quaternion.setFromEuler(euler);
+    renderer.render(scene, camera);
+}
+animate();
 
 window.addEventListener('resize', () => {
-  camera.aspect = innerWidth/innerHeight;
-  camera.updateProjectionMatrix();
-  renderer.setSize(innerWidth, innerHeight);
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
 });
-
-animate();
 </script>
 </body>
 </html>
-
-```
