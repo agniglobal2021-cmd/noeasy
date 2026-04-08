@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gothic Gallery</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { background: #000; overflow: hidden; font-family: 'Georgia', serif; }
+canvas { display: block; }
+#ui {
+  position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+  pointer-events: none; z-index: 10;
+}
+#crosshair {
+  position: absolute; top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  width: 16px; height: 16px;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+#crosshair::before, #crosshair::after {
+  content: ''; position: absolute; background: rgba(255,220,150,0.7);
+}
+#crosshair::before { width: 2px; height: 16px; left: 7px; top: 0; }
+#crosshair::after { width: 16px; height: 2px; top: 7px; left: 0; }
+#overlay {
+  position: absolute; inset: 0; background: #000;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  color: rgba(255,220,150,0.9);
+  text-align: center; pointer-events: all;
+  transition: opacity 0.8s;
+}
+#overlay h1 {
+  font-size: 2.2rem; letter-spacing: 0.3em;
+  text-transform: uppercase; margin-bottom: 0.5rem;
+  color: rgba(255,220,150,0.95);
+}
+#overlay .sub {
+  font-size: 0.75rem; letter-spacing: 0.4em;
+  text-transform: uppercase; color: rgba(255,200,100,0.5);
+  margin-bottom: 3rem;
+}
+#startBtn {
+  border: 1px solid rgba(255,220,150,0.4); background: transparent;
+  color: rgba(255,220,150,0.9); padding: 0.8rem 2.5rem;
+  font-family: 'Georgia', serif; font-size: 0.85rem;
+  letter-spacing: 0.3em; text-transform: uppercase;
+  cursor: pointer; pointer-events: all;
+  transition: all 0.3s;
+}
+#startBtn:hover { background: rgba(255,220,150,0.08); border-color: rgba(255,220,150,0.7); }
+#controls {
+  position: absolute; bottom: 2rem; left: 50%; transform: translateX(-50%);
+  font-size: 0.65rem; letter-spacing: 0.3em; text-transform: uppercase;
+  color: rgba(255,200,100,0.3); text-align: center; line-height: 2;
+  pointer-events: none;
+}
+#roomLabel {
+  position: absolute; top: 2rem; left: 50%; transform: translateX(-50%);
+  font-size: 0.65rem; letter-spacing: 0.5em; text-transform: uppercase;
+  color: rgba(255,200,100,0.35); pointer-events: none; opacity: 0;
+  transition: opacity 0.5s;
+}
+body.playing #crosshair { opacity: 1; }
+body.playing #roomLabel { opacity: 1; }
+</style>
+</head>
+<body>
+<div id="ui">
+  <div id="crosshair"></div>
+  <div id="roomLabel" id="roomLabel">Main Hall</div>
+  <div id="controls">WASD — move &nbsp;|&nbsp; Mouse — look &nbsp;|&nbsp; ESC — exit</div>
+  <div id="overlay">
+    <h1>The Gallery</h1>
+    <div class="sub">A Gothic Space</div>
+    <button id="startBtn">Enter</button>
+  </div>
+</div>
+
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.module.js"
+  }
+}
+</script>
+
+<script type="module">
+import * as THREE from 'three';
+
+// ─── SCENE SETUP ────────────────────────────────────────────────────────────
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x020202);
+scene.fog = new THREE.FogExp2(0x030205, 0.018);
+
+const camera = new THREE.PerspectiveCamera(72, innerWidth/innerHeight, 0.1, 300);
+camera.position.set(0, 1.7, 0);
+
+const renderer = new THREE.WebGLRenderer({ antialias: true });
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+renderer.setSize(innerWidth, innerHeight);
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 0.6;
+document.body.appendChild(renderer.domElement);
+
+window.addEventListener('resize', () => {
+  camera.aspect = innerWidth/innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(innerWidth, innerHeight);
+});
+
+// ─── MATERIALS ───────────────────────────────────────────────────────────────
+const MAT = {
+  wall:    new THREE.MeshStandardMaterial({ color: 0x1a1a1e, roughness: 0.95, metalness: 0.05 }),
+  rib:     new THREE.MeshStandardMaterial({ color: 0x252528, roughness: 0.85, metalness: 0.1 }),
+  floor:   new THREE.MeshStandardMaterial({ color: 0x111113, roughness: 0.98, metalness: 0.0 }),
+  ceiling: new THREE.MeshStandardMaterial({ color: 0x0e0e10, roughness: 1.0, metalness: 0.0 }),
+  window:  new THREE.MeshStandardMaterial({
+    color: 0x3a2200, emissive: 0x7a4500, emissiveIntensity: 0.8,
+    roughness: 0.3, metalness: 0.1, transparent: true, opacity: 0.85
+  }),
+  arch:    new THREE.MeshStandardMaterial({ color: 0x1e1e22, roughness: 0.9, metalness: 0.08 }),
+  accent:  new THREE.MeshStandardMaterial({ color: 0x2a2a2e, roughness: 0.7, metalness: 0.2 }),
+};
+
+// slot markers (invisible Object3D)
+const allSlots = [];
+const colliders = []; // bounding boxes for collision
+
+// ─── HELPERS ─────────────────────────────────────────────────────────────────
+function box(w, h, d, mat, x, y, z, rx=0, ry=0, rz=0) {
+  const m = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), mat);
+  m.position.set(x, y, z);
+  m.rotation.set(rx, ry, rz);
+  m.castShadow = true;
+  m.receiveShadow = true;
+  scene.add(m);
+  return m;
+}
+
+function plane(w, h, mat, x, y, z, rx=0, ry=0, rz=0) {
+  const m = new THREE.Mesh(new THREE.PlaneGeometry(w, h), mat);
+  m.position.set(x, y, z);
+  m.rotation.set(rx, ry, rz);
+  m.receiveShadow = true;
+  scene.add(m);
+  return m;
+}
+
+function addCollider(mesh) {
+  const bb = new THREE.Box3().setFromObject(mesh);
+  colliders.push(bb);
+}
+
+function slot(x, y, z, ry=0) {
+  const o = new THREE.Object3D();
+  o.position.set(x, y, z);
+  o.rotation.y = ry;
+  scene.add(o);
+  allSlots.push(o);
+  return o;
+}
+
+// ─── RIBS ────────────────────────────────────────────────────────────────────
+// Creates vertical ribs along a wall segment
+// axis: 'x' or 'z', wallCoord: fixed coord, rangeMin/Max: span, height, count, offset into room
+function createRibs(axis, wallCoord, rangeMin, rangeMax, roomHeight, count, depthDir) {
+  const step = (rangeMax - rangeMin) / (count - 1);
+  for (let i = 0; i < count; i++) {
+    const pos = rangeMin + i * step;
+    let x, z;
+    if (axis === 'z') { x = wallCoord; z = pos; }
+    else              { z = wallCoord; x = pos; }
+    const rib = box(0.3, roomHeight, 0.25, MAT.rib,
+      x + (axis === 'z' ? depthDir * 0.1 : 0),
+      roomHeight/2,
+      z + (axis === 'x' ? depthDir * 0.1 : 0)
+    );
+    addCollider(rib);
+  }
+}
+
+// ─── WALL PANELS ─────────────────────────────────────────────────────────────
+// Fill wall between ribs as panels, skipping window/door zones
+function createWallPanels(axis, wallCoord, rangeMin, rangeMax, roomHeight, ribCount, depthDir,
+                          windowZones=[], doorZones=[]) {
+  const step = (rangeMax - rangeMin) / (ribCount - 1);
+  for (let i = 0; i < ribCount - 1; i++) {
+    const segMin = rangeMin + i * step;
+    const segMax = rangeMin + (i+1) * step;
+    const segCenter = (segMin + segMax) / 2;
+    const segWidth = segMax - segMin - 0.3;
+
+    // Check if this segment has a door
+    let hasDoor = doorZones.some(dz => segCenter >= dz[0] && segCenter <= dz[1]);
+    // Check if this segment has a window
+    let hasWindow = windowZones.some(wz => segCenter >= wz[0] && segCenter <= wz[1]);
+
+    if (hasDoor) {
+      // Lower panel below door (none needed if door fills height)
+      // Upper panel above door
+      const doorH = 8, doorTop = 8;
+      if (roomHeight > doorTop) {
+        const panH = roomHeight - doorTop;
+        const panY = doorTop + panH/2;
+        let px = axis === 'z' ? wallCoord + depthDir * 0.05 : segCenter;
+        let pz = axis === 'x' ? wallCoord + depthDir * 0.05 : segCenter;
+        const p = box(axis === 'z' ? 0.1 : segWidth, panH, axis === 'x' ? 0.1 : segWidth,
+          MAT.wall, px, panY, pz);
+        addCollider(p);
+      }
+    } else if (hasWindow) {
+      // Panel below window
+      const winStart = 5, winH = 8;
+      const belowH = winStart;
+      const aboveH = roomHeight - winStart - winH;
+      let px = axis === 'z' ? wallCoord + depthDir * 0.05 : segCenter;
+      let pz = axis === 'x' ? wallCoord + depthDir * 0.05 : segCenter;
+      if (belowH > 0) {
+        const p = box(axis === 'z' ? 0.1 : segWidth, belowH, axis === 'x' ? 0.1 : segWidth,
+          MAT.wall, px, belowH/2, pz);
+        addCollider(p);
+      }
+      // Window pane
+      const wp = box(axis === 'z' ? 0.05 : 1.4, winH, axis === 'x' ? 0.05 : 1.4,
+        MAT.window,
+        axis === 'z' ? wallCoord + depthDir * 0.02 : segCenter,
+        winStart + winH/2,
+        axis === 'x' ? wallCoord + depthDir * 0.02 : segCenter
+      );
+      // Window point light
+      const wLight = new THREE.PointLight(0xcc7722, 0.6, 12);
+      wLight.position.set(
+        axis === 'z' ? wallCoord + depthDir * 1.5 : segCenter,
+        winStart + winH/2,
+        axis === 'x' ? wallCoord + depthDir * 1.5 : segCenter
+      );
+      scene.add(wLight);
+      if (aboveH > 0) {
+        const p2 = box(axis === 'z' ? 0.1 : segWidth, aboveH, axis === 'x' ? 0.1 : segWidth,
+          MAT.wall, px, winStart + winH + aboveH/2, pz);
+        addCollider(p2);
+      }
+    } else {
+      // Solid panel
+      const p = box(axis === 'z' ? 0.1 : segWidth, roomHeight, axis === 'x' ? 0.1 : segWidth,
+        MAT.wall,
+        axis === 'z' ? wallCoord + depthDir * 0.05 : segCenter,
+        roomHeight/2,
+        axis === 'x' ? wallCoord + depthDir * 0.05 : segCenter
+      );
+      addCollider(p);
+    }
+  }
+}
+
+// ─── ARCHED DOORWAY ──────────────────────────────────────────────────────────
+// Creates a pointed arch around a corridor opening
+function createArchedDoor(cx, cy, cz, axis, roomHeight) {
+  const dw = 4, dh = 8;
+  // Arch sides (jambs)
+  const jw = 0.4, jh = dh * 0.75, jd = 0.5;
+  if (axis === 'z') {
+    box(jw, jh, jd, MAT.arch, cx - dw/2 - jw/2, jh/2, cz);
+    box(jw, jh, jd, MAT.arch, cx + dw/2 + jw/2, jh/2, cz);
+    // Pointed arch cap (two angled slabs)
+    box(dw * 0.55, 0.3, jd, MAT.arch, cx - dw*0.2, dh - 0.3, cz, 0, 0, 0.42);
+    box(dw * 0.55, 0.3, jd, MAT.arch, cx + dw*0.2, dh - 0.3, cz, 0, 0, -0.42);
+    // Keystone
+    box(0.4, 0.6, jd, MAT.rib, cx, dh + 0.1, cz);
+    // Fill above arch up to ceiling
+    if (roomHeight > dh + 0.8) {
+      box(dw + jw*2, roomHeight - dh - 0.8, jd, MAT.wall, cx, dh + 0.8 + (roomHeight - dh - 0.8)/2, cz);
+    }
+  } else {
+    box(jd, jh, jw, MAT.arch, cx, jh/2, cz - dw/2 - jw/2);
+    box(jd, jh, jw, MAT.arch, cx, jh/2, cz + dw/2 + jw/2);
+    box(jd, 0.3, dw * 0.55, MAT.arch, cx, dh - 0.3, cz - dw*0.2, 0.42, 0, 0);
+    box(jd, 0.3, dw * 0.55, MAT.arch, cx, dh - 0.3, cz + dw*0.2, -0.42, 0, 0);
+    box(jd, 0.6, 0.4, MAT.rib, cx, dh + 0.1, cz);
+    if (roomHeight > dh + 0.8) {
+      box(jd, roomHeight - dh - 0.8, dw + jw*2, MAT.wall, cx, dh + 0.8 + (roomHeight - dh - 0.8)/2, cz);
+    }
+  }
+}
+
+// ─── CEILING VAULT ───────────────────────────────────────────────────────────
+function createCeilingVault(cx, cz, width, depth, height, ribs) {
+  // Main ceiling plane
+  plane(width, depth, MAT.ceiling, cx, height, cz, -Math.PI/2);
+
+  // Cross ribs on ceiling
+  const ribThick = 0.25;
+  // Longitudinal ribs
+  for (let i = 0; i < ribs; i++) {
+    const offset = -depth/2 + (i+1) * depth/(ribs+1);
+    plane(width - 0.5, ribThick, MAT.rib, cx, height - 0.01, cz + offset, -Math.PI/2);
+  }
+  // Transverse ribs
+  for (let i = 0; i < ribs; i++) {
+    const offset = -width/2 + (i+1) * width/(ribs+1);
+    plane(ribThick, depth - 0.5, MAT.rib, cx + offset, height - 0.01, cz, -Math.PI/2);
+  }
+  // Diagonal cross ribs (fan vault suggestion)
+  const diag1 = new THREE.Mesh(
+    new THREE.PlaneGeometry(Math.sqrt(width*width + depth*depth) * 0.9, ribThick),
+    MAT.rib
+  );
+  diag1.rotation.set(-Math.PI/2, 0, Math.atan2(depth, width));
+  diag1.position.set(cx, height - 0.01, cz);
+  scene.add(diag1);
+  const diag2 = new THREE.Mesh(
+    new THREE.PlaneGeometry(Math.sqrt(width*width + depth*depth) * 0.9, ribThick),
+    MAT.rib
+  );
+  diag2.rotation.set(-Math.PI/2, 0, -Math.atan2(depth, width));
+  diag2.position.set(cx, height - 0.01, cz);
+  scene.add(diag2);
+}
+
+// ─── FLOOR ───────────────────────────────────────────────────────────────────
+function createFloor(cx, cz, w, d) {
+  const f = plane(w, d, MAT.floor, cx, 0, cz, -Math.PI/2);
+  // Stone tile grid lines
+  for (let i = -Math.floor(w/2); i <= Math.floor(w/2); i += 2) {
+    const line = new THREE.Mesh(new THREE.PlaneGeometry(0.03, d), MAT.rib);
+    line.rotation.x = -Math.PI/2;
+    line.position.set(cx + i, 0.001, cz);
+    scene.add(line);
+  }
+  for (let i = -Math.floor(d/2); i <= Math.floor(d/2); i += 2) {
+    const line = new THREE.Mesh(new THREE.PlaneGeometry(w, 0.03), MAT.rib);
+    line.rotation.x = -Math.PI/2;
+    line.position.set(cx, 0.001, cz + i);
+    scene.add(line);
+  }
+}
+
+// ─── CORRIDOR ────────────────────────────────────────────────────────────────
+function createCorridor(cx, cz, axis, length) {
+  const cw = 4, ch = 10;
+  if (axis === 'z') {
+    // ceiling
+    plane(cw, length, MAT.ceiling, cx, ch, cz, -Math.PI/2);
+    // floor
+    plane(cw, length, MAT.floor, cx, 0, cz, -Math.PI/2);
+    // side walls
+    const sw = box(0.15, ch, length, MAT.wall, cx - cw/2, ch/2, cz);
+    addCollider(sw);
+    const sw2 = box(0.15, ch, length, MAT.wall, cx + cw/2, ch/2, cz);
+    addCollider(sw2);
+    // Ribs along corridor
+    const ribCount = Math.ceil(length / 3);
+    for (let i = 0; i <= ribCount; i++) {
+      const rz = cz - length/2 + i * (length/ribCount);
+      box(0.3, ch, 0.25, MAT.rib, cx - cw/2, ch/2, rz);
+      box(0.3, ch, 0.25, MAT.rib, cx + cw/2, ch/2, rz);
+      // ceiling rib
+      plane(cw, 0.2, MAT.rib, cx, ch - 0.01, rz, -Math.PI/2);
+    }
+    // Pointed arch ceiling ribs
+    for (let i = 1; i < ribCount; i++) {
+      const rz = cz - length/2 + i * (length/ribCount);
+      box(cw, 0.2, 0.2, MAT.rib, cx, ch - 0.15, rz);
+    }
+  } else {
+    plane(length, cw, MAT.ceiling, cx, ch, cz, -Math.PI/2);
+    plane(length, cw, MAT.floor, cx, 0, cz, -Math.PI/2);
+    const sw = box(length, ch, 0.15, MAT.wall, cx, ch/2, cz - cw/2);
+    addCollider(sw);
+    const sw2 = box(length, ch, 0.15, MAT.wall, cx, ch/2, cz + cw/2);
+    addCollider(sw2);
+    const ribCount = Math.ceil(length / 3);
+    for (let i = 0; i <= ribCount; i++) {
+      const rx = cx - length/2 + i * (length/ribCount);
+      box(0.25, ch, 0.3, MAT.rib, rx, ch/2, cz - cw/2);
+      box(0.25, ch, 0.3, MAT.rib, rx, ch/2, cz + cw/2);
+      plane(0.2, cw, MAT.rib, rx, ch - 0.01, cz, -Math.PI/2);
+    }
+    for (let i = 1; i < ribCount; i++) {
+      const rx = cx - length/2 + i * (length/ribCount);
+      box(0.2, 0.2, cw, MAT.rib, rx, ch - 0.15, cz);
+    }
+  }
+}
+
+// ─── MAIN HALL ───────────────────────────────────────────────────────────────
+function createMainHall() {
+  const cx=0, cz=0, W=20, D=20, H=30;
+  const hW=W/2, hD=D/2;
+
+  createFloor(cx, cz, W, D);
+  createCeilingVault(cx, cz, W, D, H, 3);
+
+  // ── North wall (z = +hD) — door to Gallery A
+  const doorCenterN = 0;
+  // ribs along north wall x-axis
+  const ribsN = [-9, -6, -3, 3, 6, 9]; // skip center for door
+  ribsN.forEach(rx => box(0.3, H, 0.25, MAT.rib, rx, H/2, hD));
+  // panels: left of door, right of door
+  box(0.15, H, 5.5, MAT.wall, -7.5, H/2, hD);
+  box(0.15, H, 5.5, MAT.wall,  7.5, H/2, hD);
+  // above door
+  box(0.15, H - 9, 4.2, MAT.wall, 0, 9 + (H-9)/2, hD);
+  // windows between ribs (above 5m)
+  [[-7.5, hD],[-4.5, hD],[4.5, hD],[7.5, hD]].forEach(([wx, wz]) => {
+    box(0.05, 8, 1.4, MAT.window, wx, 9, wz);
+    const wl = new THREE.PointLight(0xcc7722, 0.5, 10);
+    wl.position.set(wx, 9, wz - 1.5); scene.add(wl);
+  });
+  createArchedDoor(0, 0, hD, 'x', H);
+
+  // ── South wall (z = -hD) — door to Entrance
+  ribsN.forEach(rx => box(0.3, H, 0.25, MAT.rib, rx, H/2, -hD));
+  box(0.15, H, 5.5, MAT.wall, -7.5, H/2, -hD);
+  box(0.15, H, 5.5, MAT.wall,  7.5, H/2, -hD);
+  box(0.15, H - 9, 4.2, MAT.wall, 0, 9 + (H-9)/2, -hD);
+  [[-7.5,-hD],[-4.5,-hD],[4.5,-hD],[7.5,-hD]].forEach(([wx, wz]) => {
+    box(0.05, 8, 1.4, MAT.window, wx, 9, wz);
+    const wl = new THREE.PointLight(0xcc7722, 0.5, 10);
+    wl.position.set(wx, 9, wz + 1.5); scene.add(wl);
+  });
+  createArchedDoor(0, 0, -hD, 'x', H);
+
+  // ── East wall (x = +hW) — door to Gallery B
+  const ribsE = [-9,-6,-3,3,6,9];
+  ribsE.forEach(rz => box(0.25, H, 0.3, MAT.rib, hW, H/2, rz));
+  box(0.15, H, 5.5, MAT.wall, hW, H/2, -7.5);
+  box(0.15, H, 5.5, MAT.wall, hW, H/2,  7.5);
+  box(0.15, H - 9, 4.2, MAT.wall, hW, 9 + (H-9)/2, 0);
+  [[-7.5],[[-4.5]],[[4.5]],[[7.5]]].flat().forEach(wz => {
+    box(1.4, 8, 0.05, MAT.window, hW, 9, wz);
+    const wl = new THREE.PointLight(0xcc7722, 0.5, 10);
+    wl.position.set(hW - 1.5, 9, wz); scene.add(wl);
+  });
+  createArchedDoor(hW, 0, 0, 'z', H);
+
+  // ── West wall (x = -hW) — door to Gallery D
+  ribsE.forEach(rz => box(0.25, H, 0.3, MAT.rib, -hW, H/2, rz));
+  box(0.15, H, 5.5, MAT.wall, -hW, H/2, -7.5);
+  box(0.15, H, 5.5, MAT.wall, -hW, H/2,  7.5);
+  box(0.15, H - 9, 4.2, MAT.wall, -hW, 9 + (H-9)/2, 0);
+  [[-7.5,],[-4.5],[4.5],[7.5]].flat().forEach(wz => {
+    box(1.4, 8, 0.05, MAT.window, -hW, 9, wz);
+    const wl = new THREE.PointLight(0xcc7722, 0.5, 10);
+    wl.position.set(-hW + 1.5, 9, wz); scene.add(wl);
+  });
+  createArchedDoor(-hW, 0, 0, 'z', H);
+
+  // Column ribs at corners / interior
+  [[-8,-8],[8,-8],[8,8],[-8,8]].forEach(([x,z]) => {
+    const col = box(0.5, H, 0.5, MAT.rib, x, H/2, z);
+    addCollider(col);
+  });
+
+  // Painting slots
+  [
+    [8.5, 2.0, -8, 0],      [8.5, 2.0, -4, 0],
+    [8.5, 2.0,  4, 0],      [8.5, 2.0,  8, 0],
+    [-8.5, 2.0, -8, Math.PI],[−8.5, 2.0, -4, Math.PI],
+    [-8.5, 2.0,  4, Math.PI],[-8.5, 2.0,  8, Math.PI],
+    [-3, 2.0, 9.8, Math.PI/2],[3, 2.0, 9.8, Math.PI/2],
+  ].forEach(([x,y,z,ry]) => slot(x,y,z,ry));
+
+  // Central ambient light
+  const al = new THREE.PointLight(0x3322aa, 0.3, 40);
+  al.position.set(0, 20, 0); scene.add(al);
+  const al2 = new THREE.PointLight(0x110820, 1, 80);
+  al2.position.set(0, 15, 0); scene.add(al2);
+}
+
+// ─── ENTRANCE HALL ───────────────────────────────────────────────────────────
+function createEntrance() {
+  const cx=0, cz=-18, W=12, D=12, H=12;
+  const hW=W/2, hD=D/2;
+
+  createFloor(cx, cz, W, D);
+  createCeilingVault(cx, cz, W, D, H, 2);
+
+  // North wall (connects to Main Hall corridor) — open
+  // South wall — entrance
+  const ribsS = [-5,-2.5,0,2.5,5];
+  ribsS.forEach(rx => box(0.3, H, 0.25, MAT.rib, rx+cx, H/2, cz-hD));
+  box(0.1, H, 5, MAT.wall, cx-3.5, H/2, cz-hD);
+  box(0.1, H, 5, MAT.wall, cx+3.5, H/2, cz-hD);
+  box(0.1, H-9, 4, MAT.wall, cx, 9+(H-9)/2, cz-hD);
+  // Entry arch
+  createArchedDoor(cx, 0, cz-hD, 'x', H);
+
+  // East/West walls with windows
+  [1,-1].forEach(side => {
+    const wx = cx + side * hW;
+    const dir = -side;
+    [-3,0,3].forEach(rz => box(0.25, H, 0.3, MAT.rib, wx, H/2, cz+rz));
+    box(1.4, 7, 0.1, MAT.window, wx, 5+3.5, cz-2);
+    box(1.4, 7, 0.1, MAT.window, wx, 5+3.5, cz+2);
+    const wl = new THREE.PointLight(0xcc7722, 0.4, 8);
+    wl.position.set(wx + dir*1.2, 9, cz); scene.add(wl);
+    box(0.1, 5, 5, MAT.wall, wx, 2.5, cz); // lower
+    box(0.1, H-13, W/2, MAT.wall, wx, 13+(H-13)/2, cz);
+    addCollider(box(0.15, H, 0.01, MAT.wall, wx, H/2, cz)); // thin collider
+  });
+
+  // North wall (to Main Hall) — arch
+  [[-4,cz+hD],[4,cz+hD]].forEach(([rx,rz]) => box(0.3, H, 0.25, MAT.rib, rx, H/2, rz));
+  box(0.1, H-9, 4, MAT.wall, cx, 9+(H-9)/2, cz+hD);
+  createArchedDoor(cx, 0, cz+hD, 'x', H);
+
+  // Slots
+  [
+    [cx-5, 2, cz-4, 0], [cx+5, 2, cz-4, Math.PI],
+    [cx-5, 2, cz,   0], [cx+5, 2, cz,   Math.PI],
+    [cx-5, 2, cz+4, 0], [cx+5, 2, cz+4, Math.PI],
+  ].forEach(([x,y,z,ry]) => slot(x,y,z,ry));
+
+  const el = new THREE.PointLight(0x442200, 0.8, 25);
+  el.position.set(cx, 8, cz); scene.add(el);
+}
+
+// ─── GENERIC GALLERY ─────────────────────────────────────────────────────────
+function createGallery(cx, cz, openAxis, openDir, label) {
+  const W=18, D=18, H=18;
+  const hW=W/2, hD=D/2;
+
+  createFloor(cx, cz, W, D);
+  createCeilingVault(cx, cz, W, D, H, 2);
+
+  // 4 walls, opening on one side
+  const walls = [
+    { axis:'z', coord: cz+hD, dir: -1, hasOpen: openAxis==='z' && openDir===1  },
+    { axis:'z', coord: cz-hD, dir:  1, hasOpen: openAxis==='z' && openDir===-1 },
+    { axis:'x', coord: cx+hW, dir: -1, hasOpen: openAxis==='x' && openDir===1  },
+    { axis:'x', coord: cx-hW, dir:  1, hasOpen: openAxis==='x' && openDir===-1 },
+  ];
+
+  walls.forEach(w => {
+    const isZ = w.axis === 'z';
+    const span = isZ ? W : D;
+    const center = isZ ? cx : cz;
+    const ribPositions = [-7.5, -4.5, -1.5, 1.5, 4.5, 7.5].map(r => center + r);
+
+    ribPositions.forEach(rp => {
+      if (isZ) box(0.3, H, 0.25, MAT.rib, rp, H/2, w.coord);
+      else     box(0.25, H, 0.3, MAT.rib, w.coord, H/2, rp);
+    });
+
+    if (w.hasOpen) {
+      // Wall with opening — panels on sides, arch
+      const sideW = (span - 4.3) / 2;
+      const offL = center - (span/2 - sideW/2);
+      const offR = center + (span/2 - sideW/2);
+      if (isZ) {
+        box(0.1, H, sideW, MAT.wall, offL, H/2, w.coord);
+        box(0.1, H, sideW, MAT.wall, offR, H/2, w.coord);
+        box(0.1, H-9, 4.2, MAT.wall, center, 9+(H-9)/2, w.coord);
+      } else {
+        box(sideW, H, 0.1, MAT.wall, offL, H/2, w.coord);
+        box(sideW, H, 0.1, MAT.wall, offR, H/2, w.coord);
+        box(4.2, H-9, 0.1, MAT.wall, center, 9+(H-9)/2, w.coord);
+      }
+      if (isZ) createArchedDoor(center, 0, w.coord, 'x', H);
+      else     createArchedDoor(w.coord, 0, center, 'z', H);
+      addCollider(box(0.01, H, 0.01, MAT.wall, isZ?offL:w.coord, H/2, isZ?w.coord:offL)); // dummy
+    } else {
+      // Solid wall with window panels
+      // Lower solid
+      const lh = 5;
+      if (isZ) {
+        box(0.1, lh, span, MAT.wall, center, lh/2, w.coord);
+        // Windows between ribs (every other segment)
+        for (let i=0; i<5; i+=2) {
+          const wp = center - span/2 + 3 + i*3;
+          box(0.05, 8, 1.4, MAT.window, wp, 9, w.coord);
+          const wl = new THREE.PointLight(0xcc7722, 0.35, 8);
+          wl.position.set(wp, 9, w.coord + w.dir * 1.2); scene.add(wl);
+        }
+        // Upper solid
+        box(0.1, H - lh - 8, span, MAT.wall, center, lh+8+(H-lh-8)/2, w.coord);
+        addCollider(box(0.15, H, 0.01, MAT.wall, center, H/2, w.coord));
+      } else {
+        box(span, lh, 0.1, MAT.wall, center, lh/2, w.coord);
+        for (let i=0; i<5; i+=2) {
+          const wp = center - span/2 + 3 + i*3;
+          box(1.4, 8, 0.05, MAT.window, w.coord, 9, wp);
+          const wl = new THREE.PointLight(0xcc7722, 0.35, 8);
+          wl.position.set(w.coord + w.dir * 1.2, 9, wp); scene.add(wl);
+        }
+        box(span, H - lh - 8, 0.1, MAT.wall, center, lh+8+(H-lh-8)/2, w.coord);
+        addCollider(box(0.01, H, 0.15, MAT.wall, w.coord, H/2, center));
+      }
+    }
+  });
+
+  // Interior column ribs
+  [[-6,-6],[6,-6],[6,6],[-6,6]].forEach(([ox,oz]) => {
+    const col = box(0.45, H, 0.45, MAT.rib, cx+ox, H/2, cz+oz);
+    addCollider(col);
+  });
+
+  // Slots (10 per gallery)
+  const sy = 2;
+  [
+    [cx-8, sy, cz-6, 0], [cx-8, sy, cz-2, 0], [cx-8, sy, cz+2, 0], [cx-8, sy, cz+6, 0],
+    [cx+8, sy, cz-6, Math.PI], [cx+8, sy, cz-2, Math.PI], [cx+8, sy, cz+2, Math.PI], [cx+8, sy, cz+6, Math.PI],
+    [cx-3, sy, cz+(openDir===1?-8:8), openDir===1?Math.PI/2:-Math.PI/2],
+    [cx+3, sy, cz+(openDir===1?-8:8), openDir===1?Math.PI/2:-Math.PI/2],
+  ].forEach(([x,y,z,ry]) => slot(x,y,z,ry));
+
+  const gl = new THREE.PointLight(0x221133, 0.6, 35);
+  gl.position.set(cx, H*0.7, cz); scene.add(gl);
+}
+
+function createGalleryA() { createGallery(0,  20, 'z', -1, 'Gallery A'); }
+function createGalleryB() { createGallery(20,  0, 'x', -1, 'Gallery B'); }
+function createGalleryC() { createGallery(0, -36, 'z',  1, 'Gallery C'); }
+function createGalleryD() { createGallery(-20, 0, 'x',  1, 'Gallery D'); }
+
+// ─── CORRIDORS ───────────────────────────────────────────────────────────────
+function createCorridors() {
+  // Main ↔ Gallery A (north, z axis)
+  createCorridor(0, 13, 'z', 6);
+  // Main ↔ Entrance (south, z axis)
+  createCorridor(0, -13, 'z', 6);
+  // Main ↔ Gallery B (east, x axis)
+  createCorridor(13, 0, 'x', 6);
+  // Main ↔ Gallery D (west, x axis)
+  createCorridor(-13, 0, 'x', 6);
+  // Entrance ↔ Gallery C
+  createCorridor(0, -27, 'z', 6);
+}
+
+// ─── LIGHTING ────────────────────────────────────────────────────────────────
+function setupLighting() {
+  // Ambient
+  const amb = new THREE.AmbientLight(0x0a0810, 1.0);
+  scene.add(amb);
+  // Hemisphere
+  const hemi = new THREE.HemisphereLight(0x0d0820, 0x050308, 0.3);
+  scene.add(hemi);
+  // Torch lights scattered
+  const torches = [
+    [0, 5, 0], [0, 5, 20], [20, 5, 0], [-20, 5, 0], [0, 5, -36],
+    [0, 5, -18], [10, 5, 10], [-10, 5, -10],
+  ];
+  torches.forEach(([x,y,z]) => {
+    const t = new THREE.PointLight(0x8844aa, 0.15, 30);
+    t.position.set(x, y, z);
+    scene.add(t);
+  });
+}
+
+// ─── BUILD SCENE ─────────────────────────────────────────────────────────────
+createMainHall();
+createEntrance();
+createGalleryA();
+createGalleryB();
+createGalleryC();
+createGalleryD();
+createCorridors();
+setupLighting();
+
+// ─── POINTER LOCK CONTROLS ───────────────────────────────────────────────────
+let isLocked = false;
+const domEl = renderer.domElement;
+
+domEl.addEventListener('click', () => { if (!isLocked) domEl.requestPointerLock(); });
+document.addEventListener('pointerlockchange', () => {
+  isLocked = document.pointerLockElement === domEl;
+  document.body.classList.toggle('playing', isLocked);
+  document.getElementById('overlay').style.opacity = isLocked ? '0' : '1';
+  document.getElementById('overlay').style.pointerEvents = isLocked ? 'none' : 'all';
+});
+
+const euler = new THREE.Euler(0, 0, 0, 'YXZ');
+document.addEventListener('mousemove', e => {
+  if (!isLocked) return;
+  euler.y -= e.movementX * 0.002;
+  euler.x = Math.max(-Math.PI/2.5, Math.min(Math.PI/2.5, euler.x - e.movementY * 0.002));
+  camera.quaternion.setFromEuler(euler);
+});
+
+// ─── MOVEMENT & COLLISION ─────────────────────────────────────────────────────
+const keys = {};
+document.addEventListener('keydown', e => { keys[e.code] = true; });
+document.addEventListener('keyup',   e => { keys[e.code] = false; });
+
+const playerBox = new THREE.Box3();
+const PLAYER_R = 0.35;
+const PLAYER_H = 1.8;
+
+function checkCollision(pos) {
+  playerBox.min.set(pos.x - PLAYER_R, pos.y, pos.z - PLAYER_R);
+  playerBox.max.set(pos.x + PLAYER_R, pos.y + PLAYER_H, pos.z + PLAYER_R);
+  return colliders.some(c => playerBox.intersectsBox(c));
+}
+
+const vel = new THREE.Vector3();
+const dir = new THREE.Vector3();
+const clock = new THREE.Clock();
+
+// ─── ROOM LABEL ───────────────────────────────────────────────────────────────
+const rooms = [
+  { label:'Main Hall',    min:[-10,-1,-10], max:[10,35,10] },
+  { label:'Entrance',     min:[-6,-1,-24],  max:[6,15,-12] },
+  { label:'Gallery A',    min:[-9,-1,11],   max:[9,25,29] },
+  { label:'Gallery B',    min:[11,-1,-9],   max:[29,25,9] },
+  { label:'Gallery C',    min:[-9,-1,-45],  max:[9,25,-27] },
+  { label:'Gallery D',    min:[-29,-1,-9],  max:[-11,25,9] },
+];
+const labelEl = document.getElementById('roomLabel');
+function updateRoomLabel(pos) {
+  for (const r of rooms) {
+    if (pos.x>r.min[0]&&pos.x<r.max[0]&&pos.z>r.min[2]&&pos.z<r.max[2]) {
+      labelEl.textContent = r.label; return;
+    }
+  }
+  labelEl.textContent = '';
+}
+
+// ─── RENDER LOOP ─────────────────────────────────────────────────────────────
+function animate() {
+  requestAnimationFrame(animate);
+  const dt = Math.min(clock.getDelta(), 0.05);
+
+  if (isLocked) {
+    const speed = 6;
+    dir.set(0, 0, 0);
+    if (keys['KeyW'] || keys['ArrowUp'])    dir.z -= 1;
+    if (keys['KeyS'] || keys['ArrowDown'])  dir.z += 1;
+    if (keys['KeyA'] || keys['ArrowLeft'])  dir.x -= 1;
+    if (keys['KeyD'] || keys['ArrowRight']) dir.x += 1;
+    dir.normalize();
+
+    // Transform dir to camera yaw
+    const yaw = new THREE.Euler(0, euler.y, 0, 'YXZ');
+    dir.applyEuler(yaw);
+
+    const next = camera.position.clone();
+
+    // Try X
+    const tryX = next.clone();
+    tryX.x += dir.x * speed * dt;
+    if (!checkCollision(tryX)) next.x = tryX.x;
+
+    // Try Z
+    const tryZ = next.clone();
+    tryZ.z += dir.z * speed * dt;
+    if (!checkCollision(tryZ)) next.z = tryZ.z;
+
+    camera.position.copy(next);
+    camera.position.y = 1.7; // lock to floor height
+
+    updateRoomLabel(camera.position);
+  }
+
+  renderer.render(scene, camera);
+}
+animate();
+
+// ─── START BUTTON ─────────────────────────────────────────────────────────────
+document.getElementById('startBtn').addEventListener('click', () => {
+  domEl.requestPointerLock();
+});
+
+document.addEventListener('keydown', e => {
+  if (e.code === 'Escape' && isLocked) document.exitPointerLock();
+});
+</script>
+</body>
+</html>
