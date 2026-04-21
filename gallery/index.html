@@ -342,9 +342,10 @@
   }
   .nav-overlay a::before {
     content: '/';
-    opacity: 0.35;
+    opacity: 1;
     margin-right: 7px;
     font-size: 10px;
+    font-weight: 700;
     letter-spacing: 0;
     flex-shrink: 0;
   }
@@ -390,46 +391,62 @@
   .img-win95 {
     width: 100%;
     background: var(--win95-bg);
-    /* Authentic Win95 3D border: light top-left, dark bottom-right, outer then inner */
-    border: 2px solid #353535;
-    outline: 2px solid rgba(246,241,218,0.55);
-    outline-offset: -4px;
+    /* Win95 outer frame: warm light grey, 3D bevel */
+    border: 2px solid #AFA191;
+    border-top-color: #d4cdc4;
+    border-left-color: #d4cdc4;
+    border-right-color: #7a7068;
+    border-bottom-color: #7a7068;
     box-shadow:
-      -1px -1px 0 0 rgba(246,241,218,0.28),
-      2px 2px 0 0 #7a6f52,
-      0 4px 18px rgba(53,53,53,0.10);
-    padding: 0;
+      1px 1px 0 0 #3d3830,
+      -1px -1px 0 0 #e8e2d6,
+      0 5px 22px rgba(53,53,53,0.12);
+    padding: 3px 3px 0 3px;
     overflow: hidden;
     will-change: transform;
     position: relative;
   }
 
-  /* Title bar of the painting window */
+  /* Title bar of the painting window — Win95 style:
+     light outer bar, dark inner active-title rect, buttons sit inside */
   .img-win95-titlebar {
     display: flex; align-items: center; justify-content: space-between;
-    height: 20px;
-    background: #5D5143;
-    padding: 0 2px 0 5px;
-    margin-bottom: 0;
+    height: 24px;
+    background: #AFA191;
+    padding: 2px 2px 2px 3px;
+    margin-bottom: 3px;
     user-select: none;
     flex-shrink: 0;
+    gap: 3px;
   }
+
+  /* Dark active-title inner rect — holds text */
+  .img-win95-titlebar-inner {
+    flex: 1;
+    height: 100%;
+    background: #5D5143;
+    display: flex; align-items: center;
+    padding: 0 6px;
+    overflow: hidden;
+    min-width: 0;
+  }
+
   .img-win95-titlebar-text {
     font-family: 'DotGothic16', monospace;
     font-size: 8px; font-weight: 700;
     color: #f6f1da;
     letter-spacing: 0.12em; text-transform: uppercase;
     overflow: hidden; white-space: nowrap; text-overflow: ellipsis;
-    flex: 1;
     line-height: 1;
   }
   .img-win95-titlebar-btns {
     display: flex; gap: 2px; flex-shrink: 0; align-items: center;
+    height: 100%;
   }
 
-  /* ── Authentic Win95 window buttons — grey with 3D bevel ── */
+  /* ── Win95 window buttons — warm light grey with 3D bevel ── */
   .img-win95-btn {
-    width: 18px; height: 16px;
+    width: 18px; height: 100%;
     background: #AFA191;
     border-top: 2px solid #d4cdc4;
     border-left: 2px solid #d4cdc4;
@@ -484,7 +501,7 @@
   .work-title-row { display: flex; align-items: baseline; gap: 0; flex-wrap: wrap; }
   .work-title {
     font-family: 'Alkhemikal', serif;
-    font-size: 20px; font-weight: 400;
+    font-size: 22px; font-weight: 400;
     letter-spacing: 0.04em; opacity: 0.80;
     line-height: 1.2;
   }
@@ -528,9 +545,9 @@
   .purchase-btn {
     height: 28px;
     display: flex; align-items: center;
-    padding: 0 10px; gap: 5px;
-    font-family: 'DotGothic16', monospace;
-    font-size: 8px; font-weight: 700; letter-spacing: 0.10em; text-transform: uppercase;
+    padding: 0 12px; gap: 5px;
+    font-family: 'Alkhemikal', serif;
+    font-size: 15px; font-weight: 400; letter-spacing: 0.04em;
     color: #000000;
     background: #AFA191;
     border-top: 2px solid #d4cdc4;
@@ -665,63 +682,20 @@
 
   @keyframes fadeIn { to { opacity: 1; } }
 
-  /* ── Shimmer wave ── */
-  @keyframes shimmer {
-    0%   { background-position: -200% center; }
-    100% { background-position:  200% center; }
-  }
-
-  .skeleton {
-    background:
-      linear-gradient(
-        105deg,
-        rgba(53,53,53,0.055) 0%,
-        rgba(53,53,53,0.055) 35%,
-        rgba(246,241,218,0.72) 50%,
-        rgba(53,53,53,0.055) 65%,
-        rgba(53,53,53,0.055) 100%
-      );
-    background-size: 200% 100%;
-    animation: shimmer 1.7s ease-in-out infinite;
-  }
-
-  /* Image placeholder shimmer */
+  /* Image placeholder — static warm fill, no shimmer */
   .img-placeholder.loading {
-    animation: none; /* remove old pulse */
+    background: #cfc8b0 !important;
   }
   .img-placeholder.loading::after {
-    content: '';
-    position: absolute; inset: 0;
-    background:
-      linear-gradient(
-        105deg,
-        rgba(53,53,53,0.055) 0%,
-        rgba(53,53,53,0.055) 35%,
-        rgba(246,241,218,0.72) 50%,
-        rgba(53,53,53,0.055) 65%,
-        rgba(53,53,53,0.055) 100%
-      );
-    background-size: 200% 100%;
-    animation: shimmer 1.7s ease-in-out infinite;
+    display: none;
   }
 
-  /* Footer skeleton lines */
+  /* Footer skeleton lines — static, no shimmer */
   .skel-line {
     display: inline-block;
-    border-radius: 3px;
-    background:
-      linear-gradient(
-        105deg,
-        rgba(53,53,53,0.07) 0%,
-        rgba(53,53,53,0.07) 35%,
-        rgba(246,241,218,0.8) 50%,
-        rgba(53,53,53,0.07) 65%,
-        rgba(53,53,53,0.07) 100%
-      );
-    background-size: 200% 100%;
-    animation: shimmer 1.7s ease-in-out infinite;
-    animation-delay: var(--sd, 0s);
-    color: transparent; /* hide text while shimmering */
+    border-radius: 0;
+    background: rgba(53,53,53,0.10);
+    color: transparent;
     user-select: none;
   }
 
@@ -1341,7 +1315,7 @@ function render(scrollTop = false) {
 
       const btn = document.createElement('button');
       btn.className = 'purchase-btn';
-      btn.innerHTML = `Purchase <span class="pb-arrow">▾</span>`;
+      btn.innerHTML = `Purchase`;
 
       const dropdown = document.createElement('div');
       dropdown.className = 'purchase-dropdown';
@@ -1398,8 +1372,13 @@ function render(scrollTop = false) {
     btns.innerHTML = `<span class="img-win95-btn" title="Minimize">${crossSVG}</span><span class="img-win95-btn" title="Maximize">${crossSVG}</span><span class="img-win95-btn btn-close" title="Close">${crossSVG}</span>`;
     btns.addEventListener('click', e => e.stopPropagation());
 
-    titlebar.appendChild(titleText);
     titlebar.appendChild(btns);
+
+    const titleInner = document.createElement('div');
+    titleInner.className = 'img-win95-titlebar-inner';
+    titleInner.appendChild(titleText);
+
+    titlebar.insertBefore(titleInner, btns);
     win95.appendChild(titlebar);
     win95.appendChild(wrap);
 
