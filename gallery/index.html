@@ -11,13 +11,13 @@
 <style>
   @font-face {
     font-family: 'Alkhemikal';
-    src: url('Alkhemikal.ttf') format('truetype');
+    src: url('../fonts/Alkhemikal.ttf') format('truetype');
     font-weight: normal;
     font-style: normal;
   }
   @font-face {
     font-family: 'DotGothic16';
-    src: url('DotGothic16-Regular.ttf') format('truetype');
+    src: url('../fonts/DotGothic16-Regular.ttf') format('truetype');
     font-weight: normal;
     font-style: normal;
   }
@@ -47,6 +47,20 @@
   }
 
   html { background: #5D5143; }
+
+  /* Fill overscroll/rubber-band area above viewport in Telegram & in-app browsers.
+     body::before sits fixed above the page, same color as the header bar. */
+  body::before {
+    content: '';
+    position: fixed;
+    top: -100vh;
+    left: 0; right: 0;
+    height: 100vh;
+    background: #5D5143;
+    z-index: 9001;
+    pointer-events: none;
+  }
+
   body {
     background: #e8e0c4;
     font-family: 'DotGothic16', monospace;
