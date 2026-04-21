@@ -1,0 +1,1614 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Gallery | NOEASY</title>
+<link rel="icon" type="image/png" href="IMG_8091.png">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Fondamento:ital@0;1&family=Space+Mono:wght@400;700&display=swap');
+  *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+  :root { --bg: #f6f1da; --text: #353535; }
+
+  html, body {
+    background: var(--bg);
+    font-family: 'Space Mono', monospace;
+    color: var(--text);
+    overflow-x: hidden;
+    overscroll-behavior: none;
+  }
+  html { background: var(--bg); }
+
+  #grain {
+    position: fixed;
+    top: -60px; bottom: -60px; left: -10px; right: -10px;
+    z-index: 9998;
+    pointer-events: none;
+  }
+
+  /* ── Win95 CSS variables — warm parchment palette ── */
+  :root {
+    --win95-bg: #e8e0c4;
+    --win95-border-light: #f6f1da;
+    --win95-border-mid: #b8ac88;
+    --win95-border-dark: #7a6f52;
+    --win95-border-darkest: #353535;
+    --win95-titlebar: #353535;
+    --win95-title-text: #f6f1da;
+  }
+
+  header {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 500;
+    padding: calc(36px + env(safe-area-inset-top, 0px)) 16px 0;
+    display: flex; align-items: flex-start; justify-content: center;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.7s ease;
+  }
+  header.visible {
+    opacity: 1;
+  }
+  header > * { pointer-events: auto; }
+
+  /* Win95 window frame */
+  .header-pill {
+    display: flex; align-items: center;
+    position: relative;
+    width: 100%; max-width: min(820px, 92vw);
+    height: 44px;
+    border-radius: 0;
+    background: var(--win95-bg);
+    border-top: 2px solid var(--win95-border-light);
+    border-left: 2px solid var(--win95-border-light);
+    border-right: 2px solid var(--win95-border-darkest);
+    border-bottom: 2px solid var(--win95-border-darkest);
+    box-shadow: 1px 1px 0 var(--win95-border-dark), inset 1px 1px 0 rgba(255,255,255,0.8);
+    overflow: visible;
+  }
+
+  /* Title bar strip at top of pill — solid Win95 style */
+  .header-pill::before {
+    content: 'noeasy.xyz/gallery';
+    position: absolute;
+    top: -26px; left: 0; right: 36px;
+    height: 22px; line-height: 22px;
+    background: var(--win95-titlebar);
+    color: var(--win95-title-text);
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    padding-left: 7px;
+    border-top: 2px solid var(--win95-border-light);
+    border-left: 2px solid var(--win95-border-light);
+  }
+
+  /* Folder icon button on the right of titlebar */
+  .header-pill::after {
+    content: '📁';
+    position: absolute;
+    top: -26px; right: 0;
+    width: 34px; height: 22px; line-height: 22px;
+    background: var(--win95-titlebar);
+    text-align: center;
+    font-size: 12px;
+    border-top: 2px solid var(--win95-border-light);
+    border-right: 2px solid var(--win95-border-darkest);
+  }
+  .pill-divider {
+    width: 2px; height: 26px; flex-shrink: 0;
+    background: var(--win95-border-dark);
+    border-right: 1px solid var(--win95-border-light);
+    align-self: center;
+  }
+
+  /* Generic pill button — Win95 raised button */
+  .pill-btn {
+    height: calc(100% - 10px); display: flex; align-items: center;
+    padding: 0 12px; gap: 6px; margin: 0 3px;
+    font-family: 'Space Mono', monospace;
+    font-size: 9px; font-weight: 400;
+    letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--text);
+    background: var(--win95-bg);
+    border-top: 2px solid var(--win95-border-light);
+    border-left: 2px solid var(--win95-border-light);
+    border-right: 2px solid var(--win95-border-darkest);
+    border-bottom: 2px solid var(--win95-border-darkest);
+    cursor: pointer; opacity: 0.85; user-select: none;
+    transition: opacity 0.1s;
+    -webkit-tap-highlight-color: transparent;
+    white-space: nowrap; flex-shrink: 0;
+  }
+  .pill-btn:hover  { opacity: 1; }
+  .pill-btn:active,
+  .pill-btn.open   {
+    border-top: 2px solid var(--win95-border-darkest);
+    border-left: 2px solid var(--win95-border-darkest);
+    border-right: 2px solid var(--win95-border-light);
+    border-bottom: 2px solid var(--win95-border-light);
+    padding-top: 2px; padding-left: 14px;
+  }
+
+  /* Active dot inside filter btn */
+  .filter-dot {
+    width: 5px; height: 5px; border-radius: 0;
+    background: var(--text); opacity: 0;
+    transition: opacity 0.2s; flex-shrink: 0;
+  }
+  .filter-dot.visible { opacity: 0.7; }
+
+  /* Count — grows to fill middle */
+  .pill-center {
+    position: absolute; left: 50%; transform: translateX(-50%);
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    gap: 1px; pointer-events: none; user-select: none;
+    white-space: nowrap;
+  }
+  .pill-section {
+    font-family: 'Fondamento', serif;
+    font-size: 14px; letter-spacing: 0.08em;
+    opacity: 0.9; white-space: nowrap; color: var(--text);
+  }
+  .pill-count {
+    font-family: 'Space Mono', monospace;
+    font-size: 8px; letter-spacing: 0.2em; opacity: 0.4;
+    white-space: nowrap;
+  }
+
+  /* ── Filter dropdown panel — Win95 window ── */
+  .filter-panel {
+    position: fixed;
+    top: 74px;
+    left: 50%; transform: translateX(-50%);
+    z-index: 499;
+    max-width: min(820px, 92vw);
+    width: 92vw;
+    border-radius: 0;
+    padding: 0 4px;
+    background: var(--win95-bg);
+    border-top: 2px solid var(--win95-border-light);
+    border-left: 2px solid var(--win95-border-light);
+    border-right: 2px solid var(--win95-border-darkest);
+    border-bottom: 2px solid var(--win95-border-darkest);
+    box-shadow: 1px 1px 0 var(--win95-border-dark);
+
+    opacity: 0; pointer-events: none;
+    transform: translateX(-50%) translateY(-6px) scale(0.98);
+    transform-origin: top center;
+    transition:
+      opacity 0.3s cubic-bezier(0.16,1,0.3,1),
+      transform 0.3s cubic-bezier(0.16,1,0.3,1);
+  }
+  .filter-panel.open {
+    opacity: 1; pointer-events: auto;
+    transform: translateX(-50%) translateY(0) scale(1);
+  }
+
+  /* ── Burger inside pill — Win95 button ── */
+  .sword-btn {
+    height: calc(100% - 10px);
+    padding: 0 12px; margin: 0 3px;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    gap: 4px;
+    background: var(--win95-bg);
+    border-top: 2px solid var(--win95-border-light);
+    border-left: 2px solid var(--win95-border-light);
+    border-right: 2px solid var(--win95-border-darkest);
+    border-bottom: 2px solid var(--win95-border-darkest);
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    transition: none;
+    flex-shrink: 0;
+  }
+  .sword-btn:active,
+  .sword-btn.open {
+    border-top: 2px solid var(--win95-border-darkest);
+    border-left: 2px solid var(--win95-border-darkest);
+    border-right: 2px solid var(--win95-border-light);
+    border-bottom: 2px solid var(--win95-border-light);
+  }
+
+  .sword-btn .line {
+    position: relative; height: 2px; background: var(--text);
+    border-radius: 0; opacity: 0.75;
+    transition: transform 0.38s cubic-bezier(0.16,1,0.3,1),
+                opacity 0.25s,
+                width 0.38s cubic-bezier(0.16,1,0.3,1);
+  }
+  .sword-btn .line:nth-child(1) { width: 18px; }
+  .sword-btn .line:nth-child(2) { width: 18px; }
+  .sword-btn .line:nth-child(3) { width: 18px; }
+  .sword-btn .line::after {
+    content: ''; position: absolute; right: 3px; top: 50%;
+    transform: translateY(-50%); width: 2px; height: 6px;
+    background: var(--text); border-radius: 0;
+    opacity: 0; transition: opacity 0.25s;
+  }
+  .sword-btn.open .line { opacity: 1; }
+  .sword-btn.open .line:nth-child(1) { width: 18px; transform: translateY(6px) rotate(45deg); }
+  .sword-btn.open .line:nth-child(2) { opacity: 0; transform: scaleX(0); }
+  .sword-btn.open .line:nth-child(3) { width: 18px; transform: translateY(-6px) rotate(-45deg); }
+  .sword-btn.open .line::after { opacity: 0.55; }
+
+  /* Burger lines — consistent size on all screens */
+  @media (min-width: 681px) {
+    .sword-btn { gap: 4px; padding: 0 14px; }
+    .sword-btn .line { height: 2px; opacity: 0.75; }
+    .sword-btn .line:nth-child(1) { width: 18px; }
+    .sword-btn .line:nth-child(2) { width: 18px; }
+    .sword-btn .line:nth-child(3) { width: 18px; }
+    .sword-btn .line::after { height: 6px; width: 2px; opacity: 0; }
+    .sword-btn.open .line:nth-child(1) { width: 17px; transform: translateY(6px) rotate(45deg); }
+    .sword-btn.open .line:nth-child(3) { width: 17px; transform: translateY(-6px) rotate(-45deg); }
+    .sword-btn.open .line::after { opacity: 0.55; }
+  }
+
+  /* ── Burger wrap — anchor point for dropdown ── */
+  .burger-wrap {
+    position: relative;
+    height: 100%;
+    display: flex; align-items: center;
+  }
+
+  /* ── Nav overlay — Win95 context menu ── */
+  .nav-overlay {
+    position: absolute;
+    top: calc(100% + 4px);
+    right: 0;
+    z-index: 8999;
+    min-width: 160px;
+    border-radius: 0;
+    padding: 3px;
+    background: var(--win95-bg);
+    border-top: 2px solid var(--win95-border-light);
+    border-left: 2px solid var(--win95-border-light);
+    border-right: 2px solid var(--win95-border-darkest);
+    border-bottom: 2px solid var(--win95-border-darkest);
+    box-shadow: 2px 2px 0 var(--win95-border-dark);
+    display: flex; flex-direction: column;
+    opacity: 0; pointer-events: none;
+    transform: translateY(-4px);
+    transform-origin: top right;
+    transition:
+      opacity 0.15s ease,
+      transform 0.15s ease;
+  }
+  .nav-overlay.open {
+    opacity: 1; pointer-events: auto;
+    transform: translateY(0);
+  }
+  .nav-overlay a {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px; font-weight: 300; letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: var(--text); text-decoration: none;
+    padding: 10px 14px;
+    opacity: 0.6; position: relative;
+    transition: background 0.05s, opacity 0.1s;
+    border-radius: 0;
+  }
+  .nav-overlay a::after { display: none; }
+  .nav-overlay a:hover { background: var(--win95-border-darkest); color: var(--win95-title-text); opacity: 1; }
+  .nav-overlay a + a { border-top: 1px solid var(--win95-border-mid); border-radius: 0; }
+  .nav-overlay a:first-child { border-radius: 0; }
+  .nav-overlay a.current { opacity: 0.9; font-weight: 700; }
+
+  /* Landscape: images show fully, no clipping */
+  @media (orientation: landscape) {
+    .img-wrap img, .img-placeholder { height: auto; }
+  }
+
+  /* ── Feed ── */
+  main {
+    padding: calc(110px + env(safe-area-inset-top, 0px)) 0 100px;
+    display: flex; flex-direction: column; align-items: center;
+  }
+
+  .work-item {
+    width: min(820px, 88vw, 68vh);
+    padding: 48px 0;
+    display: flex; flex-direction: column; align-items: center;
+    position: relative; z-index: 20;
+  }
+
+  /* Footer rises after image */
+  .work-footer {
+    width: 100%; margin-top: 13px;
+    display: flex; justify-content: space-between; align-items: baseline;
+    gap: 12px; position: relative; z-index: 20;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity 0.5s ease, transform 0.5s cubic-bezier(0.16,1,0.3,1);
+  }
+  .work-item.visible .work-footer {
+    opacity: 1; transform: none;
+    transition-delay: 0.35s;
+  }
+
+  /* ── Win95 window frame around paintings ── */
+  .img-win95 {
+    width: 100%;
+    background: var(--win95-bg);
+    border-top: 2px solid var(--win95-border-light);
+    border-left: 2px solid var(--win95-border-light);
+    border-right: 2px solid var(--win95-border-darkest);
+    border-bottom: 2px solid var(--win95-border-darkest);
+    box-shadow: 2px 2px 0 var(--win95-border-dark);
+    padding: 0 0 4px 0;
+  }
+
+  /* Title bar of the painting window */
+  .img-win95-titlebar {
+    display: flex; align-items: center; justify-content: space-between;
+    height: 18px;
+    background: var(--win95-titlebar);
+    padding: 0 3px 0 6px;
+    margin-bottom: 3px;
+    user-select: none;
+  }
+  .img-win95-titlebar-text {
+    font-family: 'Space Mono', monospace;
+    font-size: 8px; font-weight: 700;
+    color: var(--win95-title-text);
+    letter-spacing: 0.14em; text-transform: uppercase;
+    overflow: hidden; white-space: nowrap; text-overflow: ellipsis;
+    flex: 1;
+  }
+  .img-win95-titlebar-btns {
+    display: flex; gap: 2px; flex-shrink: 0;
+  }
+  .img-win95-btn {
+    width: 14px; height: 12px;
+    background: var(--win95-bg);
+    border-top: 1.5px solid var(--win95-border-light);
+    border-left: 1.5px solid var(--win95-border-light);
+    border-right: 1.5px solid var(--win95-border-darkest);
+    border-bottom: 1.5px solid var(--win95-border-darkest);
+    font-family: 'Space Mono', monospace;
+    font-size: 7px; line-height: 1;
+    color: var(--text);
+    display: flex; align-items: center; justify-content: center;
+    cursor: default;
+  }
+
+  /* The actual img-wrap sits inside .img-win95 */
+  .img-win95 .img-wrap {
+    margin: 0 4px 0 4px;
+  }
+
+  /* Image wrap — curtain reveal */
+  .img-wrap {
+    z-index: 15;
+    width: 100%; overflow: hidden; cursor: zoom-in;
+    position: relative; z-index: 20;
+    clip-path: inset(0 0 100% 0);
+    transition: clip-path 0.75s cubic-bezier(0.77, 0, 0.18, 1);
+  }
+  .work-item.visible .img-wrap {
+    clip-path: inset(0 0 0% 0);
+  }
+
+  /* Inner image — JS owns transform for parallax; CSS handles blur only */
+  .img-wrap img,
+  .img-placeholder {
+    width: 100%; display: block;
+    height: auto; object-fit: fill;
+    will-change: transform, filter;
+    filter: blur(5px);
+    transition: filter 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+    user-select: none; -webkit-user-drag: none;
+  }
+  .work-item.visible .img-wrap img,
+  .work-item.visible .img-wrap .img-placeholder {
+    filter: blur(0px);
+  }
+  .img-placeholder { position: relative; }
+
+  .work-left { display: flex; flex-direction: column; gap: 5px; }
+  .work-title-row { display: flex; align-items: center; gap: 10px; }
+  .work-title {
+    font-family: 'Fondamento', serif;
+    font-size: 20px; font-weight: 400;
+    letter-spacing: 0.04em; opacity: 0.72;
+  }
+  .work-year {
+    font-family: 'Space Mono', monospace;
+    font-size: 9px; font-weight: 300;
+    letter-spacing: 0.16em; opacity: calc(0.28 * var(--secondary-fade, 1));
+    white-space: nowrap;
+  }
+  .work-tags { display: flex; align-items: center; gap: 0; flex-wrap: wrap; }
+  .work-tag {
+    font-family: 'Space Mono', monospace;
+    font-size: 8px; font-weight: 300;
+    letter-spacing: 0.22em; text-transform: uppercase; opacity: calc(0.28 * var(--secondary-fade, 1));
+  }
+  .work-tag-sep {
+    font-family: 'Space Mono', monospace;
+    font-size: 7px; opacity: calc(0.18 * var(--secondary-fade, 1));
+    margin: 0 7px; line-height: 1;
+    user-select: none;
+  }
+
+  /* Right side of footer */
+  .work-right {
+    display: flex; flex-direction: column;
+    align-items: flex-end; gap: 6px; flex-shrink: 0;
+  }
+
+  /* ── Purchase Win95 button ── */
+  .purchase-wrap { position: relative; }
+  .purchase-btn {
+    height: 30px;
+    display: flex; align-items: center;
+    padding: 0 12px; gap: 6px;
+    font-family: 'Space Mono', monospace;
+    font-size: 8px; font-weight: 300; letter-spacing: 0.22em; text-transform: uppercase;
+    color: var(--text);
+    background: var(--win95-bg);
+    border-top: 2px solid var(--win95-border-light);
+    border-left: 2px solid var(--win95-border-light);
+    border-right: 2px solid var(--win95-border-darkest);
+    border-bottom: 2px solid var(--win95-border-darkest);
+    border-radius: 0;
+    cursor: pointer; opacity: 0.9;
+    transition: none;
+    -webkit-tap-highlight-color: transparent;
+    white-space: nowrap; user-select: none;
+    box-shadow: 1px 1px 0 var(--win95-border-dark);
+  }
+  .purchase-btn:hover  { opacity: 1; }
+  .purchase-btn:active,
+  .purchase-btn.open   {
+    opacity: 1;
+    border-top: 2px solid var(--win95-border-darkest);
+    border-left: 2px solid var(--win95-border-darkest);
+    border-right: 2px solid var(--win95-border-light);
+    border-bottom: 2px solid var(--win95-border-light);
+    box-shadow: none;
+    padding-left: 14px; padding-top: 2px;
+  }
+  .purchase-btn .pb-arrow {
+    font-size: 10px; opacity: 0.7;
+    transition: transform 0.25s cubic-bezier(0.16,1,0.3,1);
+    display: inline-block;
+  }
+  .purchase-btn.open .pb-arrow { transform: rotate(180deg); }
+
+  /* Purchase dropdown — Win95 context menu */
+  .purchase-dropdown {
+    position: absolute;
+    bottom: calc(100% + 4px);
+    right: 0;
+    min-width: 140px;
+    border-radius: 0;
+    padding: 3px;
+    background: var(--win95-bg);
+    border-top: 2px solid var(--win95-border-light);
+    border-left: 2px solid var(--win95-border-light);
+    border-right: 2px solid var(--win95-border-darkest);
+    border-bottom: 2px solid var(--win95-border-darkest);
+    box-shadow: 2px 2px 0 var(--win95-border-dark);
+    opacity: 0; pointer-events: none;
+    transform: translateY(5px);
+    transform-origin: bottom right;
+    transition: opacity 0.15s ease, transform 0.15s ease;
+    z-index: 100;
+  }
+  .purchase-dropdown.open {
+    opacity: 1; pointer-events: auto;
+    transform: translateY(0);
+  }
+  .purchase-dropdown a {
+    display: block;
+    font-family: 'Space Mono', monospace;
+    font-size: 9px; font-weight: 300; letter-spacing: 0.22em; text-transform: uppercase;
+    color: var(--text); text-decoration: none;
+    padding: 8px 12px;
+    opacity: 0.7; border-radius: 0;
+    transition: background 0.05s;
+    white-space: nowrap;
+  }
+  .purchase-dropdown a + a { border-top: 1px solid var(--win95-border-mid); border-radius: 0; }
+  .purchase-dropdown a:first-child { border-radius: 0; }
+  .purchase-dropdown a:hover { background: var(--win95-border-darkest); color: var(--win95-title-text); opacity: 1; }
+
+  /* Thin separator between works */
+  .sep {
+    width: min(820px, 88vw, 68vh);
+    height: 1px;
+    background: var(--text); opacity: 0.07;
+    position: relative; z-index: 20;
+  }
+
+  /* Empty state */
+  #empty-state {
+    display: none; padding: 100px 0;
+    font-size: 10px; font-weight: 300;
+    letter-spacing: 0.32em; text-transform: uppercase;
+    opacity: 0.28; text-align: center;
+  }
+
+  /* Lightbox */
+  #lightbox {
+    position: fixed; inset: 0; z-index: 9999;
+    background: rgba(14,12,10,0.94);
+    backdrop-filter: blur(4px);
+    display: flex; align-items: center; justify-content: center;
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.45s ease;
+    cursor: zoom-out;
+  }
+  #lightbox.open { opacity: 1; pointer-events: auto; }
+  #lb-img {
+    max-width: 92vw; max-height: 92vh;
+    object-fit: contain; display: block;
+    transform: scale(0.94) translateY(14px);
+    transition: transform 0.56s cubic-bezier(0.16,1,0.3,1);
+    user-select: none; -webkit-user-drag: none;
+  }
+  #lightbox.open #lb-img { transform: none; }
+  #lb-close {
+    position: absolute; top: 30px; right: 40px;
+    font-family: 'Space Mono', monospace;
+    font-size: 9px; font-weight: 400;
+    letter-spacing: 0.28em; text-transform: uppercase;
+    cursor: pointer; transition: opacity 0.2s; user-select: none;
+    background: var(--win95-bg); color: var(--text); opacity: 0.85;
+    border-top: 2px solid var(--win95-border-light);
+    border-left: 2px solid var(--win95-border-light);
+    border-right: 2px solid var(--win95-border-darkest);
+    border-bottom: 2px solid var(--win95-border-darkest);
+    padding: 4px 12px;
+    box-shadow: 1px 1px 0 var(--win95-border-dark);
+  }
+  #lb-close:hover { opacity: 1; }
+  #lb-close:active {
+    border-top: 2px solid var(--win95-border-darkest);
+    border-left: 2px solid var(--win95-border-darkest);
+    border-right: 2px solid var(--win95-border-light);
+    border-bottom: 2px solid var(--win95-border-light);
+    box-shadow: none;
+  }
+  #lb-title {
+    position: absolute; bottom: 34px; left: 50%;
+    transform: translateX(-50%);
+    font-family: 'Space Mono', monospace;
+    font-size: 9px; font-weight: 300;
+    letter-spacing: 0.28em; text-transform: uppercase;
+    color: #f6f1da; opacity: 0.35; white-space: nowrap;
+    pointer-events: none;
+  }
+
+  @keyframes fadeIn { to { opacity: 1; } }
+
+  /* ── Shimmer wave ── */
+  @keyframes shimmer {
+    0%   { background-position: -200% center; }
+    100% { background-position:  200% center; }
+  }
+
+  .skeleton {
+    background:
+      linear-gradient(
+        105deg,
+        rgba(53,53,53,0.055) 0%,
+        rgba(53,53,53,0.055) 35%,
+        rgba(246,241,218,0.72) 50%,
+        rgba(53,53,53,0.055) 65%,
+        rgba(53,53,53,0.055) 100%
+      );
+    background-size: 200% 100%;
+    animation: shimmer 1.7s ease-in-out infinite;
+  }
+
+  /* Image placeholder shimmer */
+  .img-placeholder.loading {
+    animation: none; /* remove old pulse */
+  }
+  .img-placeholder.loading::after {
+    content: '';
+    position: absolute; inset: 0;
+    background:
+      linear-gradient(
+        105deg,
+        rgba(53,53,53,0.055) 0%,
+        rgba(53,53,53,0.055) 35%,
+        rgba(246,241,218,0.72) 50%,
+        rgba(53,53,53,0.055) 65%,
+        rgba(53,53,53,0.055) 100%
+      );
+    background-size: 200% 100%;
+    animation: shimmer 1.7s ease-in-out infinite;
+  }
+
+  /* Footer skeleton lines */
+  .skel-line {
+    display: inline-block;
+    border-radius: 3px;
+    background:
+      linear-gradient(
+        105deg,
+        rgba(53,53,53,0.07) 0%,
+        rgba(53,53,53,0.07) 35%,
+        rgba(246,241,218,0.8) 50%,
+        rgba(53,53,53,0.07) 65%,
+        rgba(53,53,53,0.07) 100%
+      );
+    background-size: 200% 100%;
+    animation: shimmer 1.7s ease-in-out infinite;
+    animation-delay: var(--sd, 0s);
+    color: transparent; /* hide text while shimmering */
+    user-select: none;
+  }
+
+  /* Error placeholder */
+  .img-error {
+    display: flex; align-items: center; justify-content: center;
+    background: rgba(53,53,53,0.04) !important;
+  }
+  .img-error-label {
+    font-size: 8px; letter-spacing: 0.28em; text-transform: uppercase;
+    color: var(--text); opacity: 0.2; user-select: none;
+  }
+
+  /* ── Custom cursor ── */
+  #cursor {
+    position: fixed; z-index: 9999; pointer-events: none;
+    width: 28px; height: 28px; border-radius: 50%;
+    border: 1px solid rgba(53,53,53,0.35);
+    transform: translate(-50%, -50%) scale(0);
+    transition: transform 0.22s cubic-bezier(0.34,1.56,0.64,1),
+                opacity 0.2s, border-color 0.2s;
+    opacity: 0;
+    mix-blend-mode: multiply;
+  }
+  #cursor.active { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+  #cursor.pressed { transform: translate(-50%, -50%) scale(0.6); }
+
+  /* ── Scroll progress ── */
+  #scroll-progress {
+    position: fixed; left: 0; top: 0; bottom: 0;
+    width: 2px; z-index: 400; pointer-events: none;
+  }
+  #scroll-progress::after {
+    content: '';
+    position: absolute; left: 0; top: 0;
+    width: 100%;
+    height: var(--progress, 0%);
+    background: var(--text);
+    opacity: 0.15;
+    transition: height 0.1s linear;
+  }
+
+  /* ── Card hover: footer brightens ── */
+  .work-item:hover .work-title { opacity: 0.92; }
+  .work-item:hover .work-tag   { opacity: 0.45; }
+  .work-item:hover .work-year  { opacity: 0.45; }
+  .work-item:hover .work-link  { opacity: 0.55; }
+
+  /* ── Scanlines overlay ── */
+  #scanlines {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    z-index: 9;
+    pointer-events: none;
+    background: repeating-linear-gradient(
+      to bottom,
+      transparent 0px,
+      transparent 2px,
+      rgba(0,0,0,0.03) 2px,
+      rgba(0,0,0,0.03) 4px
+    );
+  }
+
+  /* ── View toggle button — Win95 style ── */
+  .view-btn {
+    height: calc(100% - 10px); padding: 0 12px; margin: 0 3px;
+    display: flex; align-items: center; justify-content: center;
+    background: var(--win95-bg);
+    border-top: 2px solid var(--win95-border-light);
+    border-left: 2px solid var(--win95-border-light);
+    border-right: 2px solid var(--win95-border-darkest);
+    border-bottom: 2px solid var(--win95-border-darkest);
+    border-radius: 0; cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    transition: none; opacity: 1; flex-shrink: 0;
+  }
+  .view-btn:hover  { opacity: 1; }
+  .view-btn:active,
+  .view-btn.grid-active {
+    border-top: 2px solid var(--win95-border-darkest);
+    border-left: 2px solid var(--win95-border-darkest);
+    border-right: 2px solid var(--win95-border-light);
+    border-bottom: 2px solid var(--win95-border-light);
+  }
+
+  /* Icon: one square — filled (feed) ↔ crossed (grid) */
+  .view-btn-inner {
+    position: relative;
+    width: 13px; height: 13px;
+    border: 1.5px solid rgba(53,53,53,0.75);
+    border-radius: 0;
+    flex-shrink: 0;
+  }
+  /* Fill — visible in feed mode */
+  .view-btn-inner::before {
+    content: ''; position: absolute; inset: 0;
+    background: var(--text); opacity: 0.6;
+    transition: opacity 0.15s;
+  }
+  /* Cross — visible in grid mode */
+  .view-btn-inner::after {
+    content: ''; position: absolute; inset: 0;
+    background:
+      linear-gradient(var(--text), var(--text)) center / 1.5px 100% no-repeat,
+      linear-gradient(var(--text), var(--text)) center / 100% 1.5px no-repeat;
+    opacity: 0;
+    transition: opacity 0.15s;
+  }
+  .view-btn.grid-active .view-btn-inner::before { opacity: 0; }
+  .view-btn.grid-active .view-btn-inner::after  { opacity: 0.7; }
+  /* ── Grid mode — explicit columns ── */
+  main.grid-mode {
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 12px;
+    padding-left: 16px; padding-right: 16px;
+  }
+  main.grid-mode .sep { display: none; }
+
+  .grid-col {
+    flex: 1; max-width: 420px;
+    display: flex; flex-direction: column;
+    will-change: transform;
+    position: relative; z-index: 20;
+  }
+  /* Second column drops down — creates the layered offset */
+  .grid-col[data-col="1"] { margin-top: 160px; }
+  /* Third column (desktop) at medium offset */
+  .grid-col[data-col="2"] { margin-top: 80px; }
+
+  main.grid-mode .work-item {
+    width: 100%; padding: 10px 0 20px;
+  }
+
+  /* Hover: image lifts slightly */
+  main.grid-mode .img-wrap {
+    transition: transform 0.38s cubic-bezier(0.16,1,0.3,1);
+    overflow: hidden;
+  }
+  main.grid-mode .work-item:hover .img-wrap {
+    transform: scale(1.02) translateY(-3px);
+  }
+
+  @media (max-width: 600px) {
+    main.grid-mode { gap: 8px; padding: 0 10px; }
+    .grid-col[data-col="1"] { margin-top: 100px; }
+  }
+
+  /* ── Lightbox nav arrows — Win95 buttons ── */
+  .lb-arrow {
+    position: absolute; top: 50%; transform: translateY(-50%);
+    font-family: 'Space Mono', monospace;
+    font-size: 10px; font-weight: 400; letter-spacing: 0.22em;
+    text-transform: uppercase; color: var(--text);
+    background: var(--win95-bg);
+    border-top: 2px solid var(--win95-border-light);
+    border-left: 2px solid var(--win95-border-light);
+    border-right: 2px solid var(--win95-border-darkest);
+    border-bottom: 2px solid var(--win95-border-darkest);
+    box-shadow: 1px 1px 0 var(--win95-border-dark);
+    opacity: 0.8; cursor: pointer; user-select: none;
+    transition: opacity 0.15s; padding: 6px 14px;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .lb-arrow:hover { opacity: 1; }
+  .lb-arrow:active {
+    border-top: 2px solid var(--win95-border-darkest);
+    border-left: 2px solid var(--win95-border-darkest);
+    border-right: 2px solid var(--win95-border-light);
+    border-bottom: 2px solid var(--win95-border-light);
+    box-shadow: none;
+  }
+  #lb-prev { left: 20px; }
+  #lb-next { right: 20px; }
+  .lb-arrow.hidden { opacity: 0 !important; pointer-events: none; }
+
+  /* ── Mobile: horizontal scroll in filter groups ── */
+  @media (max-width: 680px) {
+    .filter-group {
+      flex-wrap: nowrap; overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+      gap: 0 16px;
+    }
+    .filter-group::-webkit-scrollbar { display: none; }
+    .filter-group-label { min-width: 70px; }
+
+    /* Pill: tighter padding on mobile */
+    header { padding: 36px 10px 0; }
+    .pill-btn { padding: 0 10px; font-size: 8px; letter-spacing: 0.16em; }
+    .pill-count { font-size: 7px; letter-spacing: 0.18em; }
+    .pill-section { font-size: 11px; }
+    .sword-btn { padding: 0 12px; }
+    .view-btn { padding: 0 12px; }
+    .view-btn + .pill-divider, .view-btn { display: none; }
+
+    /* Fix filter-dot spacing on mobile */
+    #filter-toggle { gap: 0; }
+    .filter-dot { max-width: 0; overflow: hidden; margin: 0; }
+    .filter-dot.visible { max-width: 4px; margin-left: 5px; }
+  }
+
+  /* ── Filter groups inside pill panel ── */
+  .filter-panel {
+    flex-direction: column;
+    gap: 0;
+    padding: 6px 8px 8px;
+  }
+  .filter-group {
+    display: flex; flex-wrap: wrap; align-items: center;
+    gap: 0 20px; padding: 10px 12px;
+  }
+  .filter-group + .filter-group {
+    border-top: 1px solid var(--win95-border-mid);
+  }
+  .filter-group-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 8px; font-weight: 500;
+    letter-spacing: 0.32em; text-transform: uppercase;
+    opacity: 0.45; min-width: 90px; flex-shrink: 0;
+  }
+
+  .tag-btn {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px; font-weight: 300;
+    letter-spacing: 0.26em; text-transform: uppercase;
+    color: var(--text); background: none; border: none;
+    cursor: pointer; padding: 5px 0;
+    position: relative; opacity: 0.38;
+    transition: opacity 0.22s; user-select: none;
+    white-space: nowrap;
+  }
+  .tag-btn::after {
+    content: '';
+    position: absolute; bottom: 2px; left: 0;
+    width: 0; height: 1px;
+    background: var(--text); opacity: 0.55;
+    transition: width 0.35s cubic-bezier(0.4,0,0.2,1);
+  }
+  .tag-btn.active { opacity: 0.88; font-weight: 500; }
+  .tag-btn.active::after { width: 100%; }
+  .tag-btn:hover:not(.active) { opacity: 0.55; }
+
+  /* Availability group hidden when Commission active */
+  .filter-group.avail-hidden {
+    opacity: 0.28; pointer-events: none;
+  }
+  .filter-group.avail-hidden .tag-btn { cursor: default; }
+
+  @media (max-width: 680px) {
+    header { padding: 36px 12px 0; }
+    .filter-panel { top: 86px; width: 88vw; }
+    #lb-close { top: 18px; right: 18px; }
+    main { padding: 100px 0 160px; }
+  }
+
+  @media(max-width:600px) { /* mobile reserved */ }
+
+  </style>
+</head>
+<body>
+
+<canvas id="grain"></canvas>
+<div id="scanlines"></div>
+<div id="cursor"></div>
+<div id="scroll-progress"></div>
+
+<script>(function(){
+  document.addEventListener('DOMContentLoaded', function() {
+    const btn = document.getElementById('swordBtn');
+    const overlay = document.getElementById('navOverlay');
+    btn.addEventListener('click', function(e){
+      e.stopPropagation();
+      btn.classList.toggle('open');
+      overlay.classList.toggle('open');
+      if (navigator.vibrate) navigator.vibrate(6);
+    });
+    overlay.querySelectorAll('a').forEach(a => {
+      a.addEventListener('click', function(){
+        btn.classList.remove('open');
+        overlay.classList.remove('open');
+      });
+    });
+    document.addEventListener('click', function(e){
+      if (!overlay.contains(e.target) && e.target !== btn) {
+        btn.classList.remove('open');
+        overlay.classList.remove('open');
+      }
+    });
+    document.addEventListener('keydown', function(e){
+      if(e.key === 'Escape'){
+        btn.classList.remove('open');
+        overlay.classList.remove('open');
+      }
+    });
+  });
+})();</script>
+
+
+<header>
+  <div class="header-pill">
+    <button class="pill-btn filter-toggle" id="filter-toggle">
+      Filter <span class="filter-dot" id="filter-dot"></span>
+    </button>
+    <div class="pill-divider"></div>
+    <button class="pill-btn sort-btn" id="sort-btn">Newest ↓</button>
+    <span class="pill-center">
+      <span class="pill-section">Gallery</span>
+      <span class="pill-count" id="work-count"></span>
+    </span>
+    <div style="flex:1"></div>
+    <div class="pill-divider"></div>
+    <button class="view-btn" id="grid-btn" title="Toggle view" aria-label="Toggle view">
+      <div class="view-btn-inner"></div>
+    </button>
+    <div class="pill-divider"></div>
+    <div class="burger-wrap">
+      <button class="sword-btn" id="swordBtn" aria-label="Menu">
+        <span class="line"></span>
+        <span class="line"></span>
+        <span class="line"></span>
+      </button>
+      <div class="nav-overlay" id="navOverlay">
+        <a href="/">Home</a>
+        <a href="/about/">About</a>
+        <a href="/gallery/" class="current">Gallery</a>
+        <a href="https://noeasy.xyz/links/">Links</a>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="filter-panel" id="filter-panel">
+  <div class="filter-group">
+    <span class="filter-group-label">Style</span>
+    <button class="tag-btn style-btn active" data-tag="all">All</button>
+    <button class="tag-btn style-btn" data-tag="Graphic">Graphic</button>
+    <button class="tag-btn style-btn" data-tag="Digital Painting">Digital Painting</button>
+    <button class="tag-btn style-btn" data-tag="Mixed">Mixed</button>
+  </div>
+  <div class="filter-group">
+    <span class="filter-group-label">Work Type</span>
+    <button class="tag-btn type-btn active" data-tag="all">All</button>
+    <button class="tag-btn type-btn" data-tag="Personal">Personal</button>
+    <button class="tag-btn type-btn" data-tag="Commission">Commission</button>
+  </div>
+  <div class="filter-group" id="avail-group">
+    <span class="filter-group-label">Availability</span>
+    <button class="tag-btn avail-btn active" data-tag="all">All</button>
+    <button class="tag-btn avail-btn" data-tag="Crypto Art">Crypto Art</button>
+    <button class="tag-btn avail-btn" data-tag="Print">Print</button>
+  </div>
+</div>
+
+<main id="feed"></main>
+<div id="empty-state">Nothing here yet</div>
+
+<div id="lightbox">
+  <span id="lb-close">Close</span>
+  <span class="lb-arrow" id="lb-prev">←</span>
+  <img id="lb-img" src="" alt="">
+  <span class="lb-arrow" id="lb-next">→</span>
+  <span id="lb-title"></span>
+</div>
+
+<script>
+document.addEventListener('contextmenu', e => e.preventDefault());
+
+// ── Custom cursor ──
+const cursor = document.getElementById('cursor');
+document.addEventListener('mousemove', e => {
+  cursor.style.left = e.clientX + 'px';
+  cursor.style.top  = e.clientY + 'px';
+});
+function setCursorActive(on) { cursor.classList.toggle('active', on); }
+document.addEventListener('mousedown', () => cursor.classList.add('pressed'));
+document.addEventListener('mouseup',   () => cursor.classList.remove('pressed'));
+
+// ── Scroll progress ──
+const progressEl = document.getElementById('scroll-progress');
+window.addEventListener('scroll', () => {
+  const max = document.documentElement.scrollHeight - window.innerHeight;
+  const pct = max > 0 ? Math.round(window.scrollY / max * 100) : 0;
+  progressEl.style.setProperty('--progress', pct + '%');
+}, { passive: true });
+
+// ── Grain ──
+const grain = document.getElementById('grain');
+const gc = grain.getContext('2d');
+let gw, gh;
+function resizeGrain() {
+  gw = grain.width  = window.innerWidth  + 20;
+  gh = grain.height = window.innerHeight + 120;
+}
+resizeGrain(); window.addEventListener('resize', resizeGrain);
+(function tick() {
+  const img = gc.createImageData(gw, gh);
+  for (let i = 0; i < img.data.length; i += 4) {
+    const v = Math.random() * 255 | 0;
+    img.data[i] = img.data[i+1] = img.data[i+2] = v;
+    img.data[i+3] = Math.random() * 26 | 0;
+  }
+  gc.putImageData(img, 0, 0);
+  requestAnimationFrame(tick);
+})();
+
+// ── DATA ──
+let works = [];
+
+async function loadWorks() {
+  try {
+    const r = await fetch('works.json');
+    if (!r.ok) throw new Error('not found');
+    works = await r.json();
+  } catch(e) {
+    // Fallback: empty gallery
+    works = [];
+  }
+  render();
+}
+
+// ── State ──
+let sortAsc     = false;
+let activeStyle = 'all';
+let activeType  = 'all';
+let activeAvail = new Set(['all']);
+let savedAvail  = new Set(['all']);
+let isGrid      = false;
+let lbIndex     = -1;
+let currentList = [];
+
+function fmtDate(dateStr, yearFallback) {
+  if (dateStr) {
+    const d = new Date(dateStr + 'T00:00:00');
+    if (!isNaN(d)) return d.toLocaleString('en-US', { month: 'long', year: 'numeric' });
+  }
+  return yearFallback || '';
+}
+
+function getSorted() {
+  return [...works].sort((a, b) => {
+    const da = a.date || String(a.year || 0);
+    const db = b.date || String(b.year || 0);
+    return sortAsc ? da.localeCompare(db) : db.localeCompare(da);
+  });
+}
+function getFiltered() {
+  return getSorted().filter(w => {
+    const styleOk = activeStyle === 'all' || w.style === activeStyle;
+    const typeOk  = activeType  === 'all' || w.workType === activeType;
+    const availOk = activeType === 'Commission'
+      || activeAvail.has('all')
+      || w.avail.some(a => activeAvail.has(a));
+    return styleOk && typeOk && availOk;
+  });
+}
+
+// ── Counter animation ──
+const wcEl  = document.getElementById('work-count');
+function animateCount(text) {
+  if (wcEl.textContent === text) return;
+  wcEl.style.cssText = 'opacity:0;transform:translateY(-6px) scale(0.9);transition:none';
+  requestAnimationFrame(() => {
+    wcEl.textContent = text;
+    requestAnimationFrame(() => {
+      wcEl.style.cssText = 'opacity:0.26;transform:none;transition:opacity 0.4s cubic-bezier(0.16,1,0.3,1),transform 0.4s cubic-bezier(0.16,1,0.3,1)';
+    });
+  });
+}
+
+// ── Haptic feedback ──
+function haptic(style = 'light') {
+  if (window.navigator && window.navigator.vibrate) {
+    const pat = style === 'light' ? 6 : style === 'medium' ? 12 : [8, 40, 8];
+    window.navigator.vibrate(pat);
+  }
+}
+
+// ── Render ──
+const feed  = document.getElementById('feed');
+const empty = document.getElementById('empty-state');
+let observer;
+
+function render(scrollTop = false) {
+  if (observer) observer.disconnect();
+  feed.innerHTML = '';
+  currentList = getFiltered();
+  animateCount(currentList.length + (currentList.length === 1 ? ' work' : ' works'));
+  feed.classList.toggle('grid-mode', isGrid);
+
+  if (scrollTop && window.scrollY > 0) {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  if (!currentList.length) { empty.style.display = 'block'; return; }
+  empty.style.display = 'none';
+
+  // Grid mode: distribute into explicit column wrappers
+  const numCols = isGrid ? (window.innerWidth >= 1100 ? 3 : 2) : 1;
+  let colEls = [];
+  if (isGrid) {
+    for (let c = 0; c < numCols; c++) {
+      const col = document.createElement('div');
+      col.className = 'grid-col';
+      col.dataset.col = c;
+      feed.appendChild(col);
+      colEls.push(col);
+    }
+  }
+
+  currentList.forEach((work, i) => {
+    const item = document.createElement('div');
+    item.className = 'work-item';
+    // tag with column index for parallax
+    if (isGrid) item.dataset.col = i % numCols;
+
+    const wrap = document.createElement('div');
+    wrap.className = 'img-wrap';
+
+    if (work.src) {
+      const img = document.createElement('img');
+      img.alt = work.title;
+      // NOTE: no loading="lazy" — clip-path hides the element so lazy never triggers
+
+      let retries = 0;
+      const MAX_RETRIES = 3;
+      let retryTimer = null;
+
+      img.addEventListener('error', () => {
+        if (retryTimer) return;
+        if (retries < MAX_RETRIES) {
+          retries++;
+          const delay = 800 * Math.pow(2, retries - 1);
+          retryTimer = setTimeout(() => {
+            retryTimer = null;
+            img.src = work.src + `?r=${retries}`;
+          }, delay);
+        } else {
+          const fb = document.createElement('div');
+          fb.className = 'img-placeholder img-error';
+          fb.style.paddingTop = '100%';
+          fb.innerHTML = '<span class="img-error-label">image unavailable</span>';
+          img.replaceWith(fb);
+        }
+      });
+
+      img.src = work.src;
+
+      wrap.appendChild(img);
+      wrap.addEventListener('click', () => { lbIndex = i; openLb(); });
+      wrap.addEventListener('mouseenter', () => setCursorActive(true));
+      wrap.addEventListener('mouseleave', () => setCursorActive(false));
+    } else {
+      const ph = document.createElement('div');
+      ph.className = 'img-placeholder loading';
+      ph.style.background = work.ph.color;
+      ph.style.paddingTop = work.ph.ratio;
+      setTimeout(() => ph.classList.remove('loading'), 2500);
+      wrap.appendChild(ph);
+      wrap.style.cursor = 'default';
+    }
+
+    const footer = document.createElement('div');
+    footer.className = 'work-footer';
+
+    const tagParts = [work.style, work.workType];
+    if (work.workType === 'Personal' && work.avail.length) tagParts.push(...work.avail);
+    const tagsHtml = tagParts.map(t => `<span class="work-tag">${t}</span>`)
+      .join('<span class="work-tag-sep">×</span>');
+
+    const left = document.createElement('div');
+    left.className = 'work-left';
+
+    const titleRow = document.createElement('div');
+    titleRow.className = 'work-title-row';
+    titleRow.innerHTML = `<span class="work-title">${work.title}</span><span class="work-year">${fmtDate(work.date, work.year)}</span>`;
+    left.appendChild(titleRow);
+
+    const tagsEl = document.createElement('div');
+    tagsEl.className = 'work-tags';
+    tagsEl.innerHTML = tagsHtml;
+    left.appendChild(tagsEl);
+
+    // Shimmer skeleton overlay for footer lines (visible while image loads)
+    if (work.src) {
+      const skelOverlay = document.createElement('div');
+      skelOverlay.className = 'skel-overlay';
+      skelOverlay.style.cssText = 'position:absolute;inset:0;display:flex;flex-direction:column;gap:7px;pointer-events:none;';
+      skelOverlay.innerHTML = `
+        <div style="display:flex;gap:10px;align-items:center;">
+          <span class="skel-line" style="--sd:0s;width:38%;height:14px;"></span>
+          <span class="skel-line" style="--sd:0.1s;width:18%;height:8px;border-radius:2px;"></span>
+        </div>
+        <span class="skel-line" style="--sd:0.18s;width:55%;height:8px;border-radius:2px;"></span>`;
+
+      footer.style.position = 'relative';
+      left.style.opacity = '0';
+      footer.appendChild(skelOverlay);
+
+      const imgEl = wrap.querySelector('img');
+      const revealFooter = () => {
+        skelOverlay.style.transition = 'opacity 0.4s ease';
+        skelOverlay.style.opacity = '0';
+        left.style.transition = 'opacity 0.4s ease 0.1s';
+        left.style.opacity = '1';
+        setTimeout(() => skelOverlay.remove(), 450);
+      };
+
+      if (imgEl) {
+        if (imgEl.complete && imgEl.naturalWidth > 0) {
+          // Already cached — reveal immediately
+          revealFooter();
+        } else {
+          imgEl.addEventListener('load',  revealFooter, { once: true });
+          imgEl.addEventListener('error', revealFooter, { once: true });
+          setTimeout(revealFooter, 5000); // safety net
+        }
+      } else {
+        // No img found — just show the text
+        revealFooter();
+      }
+    }
+
+    const right = document.createElement('div');
+    right.className = 'work-right';
+
+    if (work.links && work.links.length) {
+      const wrap = document.createElement('div');
+      wrap.className = 'purchase-wrap';
+
+      const btn = document.createElement('button');
+      btn.className = 'purchase-btn';
+      btn.innerHTML = `Purchase <span class="pb-arrow">▾</span>`;
+
+      const dropdown = document.createElement('div');
+      dropdown.className = 'purchase-dropdown';
+      work.links.forEach(lk => {
+        const a = document.createElement('a');
+        a.href = lk.url; a.textContent = lk.label;
+        a.target = '_blank'; a.rel = 'noopener';
+        a.addEventListener('click', e => { e.stopPropagation(); dropdown.classList.remove('open'); btn.classList.remove('open'); });
+        dropdown.appendChild(a);
+      });
+
+      btn.addEventListener('click', e => {
+        e.stopPropagation();
+        const open = dropdown.classList.toggle('open');
+        btn.classList.toggle('open', open);
+        haptic('light');
+      });
+      document.addEventListener('click', () => { dropdown.classList.remove('open'); btn.classList.remove('open'); });
+
+      wrap.appendChild(btn); wrap.appendChild(dropdown);
+      right.appendChild(wrap);
+    }
+
+    footer.appendChild(left); footer.appendChild(right);
+
+    // ── Win95 window wrapper around the painting ──
+    const win95 = document.createElement('div');
+    win95.className = 'img-win95';
+
+    const titlebar = document.createElement('div');
+    titlebar.className = 'img-win95-titlebar';
+
+    const titleText = document.createElement('span');
+    titleText.className = 'img-win95-titlebar-text';
+    titleText.textContent = work.title.toUpperCase() + (work.year ? '  [' + work.year + ']' : '');
+
+    const btns = document.createElement('div');
+    btns.className = 'img-win95-titlebar-btns';
+    btns.innerHTML = `<span class="img-win95-btn">_</span><span class="img-win95-btn">□</span><span class="img-win95-btn">✕</span>`;
+    btns.addEventListener('click', e => e.stopPropagation());
+
+    titlebar.appendChild(titleText);
+    titlebar.appendChild(btns);
+    win95.appendChild(titlebar);
+    win95.appendChild(wrap);
+
+    item.appendChild(win95); item.appendChild(footer);
+
+    if (isGrid) {
+      // stagger reveal by column — col 1 slightly later
+      const colIdx = i % numCols;
+      item.style.transitionDelay = `${colIdx * 0.06}s`;
+      colEls[colIdx].appendChild(item);
+    } else {
+      feed.appendChild(item);
+    }
+
+    if (!isGrid && i < currentList.length - 1) {
+      const sep = document.createElement('div');
+      sep.className = 'sep'; feed.appendChild(sep);
+    }
+  });
+
+  // Scroll reveal + ambient
+  const items = feed.querySelectorAll('.work-item');
+  observer = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        observer.unobserve(e.target);
+        updateAmbient(e.target);
+      }
+    });
+  }, { threshold: 0.01, rootMargin: '0px 0px 60px 0px' });
+  items.forEach(el => observer.observe(el));
+  initParallax();
+}
+
+// ── Ambient background color ──
+function blendWithBg(hex, amount) {
+  const m = hex.match(/\d+/g);
+  if (!m || m.length < 3) return;
+  const [r, g, b] = m.map(Number);
+  const base = [246, 241, 218];
+  const out = base.map((c, i) => Math.round(c * (1 - amount) + [r,g,b][i] * amount));
+  return `rgb(${out[0]},${out[1]},${out[2]})`;
+}
+let ambientTimer;
+function updateAmbient(item) {
+  const ph  = item.querySelector('.img-placeholder');
+  const img = item.querySelector('img');
+  let color = null;
+  if (ph) {
+    color = ph.style.background;
+  } else if (img && img.complete) {
+    try {
+      const c = document.createElement('canvas'); c.width = c.height = 1;
+      const ctx = c.getContext('2d'); ctx.drawImage(img, 0, 0, 1, 1);
+      const [r,g,b] = ctx.getImageData(0,0,1,1).data;
+      color = `${r},${g},${b}`;
+    } catch(_) {}
+  }
+  if (!color) return;
+  clearTimeout(ambientTimer);
+  ambientTimer = setTimeout(() => {
+    const blended = blendWithBg(color, 0.055);
+    if (blended) {
+      document.body.style.transition = 'background-color 3s ease';
+      document.body.style.backgroundColor = blended;
+    }
+  }, 400);
+}
+
+// ── Parallax + reveal rise ──
+// Per-column scroll speed factors for grid mode (col0=slowest, col1=fastest, col2=mid)
+const COL_FACTORS = [0.063, 0.135, 0.090];
+const FEED_FACTOR = 0.099;
+let rafId = null;
+const revealStart = new WeakMap();
+
+function initParallax() {
+  if (rafId) cancelAnimationFrame(rafId);
+  const DURATION = 900;
+  const OFFSET = 32;
+
+  function tick() {
+    const vh = window.innerHeight;
+    const now = performance.now();
+
+    feed.querySelectorAll('.work-item').forEach(item => {
+      const wrap = item.querySelector('.img-wrap');
+      const inner = wrap && wrap.firstElementChild;
+      if (!inner) return;
+
+      const colIdx = parseInt(item.dataset.col ?? '-1');
+      const factor = isGrid && colIdx >= 0 ? COL_FACTORS[colIdx] ?? COL_FACTORS[0] : FEED_FACTOR;
+
+      const rect = wrap.getBoundingClientRect();
+      const parallax = ((rect.top + rect.height / 2) - vh / 2) * factor;
+
+      if (!item.classList.contains('visible')) {
+        inner.style.transform = `translateY(${OFFSET}px) scale(1.06)`;
+        revealStart.delete(item);
+        return;
+      }
+
+      if (!revealStart.has(item)) revealStart.set(item, now);
+      const t = Math.min((now - revealStart.get(item)) / DURATION, 1);
+      const ease = 1 - Math.pow(1 - t, 3);
+      const rise = OFFSET * (1 - ease);
+      const scale = 1.06 - 0.06 * ease;
+      inner.style.transform = `translateY(${rise + parallax}px) scale(${scale})`;
+
+      // ── Internal element micro-parallax & edge opacity fade ──
+      const footer = item.querySelector('.work-footer');
+      if (!footer) return;
+
+      const itemRect = item.getBoundingClientRect();
+      const dist = (itemRect.top + itemRect.height / 2) - vh / 2;
+      const normDist = Math.min(Math.abs(dist) / (vh * 0.5), 1);
+
+      // Fade secondary elements softly near viewport edges; blended in via ease so no snap on reveal
+      const fade = 1 - normDist * 0.40 * ease;
+      item.style.setProperty('--secondary-fade', fade.toFixed(3));
+
+      // Each element drifts at a slightly different scroll rate → layered depth
+      // Factors are tiny so the effect is subtle; ease smooths in the parallax during reveal
+      const titleEl = footer.querySelector('.work-title');
+      const yearEl  = footer.querySelector('.work-year');
+      const tagsEl  = footer.querySelector('.work-tags');
+      const rightEl = footer.querySelector('.work-right');
+
+      if (titleEl) titleEl.style.transform = `translateY(${(dist * 0.004 * ease).toFixed(2)}px)`;
+      if (yearEl)  yearEl.style.transform  = `translateY(${(dist * 0.009 * ease).toFixed(2)}px)`;
+      if (tagsEl)  tagsEl.style.transform  = `translateY(${(dist * 0.015 * ease).toFixed(2)}px)`;
+      if (rightEl) rightEl.style.transform = `translateY(${(dist * 0.004 * ease).toFixed(2)}px)`;
+    });
+
+    rafId = requestAnimationFrame(tick);
+  }
+
+  rafId = requestAnimationFrame(tick);
+}
+
+// ── Grid toggle ──
+const gridBtn = document.getElementById('grid-btn');
+gridBtn.addEventListener('click', () => {
+  isGrid = !isGrid;
+  gridBtn.classList.toggle('grid-active', isGrid);
+  gridBtn.title = isGrid ? 'Switch to feed' : 'Switch to grid';
+  haptic('light'); render();
+});
+
+// ── Filter panel ──
+const filterPanel  = document.getElementById('filter-panel');
+const filterToggle = document.getElementById('filter-toggle');
+const filterDot    = document.getElementById('filter-dot');
+const availGroup   = document.getElementById('avail-group');
+
+filterToggle.addEventListener('click', e => {
+  e.stopPropagation();
+  const open = filterPanel.classList.toggle('open');
+  filterToggle.classList.toggle('open', open);
+  haptic('light');
+});
+document.addEventListener('click', e => {
+  if (!filterPanel.contains(e.target) && e.target !== filterToggle) {
+    filterPanel.classList.remove('open');
+    filterToggle.classList.remove('open');
+  }
+});
+
+function updateFilterDot() {
+  filterDot.classList.toggle('visible',
+    activeStyle !== 'all' || activeType !== 'all' || !activeAvail.has('all'));
+}
+function updateAvailGroup() {
+  availGroup.classList.toggle('avail-hidden', activeType === 'Commission');
+}
+
+filterPanel.addEventListener('click', e => {
+  const btn = e.target.closest('.tag-btn');
+  if (!btn) return;
+
+  if (btn.classList.contains('style-btn')) {
+    activeStyle = btn.dataset.tag;
+    filterPanel.querySelectorAll('.style-btn').forEach(b =>
+      b.classList.toggle('active', b.dataset.tag === activeStyle));
+  }
+  if (btn.classList.contains('type-btn')) {
+    const prev = activeType; activeType = btn.dataset.tag;
+    if (activeType === 'Commission' && prev !== 'Commission') {
+      savedAvail = new Set(activeAvail);
+    } else if (activeType !== 'Commission' && prev === 'Commission') {
+      activeAvail = new Set(savedAvail);
+      filterPanel.querySelectorAll('.avail-btn').forEach(b =>
+        b.classList.toggle('active',
+          activeAvail.has(b.dataset.tag) || (activeAvail.has('all') && b.dataset.tag === 'all')));
+    }
+    filterPanel.querySelectorAll('.type-btn').forEach(b =>
+      b.classList.toggle('active', b.dataset.tag === activeType));
+    updateAvailGroup();
+  }
+  if (btn.classList.contains('avail-btn') && activeType !== 'Commission') {
+    const tag = btn.dataset.tag;
+    if (tag === 'all') { activeAvail = new Set(['all']); }
+    else {
+      activeAvail.delete('all');
+      activeAvail.has(tag) ? activeAvail.delete(tag) : activeAvail.add(tag);
+      if (!activeAvail.size) activeAvail.add('all');
+    }
+    filterPanel.querySelectorAll('.avail-btn').forEach(b =>
+      b.classList.toggle('active',
+        activeAvail.has(b.dataset.tag) || (activeAvail.has('all') && b.dataset.tag === 'all')));
+  }
+  updateFilterDot(); haptic('light'); render(true);
+});
+
+// ── Sort ──
+document.getElementById('sort-btn').addEventListener('click', function() {
+  sortAsc = !sortAsc;
+  this.textContent = sortAsc ? 'Oldest ↑' : 'Newest ↓';
+  haptic('light'); render(true);
+});
+
+// ── Lightbox ──
+const lb      = document.getElementById('lightbox');
+const lbImg   = document.getElementById('lb-img');
+const lbTitle = document.getElementById('lb-title');
+const lbPrev  = document.getElementById('lb-prev');
+const lbNext  = document.getElementById('lb-next');
+
+function openLb(idx) {
+  if (idx !== undefined) lbIndex = idx;
+  const work = currentList[lbIndex];
+  if (!work || !work.src) return;
+  lbImg.style.opacity = '0';
+  lbImg.src = work.src; lbImg.alt = work.title;
+  lbTitle.textContent = work.title;
+  lbImg.onload = () => { lbImg.style.opacity = '1'; };
+  lb.classList.add('open');
+  document.body.style.overflow = 'hidden';
+  // Show/hide arrows — only for works that have images
+  const hasPrev = currentList.slice(0, lbIndex).some(w => w.src);
+  const hasNext = currentList.slice(lbIndex + 1).some(w => w.src);
+  lbPrev.classList.toggle('hidden', !hasPrev);
+  lbNext.classList.toggle('hidden', !hasNext);
+}
+
+function lbStep(dir) {
+  let idx = lbIndex + dir;
+  while (idx >= 0 && idx < currentList.length) {
+    if (currentList[idx].src) { lbIndex = idx; openLb(); return; }
+    idx += dir;
+  }
+}
+
+function closeLb() {
+  lb.classList.remove('open');
+  document.body.style.overflow = '';
+  setTimeout(() => { lbImg.src = ''; lbTitle.textContent = ''; }, 420);
+}
+
+lb.addEventListener('click', e => { if (e.target === lb) closeLb(); });
+document.getElementById('lb-close').addEventListener('click', closeLb);
+lbPrev.addEventListener('click', e => { e.stopPropagation(); lbStep(-1); });
+lbNext.addEventListener('click', e => { e.stopPropagation(); lbStep(1); });
+document.addEventListener('keydown', e => {
+  if (!lb.classList.contains('open')) return;
+  if (e.key === 'Escape')     closeLb();
+  if (e.key === 'ArrowLeft')  lbStep(-1);
+  if (e.key === 'ArrowRight') lbStep(1);
+});
+
+// ── Lightbox swipe ──
+let lbTouchX = null;
+lb.addEventListener('touchstart', e => {
+  lbTouchX = e.touches[0].clientX;
+}, { passive: true });
+lb.addEventListener('touchend', e => {
+  if (lbTouchX === null) return;
+  const dx = e.changedTouches[0].clientX - lbTouchX;
+  lbTouchX = null;
+  if (Math.abs(dx) < 40) return; // too short — ignore
+  haptic('light');
+  lbStep(dx < 0 ? 1 : -1);
+}, { passive: true });
+
+// ── Header always visible ──
+const headerEl = document.querySelector('header');
+setTimeout(() => headerEl.classList.add('visible'), 100);
+
+loadWorks();
+</script>
+</body>
+</html>
