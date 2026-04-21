@@ -1,0 +1,1677 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Gallery | NOEASY</title>
+<link rel="icon" type="image/png" href="IMG_8091.png">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Fondamento:ital@0;1&family=Space+Mono:wght@400;700&display=swap');
+  *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+  :root { --bg: #e8e0c4; --text: #353535; }
+
+  #grain {
+    position: fixed;
+    top: -60px; bottom: -60px; left: -10px; right: -10px;
+    z-index: 9998;
+    pointer-events: none;
+  }
+
+  /* ── Win95 CSS variables — warm parchment palette ── */
+  :root {
+    --win95-bg: #e8e0c4;
+    --win95-border-light: #f6f1da;
+    --win95-border-mid: #b8ac88;
+    --win95-border-dark: #7a6f52;
+    --win95-border-darkest: #353535;
+    --win95-titlebar: #5D5143;
+    --win95-titlebar-brown: #5D5143;
+    --win95-title-text: #f6f1da;
+    --header-titlebar-h: 22px;
+    --header-pill-h: 44px;
+    --header-total-h: calc(env(safe-area-inset-top, 0px) + var(--header-titlebar-h) + var(--header-pill-h));
+  }
+
+  html, body {
+    background: #e8e0c4;
+    font-family: 'Space Mono', monospace;
+    color: var(--text);
+    overflow-x: hidden;
+    overscroll-behavior: none;
+  }
+  html { background: #e8e0c4; }
+
+  header {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 500;
+    /* Fill safe-area + titlebar height above pill + pill itself */
+    padding: 0;
+    display: flex; flex-direction: column; align-items: stretch;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.7s ease;
+    /* Solid background covers the safe-area gap (Safari) */
+    background: var(--win95-titlebar-brown);
+  }
+  header.visible {
+    opacity: 1;
+  }
+  header > * { pointer-events: auto; }
+
+  /* Inner safe-area spacer — fills the notch gap on Safari */
+  .header-safe-top {
+    height: env(safe-area-inset-top, 0px);
+    background: var(--win95-titlebar-brown);
+    flex-shrink: 0;
+  }
+
+  /* Row that holds the titlebar strip + pill */
+  .header-inner {
+    display: flex; flex-direction: column; align-items: stretch;
+    width: 100%;
+  }
+
+  /* ── Full-width header titlebar strip ── */
+  .header-titlebar-strip {
+    width: 100%;
+    height: var(--header-titlebar-h);
+    background: #5D5143;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 0 0 8px;
+    flex-shrink: 0;
+    border-bottom: 1px solid #3e352d;
+  }
+  .header-titlebar-strip-text {
+    font-family: 'Space Mono', monospace;
+    font-size: 9px; font-weight: 700;
+    letter-spacing: 0.14em;
+    color: var(--win95-title-text);
+    line-height: 1;
+    white-space: nowrap;
+    overflow: hidden; text-overflow: ellipsis;
+    flex: 1;
+  }
+  /* Win95 window control buttons — hidden in header titlebar */
+  .header-win95-btns { display: none; }
+
+  /* Win95 window frame — full width toolbar */
+  .header-pill {
+    display: flex; align-items: center;
+    position: relative;
+    width: 100%;
+    height: var(--header-pill-h);
+    border-radius: 0;
+    background: #AFA191;
+    /* Authentic Win95 toolbar — no border, just the background */
+    border: none;
+    border-top: 1px solid #d4cdc4;
+    border-bottom: 2px solid #7a7068;
+    box-shadow: 0 1px 0 #404040;
+    overflow: visible;
+    padding: 0 4px;
+  }
+
+  /* Remove old pseudo-element titlebar */
+  .header-pill::before { display: none; }
+  .header-pill::after  { display: none; }
+
+  .pill-divider {
+    width: 2px; height: 26px; flex-shrink: 0;
+    background: #808080;
+    border-right: 1px solid #d4cdc4;
+    align-self: center;
+    margin: 0 2px;
+  }
+
+  /* Generic pill button — authentic Win95 3D button */
+  .pill-btn {
+    height: calc(100% - 10px); display: flex; align-items: center;
+    padding: 0 10px; gap: 6px; margin: 0 2px;
+    font-family: 'Space Mono', monospace;
+    font-size: 9px; font-weight: 700;
+    letter-spacing: 0.10em; text-transform: uppercase;
+    color: #000000;
+    background: #AFA191;
+    /* Win95 raised button: white top-left, dark bottom-right */
+    border-top: 2px solid #d4cdc4;
+    border-left: 2px solid #d4cdc4;
+    border-right: 2px solid #3d3830;
+    border-bottom: 2px solid #3d3830;
+    box-shadow: inset 1px 1px 0 #d4cdc4, inset -1px -1px 0 #7a7068;
+    cursor: pointer; user-select: none;
+    transition: none;
+    -webkit-tap-highlight-color: transparent;
+    white-space: nowrap; flex-shrink: 0;
+  }
+  .pill-btn:hover  { background: #bfb9b0; }
+  .pill-btn:active,
+  .pill-btn.open   {
+    /* Win95 pressed: borders invert */
+    border-top: 2px solid #3d3830;
+    border-left: 2px solid #3d3830;
+    border-right: 2px solid #d4cdc4;
+    border-bottom: 2px solid #d4cdc4;
+    box-shadow: inset 1px 1px 0 #7a7068;
+    padding-top: 2px; padding-left: 12px;
+  }
+
+  /* Active dot inside filter btn */
+  .filter-dot {
+    width: 5px; height: 5px; border-radius: 0;
+    background: var(--text); opacity: 0;
+    transition: opacity 0.2s; flex-shrink: 0;
+  }
+  .filter-dot.visible { opacity: 0.7; }
+
+  /* Count — grows to fill middle */
+  .pill-center {
+    position: absolute; left: 50%; transform: translateX(-50%);
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    gap: 1px; pointer-events: none; user-select: none;
+    white-space: nowrap;
+  }
+  .pill-section {
+    font-family: 'Fondamento', serif;
+    font-size: 14px; letter-spacing: 0.08em;
+    opacity: 0.9; white-space: nowrap; color: #000000;
+  }
+  .pill-count {
+    font-family: 'Space Mono', monospace;
+    font-size: 8px; letter-spacing: 0.2em; opacity: 0.5;
+    white-space: nowrap; color: #000000;
+  }
+
+  /* ── Filter dropdown panel — Win95 dialog ── */
+  .filter-panel {
+    position: fixed;
+    top: calc(var(--header-total-h));
+    left: 0;
+    right: 0;
+    z-index: 499;
+    padding: 0;
+    background: #AFA191;
+    border-top: 1px solid #d4cdc4;
+    border-bottom: 2px solid #3d3830;
+    box-shadow: 0 1px 0 #808080;
+
+    opacity: 0; pointer-events: none;
+    transform: translateY(-6px) scale(0.99);
+    transform-origin: top center;
+    transition:
+      opacity 0.3s cubic-bezier(0.16,1,0.3,1),
+      transform 0.3s cubic-bezier(0.16,1,0.3,1);
+  }
+  .filter-panel.open {
+    opacity: 1; pointer-events: auto;
+    transform: translateY(0) scale(1);
+  }
+
+  /* ── Burger inside pill — Win95 button ── */
+  .sword-btn {
+    height: calc(100% - 10px);
+    padding: 0 12px; margin: 0 2px;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    gap: 4px;
+    background: #AFA191;
+    border-top: 2px solid #d4cdc4;
+    border-left: 2px solid #d4cdc4;
+    border-right: 2px solid #3d3830;
+    border-bottom: 2px solid #3d3830;
+    box-shadow: inset 1px 1px 0 #d4cdc4, inset -1px -1px 0 #7a7068;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    transition: none;
+    flex-shrink: 0;
+  }
+  .sword-btn:active,
+  .sword-btn.open {
+    border-top: 2px solid #3d3830;
+    border-left: 2px solid #3d3830;
+    border-right: 2px solid #d4cdc4;
+    border-bottom: 2px solid #d4cdc4;
+    box-shadow: inset 1px 1px 0 #7a7068;
+  }
+
+  .sword-btn .line {
+    position: relative; height: 2px; background: #000000;
+    border-radius: 0; opacity: 0.8;
+    transition: transform 0.38s cubic-bezier(0.16,1,0.3,1),
+                opacity 0.25s,
+                width 0.38s cubic-bezier(0.16,1,0.3,1);
+  }
+  .sword-btn .line:nth-child(1) { width: 18px; }
+  .sword-btn .line:nth-child(2) { width: 18px; }
+  .sword-btn .line:nth-child(3) { width: 18px; }
+  .sword-btn .line::after {
+    content: ''; position: absolute; right: 3px; top: 50%;
+    transform: translateY(-50%); width: 2px; height: 6px;
+    background: #000000; border-radius: 0;
+    opacity: 0; transition: opacity 0.25s;
+  }
+  .sword-btn.open .line { opacity: 1; }
+  .sword-btn.open .line:nth-child(1) { width: 18px; transform: translateY(6px) rotate(45deg); }
+  .sword-btn.open .line:nth-child(2) { opacity: 0; transform: scaleX(0); }
+  .sword-btn.open .line:nth-child(3) { width: 18px; transform: translateY(-6px) rotate(-45deg); }
+  .sword-btn.open .line::after { opacity: 0.55; }
+
+  /* Burger lines — consistent size on all screens */
+  @media (min-width: 681px) {
+    .sword-btn { gap: 4px; padding: 0 14px; }
+    .sword-btn .line { height: 2px; opacity: 0.8; }
+    .sword-btn .line:nth-child(1) { width: 18px; }
+    .sword-btn .line:nth-child(2) { width: 18px; }
+    .sword-btn .line:nth-child(3) { width: 18px; }
+    .sword-btn .line::after { height: 6px; width: 2px; opacity: 0; }
+    .sword-btn.open .line:nth-child(1) { width: 17px; transform: translateY(6px) rotate(45deg); }
+    .sword-btn.open .line:nth-child(3) { width: 17px; transform: translateY(-6px) rotate(-45deg); }
+    .sword-btn.open .line::after { opacity: 0.55; }
+  }
+
+  /* ── Burger wrap — anchor point for dropdown ── */
+  .burger-wrap {
+    position: relative;
+    height: 100%;
+    display: flex; align-items: center;
+  }
+
+  /* ── Nav overlay — Win95 context menu ── */
+  .nav-overlay {
+    position: absolute;
+    top: calc(100% + 4px);
+    right: 0;
+    z-index: 8999;
+    min-width: 160px;
+    border-radius: 0;
+    padding: 2px;
+    background: #AFA191;
+    border-top: 2px solid #d4cdc4;
+    border-left: 2px solid #d4cdc4;
+    border-right: 2px solid #3d3830;
+    border-bottom: 2px solid #3d3830;
+    box-shadow: 2px 2px 0 #2a2520;
+    display: flex; flex-direction: column;
+    opacity: 0; pointer-events: none;
+    transform: translateY(-4px);
+    transform-origin: top right;
+    transition:
+      opacity 0.15s ease,
+      transform 0.15s ease;
+  }
+  .nav-overlay.open {
+    opacity: 1; pointer-events: auto;
+    transform: translateY(0);
+  }
+  .nav-overlay a {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px; font-weight: 700; letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #000000; text-decoration: none;
+    padding: 8px 12px;
+    position: relative;
+    transition: background 0.05s;
+    border-radius: 0;
+  }
+  .nav-overlay a::after { display: none; }
+  .nav-overlay a:hover { background: #000080; color: #ffffff; }
+  .nav-overlay a + a { border-top: 1px solid #7a7068; }
+  .nav-overlay a.current { font-weight: 700; background: #c8c2ba; }
+
+  /* Landscape: images show fully, no clipping */
+  @media (orientation: landscape) {
+    .img-wrap img, .img-placeholder { height: auto; }
+  }
+
+  /* ── Feed ── */
+  main {
+    padding: calc(var(--header-total-h) + 20px) 0 100px;
+    display: flex; flex-direction: column; align-items: center;
+  }
+
+  .work-item {
+    width: min(820px, 88vw, 68vh);
+    padding: 40px 0 36px;
+    display: flex; flex-direction: column; align-items: center;
+    position: relative; z-index: 20;
+  }
+
+  /* Footer rises after image */
+  .work-footer {
+    width: 100%; margin-top: 10px;
+    display: flex; justify-content: space-between; align-items: flex-start;
+    gap: 12px; position: relative; z-index: 20;
+    opacity: 0;
+    transform: translateY(8px);
+    transition: opacity 0.5s ease, transform 0.5s cubic-bezier(0.16,1,0.3,1);
+  }
+  .work-item.visible .work-footer {
+    opacity: 1; transform: none;
+    transition-delay: 0.3s;
+  }
+
+  /* img-win95 moves as one unit with parallax — titlebar + image together */
+  .img-win95 {
+    width: 100%;
+    background: var(--win95-bg);
+    /* Authentic Win95 3D border: light top-left, dark bottom-right, outer then inner */
+    border: 2px solid #353535;
+    outline: 2px solid #f0e8d0;
+    outline-offset: -4px;
+    box-shadow:
+      -2px -2px 0 0 #f0e8d0,
+      2px 2px 0 0 #7a6f52;
+    padding: 0;
+    overflow: hidden;
+    will-change: transform;
+    position: relative;
+  }
+
+  /* Title bar of the painting window */
+  .img-win95-titlebar {
+    display: flex; align-items: center; justify-content: space-between;
+    height: 20px;
+    background: #5D5143;
+    padding: 0 2px 0 5px;
+    margin-bottom: 0;
+    user-select: none;
+    flex-shrink: 0;
+  }
+  .img-win95-titlebar-text {
+    font-family: 'Space Mono', monospace;
+    font-size: 8px; font-weight: 700;
+    color: #f6f1da;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    overflow: hidden; white-space: nowrap; text-overflow: ellipsis;
+    flex: 1;
+    line-height: 1;
+  }
+  .img-win95-titlebar-btns {
+    display: flex; gap: 2px; flex-shrink: 0; align-items: center;
+  }
+
+  /* ── Authentic Win95 window buttons — grey with 3D bevel ── */
+  .img-win95-btn {
+    width: 18px; height: 16px;
+    background: #AFA191;
+    border-top: 2px solid #d4cdc4;
+    border-left: 2px solid #d4cdc4;
+    border-right: 2px solid #3d3830;
+    border-bottom: 2px solid #3d3830;
+    box-shadow: inset 1px 1px 0 #cac4bb, inset -1px -1px 0 #7a7068;
+    display: flex; align-items: center; justify-content: center;
+    cursor: default;
+    flex-shrink: 0;
+    padding: 0;
+  }
+
+  /* All three buttons identical */
+  .img-win95-btn.btn-close { width: 18px; }
+
+  /* img-wrap fills the frame edge to edge — no padding between border and image */
+  .img-win95 .img-wrap {
+    margin: 0;
+    overflow: hidden;
+  }
+
+  /* Image wrap — curtain reveal */
+  .img-wrap {
+    z-index: 15;
+    width: 100%; overflow: hidden; cursor: zoom-in;
+    position: relative; z-index: 20;
+    clip-path: inset(0 0 100% 0);
+    transition: clip-path 0.75s cubic-bezier(0.77, 0, 0.18, 1);
+  }
+  .work-item.visible .img-wrap {
+    clip-path: inset(0 0 0% 0);
+  }
+
+  /* Inner image — scaled up so parallax shift never shows edges */
+  .img-wrap img,
+  .img-placeholder {
+    width: 100%; display: block;
+    height: auto; object-fit: fill;
+    will-change: transform, filter;
+    filter: blur(5px);
+    transition: filter 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+    user-select: none; -webkit-user-drag: none;
+    transform-origin: center center;
+  }
+  .work-item.visible .img-wrap img,
+  .work-item.visible .img-wrap .img-placeholder {
+    filter: blur(0px);
+  }
+  .img-placeholder { position: relative; }
+
+  .work-left { display: flex; flex-direction: column; gap: 4px; }
+  .work-title-row { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+  .work-title {
+    font-family: 'Fondamento', serif;
+    font-size: 19px; font-weight: 400;
+    letter-spacing: 0.04em; opacity: 0.78;
+    line-height: 1.2;
+  }
+  .work-year {
+    font-family: 'Space Mono', monospace;
+    font-size: 9px; font-weight: 400;
+    letter-spacing: 0.18em; opacity: calc(0.32 * var(--secondary-fade, 1));
+    white-space: nowrap;
+  }
+  .work-tags { display: flex; align-items: center; gap: 0; flex-wrap: wrap; }
+  .work-tag {
+    font-family: 'Space Mono', monospace;
+    font-size: 8px; font-weight: 400;
+    letter-spacing: 0.20em; text-transform: uppercase; opacity: calc(0.30 * var(--secondary-fade, 1));
+  }
+  .work-tag-sep {
+    font-family: 'Space Mono', monospace;
+    font-size: 7px; opacity: calc(0.18 * var(--secondary-fade, 1));
+    margin: 0 6px; line-height: 1;
+    user-select: none;
+  }
+
+  /* Right side of footer */
+  .work-right {
+    display: flex; flex-direction: column;
+    align-items: flex-end; gap: 6px; flex-shrink: 0;
+  }
+
+  /* ── Purchase Win95 button ── */
+  .purchase-wrap { position: relative; }
+  .purchase-btn {
+    height: 28px;
+    display: flex; align-items: center;
+    padding: 0 10px; gap: 5px;
+    font-family: 'Space Mono', monospace;
+    font-size: 8px; font-weight: 700; letter-spacing: 0.10em; text-transform: uppercase;
+    color: #000000;
+    background: #AFA191;
+    border-top: 2px solid #d4cdc4;
+    border-left: 2px solid #d4cdc4;
+    border-right: 2px solid #3d3830;
+    border-bottom: 2px solid #3d3830;
+    box-shadow: inset 1px 1px 0 #d4cdc4, inset -1px -1px 0 #7a7068;
+    border-radius: 0;
+    cursor: pointer;
+    transition: none;
+    -webkit-tap-highlight-color: transparent;
+    white-space: nowrap; user-select: none;
+  }
+  .purchase-btn:active,
+  .purchase-btn.open {
+    border-top: 2px solid #3d3830;
+    border-left: 2px solid #3d3830;
+    border-right: 2px solid #d4cdc4;
+    border-bottom: 2px solid #d4cdc4;
+    box-shadow: inset 1px 1px 0 #7a7068;
+    padding-left: 12px; padding-top: 2px;
+  }
+  .purchase-btn .pb-arrow {
+    font-size: 10px; opacity: 0.8;
+    transition: transform 0.25s cubic-bezier(0.16,1,0.3,1);
+    display: inline-block;
+  }
+  .purchase-btn.open .pb-arrow { transform: rotate(180deg); }
+
+  /* Purchase dropdown — Win95 context menu */
+  .purchase-dropdown {
+    position: absolute;
+    bottom: calc(100% + 4px);
+    right: 0;
+    min-width: 140px;
+    border-radius: 0;
+    padding: 2px;
+    background: #AFA191;
+    border-top: 2px solid #d4cdc4;
+    border-left: 2px solid #d4cdc4;
+    border-right: 2px solid #3d3830;
+    border-bottom: 2px solid #3d3830;
+    box-shadow: 2px 2px 0 #2a2520;
+    opacity: 0; pointer-events: none;
+    transform: translateY(5px);
+    transform-origin: bottom right;
+    transition: opacity 0.15s ease, transform 0.15s ease;
+    z-index: 100;
+  }
+  .purchase-dropdown.open {
+    opacity: 1; pointer-events: auto;
+    transform: translateY(0);
+  }
+  .purchase-dropdown a {
+    display: block;
+    font-family: 'Space Mono', monospace;
+    font-size: 9px; font-weight: 700; letter-spacing: 0.10em; text-transform: uppercase;
+    color: #000000; text-decoration: none;
+    padding: 6px 10px;
+    border-radius: 0;
+    transition: background 0.05s;
+    white-space: nowrap;
+  }
+  .purchase-dropdown a + a { border-top: 1px solid #7a7068; }
+  .purchase-dropdown a:hover { background: #000080; color: #ffffff; }
+
+  /* Thin separator between works */
+  .sep {
+    width: min(820px, 88vw, 68vh);
+    height: 1px;
+    background: var(--text); opacity: 0.07;
+    position: relative; z-index: 20;
+  }
+
+  /* Empty state */
+  #empty-state {
+    display: none; padding: 100px 0;
+    font-size: 10px; font-weight: 300;
+    letter-spacing: 0.32em; text-transform: uppercase;
+    opacity: 0.28; text-align: center;
+  }
+
+  /* Lightbox */
+  #lightbox {
+    position: fixed; inset: 0; z-index: 9999;
+    background: rgba(14,12,10,0.94);
+    backdrop-filter: blur(4px);
+    display: flex; align-items: center; justify-content: center;
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.45s ease;
+    cursor: zoom-out;
+  }
+  #lightbox.open { opacity: 1; pointer-events: auto; }
+  #lb-img {
+    max-width: 92vw; max-height: 92vh;
+    object-fit: contain; display: block;
+    transform: scale(0.94) translateY(14px);
+    transition: transform 0.56s cubic-bezier(0.16,1,0.3,1);
+    user-select: none; -webkit-user-drag: none;
+  }
+  #lightbox.open #lb-img { transform: none; }
+  #lb-close {
+    position: absolute; top: 30px; right: 40px;
+    font-family: 'Space Mono', monospace;
+    font-size: 9px; font-weight: 700;
+    letter-spacing: 0.14em; text-transform: uppercase;
+    cursor: pointer; user-select: none;
+    background: #AFA191; color: #000000;
+    border-top: 2px solid #d4cdc4;
+    border-left: 2px solid #d4cdc4;
+    border-right: 2px solid #3d3830;
+    border-bottom: 2px solid #3d3830;
+    box-shadow: inset 1px 1px 0 #d4cdc4, inset -1px -1px 0 #7a7068;
+    padding: 4px 12px;
+  }
+  #lb-close:active {
+    border-top: 2px solid #3d3830;
+    border-left: 2px solid #3d3830;
+    border-right: 2px solid #d4cdc4;
+    border-bottom: 2px solid #d4cdc4;
+    box-shadow: inset 1px 1px 0 #7a7068;
+  }
+  #lb-title {
+    position: absolute; bottom: 34px; left: 50%;
+    transform: translateX(-50%);
+    font-family: 'Space Mono', monospace;
+    font-size: 9px; font-weight: 300;
+    letter-spacing: 0.28em; text-transform: uppercase;
+    color: #f6f1da; opacity: 0.35; white-space: nowrap;
+    pointer-events: none;
+  }
+
+  @keyframes fadeIn { to { opacity: 1; } }
+
+  /* ── Shimmer wave ── */
+  @keyframes shimmer {
+    0%   { background-position: -200% center; }
+    100% { background-position:  200% center; }
+  }
+
+  .skeleton {
+    background:
+      linear-gradient(
+        105deg,
+        rgba(53,53,53,0.055) 0%,
+        rgba(53,53,53,0.055) 35%,
+        rgba(246,241,218,0.72) 50%,
+        rgba(53,53,53,0.055) 65%,
+        rgba(53,53,53,0.055) 100%
+      );
+    background-size: 200% 100%;
+    animation: shimmer 1.7s ease-in-out infinite;
+  }
+
+  /* Image placeholder shimmer */
+  .img-placeholder.loading {
+    animation: none; /* remove old pulse */
+  }
+  .img-placeholder.loading::after {
+    content: '';
+    position: absolute; inset: 0;
+    background:
+      linear-gradient(
+        105deg,
+        rgba(53,53,53,0.055) 0%,
+        rgba(53,53,53,0.055) 35%,
+        rgba(246,241,218,0.72) 50%,
+        rgba(53,53,53,0.055) 65%,
+        rgba(53,53,53,0.055) 100%
+      );
+    background-size: 200% 100%;
+    animation: shimmer 1.7s ease-in-out infinite;
+  }
+
+  /* Footer skeleton lines */
+  .skel-line {
+    display: inline-block;
+    border-radius: 3px;
+    background:
+      linear-gradient(
+        105deg,
+        rgba(53,53,53,0.07) 0%,
+        rgba(53,53,53,0.07) 35%,
+        rgba(246,241,218,0.8) 50%,
+        rgba(53,53,53,0.07) 65%,
+        rgba(53,53,53,0.07) 100%
+      );
+    background-size: 200% 100%;
+    animation: shimmer 1.7s ease-in-out infinite;
+    animation-delay: var(--sd, 0s);
+    color: transparent; /* hide text while shimmering */
+    user-select: none;
+  }
+
+  /* Error placeholder */
+  .img-error {
+    display: flex; align-items: center; justify-content: center;
+    background: rgba(53,53,53,0.04) !important;
+  }
+  .img-error-label {
+    font-size: 8px; letter-spacing: 0.28em; text-transform: uppercase;
+    color: var(--text); opacity: 0.2; user-select: none;
+  }
+
+  /* ── Custom cursor ── */
+  #cursor {
+    position: fixed; z-index: 9999; pointer-events: none;
+    width: 28px; height: 28px; border-radius: 50%;
+    border: 1px solid rgba(53,53,53,0.35);
+    transform: translate(-50%, -50%) scale(0);
+    transition: transform 0.22s cubic-bezier(0.34,1.56,0.64,1),
+                opacity 0.2s, border-color 0.2s;
+    opacity: 0;
+    mix-blend-mode: multiply;
+  }
+  #cursor.active { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+  #cursor.pressed { transform: translate(-50%, -50%) scale(0.6); }
+
+  /* scroll progress removed */
+  #scroll-progress { display: none; }
+
+  /* ── Card hover: footer brightens ── */
+  .work-item:hover .work-title { opacity: 0.92; }
+  .work-item:hover .work-tag   { opacity: 0.45; }
+  .work-item:hover .work-year  { opacity: 0.45; }
+  .work-item:hover .work-link  { opacity: 0.55; }
+
+  /* ── Scanlines — disabled ── */
+  #scanlines { display: none; }
+
+  /* ── View toggle button — Win95 style ── */
+  .view-btn {
+    height: calc(100% - 10px); padding: 0 12px; margin: 0 2px;
+    display: flex; align-items: center; justify-content: center;
+    background: #AFA191;
+    border-top: 2px solid #d4cdc4;
+    border-left: 2px solid #d4cdc4;
+    border-right: 2px solid #3d3830;
+    border-bottom: 2px solid #3d3830;
+    box-shadow: inset 1px 1px 0 #d4cdc4, inset -1px -1px 0 #7a7068;
+    border-radius: 0; cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    transition: none; flex-shrink: 0;
+  }
+  .view-btn:active,
+  .view-btn.grid-active {
+    border-top: 2px solid #3d3830;
+    border-left: 2px solid #3d3830;
+    border-right: 2px solid #d4cdc4;
+    border-bottom: 2px solid #d4cdc4;
+    box-shadow: inset 1px 1px 0 #7a7068;
+  }
+
+  /* Icon: one square — filled (feed) ↔ crossed (grid) */
+  .view-btn-inner {
+    position: relative;
+    width: 13px; height: 13px;
+    border: 1.5px solid #3d3830;
+    border-radius: 0;
+    flex-shrink: 0;
+  }
+  /* Fill — visible in feed mode */
+  .view-btn-inner::before {
+    content: ''; position: absolute; inset: 0;
+    background: #000000; opacity: 0.7;
+    transition: opacity 0.15s;
+  }
+  /* Cross — visible in grid mode */
+  .view-btn-inner::after {
+    content: ''; position: absolute; inset: 0;
+    background:
+      linear-gradient(#000, #000) center / 1.5px 100% no-repeat,
+      linear-gradient(#000, #000) center / 100% 1.5px no-repeat;
+    opacity: 0;
+    transition: opacity 0.15s;
+  }
+  .view-btn.grid-active .view-btn-inner::before { opacity: 0; }
+  .view-btn.grid-active .view-btn-inner::after  { opacity: 0.7; }
+  /* ── Grid mode — explicit columns ── */
+  main.grid-mode {
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 12px;
+    padding-left: 16px; padding-right: 16px;
+    /* Extra bottom padding so the tallest staggered column doesn't get cut off */
+    padding-bottom: 220px;
+  }
+  main.grid-mode .sep { display: none; }
+
+  .grid-col {
+    flex: 1; max-width: 420px;
+    display: flex; flex-direction: column;
+    position: relative; z-index: 20;
+  }
+  /* Second column drops down — creates the layered offset */
+  .grid-col[data-col="1"] { margin-top: 160px; }
+  /* Third column (desktop) at medium offset */
+  .grid-col[data-col="2"] { margin-top: 80px; }
+
+  main.grid-mode .work-item {
+    width: 100%; padding: 10px 0 20px;
+  }
+
+  /* Hover: image lifts slightly */
+  main.grid-mode .img-wrap {
+    transition: transform 0.38s cubic-bezier(0.16,1,0.3,1);
+    overflow: hidden;
+  }
+  main.grid-mode .work-item:hover .img-wrap {
+    transform: scale(1.02) translateY(-3px);
+  }
+
+  @media (max-width: 600px) {
+    main.grid-mode { gap: 8px; padding: 0 10px 180px; }
+    .grid-col[data-col="1"] { margin-top: 100px; }
+  }
+
+  /* ── Lightbox nav arrows — Win95 buttons ── */
+  .lb-arrow {
+    position: absolute; top: 50%; transform: translateY(-50%);
+    font-family: 'Space Mono', monospace;
+    font-size: 10px; font-weight: 700; letter-spacing: 0.10em;
+    text-transform: uppercase; color: #000000;
+    background: #AFA191;
+    border-top: 2px solid #d4cdc4;
+    border-left: 2px solid #d4cdc4;
+    border-right: 2px solid #3d3830;
+    border-bottom: 2px solid #3d3830;
+    box-shadow: inset 1px 1px 0 #d4cdc4, inset -1px -1px 0 #7a7068;
+    cursor: pointer; user-select: none;
+    transition: opacity 0.15s; padding: 6px 14px;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .lb-arrow:active {
+    border-top: 2px solid #3d3830;
+    border-left: 2px solid #3d3830;
+    border-right: 2px solid #d4cdc4;
+    border-bottom: 2px solid #d4cdc4;
+    box-shadow: inset 1px 1px 0 #7a7068;
+  }
+  #lb-prev { left: 20px; }
+  #lb-next { right: 20px; }
+  .lb-arrow.hidden { opacity: 0 !important; pointer-events: none; }
+
+  @media (max-width: 680px) {
+    .filter-group {
+      flex-wrap: nowrap; overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+      gap: 0 16px;
+    }
+    .filter-group::-webkit-scrollbar { display: none; }
+    .filter-group-label { min-width: 70px; }
+
+    /* Pill: tighter padding on mobile */
+    .pill-btn { padding: 0 10px; font-size: 8px; letter-spacing: 0.16em; }
+    .pill-count { font-size: 7px; letter-spacing: 0.18em; }
+    .pill-section { font-size: 11px; }
+    .sword-btn { padding: 0 12px; }
+    .view-btn { padding: 0 12px; }
+    .view-btn + .pill-divider, .view-btn { display: none; }
+
+    /* Fix filter-dot spacing on mobile */
+    #filter-toggle { gap: 0; }
+    .filter-dot { max-width: 0; overflow: hidden; margin: 0; }
+    .filter-dot.visible { max-width: 4px; margin-left: 5px; }
+  }
+
+  /* ── Filter groups inside pill panel ── */
+  .filter-panel {
+    flex-direction: column;
+    gap: 0;
+    padding: 4px 8px 6px;
+  }
+  .filter-group {
+    display: flex; flex-wrap: wrap; align-items: center;
+    gap: 0 20px; padding: 8px 10px;
+  }
+  .filter-group + .filter-group {
+    border-top: 1px solid #7a7068;
+  }
+  .filter-group-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 8px; font-weight: 700;
+    letter-spacing: 0.20em; text-transform: uppercase;
+    color: #000000; opacity: 0.55; min-width: 90px; flex-shrink: 0;
+  }
+
+  .tag-btn {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px; font-weight: 700;
+    letter-spacing: 0.14em; text-transform: uppercase;
+    color: #000000; background: none; border: none;
+    cursor: pointer; padding: 5px 0;
+    position: relative; opacity: 0.45;
+    transition: opacity 0.15s; user-select: none;
+    white-space: nowrap;
+  }
+  .tag-btn::after {
+    content: '';
+    position: absolute; bottom: 2px; left: 0;
+    width: 0; height: 1px;
+    background: #000000; opacity: 0.7;
+    transition: width 0.35s cubic-bezier(0.4,0,0.2,1);
+  }
+  .tag-btn.active { opacity: 0.95; }
+  .tag-btn.active::after { width: 100%; }
+  .tag-btn:hover:not(.active) { opacity: 0.65; }
+
+  /* Availability group hidden when Commission active */
+  .filter-group.avail-hidden {
+    opacity: 0.28; pointer-events: none;
+  }
+  .filter-group.avail-hidden .tag-btn { cursor: default; }
+
+  @media (max-width: 680px) {
+    .filter-panel { top: calc(var(--header-total-h)); }
+    #lb-close { top: 18px; right: 18px; }
+    main { padding-top: calc(var(--header-total-h) + 16px); padding-bottom: 160px; }
+  }
+
+  @media(max-width:600px) { /* mobile reserved */ }
+
+  </style>
+</head>
+<body>
+
+<canvas id="grain"></canvas>
+<div id="scanlines"></div>
+<div id="cursor"></div>
+<div id="scroll-progress"></div>
+
+<script>(function(){
+  document.addEventListener('DOMContentLoaded', function() {
+    const btn = document.getElementById('swordBtn');
+    const overlay = document.getElementById('navOverlay');
+    btn.addEventListener('click', function(e){
+      e.stopPropagation();
+      btn.classList.toggle('open');
+      overlay.classList.toggle('open');
+      if (navigator.vibrate) navigator.vibrate(6);
+    });
+    overlay.querySelectorAll('a').forEach(a => {
+      a.addEventListener('click', function(){
+        btn.classList.remove('open');
+        overlay.classList.remove('open');
+      });
+    });
+    document.addEventListener('click', function(e){
+      if (!overlay.contains(e.target) && e.target !== btn) {
+        btn.classList.remove('open');
+        overlay.classList.remove('open');
+      }
+    });
+    document.addEventListener('keydown', function(e){
+      if(e.key === 'Escape'){
+        btn.classList.remove('open');
+        overlay.classList.remove('open');
+      }
+    });
+  });
+})();</script>
+
+
+<header>
+  <div class="header-safe-top"></div>
+  <div class="header-inner">
+    <div class="header-titlebar-strip">
+      <span class="header-titlebar-strip-text">noeasy.xyz/gallery</span>
+      <div class="header-win95-btns">
+        <div class="header-win95-btn">_</div>
+        <div class="header-win95-btn">□</div>
+        <div class="header-win95-btn btn-close">✕</div>
+      </div>
+    </div>
+    <div class="header-pill">
+      <button class="pill-btn filter-toggle" id="filter-toggle">
+        Filter <span class="filter-dot" id="filter-dot"></span>
+      </button>
+      <div class="pill-divider"></div>
+      <button class="pill-btn sort-btn" id="sort-btn">Newest ↓</button>
+      <span class="pill-center">
+        <span class="pill-section">Gallery</span>
+        <span class="pill-count" id="work-count"></span>
+      </span>
+      <div style="flex:1"></div>
+      <div class="pill-divider"></div>
+      <button class="view-btn" id="grid-btn" title="Toggle view" aria-label="Toggle view">
+        <div class="view-btn-inner"></div>
+      </button>
+      <div class="pill-divider"></div>
+      <div class="burger-wrap">
+        <button class="sword-btn" id="swordBtn" aria-label="Menu">
+          <span class="line"></span>
+          <span class="line"></span>
+          <span class="line"></span>
+        </button>
+        <div class="nav-overlay" id="navOverlay">
+          <a href="/">Home</a>
+          <a href="/about/">About</a>
+          <a href="/gallery/" class="current">Gallery</a>
+          <a href="https://noeasy.xyz/links/">Links</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="filter-panel" id="filter-panel">
+  <div class="filter-group">
+    <span class="filter-group-label">Style</span>
+    <button class="tag-btn style-btn active" data-tag="all">All</button>
+    <button class="tag-btn style-btn" data-tag="Graphic">Graphic</button>
+    <button class="tag-btn style-btn" data-tag="Digital Painting">Digital Painting</button>
+    <button class="tag-btn style-btn" data-tag="Mixed">Mixed</button>
+  </div>
+  <div class="filter-group">
+    <span class="filter-group-label">Work Type</span>
+    <button class="tag-btn type-btn active" data-tag="all">All</button>
+    <button class="tag-btn type-btn" data-tag="Personal">Personal</button>
+    <button class="tag-btn type-btn" data-tag="Commission">Commission</button>
+  </div>
+  <div class="filter-group" id="avail-group">
+    <span class="filter-group-label">Availability</span>
+    <button class="tag-btn avail-btn active" data-tag="all">All</button>
+    <button class="tag-btn avail-btn" data-tag="Crypto Art">Crypto Art</button>
+    <button class="tag-btn avail-btn" data-tag="Print">Print</button>
+  </div>
+</div>
+
+<main id="feed"></main>
+<div id="empty-state">Nothing here yet</div>
+
+<div id="lightbox">
+  <span id="lb-close">Close</span>
+  <span class="lb-arrow" id="lb-prev">←</span>
+  <img id="lb-img" src="" alt="">
+  <span class="lb-arrow" id="lb-next">→</span>
+  <span id="lb-title"></span>
+</div>
+
+<script>
+document.addEventListener('contextmenu', e => e.preventDefault());
+
+// ── Custom cursor ──
+const cursor = document.getElementById('cursor');
+document.addEventListener('mousemove', e => {
+  cursor.style.left = e.clientX + 'px';
+  cursor.style.top  = e.clientY + 'px';
+});
+function setCursorActive(on) { cursor.classList.toggle('active', on); }
+document.addEventListener('mousedown', () => cursor.classList.add('pressed'));
+document.addEventListener('mouseup',   () => cursor.classList.remove('pressed'));
+
+// ── Scroll progress ──
+const progressEl = document.getElementById('scroll-progress');
+window.addEventListener('scroll', () => {
+  const max = document.documentElement.scrollHeight - window.innerHeight;
+  const pct = max > 0 ? Math.round(window.scrollY / max * 100) : 0;
+  progressEl.style.setProperty('--progress', pct + '%');
+}, { passive: true });
+
+// ── Grain ──
+const grain = document.getElementById('grain');
+const gc = grain.getContext('2d');
+let gw, gh;
+function resizeGrain() {
+  gw = grain.width  = window.innerWidth  + 20;
+  gh = grain.height = window.innerHeight + 120;
+}
+resizeGrain(); window.addEventListener('resize', resizeGrain);
+(function tick() {
+  const img = gc.createImageData(gw, gh);
+  for (let i = 0; i < img.data.length; i += 4) {
+    const v = Math.random() * 255 | 0;
+    img.data[i] = img.data[i+1] = img.data[i+2] = v;
+    img.data[i+3] = Math.random() * 26 | 0;
+  }
+  gc.putImageData(img, 0, 0);
+  requestAnimationFrame(tick);
+})();
+
+// ── DATA ──
+let works = [];
+
+async function loadWorks() {
+  try {
+    const r = await fetch('works.json');
+    if (!r.ok) throw new Error('not found');
+    works = await r.json();
+  } catch(e) {
+    // Fallback: empty gallery
+    works = [];
+  }
+  render();
+}
+
+// ── State ──
+let sortAsc     = false;
+let activeStyle = 'all';
+let activeType  = 'all';
+let activeAvail = new Set(['all']);
+let savedAvail  = new Set(['all']);
+let isGrid      = false;
+let lbIndex     = -1;
+let currentList = [];
+
+function fmtDate(dateStr, yearFallback) {
+  if (dateStr) {
+    const d = new Date(dateStr + 'T00:00:00');
+    if (!isNaN(d)) return d.toLocaleString('en-US', { month: 'long', year: 'numeric' });
+  }
+  return yearFallback || '';
+}
+
+function getSorted() {
+  return [...works].sort((a, b) => {
+    const da = a.date || String(a.year || 0);
+    const db = b.date || String(b.year || 0);
+    return sortAsc ? da.localeCompare(db) : db.localeCompare(da);
+  });
+}
+function getFiltered() {
+  return getSorted().filter(w => {
+    const styleOk = activeStyle === 'all' || w.style === activeStyle;
+    const typeOk  = activeType  === 'all' || w.workType === activeType;
+    const availOk = activeType === 'Commission'
+      || activeAvail.has('all')
+      || w.avail.some(a => activeAvail.has(a));
+    return styleOk && typeOk && availOk;
+  });
+}
+
+// ── Counter animation ──
+const wcEl  = document.getElementById('work-count');
+function animateCount(text) {
+  if (wcEl.textContent === text) return;
+  wcEl.style.cssText = 'opacity:0;transform:translateY(-6px) scale(0.9);transition:none';
+  requestAnimationFrame(() => {
+    wcEl.textContent = text;
+    requestAnimationFrame(() => {
+      wcEl.style.cssText = 'opacity:0.26;transform:none;transition:opacity 0.4s cubic-bezier(0.16,1,0.3,1),transform 0.4s cubic-bezier(0.16,1,0.3,1)';
+    });
+  });
+}
+
+// ── Haptic feedback ──
+function haptic(style = 'light') {
+  if (window.navigator && window.navigator.vibrate) {
+    const pat = style === 'light' ? 6 : style === 'medium' ? 12 : [8, 40, 8];
+    window.navigator.vibrate(pat);
+  }
+}
+
+// ── Render ──
+const feed  = document.getElementById('feed');
+const empty = document.getElementById('empty-state');
+let observer;
+
+function render(scrollTop = false) {
+  if (observer) observer.disconnect();
+  feed.innerHTML = '';
+  currentList = getFiltered();
+  animateCount(currentList.length + (currentList.length === 1 ? ' work' : ' works'));
+  feed.classList.toggle('grid-mode', isGrid);
+
+  if (scrollTop && window.scrollY > 0) {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  if (!currentList.length) { empty.style.display = 'block'; return; }
+  empty.style.display = 'none';
+
+  // Grid mode: distribute into explicit column wrappers
+  const numCols = isGrid ? (window.innerWidth >= 1100 ? 3 : 2) : 1;
+  let colEls = [];
+  if (isGrid) {
+    for (let c = 0; c < numCols; c++) {
+      const col = document.createElement('div');
+      col.className = 'grid-col';
+      col.dataset.col = c;
+      feed.appendChild(col);
+      colEls.push(col);
+    }
+  }
+
+  currentList.forEach((work, i) => {
+    const item = document.createElement('div');
+    item.className = 'work-item';
+    // tag with column index for parallax
+    if (isGrid) item.dataset.col = i % numCols;
+
+    const wrap = document.createElement('div');
+    wrap.className = 'img-wrap';
+
+    if (work.src) {
+      const img = document.createElement('img');
+      img.alt = work.title;
+      // NOTE: no loading="lazy" — clip-path hides the element so lazy never triggers
+
+      let retries = 0;
+      const MAX_RETRIES = 3;
+      let retryTimer = null;
+
+      img.addEventListener('error', () => {
+        if (retryTimer) return;
+        if (retries < MAX_RETRIES) {
+          retries++;
+          const delay = 800 * Math.pow(2, retries - 1);
+          retryTimer = setTimeout(() => {
+            retryTimer = null;
+            img.src = work.src + `?r=${retries}`;
+          }, delay);
+        } else {
+          const fb = document.createElement('div');
+          fb.className = 'img-placeholder img-error';
+          fb.style.paddingTop = '100%';
+          fb.innerHTML = '<span class="img-error-label">image unavailable</span>';
+          img.replaceWith(fb);
+        }
+      });
+
+      img.src = work.src;
+
+      wrap.appendChild(img);
+      wrap.addEventListener('click', () => { lbIndex = i; openLb(); });
+      wrap.addEventListener('mouseenter', () => setCursorActive(true));
+      wrap.addEventListener('mouseleave', () => setCursorActive(false));
+    } else {
+      const ph = document.createElement('div');
+      ph.className = 'img-placeholder loading';
+      ph.style.background = work.ph.color;
+      ph.style.paddingTop = work.ph.ratio;
+      setTimeout(() => ph.classList.remove('loading'), 2500);
+      wrap.appendChild(ph);
+      wrap.style.cursor = 'default';
+    }
+
+    const footer = document.createElement('div');
+    footer.className = 'work-footer';
+
+    const tagParts = [work.style, work.workType];
+    if (work.workType === 'Personal' && work.avail.length) tagParts.push(...work.avail);
+    const tagsHtml = tagParts.map(t => `<span class="work-tag">${t}</span>`)
+      .join('<span class="work-tag-sep">×</span>');
+
+    const left = document.createElement('div');
+    left.className = 'work-left';
+
+    const titleRow = document.createElement('div');
+    titleRow.className = 'work-title-row';
+    titleRow.innerHTML = `<span class="work-title">${work.title}</span><span class="work-year">${fmtDate(work.date, work.year)}</span>`;
+    left.appendChild(titleRow);
+
+    const tagsEl = document.createElement('div');
+    tagsEl.className = 'work-tags';
+    tagsEl.innerHTML = tagsHtml;
+    left.appendChild(tagsEl);
+
+    // Shimmer skeleton overlay for footer lines (visible while image loads)
+    if (work.src) {
+      const skelOverlay = document.createElement('div');
+      skelOverlay.className = 'skel-overlay';
+      skelOverlay.style.cssText = 'position:absolute;inset:0;display:flex;flex-direction:column;gap:7px;pointer-events:none;';
+      skelOverlay.innerHTML = `
+        <div style="display:flex;gap:10px;align-items:center;">
+          <span class="skel-line" style="--sd:0s;width:38%;height:14px;"></span>
+          <span class="skel-line" style="--sd:0.1s;width:18%;height:8px;border-radius:2px;"></span>
+        </div>
+        <span class="skel-line" style="--sd:0.18s;width:55%;height:8px;border-radius:2px;"></span>`;
+
+      footer.style.position = 'relative';
+      left.style.opacity = '0';
+      footer.appendChild(skelOverlay);
+
+      const imgEl = wrap.querySelector('img');
+      const revealFooter = () => {
+        skelOverlay.style.transition = 'opacity 0.4s ease';
+        skelOverlay.style.opacity = '0';
+        left.style.transition = 'opacity 0.4s ease 0.1s';
+        left.style.opacity = '1';
+        setTimeout(() => skelOverlay.remove(), 450);
+      };
+
+      if (imgEl) {
+        if (imgEl.complete && imgEl.naturalWidth > 0) {
+          // Already cached — reveal immediately
+          revealFooter();
+        } else {
+          imgEl.addEventListener('load',  revealFooter, { once: true });
+          imgEl.addEventListener('error', revealFooter, { once: true });
+          setTimeout(revealFooter, 5000); // safety net
+        }
+      } else {
+        // No img found — just show the text
+        revealFooter();
+      }
+    }
+
+    const right = document.createElement('div');
+    right.className = 'work-right';
+
+    if (work.links && work.links.length) {
+      const wrap = document.createElement('div');
+      wrap.className = 'purchase-wrap';
+
+      const btn = document.createElement('button');
+      btn.className = 'purchase-btn';
+      btn.innerHTML = `Purchase <span class="pb-arrow">▾</span>`;
+
+      const dropdown = document.createElement('div');
+      dropdown.className = 'purchase-dropdown';
+      work.links.forEach(lk => {
+        const a = document.createElement('a');
+        a.href = lk.url; a.textContent = lk.label;
+        a.target = '_blank'; a.rel = 'noopener';
+        a.addEventListener('click', e => { e.stopPropagation(); dropdown.classList.remove('open'); btn.classList.remove('open'); });
+        dropdown.appendChild(a);
+      });
+
+      btn.addEventListener('click', e => {
+        e.stopPropagation();
+        const open = dropdown.classList.toggle('open');
+        btn.classList.toggle('open', open);
+        haptic('light');
+      });
+      document.addEventListener('click', () => { dropdown.classList.remove('open'); btn.classList.remove('open'); });
+
+      wrap.appendChild(btn); wrap.appendChild(dropdown);
+      right.appendChild(wrap);
+    }
+
+    footer.appendChild(left); footer.appendChild(right);
+
+    // ── Win95 window wrapper around the painting ──
+    const win95 = document.createElement('div');
+    win95.className = 'img-win95';
+
+    const titlebar = document.createElement('div');
+    titlebar.className = 'img-win95-titlebar';
+
+    const titleText = document.createElement('span');
+    titleText.className = 'img-win95-titlebar-text';
+    titleText.textContent = work.title.toUpperCase() + (work.year ? '  [' + work.year + ']' : '');
+
+    const btns = document.createElement('div');
+    btns.className = 'img-win95-titlebar-btns';
+    // Jerusalem cross — central cross + 4 small crosslets in each quadrant
+    // 11×11 pixel grid, each rect is 1 unit
+    const crossSVG = `<svg width="11" height="11" viewBox="0 0 11 11" fill="none" xmlns="http://www.w3.org/2000/svg" style="display:block;image-rendering:pixelated;shape-rendering:crispEdges">
+      <!-- main vertical bar -->
+      <rect x="5" y="0" width="1" height="11" fill="#1a1612"/>
+      <!-- main horizontal bar -->
+      <rect x="0" y="5" width="11" height="1" fill="#1a1612"/>
+      <!-- top-left crosslet: vertical -->
+      <rect x="2" y="1" width="1" height="3" fill="#1a1612"/>
+      <!-- top-left crosslet: horizontal -->
+      <rect x="1" y="2" width="3" height="1" fill="#1a1612"/>
+      <!-- top-right crosslet: vertical -->
+      <rect x="8" y="1" width="1" height="3" fill="#1a1612"/>
+      <!-- top-right crosslet: horizontal -->
+      <rect x="7" y="2" width="3" height="1" fill="#1a1612"/>
+      <!-- bottom-left crosslet: vertical -->
+      <rect x="2" y="7" width="1" height="3" fill="#1a1612"/>
+      <!-- bottom-left crosslet: horizontal -->
+      <rect x="1" y="8" width="3" height="1" fill="#1a1612"/>
+      <!-- bottom-right crosslet: vertical -->
+      <rect x="8" y="7" width="1" height="3" fill="#1a1612"/>
+      <!-- bottom-right crosslet: horizontal -->
+      <rect x="7" y="8" width="3" height="1" fill="#1a1612"/>
+    </svg>`;
+    btns.innerHTML = `<span class="img-win95-btn" title="Minimize">${crossSVG}</span><span class="img-win95-btn" title="Maximize">${crossSVG}</span><span class="img-win95-btn btn-close" title="Close">${crossSVG}</span>`;
+    btns.addEventListener('click', e => e.stopPropagation());
+
+    titlebar.appendChild(titleText);
+    titlebar.appendChild(btns);
+    win95.appendChild(titlebar);
+    win95.appendChild(wrap);
+
+    item.appendChild(win95); item.appendChild(footer);
+
+    if (isGrid) {
+      // stagger reveal by column — col 1 slightly later
+      const colIdx = i % numCols;
+      item.style.transitionDelay = `${colIdx * 0.06}s`;
+      colEls[colIdx].appendChild(item);
+    } else {
+      feed.appendChild(item);
+    }
+
+    if (!isGrid && i < currentList.length - 1) {
+      const sep = document.createElement('div');
+      sep.className = 'sep'; feed.appendChild(sep);
+    }
+  });
+
+  // Scroll reveal + ambient
+  const items = feed.querySelectorAll('.work-item');
+  observer = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        observer.unobserve(e.target);
+        updateAmbient(e.target);
+      }
+    });
+  }, { threshold: 0.01, rootMargin: '0px 0px 60px 0px' });
+  items.forEach(el => observer.observe(el));
+
+  // Fix grid scroll: main height doesn't auto-include staggered margin-top offsets
+  if (isGrid) {
+    requestAnimationFrame(() => {
+      const cols = feed.querySelectorAll('.grid-col');
+      let maxBottom = 0;
+      cols.forEach(col => {
+        const r = col.getBoundingClientRect();
+        const bottom = r.bottom + window.scrollY;
+        if (bottom > maxBottom) maxBottom = bottom;
+      });
+      const feedTop = feed.getBoundingClientRect().top + window.scrollY;
+      feed.style.minHeight = (maxBottom - feedTop + 100) + 'px';
+    });
+  } else {
+    feed.style.minHeight = '';
+  }
+
+  initParallax();
+}
+
+// ── Ambient background color ──
+function blendWithBg(hex, amount) {
+  const m = hex.match(/\d+/g);
+  if (!m || m.length < 3) return;
+  const [r, g, b] = m.map(Number);
+  const base = [232, 224, 196]; // matches #e8e0c4
+  const out = base.map((c, i) => Math.round(c * (1 - amount) + [r,g,b][i] * amount));
+  return `rgb(${out[0]},${out[1]},${out[2]})`;
+}
+let ambientTimer;
+function updateAmbient(item) {
+  const ph  = item.querySelector('.img-placeholder');
+  const img = item.querySelector('img');
+  let color = null;
+  if (ph) {
+    color = ph.style.background;
+  } else if (img && img.complete) {
+    try {
+      const c = document.createElement('canvas'); c.width = c.height = 1;
+      const ctx = c.getContext('2d'); ctx.drawImage(img, 0, 0, 1, 1);
+      const [r,g,b] = ctx.getImageData(0,0,1,1).data;
+      color = `${r},${g},${b}`;
+    } catch(_) {}
+  }
+  if (!color) return;
+  clearTimeout(ambientTimer);
+  ambientTimer = setTimeout(() => {
+    const blended = blendWithBg(color, 0.055);
+    if (blended) {
+      document.body.style.transition = 'background-color 3s ease';
+      document.body.style.backgroundColor = blended;
+    }
+  }, 400);
+}
+
+// ── Parallax + reveal rise ──
+// Per-column scroll speed factors for grid mode (col0=slowest, col1=fastest, col2=mid)
+const COL_FACTORS = [0.063, 0.135, 0.090];
+const FEED_FACTOR = 0.099;
+let rafId = null;
+const revealStart = new WeakMap();
+
+function initParallax() {
+  if (rafId) cancelAnimationFrame(rafId);
+  const DURATION = 900;
+  const OFFSET = 32;
+
+  function tick() {
+    const vh = window.innerHeight;
+    const now = performance.now();
+
+    feed.querySelectorAll('.work-item').forEach(item => {
+      const win95 = item.querySelector('.img-win95');
+      const wrap  = item.querySelector('.img-wrap');
+      const inner = wrap && wrap.firstElementChild;
+      if (!win95 || !inner) return;
+
+      const colIdx = parseInt(item.dataset.col ?? '-1');
+      const factor = isGrid && colIdx >= 0 ? COL_FACTORS[colIdx] ?? COL_FACTORS[0] : FEED_FACTOR;
+
+      // Measure the frame itself for parallax centre
+      const rect = win95.getBoundingClientRect();
+      const parallax = ((rect.top + rect.height / 2) - vh / 2) * factor;
+
+      if (!item.classList.contains('visible')) {
+        win95.style.transform  = `translateY(${OFFSET}px)`;
+        inner.style.transform  = `scale(1.08)`;
+        revealStart.delete(item);
+        return;
+      }
+
+      if (!revealStart.has(item)) revealStart.set(item, now);
+      const t    = Math.min((now - revealStart.get(item)) / DURATION, 1);
+      const ease = 1 - Math.pow(1 - t, 3);
+      const rise = OFFSET * (1 - ease);
+
+      // Entire frame (titlebar + image) moves with parallax
+      win95.style.transform = `translateY(${(rise + parallax).toFixed(2)}px)`;
+
+      // Image inside is scaled slightly so shift doesn't reveal background at edges
+      const scale = 1.08 - 0.06 * ease; // settles at 1.02
+      inner.style.transform = `scale(${scale.toFixed(4)})`;
+
+      // ── Footer micro-parallax & fade ──
+      const footer = item.querySelector('.work-footer');
+      if (!footer) return;
+
+      const itemRect = item.getBoundingClientRect();
+      const dist     = (itemRect.top + itemRect.height / 2) - vh / 2;
+      const normDist = Math.min(Math.abs(dist) / (vh * 0.5), 1);
+      const fade     = 1 - normDist * 0.40 * ease;
+      item.style.setProperty('--secondary-fade', fade.toFixed(3));
+
+      const titleEl = footer.querySelector('.work-title');
+      const yearEl  = footer.querySelector('.work-year');
+      const tagsEl  = footer.querySelector('.work-tags');
+      const rightEl = footer.querySelector('.work-right');
+
+      if (titleEl) titleEl.style.transform = `translateY(${(dist * 0.004 * ease).toFixed(2)}px)`;
+      if (yearEl)  yearEl.style.transform  = `translateY(${(dist * 0.009 * ease).toFixed(2)}px)`;
+      if (tagsEl)  tagsEl.style.transform  = `translateY(${(dist * 0.015 * ease).toFixed(2)}px)`;
+      if (rightEl) rightEl.style.transform = `translateY(${(dist * 0.004 * ease).toFixed(2)}px)`;
+    });
+
+    rafId = requestAnimationFrame(tick);
+  }
+
+  rafId = requestAnimationFrame(tick);
+}
+
+// ── Grid toggle ──
+const gridBtn = document.getElementById('grid-btn');
+gridBtn.addEventListener('click', () => {
+  isGrid = !isGrid;
+  gridBtn.classList.toggle('grid-active', isGrid);
+  gridBtn.title = isGrid ? 'Switch to feed' : 'Switch to grid';
+  haptic('light'); render();
+});
+
+// ── Filter panel ──
+const filterPanel  = document.getElementById('filter-panel');
+const filterToggle = document.getElementById('filter-toggle');
+const filterDot    = document.getElementById('filter-dot');
+const availGroup   = document.getElementById('avail-group');
+
+filterToggle.addEventListener('click', e => {
+  e.stopPropagation();
+  const open = filterPanel.classList.toggle('open');
+  filterToggle.classList.toggle('open', open);
+  haptic('light');
+});
+document.addEventListener('click', e => {
+  if (!filterPanel.contains(e.target) && e.target !== filterToggle) {
+    filterPanel.classList.remove('open');
+    filterToggle.classList.remove('open');
+  }
+});
+
+function updateFilterDot() {
+  filterDot.classList.toggle('visible',
+    activeStyle !== 'all' || activeType !== 'all' || !activeAvail.has('all'));
+}
+function updateAvailGroup() {
+  availGroup.classList.toggle('avail-hidden', activeType === 'Commission');
+}
+
+filterPanel.addEventListener('click', e => {
+  const btn = e.target.closest('.tag-btn');
+  if (!btn) return;
+
+  if (btn.classList.contains('style-btn')) {
+    activeStyle = btn.dataset.tag;
+    filterPanel.querySelectorAll('.style-btn').forEach(b =>
+      b.classList.toggle('active', b.dataset.tag === activeStyle));
+  }
+  if (btn.classList.contains('type-btn')) {
+    const prev = activeType; activeType = btn.dataset.tag;
+    if (activeType === 'Commission' && prev !== 'Commission') {
+      savedAvail = new Set(activeAvail);
+    } else if (activeType !== 'Commission' && prev === 'Commission') {
+      activeAvail = new Set(savedAvail);
+      filterPanel.querySelectorAll('.avail-btn').forEach(b =>
+        b.classList.toggle('active',
+          activeAvail.has(b.dataset.tag) || (activeAvail.has('all') && b.dataset.tag === 'all')));
+    }
+    filterPanel.querySelectorAll('.type-btn').forEach(b =>
+      b.classList.toggle('active', b.dataset.tag === activeType));
+    updateAvailGroup();
+  }
+  if (btn.classList.contains('avail-btn') && activeType !== 'Commission') {
+    const tag = btn.dataset.tag;
+    if (tag === 'all') { activeAvail = new Set(['all']); }
+    else {
+      activeAvail.delete('all');
+      activeAvail.has(tag) ? activeAvail.delete(tag) : activeAvail.add(tag);
+      if (!activeAvail.size) activeAvail.add('all');
+    }
+    filterPanel.querySelectorAll('.avail-btn').forEach(b =>
+      b.classList.toggle('active',
+        activeAvail.has(b.dataset.tag) || (activeAvail.has('all') && b.dataset.tag === 'all')));
+  }
+  updateFilterDot(); haptic('light'); render(true);
+});
+
+// ── Sort ──
+document.getElementById('sort-btn').addEventListener('click', function() {
+  sortAsc = !sortAsc;
+  this.textContent = sortAsc ? 'Oldest ↑' : 'Newest ↓';
+  haptic('light'); render(true);
+});
+
+// ── Lightbox ──
+const lb      = document.getElementById('lightbox');
+const lbImg   = document.getElementById('lb-img');
+const lbTitle = document.getElementById('lb-title');
+const lbPrev  = document.getElementById('lb-prev');
+const lbNext  = document.getElementById('lb-next');
+
+function openLb(idx) {
+  if (idx !== undefined) lbIndex = idx;
+  const work = currentList[lbIndex];
+  if (!work || !work.src) return;
+  lbImg.style.opacity = '0';
+  lbImg.src = work.src; lbImg.alt = work.title;
+  lbTitle.textContent = work.title;
+  lbImg.onload = () => { lbImg.style.opacity = '1'; };
+  lb.classList.add('open');
+  document.body.style.overflow = 'hidden';
+  // Show/hide arrows — only for works that have images
+  const hasPrev = currentList.slice(0, lbIndex).some(w => w.src);
+  const hasNext = currentList.slice(lbIndex + 1).some(w => w.src);
+  lbPrev.classList.toggle('hidden', !hasPrev);
+  lbNext.classList.toggle('hidden', !hasNext);
+}
+
+function lbStep(dir) {
+  let idx = lbIndex + dir;
+  while (idx >= 0 && idx < currentList.length) {
+    if (currentList[idx].src) { lbIndex = idx; openLb(); return; }
+    idx += dir;
+  }
+}
+
+function closeLb() {
+  lb.classList.remove('open');
+  document.body.style.overflow = '';
+  setTimeout(() => { lbImg.src = ''; lbTitle.textContent = ''; }, 420);
+}
+
+lb.addEventListener('click', e => { if (e.target === lb) closeLb(); });
+document.getElementById('lb-close').addEventListener('click', closeLb);
+lbPrev.addEventListener('click', e => { e.stopPropagation(); lbStep(-1); });
+lbNext.addEventListener('click', e => { e.stopPropagation(); lbStep(1); });
+document.addEventListener('keydown', e => {
+  if (!lb.classList.contains('open')) return;
+  if (e.key === 'Escape')     closeLb();
+  if (e.key === 'ArrowLeft')  lbStep(-1);
+  if (e.key === 'ArrowRight') lbStep(1);
+});
+
+// ── Lightbox swipe ──
+let lbTouchX = null;
+lb.addEventListener('touchstart', e => {
+  lbTouchX = e.touches[0].clientX;
+}, { passive: true });
+lb.addEventListener('touchend', e => {
+  if (lbTouchX === null) return;
+  const dx = e.changedTouches[0].clientX - lbTouchX;
+  lbTouchX = null;
+  if (Math.abs(dx) < 40) return; // too short — ignore
+  haptic('light');
+  lbStep(dx < 0 ? 1 : -1);
+}, { passive: true });
+
+// ── Header always visible ──
+const headerEl = document.querySelector('header');
+setTimeout(() => headerEl.classList.add('visible'), 100);
+
+loadWorks();
+</script>
+</body>
+</html>
