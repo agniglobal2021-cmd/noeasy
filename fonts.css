@@ -1,0 +1,27 @@
+/* ── NOEASY shared fonts ──────────────────────────────────────────────────────
+   Place this file at the site root: /fonts.css
+   Place font files at:              /fonts/Alkhemikal.ttf
+                                     /fonts/DotGothic16-Regular.ttf
+
+   Usage in any subpage (e.g. gallery/index.html, about/index.html):
+     <link rel="stylesheet" href="../fonts.css">
+
+   Usage in root index.html:
+     <link rel="stylesheet" href="fonts.css">
+── */
+
+@font-face {
+  font-family: 'Alkhemikal';
+  src: url('fonts/Alkhemikal.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'DotGothic16';
+  src: url('fonts/DotGothic16-Regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
