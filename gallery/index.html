@@ -6,7 +6,18 @@
 <title>Gallery | NOEASY</title>
 <link rel="icon" type="image/png" href="IMG_8091.png">
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Fondamento:ital@0;1&family=Space+Mono:wght@400;700&display=swap');
+  @font-face {
+    font-family: 'Alkhemikal';
+    src: url('Alkhemikal.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+  }
+  @font-face {
+    font-family: 'DotGothic16';
+    src: url('DotGothic16-Regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+  }
   *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
   :root { --bg: #e8e0c4; --text: #353535; }
 
@@ -34,7 +45,7 @@
 
   html, body {
     background: #e8e0c4;
-    font-family: 'Space Mono', monospace;
+    font-family: 'DotGothic16', monospace;
     color: var(--text);
     overflow-x: hidden;
     overscroll-behavior: none;
@@ -81,7 +92,7 @@
     border-bottom: 1px solid #3e352d;
   }
   .header-titlebar-strip-text {
-    font-family: 'Space Mono', monospace;
+    font-family: 'DotGothic16', monospace;
     font-size: 9px; font-weight: 700;
     letter-spacing: 0.14em;
     color: var(--win95-title-text);
@@ -126,7 +137,7 @@
   .pill-btn {
     height: calc(100% - 10px); display: flex; align-items: center;
     padding: 0 10px; gap: 6px; margin: 0 2px;
-    font-family: 'Space Mono', monospace;
+    font-family: 'DotGothic16', monospace;
     font-size: 9px; font-weight: 700;
     letter-spacing: 0.10em; text-transform: uppercase;
     color: #000000;
@@ -171,12 +182,12 @@
     white-space: nowrap;
   }
   .pill-section {
-    font-family: 'Fondamento', serif;
+    font-family: 'Alkhemikal', serif;
     font-size: 14px; letter-spacing: 0.08em;
     opacity: 0.9; white-space: nowrap; color: #000000;
   }
   .pill-count {
-    font-family: 'Space Mono', monospace;
+    font-family: 'DotGothic16', monospace;
     font-size: 8px; letter-spacing: 0.2em; opacity: 0.5;
     white-space: nowrap; color: #000000;
   }
@@ -303,7 +314,7 @@
     transform: translateY(0);
   }
   .nav-overlay a {
-    font-family: 'Space Mono', monospace;
+    font-family: 'DotGothic16', monospace;
     font-size: 10px; font-weight: 700; letter-spacing: 0.12em;
     text-transform: uppercase;
     color: #000000; text-decoration: none;
@@ -377,7 +388,7 @@
     flex-shrink: 0;
   }
   .img-win95-titlebar-text {
-    font-family: 'Space Mono', monospace;
+    font-family: 'DotGothic16', monospace;
     font-size: 8px; font-weight: 700;
     color: #f6f1da;
     letter-spacing: 0.12em; text-transform: uppercase;
@@ -445,25 +456,25 @@
   .work-left { display: flex; flex-direction: column; gap: 4px; }
   .work-title-row { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
   .work-title {
-    font-family: 'Fondamento', serif;
+    font-family: 'Alkhemikal', serif;
     font-size: 19px; font-weight: 400;
     letter-spacing: 0.04em; opacity: 0.78;
     line-height: 1.2;
   }
   .work-year {
-    font-family: 'Space Mono', monospace;
+    font-family: 'DotGothic16', monospace;
     font-size: 9px; font-weight: 400;
     letter-spacing: 0.18em; opacity: calc(0.32 * var(--secondary-fade, 1));
     white-space: nowrap;
   }
   .work-tags { display: flex; align-items: center; gap: 0; flex-wrap: wrap; }
   .work-tag {
-    font-family: 'Space Mono', monospace;
+    font-family: 'DotGothic16', monospace;
     font-size: 8px; font-weight: 400;
     letter-spacing: 0.20em; text-transform: uppercase; opacity: calc(0.30 * var(--secondary-fade, 1));
   }
   .work-tag-sep {
-    font-family: 'Space Mono', monospace;
+    font-family: 'DotGothic16', monospace;
     font-size: 7px; opacity: calc(0.18 * var(--secondary-fade, 1));
     margin: 0 6px; line-height: 1;
     user-select: none;
@@ -481,7 +492,7 @@
     height: 28px;
     display: flex; align-items: center;
     padding: 0 10px; gap: 5px;
-    font-family: 'Space Mono', monospace;
+    font-family: 'DotGothic16', monospace;
     font-size: 8px; font-weight: 700; letter-spacing: 0.10em; text-transform: uppercase;
     color: #000000;
     background: #AFA191;
@@ -538,7 +549,7 @@
   }
   .purchase-dropdown a {
     display: block;
-    font-family: 'Space Mono', monospace;
+    font-family: 'DotGothic16', monospace;
     font-size: 9px; font-weight: 700; letter-spacing: 0.10em; text-transform: uppercase;
     color: #000000; text-decoration: none;
     padding: 6px 10px;
@@ -586,7 +597,7 @@
   #lightbox.open #lb-img { transform: none; }
   #lb-close {
     position: absolute; top: 30px; right: 40px;
-    font-family: 'Space Mono', monospace;
+    font-family: 'DotGothic16', monospace;
     font-size: 9px; font-weight: 700;
     letter-spacing: 0.14em; text-transform: uppercase;
     cursor: pointer; user-select: none;
@@ -608,7 +619,7 @@
   #lb-title {
     position: absolute; bottom: 34px; left: 50%;
     transform: translateX(-50%);
-    font-family: 'Space Mono', monospace;
+    font-family: 'DotGothic16', monospace;
     font-size: 9px; font-weight: 300;
     letter-spacing: 0.28em; text-transform: uppercase;
     color: #f6f1da; opacity: 0.35; white-space: nowrap;
@@ -804,7 +815,7 @@
   /* ── Lightbox nav arrows — Win95 buttons ── */
   .lb-arrow {
     position: absolute; top: 50%; transform: translateY(-50%);
-    font-family: 'Space Mono', monospace;
+    font-family: 'DotGothic16', monospace;
     font-size: 10px; font-weight: 700; letter-spacing: 0.10em;
     text-transform: uppercase; color: #000000;
     background: #AFA191;
@@ -866,14 +877,14 @@
     border-top: 1px solid #7a7068;
   }
   .filter-group-label {
-    font-family: 'Space Mono', monospace;
+    font-family: 'DotGothic16', monospace;
     font-size: 8px; font-weight: 700;
     letter-spacing: 0.20em; text-transform: uppercase;
     color: #000000; opacity: 0.55; min-width: 90px; flex-shrink: 0;
   }
 
   .tag-btn {
-    font-family: 'Space Mono', monospace;
+    font-family: 'DotGothic16', monospace;
     font-size: 10px; font-weight: 700;
     letter-spacing: 0.14em; text-transform: uppercase;
     color: #000000; background: none; border: none;
@@ -985,7 +996,7 @@
           <a href="/">Home</a>
           <a href="/about/">About</a>
           <a href="/gallery/" class="current">Gallery</a>
-          <a href="https://noeasy.xyz/links/">Links</a>
+          <a href="/links/">Links</a>
         </div>
       </div>
     </div>
