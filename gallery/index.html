@@ -90,35 +90,8 @@
     overflow: hidden; text-overflow: ellipsis;
     flex: 1;
   }
-  /* Win95 window control buttons — identical to real Win95 */
-  .header-win95-btns {
-    display: flex; flex-shrink: 0;
-    height: var(--header-titlebar-h);
-  }
-  .header-win95-btn {
-    width: 18px;
-    height: 100%;
-    background: #c0a882;
-    border-top: 2px solid #f0dfc0;
-    border-left: 2px solid #f0dfc0;
-    border-right: 2px solid #4a3520;
-    border-bottom: 2px solid #4a3520;
-    display: flex; align-items: center; justify-content: center;
-    cursor: default;
-    font-family: 'Space Mono', monospace;
-    font-size: 8px; line-height: 1;
-    color: #1a1a1a;
-    font-weight: 700;
-    margin-right: 2px;
-    flex-shrink: 0;
-    user-select: none;
-  }
-  .header-win95-btn:last-child { margin-right: 0; }
-  /* X button slightly wider, darker */
-  .header-win95-btn.btn-close {
-    width: 20px;
-    background: #c0a882;
-  }
+  /* Win95 window control buttons — hidden in header titlebar */
+  .header-win95-btns { display: none; }
 
   /* Win95 window frame — now full width below titlebar */
   .header-pill {
@@ -352,26 +325,26 @@
 
   .work-item {
     width: min(820px, 88vw, 68vh);
-    padding: 48px 0;
+    padding: 40px 0 36px;
     display: flex; flex-direction: column; align-items: center;
     position: relative; z-index: 20;
   }
 
   /* Footer rises after image */
   .work-footer {
-    width: 100%; margin-top: 13px;
-    display: flex; justify-content: space-between; align-items: baseline;
+    width: 100%; margin-top: 10px;
+    display: flex; justify-content: space-between; align-items: flex-start;
     gap: 12px; position: relative; z-index: 20;
     opacity: 0;
-    transform: translateY(10px);
+    transform: translateY(8px);
     transition: opacity 0.5s ease, transform 0.5s cubic-bezier(0.16,1,0.3,1);
   }
   .work-item.visible .work-footer {
     opacity: 1; transform: none;
-    transition-delay: 0.35s;
+    transition-delay: 0.3s;
   }
 
-  /* ── Win95 window frame around paintings ── */
+  /* img-win95 must NOT be translated — footer would collide. Parallax lives inside img-wrap. */
   .img-win95 {
     width: 100%;
     background: var(--win95-bg);
@@ -380,10 +353,7 @@
     border-right: 2px solid var(--win95-border-darkest);
     border-bottom: 2px solid var(--win95-border-darkest);
     box-shadow: 2px 2px 0 var(--win95-border-dark);
-    padding: 0 0 4px 0;
-    /* Clip parallax overflow — no empty gutters */
-    overflow: hidden;
-    will-change: transform;
+    padding: 0 0 3px 0;
   }
 
   /* Title bar of the painting window */
@@ -425,10 +395,10 @@
     font-weight: 700;
   }
 
-  /* The img-wrap now contains both the titlebar-safe area and image */
+  /* The img-wrap is the parallax viewport — overflow:hidden clips the scaled image */
   .img-win95 .img-wrap {
-    margin: 0 3px 3px 3px;
-    /* overflow hidden here too so clip-path reveal works correctly */
+    margin: 0 3px 0 3px;
+    overflow: hidden;
   }
 
   /* Image wrap — curtain reveal */
@@ -443,7 +413,7 @@
     clip-path: inset(0 0 0% 0);
   }
 
-  /* Inner image — scaled up slightly so parallax shift never reveals edges */
+  /* Inner image — scaled up so parallax shift never shows edges */
   .img-wrap img,
   .img-placeholder {
     width: 100%; display: block;
@@ -452,7 +422,6 @@
     filter: blur(5px);
     transition: filter 0.7s cubic-bezier(0.4, 0, 0.2, 1);
     user-select: none; -webkit-user-drag: none;
-    /* Scale up so parallax movement doesn't show empty edges */
     transform-origin: center center;
   }
   .work-item.visible .img-wrap img,
@@ -730,20 +699,8 @@
   #cursor.active { transform: translate(-50%, -50%) scale(1); opacity: 1; }
   #cursor.pressed { transform: translate(-50%, -50%) scale(0.6); }
 
-  /* ── Scroll progress ── */
-  #scroll-progress {
-    position: fixed; left: 0; top: 0; bottom: 0;
-    width: 2px; z-index: 400; pointer-events: none;
-  }
-  #scroll-progress::after {
-    content: '';
-    position: absolute; left: 0; top: 0;
-    width: 100%;
-    height: var(--progress, 0%);
-    background: var(--text);
-    opacity: 0.15;
-    transition: height 0.1s linear;
-  }
+  /* scroll progress removed */
+  #scroll-progress { display: none; }
 
   /* ── Card hover: footer brightens ── */
   .work-item:hover .work-title { opacity: 0.92; }
@@ -1475,21 +1432,18 @@ function initParallax() {
     const now = performance.now();
 
     feed.querySelectorAll('.work-item').forEach(item => {
-      const win95 = item.querySelector('.img-win95');
       const wrap  = item.querySelector('.img-wrap');
       const inner = wrap && wrap.firstElementChild;
-      if (!win95 || !inner) return;
+      if (!inner) return;
 
       const colIdx = parseInt(item.dataset.col ?? '-1');
       const factor = isGrid && colIdx >= 0 ? COL_FACTORS[colIdx] ?? COL_FACTORS[0] : FEED_FACTOR;
 
-      // Use the full win95 window rect for parallax calculation
-      const rect = win95.getBoundingClientRect();
+      const rect = wrap.getBoundingClientRect();
       const parallax = ((rect.top + rect.height / 2) - vh / 2) * factor;
 
       if (!item.classList.contains('visible')) {
-        // Keep image scaled up during reveal, titlebar stays put
-        inner.style.transform = `translateY(${OFFSET}px) scale(1.10)`;
+        inner.style.transform = `translateY(${OFFSET}px) scale(1.12)`;
         revealStart.delete(item);
         return;
       }
@@ -1498,13 +1452,10 @@ function initParallax() {
       const t = Math.min((now - revealStart.get(item)) / DURATION, 1);
       const ease = 1 - Math.pow(1 - t, 3);
       const rise = OFFSET * (1 - ease);
-      // Keep scale slightly above 1 so parallax shift never shows edges
-      const scale = 1.10 - 0.10 * ease;
+      // Keep scale buffer so parallax shift doesn't expose edges
+      const scale = 1.12 - 0.08 * ease; // settles at 1.04
 
-      // Move the whole win95 window with parallax (titlebar included)
-      win95.style.transform = `translateY(${(rise + parallax).toFixed(2)}px)`;
-      // Inner image stays flush — just slight scale for breathing room
-      inner.style.transform = `scale(${scale.toFixed(4)})`;
+      inner.style.transform = `translateY(${(rise + parallax).toFixed(2)}px) scale(${scale.toFixed(4)})`;
 
       // ── Internal element micro-parallax & edge opacity fade ──
       const footer = item.querySelector('.work-footer');
