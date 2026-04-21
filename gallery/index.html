@@ -366,11 +366,10 @@
     background: var(--win95-bg);
     /* Authentic Win95 3D border: light top-left, dark bottom-right, outer then inner */
     border: 2px solid #353535;
-    outline: 2px solid #f0e8d0;
-    outline-offset: -4px;
     box-shadow:
-      -2px -2px 0 0 #f0e8d0,
-      2px 2px 0 0 #7a6f52;
+      0 0 0 2px rgba(240,232,208,0.38),
+      2px 2px 0 0 #7a6f52,
+      0 4px 18px rgba(53,53,53,0.13);
     padding: 0;
     overflow: hidden;
     will-change: transform;
@@ -453,30 +452,40 @@
   }
   .img-placeholder { position: relative; }
 
-  .work-left { display: flex; flex-direction: column; gap: 4px; }
-  .work-title-row { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+  .work-left { display: flex; flex-direction: column; gap: 6px; }
+  .work-title-row { display: flex; align-items: baseline; gap: 0; flex-wrap: wrap; }
   .work-title {
     font-family: 'Alkhemikal', serif;
-    font-size: 19px; font-weight: 400;
-    letter-spacing: 0.04em; opacity: 0.78;
+    font-size: 20px; font-weight: 400;
+    letter-spacing: 0.04em; opacity: 0.80;
     line-height: 1.2;
+  }
+  .work-meta-row {
+    display: flex; align-items: center; gap: 10px;
+    flex-wrap: wrap;
   }
   .work-year {
     font-family: 'DotGothic16', monospace;
-    font-size: 9px; font-weight: 400;
-    letter-spacing: 0.18em; opacity: calc(0.32 * var(--secondary-fade, 1));
+    font-size: 8px; font-weight: 400;
+    letter-spacing: 0.22em; opacity: calc(0.38 * var(--secondary-fade, 1));
     white-space: nowrap;
+  }
+  .work-year-sep {
+    width: 1px; height: 9px;
+    background: currentColor;
+    opacity: calc(0.15 * var(--secondary-fade, 1));
+    flex-shrink: 0;
   }
   .work-tags { display: flex; align-items: center; gap: 0; flex-wrap: wrap; }
   .work-tag {
     font-family: 'DotGothic16', monospace;
-    font-size: 8px; font-weight: 400;
-    letter-spacing: 0.20em; text-transform: uppercase; opacity: calc(0.30 * var(--secondary-fade, 1));
+    font-size: 7px; font-weight: 400;
+    letter-spacing: 0.18em; text-transform: uppercase; opacity: calc(0.28 * var(--secondary-fade, 1));
   }
   .work-tag-sep {
     font-family: 'DotGothic16', monospace;
-    font-size: 7px; opacity: calc(0.18 * var(--secondary-fade, 1));
-    margin: 0 6px; line-height: 1;
+    font-size: 7px; opacity: calc(0.15 * var(--secondary-fade, 1));
+    margin: 0 5px; line-height: 1;
     user-select: none;
   }
 
@@ -1246,13 +1255,14 @@ function render(scrollTop = false) {
 
     const titleRow = document.createElement('div');
     titleRow.className = 'work-title-row';
-    titleRow.innerHTML = `<span class="work-title">${work.title}</span><span class="work-year">${fmtDate(work.date, work.year)}</span>`;
+    titleRow.innerHTML = `<span class="work-title">${work.title}</span>`;
     left.appendChild(titleRow);
 
-    const tagsEl = document.createElement('div');
-    tagsEl.className = 'work-tags';
-    tagsEl.innerHTML = tagsHtml;
-    left.appendChild(tagsEl);
+    const metaRow = document.createElement('div');
+    metaRow.className = 'work-meta-row';
+    const dateStr = fmtDate(work.date, work.year);
+    metaRow.innerHTML = `<span class="work-year">${dateStr}</span><span class="work-year-sep"></span><div class="work-tags">${tagsHtml}</div>`;
+    left.appendChild(metaRow);
 
     // Shimmer skeleton overlay for footer lines (visible while image loads)
     if (work.src) {
@@ -1342,29 +1352,20 @@ function render(scrollTop = false) {
 
     const btns = document.createElement('div');
     btns.className = 'img-win95-titlebar-btns';
-    // Jerusalem cross — central cross + 4 small crosslets in each quadrant
-    // 11×11 pixel grid, each rect is 1 unit
+    // Templar cross pattée — arms widen toward tips, pixel-perfect 11×11
     const crossSVG = `<svg width="11" height="11" viewBox="0 0 11 11" fill="none" xmlns="http://www.w3.org/2000/svg" style="display:block;image-rendering:pixelated;shape-rendering:crispEdges">
-      <!-- main vertical bar -->
+      <!-- vertical arm: narrow at center, widens at top and bottom -->
       <rect x="5" y="0" width="1" height="11" fill="#1a1612"/>
-      <!-- main horizontal bar -->
+      <rect x="4" y="1" width="3" height="1" fill="#1a1612"/>
+      <rect x="4" y="9" width="3" height="1" fill="#1a1612"/>
+      <rect x="3" y="0" width="5" height="1" fill="#1a1612"/>
+      <rect x="3" y="10" width="5" height="1" fill="#1a1612"/>
+      <!-- horizontal arm: narrow at center, widens at left and right -->
       <rect x="0" y="5" width="11" height="1" fill="#1a1612"/>
-      <!-- top-left crosslet: vertical -->
-      <rect x="2" y="1" width="1" height="3" fill="#1a1612"/>
-      <!-- top-left crosslet: horizontal -->
-      <rect x="1" y="2" width="3" height="1" fill="#1a1612"/>
-      <!-- top-right crosslet: vertical -->
-      <rect x="8" y="1" width="1" height="3" fill="#1a1612"/>
-      <!-- top-right crosslet: horizontal -->
-      <rect x="7" y="2" width="3" height="1" fill="#1a1612"/>
-      <!-- bottom-left crosslet: vertical -->
-      <rect x="2" y="7" width="1" height="3" fill="#1a1612"/>
-      <!-- bottom-left crosslet: horizontal -->
-      <rect x="1" y="8" width="3" height="1" fill="#1a1612"/>
-      <!-- bottom-right crosslet: vertical -->
-      <rect x="8" y="7" width="1" height="3" fill="#1a1612"/>
-      <!-- bottom-right crosslet: horizontal -->
-      <rect x="7" y="8" width="3" height="1" fill="#1a1612"/>
+      <rect x="1" y="4" width="1" height="3" fill="#1a1612"/>
+      <rect x="9" y="4" width="1" height="3" fill="#1a1612"/>
+      <rect x="0" y="3" width="1" height="5" fill="#1a1612"/>
+      <rect x="10" y="3" width="1" height="5" fill="#1a1612"/>
     </svg>`;
     btns.innerHTML = `<span class="img-win95-btn" title="Minimize">${crossSVG}</span><span class="img-win95-btn" title="Maximize">${crossSVG}</span><span class="img-win95-btn btn-close" title="Close">${crossSVG}</span>`;
     btns.addEventListener('click', e => e.stopPropagation());
@@ -1518,13 +1519,11 @@ function initParallax() {
       item.style.setProperty('--secondary-fade', fade.toFixed(3));
 
       const titleEl = footer.querySelector('.work-title');
-      const yearEl  = footer.querySelector('.work-year');
-      const tagsEl  = footer.querySelector('.work-tags');
+      const metaEl  = footer.querySelector('.work-meta-row');
       const rightEl = footer.querySelector('.work-right');
 
       if (titleEl) titleEl.style.transform = `translateY(${(dist * 0.004 * ease).toFixed(2)}px)`;
-      if (yearEl)  yearEl.style.transform  = `translateY(${(dist * 0.009 * ease).toFixed(2)}px)`;
-      if (tagsEl)  tagsEl.style.transform  = `translateY(${(dist * 0.015 * ease).toFixed(2)}px)`;
+      if (metaEl)  metaEl.style.transform  = `translateY(${(dist * 0.010 * ease).toFixed(2)}px)`;
       if (rightEl) rightEl.style.transform = `translateY(${(dist * 0.004 * ease).toFixed(2)}px)`;
     });
 
