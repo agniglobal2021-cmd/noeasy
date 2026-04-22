@@ -374,7 +374,7 @@
     width: min(820px, 88vw, 68vh);
     padding: 40px 0 36px;
     display: flex; flex-direction: column; align-items: center;
-    position: relative; z-index: 20;
+    position: relative; z-index: 9999;
   }
 
   /* Footer rises after image */
@@ -404,7 +404,7 @@
     overflow: hidden;
     will-change: transform;
     position: relative;
-    z-index: 2;
+    z-index: 9999;
   }
 
   /* Titlebar — отступ 1px со всех сторон вокруг тёмного прямоугольника */
@@ -644,7 +644,7 @@
   }
   #lightbox.open { opacity: 1; pointer-events: auto; }
   #lb-img {
-    max-width: 92vw; max-height: 92vh;
+    max-width: 92vw; max-height: 80vh;
     object-fit: contain; display: block;
     transform: scale(0.94) translateY(14px);
     transition: transform 0.56s cubic-bezier(0.16,1,0.3,1);
@@ -673,13 +673,12 @@
     box-shadow: inset 1px 1px 0 #7a7068;
   }
   #lb-title {
-    position: absolute; bottom: 34px; left: 50%;
-    transform: translateX(-50%);
-    font-family: 'DotGothic16', monospace;
-    font-size: 9px; font-weight: 300;
-    letter-spacing: 0.28em; text-transform: uppercase;
-    color: #f6f1da; opacity: 0.35; white-space: nowrap;
-    pointer-events: none;
+    font-family: 'Alkhemikal', serif;
+    font-size: 20px; font-weight: 400;
+    letter-spacing: 0.06em;
+    color: #f6f1da; opacity: 0.75;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    pointer-events: none; text-align: center; flex: 1;
   }
 
   @keyframes fadeIn { to { opacity: 1; } }
@@ -831,9 +830,16 @@
     .grid-col[data-col="1"] { margin-top: 100px; }
   }
 
-  /* ── Lightbox nav arrows — Win95 buttons ── */
+  /* ── Lightbox bottom bar: prev | title | next ── */
+  #lb-bottom {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 64px;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 16px;
+    gap: 12px;
+  }
   .lb-arrow {
-    position: absolute; top: 50%; transform: translateY(-50%);
     font-family: 'DotGothic16', monospace;
     font-size: 10px; font-weight: 700; letter-spacing: 0.10em;
     text-transform: uppercase; color: #000000;
@@ -843,7 +849,7 @@
     border-right: 2px solid #3d3830;
     border-bottom: 2px solid #3d3830;
     box-shadow: inset 1px 1px 0 #d4cdc4, inset -1px -1px 0 #7a7068;
-    cursor: pointer; user-select: none;
+    cursor: pointer; user-select: none; flex-shrink: 0;
     transition: opacity 0.15s; padding: 6px 14px;
     -webkit-tap-highlight-color: transparent;
   }
@@ -854,8 +860,6 @@
     border-bottom: 2px solid #d4cdc4;
     box-shadow: inset 1px 1px 0 #7a7068;
   }
-  #lb-prev { left: 20px; }
-  #lb-next { right: 20px; }
   .lb-arrow.hidden { opacity: 0 !important; pointer-events: none; }
 
   @media (max-width: 680px) {
@@ -1093,10 +1097,12 @@
 
 <div id="lightbox">
   <span id="lb-close">Close</span>
-  <span class="lb-arrow" id="lb-prev">←</span>
   <img id="lb-img" src="" alt="">
-  <span class="lb-arrow" id="lb-next">→</span>
-  <span id="lb-title"></span>
+  <div id="lb-bottom">
+    <span class="lb-arrow" id="lb-prev">←</span>
+    <span id="lb-title"></span>
+    <span class="lb-arrow" id="lb-next">→</span>
+  </div>
 </div>
 
 <script>
@@ -1303,7 +1309,7 @@ function render(scrollTop = false) {
     const tagParts = [work.style, work.workType];
     if (work.workType === 'Personal' && work.avail.length) tagParts.push(...work.avail);
     const tagsHtml = tagParts.map(t => `<span class="work-tag">${t}</span>`)
-      .join('<span class="work-tag-sep">×</span>');
+      .join('<span class="work-tag-sep">/</span>');
 
     const left = document.createElement('div');
     left.className = 'work-left';
