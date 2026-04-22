@@ -151,9 +151,22 @@
   .sword-btn .line:nth-child(1),
   .sword-btn .line:nth-child(2),
   .sword-btn .line:nth-child(3) { width: 18px; }
-  .sword-btn.open .line:nth-child(1) { transform: translateY(6px) rotate(45deg); }
+  .sword-btn .line::after {
+    content: ''; position: absolute; right: 3px; top: 50%;
+    transform: translateY(-50%); width: 2px; height: 6px;
+    background: #000; border-radius: 0;
+    opacity: 0; transition: opacity 0.25s;
+  }
+  .sword-btn.open .line { opacity: 1; }
+  .sword-btn.open .line:nth-child(1) { width: 18px; transform: translateY(6px) rotate(45deg); }
   .sword-btn.open .line:nth-child(2) { opacity: 0; transform: scaleX(0); }
-  .sword-btn.open .line:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
+  .sword-btn.open .line:nth-child(3) { width: 18px; transform: translateY(-6px) rotate(-45deg); }
+  .sword-btn.open .line::after { opacity: 0.55; }
+  @media (min-width: 681px) {
+    .sword-btn.open .line:nth-child(1) { width: 17px; transform: translateY(6px) rotate(45deg); }
+    .sword-btn.open .line:nth-child(3) { width: 17px; transform: translateY(-6px) rotate(-45deg); }
+    .sword-btn.open .line::after { opacity: 0.55; }
+  }
 
   .burger-wrap { position: relative; height: 100%; display: flex; align-items: center; }
 
@@ -178,7 +191,7 @@
   }
   .nav-overlay a::before { content: '/'; margin-right: 7px; font-size: 10px; }
   .nav-overlay a::after { display: none; }
-  .nav-overlay a:hover { background: #000080; color: #fff; }
+  .nav-overlay a:hover { background: #5D5143; color: #f6f1da; }
   .nav-overlay a + a { border-top: 1px solid #7a7068; }
   .nav-overlay a.current { background: #c8c2ba; }
 
@@ -190,55 +203,27 @@
   }
   .content-wrap { width: 100%; max-width: min(560px, 96vw); }
 
-  /* ─────────── WIN95 SECTION WINDOW ─────────── */
+  /* ─────────── GROUP SECTIONS ─────────── */
   .win95-section {
-    width: 100%; margin-bottom: 14px;
-    background: #AFA191;
-    border-top: 2px solid #d4cdc4; border-left: 2px solid #d4cdc4;
-    border-right: 2px solid #3d3830; border-bottom: 2px solid #3d3830;
-    box-shadow: 2px 2px 0 #2a2520;
+    width: 100%; margin-bottom: 24px;
     opacity: 0; transform: translateY(14px);
     transition: opacity 0.55s cubic-bezier(0.16,1,0.3,1),
                 transform 0.55s cubic-bezier(0.16,1,0.3,1);
   }
   .win95-section.visible { opacity: 1; transform: none; }
 
-  /* Titlebar */
-  .win-titlebar {
-    display: flex; align-items: stretch;
-    height: 20px; background: #AFA191;
-    padding: 1px; user-select: none; flex-shrink: 0;
-  }
-  .win-titlebar-inner {
-    flex: 1; height: 100%;
-    background: #5D5143;
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 0 1px 0 6px; overflow: hidden; min-width: 0;
-  }
-  .win-titlebar-text {
-    font-family: 'DotGothic16', monospace;
-    font-size: 8px; font-weight: 700; color: #f6f1da;
-    letter-spacing: 0.12em; text-transform: uppercase;
-    overflow: hidden; white-space: nowrap; text-overflow: ellipsis;
-    line-height: 1; flex: 1;
-  }
-  .win-titlebar-btns { display: flex; gap: 1px; flex-shrink: 0; }
-  .win-titlebar-btn {
-    width: 16px; height: 100%; background: #AFA191;
-    border-top: 1px solid #d4cdc4; border-left: 1px solid #d4cdc4;
-    border-right: 1px solid #3d3830; border-bottom: 1px solid #3d3830;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 7px; color: #000; font-family: monospace; cursor: default;
-    line-height: 1;
+  /* Gothic section label */
+  .group-label {
+    font-family: 'Alkhemikal', serif;
+    font-size: 13px; letter-spacing: 0.10em;
+    color: rgba(53,53,53,0.45);
+    margin-bottom: 8px;
+    display: block;
+    user-select: none;
   }
 
-  /* Window body */
-  .win-body {
-    background: var(--bg);
-    border: 1px solid #b8ac88;
-    margin: 1px;
-    padding: 12px 14px 14px;
-  }
+  .win-titlebar { display: none; }
+  .win-body { background: transparent; padding: 0; }
 
   /* ─────────── SOCIAL GRID ─────────── */
   .social-grid {
@@ -265,28 +250,36 @@
     box-shadow: inset 1px 1px 0 #7a7068;
   }
   a.social-btn svg {
-    width: 60%; height: 60%;
+    width: 55%; height: 55%;
     display: block;
-    image-rendering: pixelated;
-    image-rendering: crisp-edges;
-    shape-rendering: crispEdges;
   }
 
   /* ─────────── LINK ROWS ─────────── */
   a.link-item {
     display: flex; align-items: center; justify-content: space-between;
-    padding: 9px 4px;
-    border-bottom: 1px solid rgba(53,53,53,0.08);
+    padding: 7px 10px;
+    margin-bottom: 5px;
     color: #000; text-decoration: none;
     font-family: 'DotGothic16', monospace;
     font-size: 9px; font-weight: 700;
     letter-spacing: 0.14em; text-transform: uppercase;
-    opacity: 0.72;
-    transition: background 0.05s, opacity 0.1s, padding-left 0.1s;
+    background: #AFA191;
+    border-top: 2px solid #d4cdc4; border-left: 2px solid #d4cdc4;
+    border-right: 2px solid #3d3830; border-bottom: 2px solid #3d3830;
+    box-shadow: inset 1px 1px 0 #d4cdc4, inset -1px -1px 0 #7a7068;
+    -webkit-tap-highlight-color: transparent;
+    transition: background 0.08s;
   }
-  a.link-item:last-child { border-bottom: none; }
-  a.link-item:hover { opacity: 1; background: rgba(0,0,128,0.05); padding-left: 8px; }
-  a.link-item:active { background: #000080; color: #fff; opacity: 1; }
+  a.link-item:last-child { margin-bottom: 0; }
+  a.link-item:hover { background: #bfb9b0; }
+  a.link-item:active {
+    border-top: 2px solid #3d3830; border-left: 2px solid #3d3830;
+    border-right: 2px solid #d4cdc4; border-bottom: 2px solid #d4cdc4;
+    box-shadow: inset 1px 1px 0 #7a7068;
+    background: #5D5143; color: #f6f1da;
+  }
+  a.link-item:active .link-domain,
+  a.link-item:active .link-arrow { color: #f6f1da; opacity: 0.6; }
 
   .link-right {
     display: flex; align-items: center; gap: 10px; flex-shrink: 0;
@@ -415,16 +408,7 @@
     <div class="form-section" id="form-section">
       <!-- form is inside a Win95 window too -->
       <div class="win95-section visible">
-        <div class="win-titlebar">
-          <div class="win-titlebar-inner">
-            <span class="win-titlebar-text">Write to me</span>
-            <div class="win-titlebar-btns">
-              <div class="win-titlebar-btn">_</div>
-              <div class="win-titlebar-btn">□</div>
-              <div class="win-titlebar-btn">✕</div>
-            </div>
-          </div>
-        </div>
+        <span class="group-label">Write to me</span>
         <div class="win-body">
           <form id="contact-form" action="https://formspree.io/f/YOUR_FORM_ID" method="POST">
             <div class="form-field">
@@ -502,93 +486,33 @@ document.addEventListener('mouseup',   () => cursor.classList.remove('pressed'))
   });
 })();
 
-// ── Pixel art SVG icons (16×16 grid, shape-rendering="crispEdges") ──
-// Each path encodes filled rectangles as: M x,y h W v H h-W z
+// ── Brand SVG icons (proper logos, b&w) ──
 const ICONS = {
-  // Instagram: outer square border + inner circle ring + dot
-  instagram: `<svg viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-    <path shape-rendering="crispEdges" d="
-      M1,1 h14 v1 h-14 z
-      M1,1 h1 v14 h-1 z
-      M14,1 h1 v14 h-1 z
-      M1,14 h14 v1 h-14 z
-      M10,2 h3 v3 h-3 z
-      M5,5 h6 v1 h-6 z
-      M4,6 h1 v4 h-1 z
-      M11,6 h1 v4 h-1 z
-      M5,10 h6 v1 h-6 z
-    "/>
+
+  instagram: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg">
+    <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+    <circle cx="12" cy="12" r="4"/>
+    <circle cx="17.5" cy="6.5" r="1.2" fill="currentColor" stroke="none"/>
   </svg>`,
 
-  // X (Twitter): symmetric bold pixel X
-  x: `<svg viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-    <path shape-rendering="crispEdges" d="
-      M1,1 h2 v2 h-2 z  M13,1 h2 v2 h-2 z
-      M3,3 h2 v2 h-2 z  M11,3 h2 v2 h-2 z
-      M5,5 h2 v2 h-2 z  M9,5 h2 v2 h-2 z
-      M7,7 h2 v2 h-2 z
-      M5,9 h2 v2 h-2 z  M9,9 h2 v2 h-2 z
-      M3,11 h2 v2 h-2 z M11,11 h2 v2 h-2 z
-      M1,13 h2 v2 h-2 z M13,13 h2 v2 h-2 z
-    "/>
+  x: `<svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+    <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.736-8.857L1.254 2.25H8.08l4.253 5.622 5.91-5.622Zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
   </svg>`,
 
-  // Pinterest: bold letter P in a circle
-  pinterest: `<svg viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-    <path shape-rendering="crispEdges" d="
-      M4,1 h8 v1 h-8 z
-      M2,2 h2 v1 h-2 z  M12,2 h2 v1 h-2 z
-      M1,3 h1 v10 h-1 z M14,3 h1 v10 h-1 z
-      M2,13 h2 v1 h-2 z M12,13 h2 v1 h-2 z
-      M4,14 h8 v1 h-8 z
-      M4,3 h2 v9 h-2 z
-      M6,3 h4 v2 h-4 z
-      M10,5 h2 v2 h-2 z
-      M6,7 h4 v2 h-4 z
-    "/>
+  pinterest: `<svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+    <path d="M12 0C5.373 0 0 5.373 0 12c0 5.084 3.163 9.426 7.627 11.174-.105-.949-.2-2.405.042-3.441.218-.937 1.407-5.965 1.407-5.965s-.359-.719-.359-1.782c0-1.668.967-2.914 2.171-2.914 1.023 0 1.518.769 1.518 1.69 0 1.029-.655 2.568-.994 3.995-.283 1.194.599 2.169 1.777 2.169 2.133 0 3.772-2.249 3.772-5.495 0-2.873-2.064-4.882-5.012-4.882-3.414 0-5.418 2.561-5.418 5.207 0 1.031.397 2.138.893 2.738a.36.36 0 0 1 .083.345l-.333 1.36c-.053.22-.174.267-.402.161-1.499-.698-2.436-2.889-2.436-4.649 0-3.785 2.75-7.262 7.929-7.262 4.163 0 7.398 2.967 7.398 6.931 0 4.136-2.607 7.464-6.227 7.464-1.216 0-2.359-.632-2.75-1.378l-.748 2.853c-.271 1.043-1.002 2.35-1.492 3.146C9.57 23.812 10.763 24 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0z"/>
   </svg>`,
 
-  // Telegram: right-pointing bold arrow / paper plane
-  telegram: `<svg viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-    <path shape-rendering="crispEdges" d="
-      M1,8 h2 v1 h-2 z
-      M1,7 h4 v3 h-4 z
-      M1,6 h6 v5 h-6 z
-      M1,5 h8 v7 h-8 z
-      M1,4 h10 v9 h-10 z
-      M1,3 h12 v11 h-12 z
-      M1,2 h14 v13 h-14 z
-      M15,8 h1 v1 h-1 z
-    "/>
+  telegram: `<svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+    <path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/>
   </svg>`,
 
-  // Tumblr: bold T letter
-  tumblr: `<svg viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-    <path shape-rendering="crispEdges" d="
-      M1,2 h14 v3 h-14 z
-      M6,5 h4 v9 h-4 z
-    "/>
+  tumblr: `<svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+    <path d="M14.563 24c-5.093 0-7.031-3.756-7.031-6.411V9.747H5.116V6.648c3.63-1.313 4.512-4.596 4.71-6.469C9.84.051 9.941 0 9.999 0h3.517v6.114h4.801v3.633h-4.82v7.47c.012 1.023.516 2.458 2.683 2.458a38.34 38.34 0 0 0 2.118-.068v3.53c-.238.035-1.485.307-3.735.307z"/>
   </svg>`,
 
-  // DeviantArt: angular DA bolt — two wedge shapes
-  deviantart: `<svg viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-    <path shape-rendering="crispEdges" d="
-      M9,1 h5 v1 h-5 z
-      M8,2 h5 v1 h-5 z
-      M7,3 h5 v1 h-5 z
-      M6,4 h5 v1 h-5 z
-      M5,5 h5 v1 h-5 z
-      M4,6 h5 v1 h-5 z
-      M3,7 h4 v2 h-4 z
-      M4,9 h5 v1 h-5 z
-      M5,10 h5 v1 h-5 z
-      M6,11 h5 v1 h-5 z
-      M7,12 h5 v1 h-5 z
-      M8,13 h5 v1 h-5 z
-      M9,14 h5 v1 h-5 z
-      M2,6 h2 v1 h-2 z
-      M2,9 h2 v1 h-2 z
-    "/>
+  deviantart: `<svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+    <path d="M18.941 13.651l-.849 1.451H13.45L12 17.561v1.449H6.519v-1.449L3.059 10.35l.847-1.451H8.55L10 6.44V4.989H15.481v1.451l3.46 7.211zM10 6.44v7.211H13.6l1.4-2.392V6.44H10z"/>
   </svg>`,
 };
 
@@ -664,18 +588,8 @@ groups.forEach((group, gi) => {
   const section = document.createElement('div');
   section.className = 'win95-section';
 
-  // Win95 titlebar
-  section.innerHTML = `
-    <div class="win-titlebar">
-      <div class="win-titlebar-inner">
-        <span class="win-titlebar-text">${group.label}</span>
-        <div class="win-titlebar-btns">
-          <div class="win-titlebar-btn">_</div>
-          <div class="win-titlebar-btn">□</div>
-          <div class="win-titlebar-btn">✕</div>
-        </div>
-      </div>
-    </div>`;
+  // Gothic group label
+  section.innerHTML = `<span class="group-label">${group.label}</span>`;
 
   const body = document.createElement('div');
   body.className = 'win-body';
