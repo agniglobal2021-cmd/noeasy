@@ -387,7 +387,7 @@
     transition-delay: 0.3s;
   }
 
-  /* img-win95 — рамка цвета шапки (#AFA191), простой 3D-бевел без лишних теней */
+  /* img-win95 — одинаковый отступ 2px со всех сторон внутри рамки */
   .img-win95 {
     width: 100%;
     background: #AFA191;
@@ -396,19 +396,19 @@
     border-right: 2px solid #3d3830;
     border-bottom: 2px solid #3d3830;
     box-shadow: 1px 1px 0 #2a2520;
-    padding: 3px 3px 0 3px;
+    padding: 2px;
     overflow: hidden;
     will-change: transform;
     position: relative;
   }
 
-  /* Titlebar — светлый фон шапки, padding = те же 3px что и боковые рамки */
+  /* Titlebar — отступ 2px со всех сторон вокруг тёмного прямоугольника */
   .img-win95-titlebar {
     display: flex; align-items: stretch;
-    height: 26px;
+    height: 22px;
     background: #AFA191;
-    padding: 3px 3px 0 3px;
-    margin-bottom: 0;
+    padding: 2px 2px 2px 2px;
+    margin-bottom: 2px;
     user-select: none;
     flex-shrink: 0;
     gap: 0;
