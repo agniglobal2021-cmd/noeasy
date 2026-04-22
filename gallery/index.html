@@ -72,6 +72,8 @@
   }
   header {
     position: fixed; top: 0; left: 0; right: 0; z-index: 500;
+    width: 100%;
+    max-width: 100%;
     /* Fill safe-area + titlebar height above pill + pill itself */
     padding: 0;
     display: flex; flex-direction: column; align-items: stretch;
@@ -501,7 +503,7 @@
   .work-title-row { display: flex; align-items: baseline; gap: 0; flex-wrap: wrap; }
   .work-title {
     font-family: 'Alkhemikal', serif;
-    font-size: 22px; font-weight: 400;
+    font-size: 25px; font-weight: 400;
     letter-spacing: 0.04em; opacity: 0.80;
     line-height: 1.2;
   }
@@ -942,20 +944,28 @@
 
   /* ── Grid mode: footer fixes for narrow columns ── */
   main.grid-mode .work-footer {
-    flex-wrap: wrap;
-    gap: 6px;
+    flex-direction: column;
+    gap: 8px;
+    align-items: flex-start;
   }
   main.grid-mode .work-left {
     min-width: 0;
-    flex: 1 1 0;
+    width: 100%;
   }
   main.grid-mode .work-title {
-    font-size: 17px;
+    font-size: 20px;
     word-break: break-word;
   }
   main.grid-mode .work-right {
-    flex-shrink: 0;
+    align-items: flex-start;
+    width: 100%;
   }
+  main.grid-mode .work-meta-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 3px;
+  }
+  main.grid-mode .work-year-sep { display: none; }
 
   @media (max-width: 680px) {
     .filter-panel { top: calc(var(--header-total-h)); }
