@@ -46,7 +46,7 @@
     --header-total-h: calc(env(safe-area-inset-top, 0px) + var(--header-titlebar-h) + var(--header-pill-h));
   }
 
-  html { background: #5D5143; }
+  html { background: #5D5143; overflow-x: hidden; }
 
   /* Fill overscroll/rubber-band area above viewport in Telegram & in-app browsers.
      body::before sits fixed above the page, same color as the header bar. */
@@ -816,7 +816,7 @@
   }
 
   @media (max-width: 600px) {
-    main.grid-mode { gap: 8px; padding: 0 10px 180px; }
+    main.grid-mode { gap: 8px; padding-left: 10px; padding-right: 10px; padding-bottom: 180px; }
     .grid-col[data-col="1"] { margin-top: 100px; }
   }
 
@@ -928,6 +928,23 @@
   /* ── Mobile grid: 2 cols max ── */
   @media (max-width: 680px) {
     main.grid-mode .grid-col[data-col="2"] { display: none; }
+  }
+
+  /* ── Grid mode: footer fixes for narrow columns ── */
+  main.grid-mode .work-footer {
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  main.grid-mode .work-left {
+    min-width: 0;
+    flex: 1 1 0;
+  }
+  main.grid-mode .work-title {
+    font-size: 17px;
+    word-break: break-word;
+  }
+  main.grid-mode .work-right {
+    flex-shrink: 0;
   }
 
   @media (max-width: 680px) {
