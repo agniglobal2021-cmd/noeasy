@@ -387,7 +387,7 @@
     transition-delay: 0.3s;
   }
 
-  /* img-win95 — рамка цвета шапки (#AFA191), простой 3D-бевел без лишних теней */
+  /* img-win95 — одинаковый отступ 1px со всех сторон внутри рамки */
   .img-win95 {
     width: 100%;
     background: #AFA191;
@@ -396,19 +396,19 @@
     border-right: 2px solid #3d3830;
     border-bottom: 2px solid #3d3830;
     box-shadow: 1px 1px 0 #2a2520;
-    padding: 3px 3px 0 3px;
+    padding: 1px;
     overflow: hidden;
     will-change: transform;
     position: relative;
   }
 
-  /* Titlebar — светлый фон шапки, padding = те же 3px что и боковые рамки */
+  /* Titlebar — отступ 1px со всех сторон вокруг тёмного прямоугольника */
   .img-win95-titlebar {
     display: flex; align-items: stretch;
-    height: 26px;
+    height: 20px;
     background: #AFA191;
-    padding: 3px 3px 0 3px;
-    margin-bottom: 0;
+    padding: 1px 1px 1px 1px;
+    margin-bottom: 1px;
     user-select: none;
     flex-shrink: 0;
     gap: 0;
@@ -420,11 +420,11 @@
     height: 100%;
     background: #5D5143;
     display: flex; align-items: center;
-    padding: 0 3px 0 6px;
+    padding: 0 0 0 6px;
     overflow: hidden;
     min-width: 0;
     box-shadow: none;
-    gap: 3px;
+    gap: 2px;
   }
 
   .img-win95-titlebar-text {
@@ -437,13 +437,13 @@
     flex: 1;
   }
   .img-win95-titlebar-btns {
-    display: flex; gap: 2px; flex-shrink: 0; align-items: center;
-    padding: 2px 0;
+    display: flex; gap: 1px; flex-shrink: 0; align-items: stretch;
+    padding: 0;
   }
 
-  /* Кнопки внутри тёмного прямоугольника */
+  /* Кнопки внутри тёмного прямоугольника — вплотную к правому краю */
   .img-win95-btn {
-    width: 16px; height: 100%;
+    width: 16px;
     background: #AFA191;
     border-top: 1px solid #d4cdc4;
     border-left: 1px solid #d4cdc4;
