@@ -848,22 +848,23 @@
   .lb-arrow.hidden { opacity: 0 !important; pointer-events: none; }
 
   @media (max-width: 680px) {
-    .filter-group {
+    .filter-group-tags {
       flex-wrap: nowrap; overflow-x: auto;
       -webkit-overflow-scrolling: touch;
       scrollbar-width: none;
       gap: 0 16px;
     }
-    .filter-group::-webkit-scrollbar { display: none; }
-    .filter-group-label { min-width: 70px; }
+    .filter-group-tags::-webkit-scrollbar { display: none; }
+    .filter-group-label { min-width: 80px; width: 80px; font-size: 13px; }
 
     /* Pill: tighter padding on mobile */
     .pill-btn { padding: 0 10px; font-size: 8px; letter-spacing: 0.16em; }
     .pill-count { font-size: 7px; letter-spacing: 0.18em; }
     .pill-section { font-size: 11px; }
     .sword-btn { padding: 0 12px; }
-    .view-btn { padding: 0 12px; }
-    .view-btn + .pill-divider, .view-btn { display: none; }
+    .view-btn { padding: 0 10px; }
+    /* keep view-btn visible on mobile, hide only its divider */
+    .view-btn + .pill-divider { display: none; }
 
     /* Fix filter-dot spacing on mobile */
     #filter-toggle { gap: 0; }
@@ -878,17 +879,23 @@
     padding: 4px 8px 6px;
   }
   .filter-group {
-    display: flex; flex-wrap: wrap; align-items: center;
-    gap: 0 20px; padding: 8px 10px;
+    display: flex; align-items: flex-start;
+    gap: 0; padding: 7px 10px;
   }
   .filter-group + .filter-group {
     border-top: 1px solid #7a7068;
   }
   .filter-group-label {
-    font-family: 'DotGothic16', monospace;
-    font-size: 8px; font-weight: 700;
-    letter-spacing: 0.20em; text-transform: uppercase;
-    color: #000000; opacity: 0.55; min-width: 90px; flex-shrink: 0;
+    font-family: 'Alkhemikal', serif;
+    font-size: 14px; font-weight: 400;
+    letter-spacing: 0.04em;
+    color: #000000; opacity: 0.65;
+    width: 100px; min-width: 100px; flex-shrink: 0;
+    padding-top: 3px;
+  }
+  .filter-group-tags {
+    display: flex; flex-wrap: wrap; align-items: center;
+    gap: 2px 16px; flex: 1;
   }
 
   .tag-btn {
@@ -917,6 +924,11 @@
     opacity: 0.28; pointer-events: none;
   }
   .filter-group.avail-hidden .tag-btn { cursor: default; }
+
+  /* ── Mobile grid: 2 cols max ── */
+  @media (max-width: 680px) {
+    main.grid-mode .grid-col[data-col="2"] { display: none; }
+  }
 
   @media (max-width: 680px) {
     .filter-panel { top: calc(var(--header-total-h)); }
@@ -1014,22 +1026,28 @@
 <div class="filter-panel" id="filter-panel">
   <div class="filter-group">
     <span class="filter-group-label">Style</span>
-    <button class="tag-btn style-btn active" data-tag="all">All</button>
-    <button class="tag-btn style-btn" data-tag="Graphic">Graphic</button>
-    <button class="tag-btn style-btn" data-tag="Digital Painting">Digital Painting</button>
-    <button class="tag-btn style-btn" data-tag="Mixed">Mixed</button>
+    <div class="filter-group-tags">
+      <button class="tag-btn style-btn active" data-tag="all">All</button>
+      <button class="tag-btn style-btn" data-tag="Graphic">Graphic</button>
+      <button class="tag-btn style-btn" data-tag="Digital Painting">Digital Painting</button>
+      <button class="tag-btn style-btn" data-tag="Mixed">Mixed</button>
+    </div>
   </div>
   <div class="filter-group">
     <span class="filter-group-label">Work Type</span>
-    <button class="tag-btn type-btn active" data-tag="all">All</button>
-    <button class="tag-btn type-btn" data-tag="Personal">Personal</button>
-    <button class="tag-btn type-btn" data-tag="Commission">Commission</button>
+    <div class="filter-group-tags">
+      <button class="tag-btn type-btn active" data-tag="all">All</button>
+      <button class="tag-btn type-btn" data-tag="Personal">Personal</button>
+      <button class="tag-btn type-btn" data-tag="Commission">Commission</button>
+    </div>
   </div>
   <div class="filter-group" id="avail-group">
     <span class="filter-group-label">Availability</span>
-    <button class="tag-btn avail-btn active" data-tag="all">All</button>
-    <button class="tag-btn avail-btn" data-tag="Crypto Art">Crypto Art</button>
-    <button class="tag-btn avail-btn" data-tag="Print">Print</button>
+    <div class="filter-group-tags">
+      <button class="tag-btn avail-btn active" data-tag="all">All</button>
+      <button class="tag-btn avail-btn" data-tag="Crypto Art">Crypto Art</button>
+      <button class="tag-btn avail-btn" data-tag="Print">Print</button>
+    </div>
   </div>
 </div>
 
@@ -1106,7 +1124,7 @@ let activeStyle = 'all';
 let activeType  = 'all';
 let activeAvail = new Set(['all']);
 let savedAvail  = new Set(['all']);
-let isGrid      = false;
+let isGrid      = window.innerWidth >= 680; // grid by default on tablet/desktop
 let lbIndex     = -1;
 let currentList = [];
 
@@ -1177,6 +1195,7 @@ function render(scrollTop = false) {
   empty.style.display = 'none';
 
   // Grid mode: distribute into explicit column wrappers
+  const isMobile = window.innerWidth < 680;
   const numCols = isGrid ? (window.innerWidth >= 1100 ? 3 : 2) : 1;
   let colEls = [];
   if (isGrid) {
@@ -1540,6 +1559,9 @@ function initParallax() {
 
 // ── Grid toggle ──
 const gridBtn = document.getElementById('grid-btn');
+// sync button state with default
+gridBtn.classList.toggle('grid-active', isGrid);
+gridBtn.title = isGrid ? 'Switch to feed' : 'Switch to grid';
 gridBtn.addEventListener('click', () => {
   isGrid = !isGrid;
   gridBtn.classList.toggle('grid-active', isGrid);
