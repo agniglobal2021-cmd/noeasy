@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#5D5143">
+<meta name="msapplication-navbutton-color" content="#5D5143">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>Links | NOEASY</title>
+<link rel="icon" type="image/png" href="IMG_8091.png">
+<style>
+  @font-face {
+    font-family: 'Alkhemikal';
+    src: url('../fonts/Alkhemikal.ttf') format('truetype');
+    font-weight: normal; font-style: normal;
+  }
+  @font-face {
+    font-family: 'DotGothic16';
+    src: url('../fonts/DotGothic16-Regular.ttf') format('truetype');
+    font-weight: normal; font-style: normal;
+  }
+
+  *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+  :root {
+    --bg: #e8e0c4;
+    --text: #353535;
+    --win-titlebar: #5D5143;
+    --win-title-text: #f6f1da;
+    --btn-bg: #AFA191;
+    --brd-lt: #d4cdc4;
+    --brd-dk: #3d3830;
+    --brd-sh: #2a2520;
+    --header-titlebar-h: 22px;
+    --header-pill-h: 44px;
+    --header-total-h: calc(env(safe-area-inset-top, 0px) + var(--header-titlebar-h) + var(--header-pill-h));
+  }
+
+  html { background: #5D5143; overflow-x: hidden; }
+
+  body::before {
+    content: '';
+    position: fixed; top: -100vh; left: 0; right: 0;
+    height: 100vh; background: #5D5143;
+    z-index: 9001; pointer-events: none;
+  }
+
+  body {
+    background: var(--bg);
+    font-family: 'DotGothic16', monospace;
+    color: var(--text);
+    overflow-x: hidden;
+    overscroll-behavior: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  #grain {
+    position: fixed;
+    top: -60px; bottom: -60px; left: -10px; right: -10px;
+    z-index: 9998; pointer-events: none;
+  }
+
+  #cursor {
+    position: fixed; z-index: 9999; pointer-events: none;
+    width: 28px; height: 28px; border-radius: 50%;
+    border: 1px solid rgba(53,53,53,0.35);
+    transform: translate(-50%,-50%) scale(0);
+    transition: transform .22s cubic-bezier(.34,1.56,.64,1), opacity .2s;
+    opacity: 0; mix-blend-mode: multiply;
+  }
+  #cursor.active  { transform: translate(-50%,-50%) scale(1); opacity: 1; }
+  #cursor.pressed { transform: translate(-50%,-50%) scale(0.6); }
+
+  /* ─────────── HEADER (identical to gallery) ─────────── */
+  header {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 500;
+    display: flex; flex-direction: column; align-items: stretch;
+    pointer-events: none;
+    opacity: 0; transition: opacity 0.7s ease;
+    background: var(--win-titlebar);
+  }
+  header.visible { opacity: 1; }
+  header > * { pointer-events: auto; }
+
+  .header-safe-top {
+    height: env(safe-area-inset-top, 0px);
+    background: var(--win-titlebar); flex-shrink: 0;
+  }
+  .header-inner { display: flex; flex-direction: column; align-items: stretch; width: 100%; }
+
+  .header-titlebar-strip {
+    width: 100%; height: var(--header-titlebar-h);
+    background: #5D5143;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 0 0 8px; flex-shrink: 0;
+    border-bottom: 1px solid #3e352d;
+  }
+  .header-titlebar-strip-text {
+    font-family: 'DotGothic16', monospace;
+    font-size: 9px; font-weight: 700; letter-spacing: 0.14em;
+    color: var(--win-title-text); line-height: 1;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex: 1;
+  }
+
+  .header-pill {
+    display: flex; align-items: center;
+    position: relative; width: 100%; height: var(--header-pill-h);
+    background: #AFA191;
+    border-top: 1px solid #d4cdc4; border-bottom: 2px solid #7a7068;
+    box-shadow: 0 1px 0 #404040;
+    overflow: visible; padding: 0 4px;
+  }
+
+  .pill-divider {
+    width: 2px; height: 26px; flex-shrink: 0;
+    background: #808080; border-right: 1px solid #d4cdc4;
+    align-self: center; margin: 0 2px;
+  }
+
+  .pill-center {
+    position: absolute; left: 50%; transform: translateX(-50%);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 1px; pointer-events: none; user-select: none; white-space: nowrap;
+  }
+  .pill-section {
+    font-family: 'Alkhemikal', serif;
+    font-size: 14px; letter-spacing: 0.08em; opacity: 0.9; color: #000;
+  }
+
+  .sword-btn {
+    height: calc(100% - 10px); padding: 0 12px; margin: 0 2px;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center; gap: 4px;
+    background: #AFA191;
+    border-top: 2px solid #d4cdc4; border-left: 2px solid #d4cdc4;
+    border-right: 2px solid #3d3830; border-bottom: 2px solid #3d3830;
+    box-shadow: inset 1px 1px 0 #d4cdc4, inset -1px -1px 0 #7a7068;
+    cursor: pointer; -webkit-tap-highlight-color: transparent;
+    transition: none; flex-shrink: 0;
+  }
+  .sword-btn:active, .sword-btn.open {
+    border-top: 2px solid #3d3830; border-left: 2px solid #3d3830;
+    border-right: 2px solid #d4cdc4; border-bottom: 2px solid #d4cdc4;
+    box-shadow: inset 1px 1px 0 #7a7068;
+  }
+  .sword-btn .line {
+    position: relative; height: 2px; background: #000;
+    border-radius: 0; opacity: 0.8;
+    transition: transform 0.38s cubic-bezier(0.16,1,0.3,1), opacity 0.25s, width 0.38s cubic-bezier(0.16,1,0.3,1);
+  }
+  .sword-btn .line:nth-child(1),
+  .sword-btn .line:nth-child(2),
+  .sword-btn .line:nth-child(3) { width: 18px; }
+  .sword-btn.open .line:nth-child(1) { transform: translateY(6px) rotate(45deg); }
+  .sword-btn.open .line:nth-child(2) { opacity: 0; transform: scaleX(0); }
+  .sword-btn.open .line:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
+
+  .burger-wrap { position: relative; height: 100%; display: flex; align-items: center; }
+
+  .nav-overlay {
+    position: absolute; top: calc(100% + 4px); right: 0; z-index: 8999;
+    min-width: 160px; padding: 2px;
+    background: #AFA191;
+    border-top: 2px solid #d4cdc4; border-left: 2px solid #d4cdc4;
+    border-right: 2px solid #3d3830; border-bottom: 2px solid #3d3830;
+    box-shadow: 2px 2px 0 #2a2520;
+    display: flex; flex-direction: column;
+    opacity: 0; pointer-events: none;
+    transform: translateY(-4px); transform-origin: top right;
+    transition: opacity 0.15s ease, transform 0.15s ease;
+  }
+  .nav-overlay.open { opacity: 1; pointer-events: auto; transform: translateY(0); }
+  .nav-overlay a {
+    font-family: 'DotGothic16', monospace;
+    font-size: 10px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase;
+    color: #000; text-decoration: none; padding: 8px 12px 8px 8px;
+    display: flex; align-items: center;
+  }
+  .nav-overlay a::before { content: '/'; margin-right: 7px; font-size: 10px; }
+  .nav-overlay a::after { display: none; }
+  .nav-overlay a:hover { background: #000080; color: #fff; }
+  .nav-overlay a + a { border-top: 1px solid #7a7068; }
+  .nav-overlay a.current { background: #c8c2ba; }
+
+  /* ─────────── MAIN ─────────── */
+  main {
+    min-height: 100vh;
+    display: flex; flex-direction: column; align-items: center;
+    padding: calc(var(--header-total-h) + 24px) 16px 120px;
+  }
+  .content-wrap { width: 100%; max-width: min(560px, 96vw); }
+
+  /* ─────────── WIN95 SECTION WINDOW ─────────── */
+  .win95-section {
+    width: 100%; margin-bottom: 14px;
+    background: #AFA191;
+    border-top: 2px solid #d4cdc4; border-left: 2px solid #d4cdc4;
+    border-right: 2px solid #3d3830; border-bottom: 2px solid #3d3830;
+    box-shadow: 2px 2px 0 #2a2520;
+    opacity: 0; transform: translateY(14px);
+    transition: opacity 0.55s cubic-bezier(0.16,1,0.3,1),
+                transform 0.55s cubic-bezier(0.16,1,0.3,1);
+  }
+  .win95-section.visible { opacity: 1; transform: none; }
+
+  /* Titlebar */
+  .win-titlebar {
+    display: flex; align-items: stretch;
+    height: 20px; background: #AFA191;
+    padding: 1px; user-select: none; flex-shrink: 0;
+  }
+  .win-titlebar-inner {
+    flex: 1; height: 100%;
+    background: #5D5143;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 1px 0 6px; overflow: hidden; min-width: 0;
+  }
+  .win-titlebar-text {
+    font-family: 'DotGothic16', monospace;
+    font-size: 8px; font-weight: 700; color: #f6f1da;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    overflow: hidden; white-space: nowrap; text-overflow: ellipsis;
+    line-height: 1; flex: 1;
+  }
+  .win-titlebar-btns { display: flex; gap: 1px; flex-shrink: 0; }
+  .win-titlebar-btn {
+    width: 16px; height: 100%; background: #AFA191;
+    border-top: 1px solid #d4cdc4; border-left: 1px solid #d4cdc4;
+    border-right: 1px solid #3d3830; border-bottom: 1px solid #3d3830;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 7px; color: #000; font-family: monospace; cursor: default;
+    line-height: 1;
+  }
+
+  /* Window body */
+  .win-body {
+    background: var(--bg);
+    border: 1px solid #b8ac88;
+    margin: 1px;
+    padding: 12px 14px 14px;
+  }
+
+  /* ─────────── SOCIAL GRID ─────────── */
+  .social-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 6px;
+  }
+
+  a.social-btn {
+    display: flex; align-items: center; justify-content: center;
+    aspect-ratio: 1; width: 100%;
+    background: #AFA191;
+    border-top: 2px solid #d4cdc4; border-left: 2px solid #d4cdc4;
+    border-right: 2px solid #3d3830; border-bottom: 2px solid #3d3830;
+    box-shadow: inset 1px 1px 0 #d4cdc4, inset -1px -1px 0 #7a7068;
+    color: #353535; text-decoration: none;
+    transition: background 0.1s;
+    -webkit-tap-highlight-color: transparent; cursor: pointer;
+  }
+  a.social-btn:hover  { background: #bfb9b0; }
+  a.social-btn:active {
+    border-top: 2px solid #3d3830; border-left: 2px solid #3d3830;
+    border-right: 2px solid #d4cdc4; border-bottom: 2px solid #d4cdc4;
+    box-shadow: inset 1px 1px 0 #7a7068;
+  }
+  a.social-btn svg {
+    width: 60%; height: 60%;
+    display: block;
+    image-rendering: pixelated;
+    image-rendering: crisp-edges;
+    shape-rendering: crispEdges;
+  }
+
+  /* ─────────── LINK ROWS ─────────── */
+  a.link-item {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 9px 4px;
+    border-bottom: 1px solid rgba(53,53,53,0.08);
+    color: #000; text-decoration: none;
+    font-family: 'DotGothic16', monospace;
+    font-size: 9px; font-weight: 700;
+    letter-spacing: 0.14em; text-transform: uppercase;
+    opacity: 0.72;
+    transition: background 0.05s, opacity 0.1s, padding-left 0.1s;
+  }
+  a.link-item:last-child { border-bottom: none; }
+  a.link-item:hover { opacity: 1; background: rgba(0,0,128,0.05); padding-left: 8px; }
+  a.link-item:active { background: #000080; color: #fff; opacity: 1; }
+
+  .link-right {
+    display: flex; align-items: center; gap: 10px; flex-shrink: 0;
+  }
+  .link-domain {
+    font-size: 7px; letter-spacing: 0.14em;
+    opacity: 0.30; font-family: 'DotGothic16', monospace;
+    text-transform: lowercase;
+  }
+  .link-arrow { font-size: 10px; opacity: 0.35; }
+
+  /* ─────────── FORM ─────────── */
+  .form-section {
+    opacity: 0; transform: translateY(14px);
+    transition: opacity 0.55s cubic-bezier(0.16,1,0.3,1),
+                transform 0.55s cubic-bezier(0.16,1,0.3,1);
+  }
+  .form-section.visible { opacity: 1; transform: none; }
+
+  .form-field { width: 100%; margin-bottom: 8px; }
+  .form-field input, .form-field textarea {
+    width: 100%; background: var(--bg); color: var(--text);
+    border-top: 1px solid #7a7068; border-left: 1px solid #7a7068;
+    border-right: 1px solid #d4cdc4; border-bottom: 1px solid #d4cdc4;
+    box-shadow: inset 1px 1px 0 rgba(0,0,0,0.08);
+    padding: 7px 9px;
+    font-family: 'DotGothic16', monospace;
+    font-size: 10px; letter-spacing: 0.10em;
+    outline: none; resize: none; display: block;
+    border-radius: 0; -webkit-appearance: none; appearance: none;
+    transition: box-shadow 0.15s;
+  }
+  .form-field input:focus, .form-field textarea:focus {
+    box-shadow: inset 1px 1px 0 rgba(0,0,0,0.18), 0 0 0 1px #5D5143;
+  }
+  .form-field input::placeholder, .form-field textarea::placeholder {
+    color: var(--text); opacity: 0.28;
+    font-size: 8px; letter-spacing: 0.16em; text-transform: uppercase;
+  }
+  .form-field textarea { min-height: 80px; }
+
+  button.form-submit {
+    margin-top: 10px;
+    height: 28px; padding: 0 16px;
+    display: inline-flex; align-items: center; gap: 8px;
+    font-family: 'DotGothic16', monospace;
+    font-size: 9px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase;
+    color: #000; background: #AFA191;
+    border-top: 2px solid #d4cdc4; border-left: 2px solid #d4cdc4;
+    border-right: 2px solid #3d3830; border-bottom: 2px solid #3d3830;
+    box-shadow: inset 1px 1px 0 #d4cdc4, inset -1px -1px 0 #7a7068;
+    cursor: pointer; -webkit-appearance: none;
+  }
+  button.form-submit:active {
+    border-top: 2px solid #3d3830; border-left: 2px solid #3d3830;
+    border-right: 2px solid #d4cdc4; border-bottom: 2px solid #d4cdc4;
+    box-shadow: inset 1px 1px 0 #7a7068;
+    padding-top: 2px; padding-left: 18px;
+  }
+
+  .form-status {
+    font-size: 8px; letter-spacing: 0.22em; text-transform: uppercase;
+    opacity: 0; margin-top: 10px; transition: opacity 0.4s;
+    font-family: 'DotGothic16', monospace;
+  }
+  .form-status.show { opacity: 0.5; }
+
+  /* Divider between links and form */
+  .section-divider {
+    width: 100%; height: 1px;
+    background: #7a6f52;
+    margin: 24px 0 20px;
+    opacity: 0; transition: opacity 0.7s;
+  }
+  .section-divider.visible { opacity: 0.28; }
+
+  /* ─────────── RESPONSIVE ─────────── */
+  @media (max-width: 680px) {
+    main { padding-top: calc(var(--header-total-h) + 16px); }
+    .sword-btn { padding: 0 12px; }
+    .social-grid { gap: 5px; }
+  }
+  @media (max-width: 400px) {
+    .social-grid { gap: 4px; }
+  }
+</style>
+</head>
+<body>
+
+<canvas id="grain"></canvas>
+<div id="cursor"></div>
+
+<header id="siteHeader">
+  <div class="header-safe-top"></div>
+  <div class="header-inner">
+    <div class="header-titlebar-strip">
+      <span class="header-titlebar-strip-text">noeasy.xyz/links</span>
+    </div>
+    <div class="header-pill">
+      <span class="pill-center">
+        <span class="pill-section">Links</span>
+      </span>
+      <div style="flex:1"></div>
+      <div class="pill-divider"></div>
+      <div class="burger-wrap">
+        <button class="sword-btn" id="swordBtn" aria-label="Menu">
+          <span class="line"></span>
+          <span class="line"></span>
+          <span class="line"></span>
+        </button>
+        <div class="nav-overlay" id="navOverlay">
+          <a href="/">Home</a>
+          <a href="/about/">About</a>
+          <a href="/gallery/">Gallery</a>
+          <a href="/links/" class="current">Links</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main>
+  <div class="content-wrap">
+    <div id="links-container"></div>
+    <div class="section-divider" id="form-divider"></div>
+    <div class="form-section" id="form-section">
+      <!-- form is inside a Win95 window too -->
+      <div class="win95-section visible">
+        <div class="win-titlebar">
+          <div class="win-titlebar-inner">
+            <span class="win-titlebar-text">Write to me</span>
+            <div class="win-titlebar-btns">
+              <div class="win-titlebar-btn">_</div>
+              <div class="win-titlebar-btn">□</div>
+              <div class="win-titlebar-btn">✕</div>
+            </div>
+          </div>
+        </div>
+        <div class="win-body">
+          <form id="contact-form" action="https://formspree.io/f/YOUR_FORM_ID" method="POST">
+            <div class="form-field">
+              <input type="text" name="name" placeholder="Your name" required autocomplete="off">
+            </div>
+            <div class="form-field">
+              <input type="email" name="email" placeholder="Your email" required autocomplete="off">
+            </div>
+            <div class="form-field">
+              <textarea name="message" placeholder="Message" required></textarea>
+            </div>
+            <button type="submit" class="form-submit">Send →</button>
+            <div class="form-status" id="form-status"></div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<script>
+document.addEventListener('contextmenu', e => e.preventDefault());
+
+// ── Grain ──
+const grain = document.getElementById('grain');
+const gc = grain.getContext('2d');
+let gw, gh;
+function resizeGrain() {
+  gw = grain.width  = window.innerWidth  + 20;
+  gh = grain.height = window.innerHeight + 120;
+}
+resizeGrain(); window.addEventListener('resize', resizeGrain);
+(function tick() {
+  const img = gc.createImageData(gw, gh);
+  for (let i = 0; i < img.data.length; i += 4) {
+    const v = Math.random() * 255 | 0;
+    img.data[i] = img.data[i+1] = img.data[i+2] = v;
+    img.data[i+3] = Math.random() * 26 | 0;
+  }
+  gc.putImageData(img, 0, 0);
+  requestAnimationFrame(tick);
+})();
+
+// ── Custom cursor ──
+const cursor = document.getElementById('cursor');
+document.addEventListener('mousemove', e => {
+  cursor.style.left = e.clientX + 'px';
+  cursor.style.top  = e.clientY + 'px';
+});
+document.addEventListener('mousedown', () => cursor.classList.add('pressed'));
+document.addEventListener('mouseup',   () => cursor.classList.remove('pressed'));
+
+// ── Burger menu ──
+(function(){
+  const btn     = document.getElementById('swordBtn');
+  const overlay = document.getElementById('navOverlay');
+  btn.addEventListener('click', e => {
+    e.stopPropagation();
+    btn.classList.toggle('open');
+    overlay.classList.toggle('open');
+    if (navigator.vibrate) navigator.vibrate(6);
+  });
+  overlay.querySelectorAll('a').forEach(a => {
+    a.addEventListener('click', () => {
+      btn.classList.remove('open'); overlay.classList.remove('open');
+    });
+  });
+  document.addEventListener('click', e => {
+    if (!overlay.contains(e.target) && e.target !== btn) {
+      btn.classList.remove('open'); overlay.classList.remove('open');
+    }
+  });
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') { btn.classList.remove('open'); overlay.classList.remove('open'); }
+  });
+})();
+
+// ── Pixel art SVG icons (16×16 grid, shape-rendering="crispEdges") ──
+// Each path encodes filled rectangles as: M x,y h W v H h-W z
+const ICONS = {
+  // Instagram: outer square border + inner circle ring + dot
+  instagram: `<svg viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+    <path shape-rendering="crispEdges" d="
+      M1,1 h14 v1 h-14 z
+      M1,1 h1 v14 h-1 z
+      M14,1 h1 v14 h-1 z
+      M1,14 h14 v1 h-14 z
+      M10,2 h3 v3 h-3 z
+      M5,5 h6 v1 h-6 z
+      M4,6 h1 v4 h-1 z
+      M11,6 h1 v4 h-1 z
+      M5,10 h6 v1 h-6 z
+    "/>
+  </svg>`,
+
+  // X (Twitter): symmetric bold pixel X
+  x: `<svg viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+    <path shape-rendering="crispEdges" d="
+      M1,1 h2 v2 h-2 z  M13,1 h2 v2 h-2 z
+      M3,3 h2 v2 h-2 z  M11,3 h2 v2 h-2 z
+      M5,5 h2 v2 h-2 z  M9,5 h2 v2 h-2 z
+      M7,7 h2 v2 h-2 z
+      M5,9 h2 v2 h-2 z  M9,9 h2 v2 h-2 z
+      M3,11 h2 v2 h-2 z M11,11 h2 v2 h-2 z
+      M1,13 h2 v2 h-2 z M13,13 h2 v2 h-2 z
+    "/>
+  </svg>`,
+
+  // Pinterest: bold letter P in a circle
+  pinterest: `<svg viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+    <path shape-rendering="crispEdges" d="
+      M4,1 h8 v1 h-8 z
+      M2,2 h2 v1 h-2 z  M12,2 h2 v1 h-2 z
+      M1,3 h1 v10 h-1 z M14,3 h1 v10 h-1 z
+      M2,13 h2 v1 h-2 z M12,13 h2 v1 h-2 z
+      M4,14 h8 v1 h-8 z
+      M4,3 h2 v9 h-2 z
+      M6,3 h4 v2 h-4 z
+      M10,5 h2 v2 h-2 z
+      M6,7 h4 v2 h-4 z
+    "/>
+  </svg>`,
+
+  // Telegram: right-pointing bold arrow / paper plane
+  telegram: `<svg viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+    <path shape-rendering="crispEdges" d="
+      M1,8 h2 v1 h-2 z
+      M1,7 h4 v3 h-4 z
+      M1,6 h6 v5 h-6 z
+      M1,5 h8 v7 h-8 z
+      M1,4 h10 v9 h-10 z
+      M1,3 h12 v11 h-12 z
+      M1,2 h14 v13 h-14 z
+      M15,8 h1 v1 h-1 z
+    "/>
+  </svg>`,
+
+  // Tumblr: bold T letter
+  tumblr: `<svg viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+    <path shape-rendering="crispEdges" d="
+      M1,2 h14 v3 h-14 z
+      M6,5 h4 v9 h-4 z
+    "/>
+  </svg>`,
+
+  // DeviantArt: angular DA bolt — two wedge shapes
+  deviantart: `<svg viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+    <path shape-rendering="crispEdges" d="
+      M9,1 h5 v1 h-5 z
+      M8,2 h5 v1 h-5 z
+      M7,3 h5 v1 h-5 z
+      M6,4 h5 v1 h-5 z
+      M5,5 h5 v1 h-5 z
+      M4,6 h5 v1 h-5 z
+      M3,7 h4 v2 h-4 z
+      M4,9 h5 v1 h-5 z
+      M5,10 h5 v1 h-5 z
+      M6,11 h5 v1 h-5 z
+      M7,12 h5 v1 h-5 z
+      M8,13 h5 v1 h-5 z
+      M9,14 h5 v1 h-5 z
+      M2,6 h2 v1 h-2 z
+      M2,9 h2 v1 h-2 z
+    "/>
+  </svg>`,
+};
+
+// ── Data ──
+function getDomain(url) {
+  if (url.startsWith('mailto:')) return url.replace('mailto:', '');
+  try { return new URL(url).hostname.replace('www.', ''); } catch { return ''; }
+}
+
+const ambientMap = {
+  'instagram.com': [190, 100, 70],
+  'pinterest.com': [150, 30, 30],
+  'x.com':         [60, 60, 60],
+  't.me':          [50, 120, 185],
+  'tumblr.com':    [52, 71, 105],
+  'deviantart.com':[8, 175, 80],
+  'behance.net':   [40, 70, 200],
+  'inprnt.com':    [80, 110, 75],
+  'foundation.app':[40, 40, 40],
+  'superrare.com': [65, 45, 105],
+  'objkt.com':     [30, 100, 130],
+};
+
+function blendBg(r, g, b, a) {
+  const base = [232, 224, 196];
+  const out = base.map((c, i) => Math.round(c * (1 - a) + [r,g,b][i] * a));
+  document.body.style.transition = 'background-color 1.2s ease';
+  document.body.style.backgroundColor = `rgb(${out[0]},${out[1]},${out[2]})`;
+}
+function resetBg() {
+  document.body.style.transition = 'background-color 2s ease';
+  document.body.style.backgroundColor = '';
+}
+
+const groups = [
+  {
+    label: 'Social', type: 'social',
+    items: [
+      { name: 'Instagram', url: 'https://instagram.com/noeasyvision',   icon: 'instagram' },
+      { name: 'Pinterest', url: 'https://pinterest.com/noeasyvision',   icon: 'pinterest' },
+      { name: 'X',         url: 'https://x.com/noeasyvision',           icon: 'x' },
+      { name: 'Telegram',  url: 'https://t.me/noeasyeye',               icon: 'telegram' },
+      { name: 'Tumblr',    url: 'https://www.tumblr.com/noeasyvision',  icon: 'tumblr' },
+      { name: 'DeviantArt',url: 'https://www.deviantart.com/noeasyvision', icon: 'deviantart' },
+    ]
+  },
+  {
+    label: 'Portfolio',
+    items: [{ name: 'Behance', url: 'https://www.behance.net/noeasyvision' }]
+  },
+  {
+    label: 'Prints',
+    items: [{ name: 'INPRNT', url: 'https://www.inprnt.com/profile/noeasy' }]
+  },
+  {
+    label: 'Digital Collectibles',
+    items: [
+      { name: 'Foundation', url: 'https://foundation.app/@noeasy' },
+      { name: 'SuperRare',  url: 'https://superrare.com/noeasy' },
+      { name: 'Objkt',      url: 'https://objkt.com/profile/noeasy' },
+    ]
+  },
+  {
+    label: 'Contact',
+    items: [{ name: 'Email', url: 'mailto:noeasyvision@proton.me' }]
+  },
+];
+
+// ── Build DOM ──
+const container = document.getElementById('links-container');
+
+groups.forEach((group, gi) => {
+  const section = document.createElement('div');
+  section.className = 'win95-section';
+
+  // Win95 titlebar
+  section.innerHTML = `
+    <div class="win-titlebar">
+      <div class="win-titlebar-inner">
+        <span class="win-titlebar-text">${group.label}</span>
+        <div class="win-titlebar-btns">
+          <div class="win-titlebar-btn">_</div>
+          <div class="win-titlebar-btn">□</div>
+          <div class="win-titlebar-btn">✕</div>
+        </div>
+      </div>
+    </div>`;
+
+  const body = document.createElement('div');
+  body.className = 'win-body';
+
+  if (group.type === 'social') {
+    const grid = document.createElement('div');
+    grid.className = 'social-grid';
+
+    group.items.forEach(s => {
+      const a = document.createElement('a');
+      a.href = s.url; a.target = '_blank'; a.rel = 'noopener noreferrer';
+      a.className = 'social-btn';
+      a.setAttribute('title', s.name);
+      a.setAttribute('aria-label', s.name);
+      a.innerHTML = ICONS[s.icon] || '';
+
+      const domain = getDomain(s.url);
+      const color = Object.entries(ambientMap).find(([k]) => domain.includes(k))?.[1];
+      if (color) {
+        a.addEventListener('mouseenter', () => { blendBg(...color, 0.055); cursor.classList.add('active'); });
+        a.addEventListener('mouseleave', () => { resetBg(); cursor.classList.remove('active'); });
+      } else {
+        a.addEventListener('mouseenter', () => cursor.classList.add('active'));
+        a.addEventListener('mouseleave', () => cursor.classList.remove('active'));
+      }
+      grid.appendChild(a);
+    });
+    body.appendChild(grid);
+  } else {
+    group.items.forEach(link => {
+      const a = document.createElement('a');
+      a.className = 'link-item';
+      a.href = link.url;
+      if (!link.url.startsWith('mailto')) { a.target = '_blank'; a.rel = 'noopener noreferrer'; }
+
+      const domain = getDomain(link.url);
+      a.innerHTML = `<span>${link.name}</span>
+        <span class="link-right">
+          <span class="link-domain">${domain}</span>
+          <span class="link-arrow">→</span>
+        </span>`;
+
+      const color = Object.entries(ambientMap).find(([k]) => domain.includes(k))?.[1];
+      if (color) {
+        a.addEventListener('mouseenter', () => { blendBg(...color, 0.055); cursor.classList.add('active'); });
+        a.addEventListener('mouseleave', () => { resetBg(); cursor.classList.remove('active'); });
+      } else {
+        a.addEventListener('mouseenter', () => cursor.classList.add('active'));
+        a.addEventListener('mouseleave', () => cursor.classList.remove('active'));
+      }
+      body.appendChild(a);
+    });
+  }
+
+  section.appendChild(body);
+  container.appendChild(section);
+});
+
+// ── Scroll reveal ──
+const revealEls = [
+  ...document.querySelectorAll('.win95-section'),
+  document.getElementById('form-divider'),
+  document.getElementById('form-section'),
+];
+const revealObserver = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) { e.target.classList.add('visible'); revealObserver.unobserve(e.target); }
+  });
+}, { threshold: 0.04 });
+revealEls.forEach((el, i) => {
+  if (!el) return;
+  el.style.transitionDelay = (i * 0.06) + 's';
+  revealObserver.observe(el);
+});
+
+// ── Header visible ──
+setTimeout(() => document.getElementById('siteHeader').classList.add('visible'), 100);
+
+// ── Contact form ──
+const form   = document.getElementById('contact-form');
+const status = document.getElementById('form-status');
+form.addEventListener('submit', async e => {
+  e.preventDefault();
+  const btn = form.querySelector('.form-submit');
+  btn.style.opacity = '0.2';
+  try {
+    const res = await fetch(form.action, {
+      method: 'POST', body: new FormData(form),
+      headers: { 'Accept': 'application/json' }
+    });
+    status.textContent = res.ok ? 'Sent — talk soon' : 'Something went wrong';
+    if (res.ok) form.reset();
+  } catch { status.textContent = 'No connection'; }
+  status.classList.add('show');
+  btn.style.opacity = '';
+});
+</script>
+</body>
+</html>
