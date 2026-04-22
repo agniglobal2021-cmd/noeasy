@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>NOEASY</title>
+<link rel="icon" type="image/png" href="IMG_8091.png">
+<style>
+@font-face {
+  font-family: 'Alkhemikal';
+  src: url('../fonts/Alkhemikal.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'DotGothic16';
+  src: url('../fonts/DotGothic16-Regular.ttf') format('truetype');
+}
+
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+html, body {
+  width:100%; height:100%;
+  background: #f6f1da;
+  color: #353535;
+  font-family: 'DotGothic16', monospace;
+  overflow: hidden;
+  overscroll-behavior: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+#grain {
+  position:fixed; inset:0; z-index:99; pointer-events:none;
+}
+
+.stage {
+  position:fixed; inset:0;
+  display:flex; align-items:center; justify-content:center;
+}
+
+.desktop {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 36px;
+  opacity: 0;
+  animation: appear 1s cubic-bezier(0.16,1,0.3,1) 0.2s forwards;
+}
+
+@keyframes appear {
+  from { opacity:0; transform: translateY(10px); }
+  to   { opacity:1; transform: translateY(0); }
+}
+
+.shortcut {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 7px;
+  text-decoration: none;
+  color: #353535;
+  cursor: pointer;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  width: 80px;
+}
+
+.shortcut-icon {
+  width: 48px;
+  height: 48px;
+  image-rendering: pixelated;
+  flex-shrink: 0;
+}
+
+.shortcut-icon img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  image-rendering: pixelated;
+  display: block;
+}
+
+.shortcut-label {
+  font-family: 'Alkhemikal', serif;
+  font-size: 13px;
+  letter-spacing: 0.06em;
+  text-transform: none;
+  text-align: center;
+  line-height: 1.4;
+  color: #353535;
+  padding: 1px 3px;
+  transition: background 0.05s, color 0.05s;
+}
+
+.shortcut:hover .shortcut-label {
+  background: #5D5143;
+  color: #f6f1da;
+}
+
+.shortcut:active .shortcut-icon {
+  transform: translate(1px, 1px);
+}
+
+.shortcut.cur .shortcut-label {
+  background: #5D5143;
+  color: #f6f1da;
+  pointer-events: none;
+}
+
+footer {
+  position:fixed; bottom:0; left:0; right:0; z-index:2;
+  display:flex; align-items:center; justify-content:space-between;
+  padding: 0 20px max(16px, env(safe-area-inset-bottom,16px));
+  opacity:0;
+  animation: appear 0.6s ease 1s forwards;
+  font-family: 'DotGothic16', monospace;
+  font-size: 8px; letter-spacing: 0.18em; text-transform:uppercase;
+}
+footer span { opacity:0.32; }
+footer a {
+  opacity:0.32; color:#353535; text-decoration:none;
+  transition: opacity 0.2s;
+}
+footer a:hover { opacity:0.65; }
+</style>
+</head>
+<body>
+
+<canvas id="grain"></canvas>
+
+<div class="stage">
+  <div class="desktop">
+
+    <a href="/" class="shortcut cur">
+      <div class="shortcut-icon">
+        <img src="data:image/png;base64,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" alt="Home">
+      </div>
+      <span class="shortcut-label">Home</span>
+    </a>
+
+    <a href="/about/" class="shortcut">
+      <div class="shortcut-icon">
+        <img src="data:image/png;base64,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" alt="About">
+      </div>
+      <span class="shortcut-label">About</span>
+    </a>
+
+    <a href="/gallery/" class="shortcut">
+      <div class="shortcut-icon">
+        <img src="data:image/png;base64,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" alt="Gallery">
+      </div>
+      <span class="shortcut-label">Gallery</span>
+    </a>
+
+    <a href="/links/" class="shortcut">
+      <div class="shortcut-icon">
+        <!-- links icon: закинь позже -->
+      </div>
+      <span class="shortcut-label">Links</span>
+    </a>
+
+  </div>
+</div>
+
+<footer>
+  <span>NoEasy 2026</span>
+  <a href="/privacy/">Privacy Policy</a>
+</footer>
+
+<script>
+const g = document.getElementById('grain');
+const gc = g.getContext('2d');
+let gw, gh;
+function rsz() { gw = g.width = window.innerWidth; gh = g.height = window.innerHeight; }
+rsz(); window.addEventListener('resize', rsz);
+(function tick() {
+  const d = gc.createImageData(gw, gh);
+  for (let i = 0; i < d.data.length; i += 4) {
+    const v = Math.random() * 255 | 0;
+    d.data[i] = d.data[i+1] = d.data[i+2] = v;
+    d.data[i+3] = Math.random() * 22 | 0;
+  }
+  gc.putImageData(d, 0, 0);
+  requestAnimationFrame(tick);
+})();
+</script>
+
+</body>
+</html>
