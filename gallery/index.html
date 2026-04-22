@@ -23,6 +23,8 @@
   }
   *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
   :root { --bg: #e8e0c4; --text: #353535; }
+  * { -webkit-tap-highlight-color: transparent; }
+  a:focus, button:focus { outline: none; }
 
   #grain {
     position: fixed;
@@ -350,8 +352,8 @@
     flex-shrink: 0;
   }
   .nav-overlay a::after { display: none; }
-  .nav-overlay a:hover { background: #000080; color: #ffffff; }
-  .nav-overlay a:hover::before { opacity: 0.55; color: #ffffff; }
+  .nav-overlay a:hover { background: #5D5143; color: #f6f1da; }
+  .nav-overlay a:hover::before { opacity: 0.55; color: #f6f1da; }
   .nav-overlay a + a { border-top: 1px solid #7a7068; }
   .nav-overlay a.current { font-weight: 700; background: #c8c2ba; }
 
@@ -610,7 +612,7 @@
     white-space: nowrap;
   }
   .purchase-dropdown a + a { border-top: 1px solid #7a7068; }
-  .purchase-dropdown a:hover { background: #000080; color: #ffffff; }
+  .purchase-dropdown a:hover { background: #5D5143; color: #f6f1da; }
 
   /* Thin separator between works */
   .sep {
@@ -680,22 +682,32 @@
 
   @keyframes fadeIn { to { opacity: 1; } }
 
-  /* Image placeholder — static warm fill, no shimmer */
+  /* Image placeholder — dark warm fill with Loading text */
   .img-placeholder.loading {
-    background: #cfc8b0 !important;
+    background: #3a312a !important;
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    position: relative;
   }
   .img-placeholder.loading::after {
-    display: none;
+    content: 'Loading';
+    font-family: 'DotGothic16', monospace;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: #f6f1da;
+    opacity: 0.38;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
   }
 
-  /* Footer skeleton lines — static, no shimmer */
-  .skel-line {
-    display: inline-block;
-    border-radius: 0;
-    background: rgba(53,53,53,0.10);
-    color: transparent;
-    user-select: none;
-  }
+  /* Skeleton lines — убраны, заменены плейсхолдером выше */
+  .skel-line { display: none; }
 
   /* Error placeholder */
   .img-error {
@@ -929,6 +941,7 @@
   /* ── Mobile grid: 2 cols max ── */
   @media (max-width: 680px) {
     main.grid-mode .grid-col[data-col="2"] { display: none; }
+    main.grid-mode .img-win95-titlebar { display: none; }
   }
 
   /* ── Grid mode: footer fixes for narrow columns ── */
@@ -1300,45 +1313,7 @@ function render(scrollTop = false) {
     metaRow.innerHTML = `<span class="work-year">${dateStr}</span><span class="work-year-sep"></span><div class="work-tags">${tagsHtml}</div>`;
     left.appendChild(metaRow);
 
-    // Shimmer skeleton overlay for footer lines (visible while image loads)
-    if (work.src) {
-      const skelOverlay = document.createElement('div');
-      skelOverlay.className = 'skel-overlay';
-      skelOverlay.style.cssText = 'position:absolute;inset:0;display:flex;flex-direction:column;gap:7px;pointer-events:none;';
-      skelOverlay.innerHTML = `
-        <div style="display:flex;gap:10px;align-items:center;">
-          <span class="skel-line" style="--sd:0s;width:38%;height:14px;"></span>
-          <span class="skel-line" style="--sd:0.1s;width:18%;height:8px;border-radius:2px;"></span>
-        </div>
-        <span class="skel-line" style="--sd:0.18s;width:55%;height:8px;border-radius:2px;"></span>`;
-
-      footer.style.position = 'relative';
-      left.style.opacity = '0';
-      footer.appendChild(skelOverlay);
-
-      const imgEl = wrap.querySelector('img');
-      const revealFooter = () => {
-        skelOverlay.style.transition = 'opacity 0.4s ease';
-        skelOverlay.style.opacity = '0';
-        left.style.transition = 'opacity 0.4s ease 0.1s';
-        left.style.opacity = '1';
-        setTimeout(() => skelOverlay.remove(), 450);
-      };
-
-      if (imgEl) {
-        if (imgEl.complete && imgEl.naturalWidth > 0) {
-          // Already cached — reveal immediately
-          revealFooter();
-        } else {
-          imgEl.addEventListener('load',  revealFooter, { once: true });
-          imgEl.addEventListener('error', revealFooter, { once: true });
-          setTimeout(revealFooter, 5000); // safety net
-        }
-      } else {
-        // No img found — just show the text
-        revealFooter();
-      }
-    }
+    // No skeleton — footer always visible
 
     const right = document.createElement('div');
     right.className = 'work-right';
