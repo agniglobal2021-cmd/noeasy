@@ -400,6 +400,7 @@
     overflow: hidden;
     will-change: transform;
     position: relative;
+    z-index: 2;
   }
 
   /* Titlebar — отступ 1px со всех сторон вокруг тёмного прямоугольника */
@@ -793,7 +794,7 @@
   main.grid-mode .sep { display: none; }
 
   .grid-col {
-    flex: 1; max-width: 420px;
+    flex: 1 1 0; min-width: 0; max-width: 420px;
     display: flex; flex-direction: column;
     position: relative; z-index: 20;
   }
@@ -862,7 +863,7 @@
     .pill-count { font-size: 7px; letter-spacing: 0.18em; }
     .pill-section { font-size: 11px; }
     .sword-btn { padding: 0 12px; }
-    .view-btn { padding: 0 10px; }
+    .view-btn  { padding: 0 12px; }
     /* keep view-btn visible on mobile, hide only its divider */
     .view-btn + .pill-divider { display: none; }
 
