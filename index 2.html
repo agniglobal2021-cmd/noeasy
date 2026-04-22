@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>NOEASY</title>
+<link rel="icon" type="image/png" href="IMG_8091.png">
+<style>
+@font-face {
+  font-family: 'Alkhemikal';
+  src: url('../fonts/Alkhemikal.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'DotGothic16';
+  src: url('../fonts/DotGothic16-Regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+:root { --bg:#f6f1da; --ink:#353535; }
+
+html, body {
+  width:100%; height:100%;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: 'DotGothic16', monospace;
+  overflow: hidden;
+  overscroll-behavior: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+#grain {
+  position:fixed; inset:0; z-index:99; pointer-events:none;
+}
+
+/* ── Stage ── */
+.stage {
+  position:fixed; inset:0;
+  display:flex; flex-direction:column;
+  align-items:center; justify-content:center;
+}
+
+/* ── Logo ── */
+.logo-wrap {
+  position:relative; z-index:2;
+  opacity:0;
+  animation: appear 1.3s cubic-bezier(0.16,1,0.3,1) 0.1s forwards;
+  will-change: transform;
+}
+.logo-wrap img {
+  width: min(500px, 78vw);
+  display:block;
+  user-select:none; -webkit-user-drag:none; pointer-events:none;
+  animation: float 6s ease-in-out 1.4s infinite;
+}
+@keyframes float {
+  0%,100% { transform: translateY(0); }
+  50%     { transform: translateY(-8px); }
+}
+@keyframes appear {
+  to { opacity:1; }
+}
+
+/* ── Nav — Win95 pill ── */
+.nav-wrap {
+  position:relative; z-index:2;
+  margin-top: 32px;
+  opacity:0;
+  animation: appear 0.8s ease 1.1s forwards;
+  will-change: transform;
+}
+
+.nav-pill {
+  display:flex; align-items:center;
+  height: 42px;
+  background: #AFA191;
+  border-top: 2px solid #d4cdc4;
+  border-left: 2px solid #d4cdc4;
+  border-right: 2px solid #3d3830;
+  border-bottom: 2px solid #3d3830;
+  box-shadow: inset 1px 1px 0 #f0ece0, inset -1px -1px 0 #7a7068;
+  padding: 0 4px;
+}
+
+.pdiv {
+  width: 2px; height: 22px;
+  background: #808080;
+  border-right: 1px solid #d4cdc4;
+  flex-shrink:0; align-self:center;
+  margin: 0 2px;
+}
+
+.plink {
+  height: calc(100% - 8px);
+  display:flex; align-items:center;
+  padding: 0 16px;
+  font-family: 'DotGothic16', monospace;
+  font-size: 9px; font-weight: 400;
+  letter-spacing: 0.14em; text-transform:uppercase;
+  color: #000000;
+  text-decoration:none;
+  background: #AFA191;
+  /* Win95 raised button */
+  border-top: 2px solid #d4cdc4;
+  border-left: 2px solid #d4cdc4;
+  border-right: 2px solid #3d3830;
+  border-bottom: 2px solid #3d3830;
+  box-shadow: inset 1px 1px 0 #f0ece0, inset -1px -1px 0 #7a7068;
+  opacity: 0.65;
+  user-select:none; white-space:nowrap;
+  -webkit-tap-highlight-color: transparent;
+  margin: 0 2px;
+  transition: background 0.1s;
+}
+.plink:hover {
+  opacity: 0.9;
+  background: #bfb9b0;
+}
+.plink:active {
+  /* Win95 pressed */
+  border-top: 2px solid #3d3830;
+  border-left: 2px solid #3d3830;
+  border-right: 2px solid #d4cdc4;
+  border-bottom: 2px solid #d4cdc4;
+  box-shadow: inset 1px 1px 0 #7a7068;
+  padding-top: 2px; padding-left: 18px;
+}
+.plink.cur {
+  opacity: 1;
+  font-family: 'Alkhemikal', serif;
+  font-size: 13px;
+  letter-spacing: 0.06em;
+  pointer-events: none;
+  /* pressed state for active page */
+  border-top: 2px solid #3d3830;
+  border-left: 2px solid #3d3830;
+  border-right: 2px solid #d4cdc4;
+  border-bottom: 2px solid #d4cdc4;
+  box-shadow: inset 1px 1px 0 #7a7068;
+}
+
+/* ── Footer ── */
+footer {
+  position:fixed; bottom:0; left:0; right:0; z-index:2;
+  display:flex; align-items:center; justify-content:space-between;
+  padding: 0 20px max(16px, env(safe-area-inset-bottom,16px));
+  opacity:0;
+  animation: appear 0.6s ease 1.6s forwards;
+  font-family: 'DotGothic16', monospace;
+  font-size: 8px; letter-spacing: 0.18em; text-transform:uppercase;
+  color: var(--ink); opacity:0;
+  animation: appear 0.6s ease 1.6s forwards;
+}
+footer span { opacity:0.32; }
+footer a {
+  opacity:0.32; color:var(--ink); text-decoration:none;
+  transition: opacity 0.2s;
+}
+footer a:hover { opacity:0.65; }
+
+</style>
+</head>
+<body>
+
+<canvas id="grain"></canvas>
+
+<div class="stage">
+  <div class="logo-wrap" id="logo">
+    <img src="IMG_8091.png" alt="NOEASY">
+  </div>
+
+  <div class="nav-wrap" id="nav">
+    <div class="nav-pill">
+      <a href="/" class="plink cur">Home</a>
+      <div class="pdiv"></div>
+      <a href="/about/"   class="plink">About</a>
+      <div class="pdiv"></div>
+      <a href="/gallery/" class="plink">Gallery</a>
+      <div class="pdiv"></div>
+      <a href="/links/"   class="plink">Links</a>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <span>NoEasy 2026</span>
+  <a href="/privacy/">Privacy Policy</a>
+</footer>
+
+<script>
+// ── Grain ──
+const g = document.getElementById('grain');
+const gc = g.getContext('2d');
+let gw, gh;
+function rsz() { gw = g.width = window.innerWidth; gh = g.height = window.innerHeight; }
+rsz(); window.addEventListener('resize', rsz);
+(function tick() {
+  const d = gc.createImageData(gw, gh);
+  for (let i = 0; i < d.data.length; i += 4) {
+    const v = Math.random() * 255 | 0;
+    d.data[i] = d.data[i+1] = d.data[i+2] = v;
+    d.data[i+3] = Math.random() * 22 | 0;
+  }
+  gc.putImageData(d, 0, 0);
+  requestAnimationFrame(tick);
+})();
+
+// ── Magnetic breathing ──
+const logo = document.getElementById('logo');
+const nav  = document.getElementById('nav');
+
+let mx = window.innerWidth  / 2;
+let my = window.innerHeight / 2;
+
+let lx=0, ly=0;
+let nx=0, ny=0;
+
+const LOGO_PULL  = 0.018;
+const NAV_PUSH   = 0.012;
+const LOGO_EASE  = 0.055;
+const NAV_EASE   = 0.04;
+const MAX_LOGO   = 14;
+const MAX_NAV    = 22;
+
+document.addEventListener('mousemove', e => {
+  mx = e.clientX;
+  my = e.clientY;
+});
+
+document.addEventListener('touchmove', e => {
+  mx = e.touches[0].clientX;
+  my = e.touches[0].clientY;
+}, { passive: true });
+
+function clamp(v, lo, hi) { return Math.max(lo, Math.min(hi, v)); }
+
+(function animate() {
+  const cx = window.innerWidth  / 2;
+  const cy = window.innerHeight / 2;
+
+  const dx = mx - cx;
+  const dy = my - cy;
+
+  const ltx = clamp(dx * LOGO_PULL, -MAX_LOGO, MAX_LOGO);
+  const lty = clamp(dy * LOGO_PULL, -MAX_LOGO, MAX_LOGO);
+
+  const ntx = clamp(-dx * NAV_PUSH, -MAX_NAV, MAX_NAV);
+  const nty = clamp(-dy * NAV_PUSH, -MAX_NAV, MAX_NAV);
+
+  lx += (ltx - lx) * LOGO_EASE;
+  ly += (lty - ly) * LOGO_EASE;
+  nx += (ntx - nx) * NAV_EASE;
+  ny += (nty - ny) * NAV_EASE;
+
+  logo.style.transform = `translate(${lx.toFixed(2)}px, ${ly.toFixed(2)}px)`;
+  nav.style.transform  = `translate(${nx.toFixed(2)}px, ${ny.toFixed(2)}px)`;
+
+  requestAnimationFrame(animate);
+})();
+</script>
+
+</body>
+</html>
