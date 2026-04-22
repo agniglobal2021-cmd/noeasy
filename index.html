@@ -82,7 +82,8 @@ html, body {
 
 @media (orientation: portrait) {
   .win95 {
-    width: clamp(160px, 60vw, 280px);
+    /* 4 ярлыка по 64px + 3 gap по 4vw, минимум чтобы не было уже ярлыков */
+    width: clamp(220px, 80vw, 400px);
   }
 }
 
@@ -154,14 +155,12 @@ html, body {
   gap: clamp(16px, 3vw, 36px);
 }
 
-/* В портрете — ряд из 4, ширина = ширине win95 ── */
+/* В портрете — ряд из 4, ширина подстраивается под ярлыки ── */
 @media (orientation: portrait) {
   .desktop {
     display: flex;
     flex-direction: row;
-    width: clamp(160px, 60vw, 280px);
-    justify-content: space-between;
-    gap: 0;
+    gap: clamp(12px, 4vw, 28px);
   }
 }
 
@@ -180,9 +179,7 @@ html, body {
 
 @media (orientation: portrait) {
   .shortcut {
-    width: auto;
-    flex: 1;
-    max-width: 25%;
+    width: clamp(44px, 16vw, 64px);
   }
 }
 
@@ -356,6 +353,7 @@ heroImg.onerror = function() {
 };
 
 
+const g = document.getElementById('grain');
 const gc = g.getContext('2d');
 let gw, gh;
 function rsz() { gw = g.width = window.innerWidth; gh = g.height = window.innerHeight; }
