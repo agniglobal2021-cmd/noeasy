@@ -402,28 +402,29 @@
     position: relative;
   }
 
-  /* Titlebar — светлый фон шапки, padding для gap вокруг тёмного прямоугольника */
+  /* Titlebar — светлый фон шапки, padding = те же 3px что и боковые рамки */
   .img-win95-titlebar {
     display: flex; align-items: stretch;
-    height: 22px;
+    height: 26px;
     background: #AFA191;
-    padding: 2px 2px 2px 2px;
-    margin-bottom: 3px;
+    padding: 3px 3px 0 3px;
+    margin-bottom: 0;
     user-select: none;
     flex-shrink: 0;
-    gap: 2px;
+    gap: 0;
   }
 
-  /* Тёмный прямоугольник с текстом — сплошной, без бликов */
+  /* Тёмный прямоугольник — занимает всё пространство шапки, кнопки внутри */
   .img-win95-titlebar-inner {
     flex: 1;
     height: 100%;
     background: #5D5143;
     display: flex; align-items: center;
-    padding: 0 6px;
+    padding: 0 3px 0 6px;
     overflow: hidden;
     min-width: 0;
     box-shadow: none;
+    gap: 3px;
   }
 
   .img-win95-titlebar-text {
@@ -433,14 +434,16 @@
     letter-spacing: 0.12em; text-transform: uppercase;
     overflow: hidden; white-space: nowrap; text-overflow: ellipsis;
     line-height: 1;
+    flex: 1;
   }
   .img-win95-titlebar-btns {
-    display: flex; gap: 2px; flex-shrink: 0; align-items: stretch;
+    display: flex; gap: 2px; flex-shrink: 0; align-items: center;
+    padding: 2px 0;
   }
 
-  /* Кнопки — тот же цвет что шапка, простой бевел, никаких inset-теней */
+  /* Кнопки внутри тёмного прямоугольника */
   .img-win95-btn {
-    width: 18px;
+    width: 16px; height: 100%;
     background: #AFA191;
     border-top: 1px solid #d4cdc4;
     border-left: 1px solid #d4cdc4;
@@ -454,7 +457,7 @@
   }
 
   /* All three buttons identical */
-  .img-win95-btn.btn-close { width: 18px; }
+  .img-win95-btn.btn-close { width: 16px; }
 
   /* img-wrap fills the frame edge to edge — no padding between border and image */
   .img-win95 .img-wrap {
@@ -1371,8 +1374,9 @@ function render(scrollTop = false) {
     const titleInner = document.createElement('div');
     titleInner.className = 'img-win95-titlebar-inner';
     titleInner.appendChild(titleText);
+    titleInner.appendChild(btns);
 
-    titlebar.insertBefore(titleInner, btns);
+    titlebar.appendChild(titleInner);
     win95.appendChild(titlebar);
     win95.appendChild(wrap);
 
