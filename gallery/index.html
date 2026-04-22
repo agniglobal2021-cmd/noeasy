@@ -387,40 +387,34 @@
     transition-delay: 0.3s;
   }
 
-  /* img-win95 moves as one unit with parallax — titlebar + image together */
+  /* img-win95 — рамка цвета шапки (#AFA191), простой 3D-бевел без лишних теней */
   .img-win95 {
     width: 100%;
-    background: var(--win95-bg);
-    /* Win95 outer frame: warm light grey, 3D bevel */
-    border: 2px solid #AFA191;
-    border-top-color: #d4cdc4;
-    border-left-color: #d4cdc4;
-    border-right-color: #7a7068;
-    border-bottom-color: #7a7068;
-    box-shadow:
-      1px 1px 0 0 #3d3830,
-      -1px -1px 0 0 #e8e2d6,
-      0 5px 22px rgba(53,53,53,0.12);
+    background: #AFA191;
+    border-top: 2px solid #d4cdc4;
+    border-left: 2px solid #d4cdc4;
+    border-right: 2px solid #3d3830;
+    border-bottom: 2px solid #3d3830;
+    box-shadow: 1px 1px 0 #2a2520;
     padding: 3px 3px 0 3px;
     overflow: hidden;
     will-change: transform;
     position: relative;
   }
 
-  /* Title bar of the painting window — Win95 style:
-     light outer bar, dark inner active-title rect, buttons sit inside */
+  /* Titlebar — светлый фон шапки, padding для gap вокруг тёмного прямоугольника */
   .img-win95-titlebar {
-    display: flex; align-items: center; justify-content: space-between;
-    height: 24px;
+    display: flex; align-items: stretch;
+    height: 22px;
     background: #AFA191;
-    padding: 2px 2px 2px 3px;
+    padding: 2px 2px 2px 2px;
     margin-bottom: 3px;
     user-select: none;
     flex-shrink: 0;
-    gap: 3px;
+    gap: 2px;
   }
 
-  /* Dark active-title inner rect — holds text */
+  /* Тёмный прямоугольник с текстом — сплошной, без бликов */
   .img-win95-titlebar-inner {
     flex: 1;
     height: 100%;
@@ -429,6 +423,7 @@
     padding: 0 6px;
     overflow: hidden;
     min-width: 0;
+    box-shadow: none;
   }
 
   .img-win95-titlebar-text {
@@ -440,23 +435,22 @@
     line-height: 1;
   }
   .img-win95-titlebar-btns {
-    display: flex; gap: 2px; flex-shrink: 0; align-items: center;
-    height: 100%;
+    display: flex; gap: 2px; flex-shrink: 0; align-items: stretch;
   }
 
-  /* ── Win95 window buttons — warm light grey with 3D bevel ── */
+  /* Кнопки — тот же цвет что шапка, простой бевел, никаких inset-теней */
   .img-win95-btn {
-    width: 18px; height: 100%;
+    width: 18px;
     background: #AFA191;
-    border-top: 2px solid #d4cdc4;
-    border-left: 2px solid #d4cdc4;
-    border-right: 2px solid #3d3830;
-    border-bottom: 2px solid #3d3830;
-    box-shadow: inset 1px 1px 0 #cac4bb, inset -1px -1px 0 #7a7068;
+    border-top: 1px solid #d4cdc4;
+    border-left: 1px solid #d4cdc4;
+    border-right: 1px solid #3d3830;
+    border-bottom: 1px solid #3d3830;
+    box-shadow: none;
     display: flex; align-items: center; justify-content: center;
     cursor: default;
     flex-shrink: 0;
-    padding: 0 0 2px 0;
+    padding: 0 0 1px 0;
   }
 
   /* All three buttons identical */
