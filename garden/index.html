@@ -34,10 +34,9 @@
   --blt:   #d4cdc4;
   --bdk:   #3d3830;
   --bsh:   #2a2520;
-  /* terminal — left panel bg: #221c14 ≈ #2e2820 darkened ~10% */
   --lbg:   #1e1a12;
   --tbg:   #2e2820;
-  --ta:    #c9a472;
+  --ta:    #D6D5A9;
   --tdim:  #7a6a52;
   --thl:   #e8d0a0;
   --tbar:  #181410;
@@ -68,14 +67,12 @@ body {
   height: 100vh;
 }
 
-/* ── Grain canvas (same as gallery) ── */
 #grain {
   position: fixed;
   top: -60px; bottom: -60px; left: -10px; right: -10px;
   z-index: 9998; pointer-events: none;
 }
 
-/* ── HEADER (identical to gallery) ── */
 header {
   position: fixed; top: 0; left: 0; right: 0; z-index: 500;
   display: flex; flex-direction: column; align-items: stretch;
@@ -139,8 +136,7 @@ header > * { pointer-events: auto; }
   border-top: 2px solid #d4cdc4; border-left: 2px solid #d4cdc4;
   border-right: 2px solid #3d3830; border-bottom: 2px solid #3d3830;
   box-shadow: inset 1px 1px 0 #d4cdc4, inset -1px -1px 0 #7a7068;
-  cursor: pointer; -webkit-tap-highlight-color: transparent;
-  transition: none; flex-shrink: 0;
+  cursor: pointer; transition: none; flex-shrink: 0;
 }
 .sword-btn:active, .sword-btn.open {
   border-top: 2px solid #3d3830; border-left: 2px solid #3d3830;
@@ -182,10 +178,11 @@ header > * { pointer-events: auto; }
 .nav-overlay a + a { border-top: 1px solid #7a7068; }
 .nav-overlay a.current { background: #c8c2ba; }
 
-/* ── Main layout — below header ── */
 .page-main {
-  padding-top: var(--header-total-h);
-  height: 100vh;
+  position: fixed;
+  top: var(--header-total-h);
+  left: 0; right: 0;
+  bottom: env(safe-area-inset-bottom, 0px);
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -199,9 +196,9 @@ header > * { pointer-events: auto; }
   width: 100%;
   margin: 0 auto;
   box-sizing: border-box;
+  min-height: 0;
 }
 
-/* ── Win95 window chrome ── */
 .win {
   display: flex; flex-direction: column; overflow: hidden;
   border-top: 2px solid var(--blt); border-left: 2px solid var(--blt);
@@ -235,28 +232,42 @@ header > * { pointer-events: auto; }
 }
 
 .mbar {
-  display: flex; padding: 1px 2px; flex-shrink: 0;
+  display: flex; padding: 2px 3px; flex-shrink: 0; gap: 2px;
   background: var(--lbg); border-bottom: 1px solid rgba(201,164,114,.1);
 }
-.mi { font-family: 'Alkhemikal', serif; font-size: 11px; letter-spacing: .06em; padding: 2px 8px; cursor: pointer; color: var(--ta); }
-.mi:hover { color: var(--thl); }
-
-/* scanlines overlay */
-.scan {
-  position: absolute; inset: 0; pointer-events: none; z-index: 1;
-  background: repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.07) 2px,rgba(0,0,0,0.07) 4px);
+.lm-btn {
+  font-family: 'Fixedsys', monospace; font-size: 8px; letter-spacing: .08em;
+  display: flex; align-items: center; gap: 3px;
+  padding: 2px 7px; cursor: pointer; color: var(--ta);
+  background: var(--tbg);
+  border-top: 1px solid #4a4030; border-left: 1px solid #4a4030;
+  border-right: 1px solid #111008; border-bottom: 1px solid #111008;
+  transition: color .08s; user-select: none;
 }
+.lm-btn:hover { color: var(--thl); }
+.lm-btn:active {
+  border-top: 1px solid #111008; border-left: 1px solid #111008;
+  border-right: 1px solid #4a4030; border-bottom: 1px solid #4a4030;
+}
+.lm-btn.active { color: var(--thl); background: var(--tsel); }
+.lm-label { font-size: 7px; letter-spacing: .1em; }
 
 /* ── LEFT PANEL ── */
-.win-l { width: 200px; flex-shrink: 0; }
+.win-l { 
+  width: 200px; 
+  flex-shrink: 0; 
+  display: flex; 
+  flex-direction: column; 
+  transition: width 0.4s cubic-bezier(0.16, 1, 0.3, 1); 
+}
+.win-l.expanded { width: 450px; }
 
-/* entire lbody: uniform dark bg, same as tbar */
 .lbody {
   flex: 1; background: var(--lbg);
   display: flex; flex-direction: column; overflow: hidden; position: relative;
+  min-height: 0;
 }
 
-/* text flicker on all left-panel text */
 @keyframes flicker {
   0%,100% { opacity: 1; }
   92%      { opacity: 1; }
@@ -267,10 +278,7 @@ header > * { pointer-events: auto; }
 }
 .lbody * { animation: flicker 4s step-end infinite; }
 
-/* phosphor text-shadow blur */
-.folder-row, .note-row {
-  text-shadow: 0 0 6px currentColor;
-}
+.folder-row, .note-row { text-shadow: 0 0 6px currentColor; }
 
 .flist {
   flex: 1; display: flex; flex-direction: column; padding: 8px 0;
@@ -308,7 +316,21 @@ header > * { pointer-events: auto; }
 
 @keyframes bl { 50% { opacity: 0; } }
 
-/* ── Font size knob button ── */
+/* ── GRAPH PANEL ── */
+.graph-panel {
+  position: absolute; inset: 0; z-index: 10;
+  background: #0c0a06;
+  display: none; overflow: hidden;
+}
+.graph-panel.open { display: block; }
+.graph-wrap { width: 100%; height: 100%; position: relative; overflow: hidden; background: #0c0a06; }
+canvas#graphCanvas { display: block; image-rendering: auto; }
+.scan {
+  position: absolute; inset: 0; pointer-events: none; z-index: 1;
+  background: repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.07) 2px,rgba(0,0,0,0.07) 4px);
+}
+
+/* ── FONT SIZE BTN ── */
 .fsize-btn {
   height: calc(100% - 10px); padding: 0 10px; margin: 0 2px 0 0;
   display: flex; align-items: center; justify-content: center; gap: 5px;
@@ -316,60 +338,64 @@ header > * { pointer-events: auto; }
   border-top: 2px solid #d4cdc4; border-left: 2px solid #d4cdc4;
   border-right: 2px solid #3d3830; border-bottom: 2px solid #3d3830;
   box-shadow: inset 1px 1px 0 #d4cdc4, inset -1px -1px 0 #7a7068;
-  cursor: pointer; -webkit-tap-highlight-color: transparent;
-  flex-shrink: 0; user-select: none; position: relative;
-}
-.fsize-btn:active {
-  border-top: 2px solid #3d3830; border-left: 2px solid #3d3830;
-  border-right: 2px solid #d4cdc4; border-bottom: 2px solid #d4cdc4;
-  box-shadow: inset 1px 1px 0 #7a7068;
+  cursor: pointer; flex-shrink: 0; user-select: none; position: relative;
 }
 .fsize-label {
-  font-family: 'Fixedsys', monospace; font-size: 8px;
-  color: #000; opacity: 0.7; letter-spacing: .05em; line-height: 1;
+  font-family: 'Alkhemikal', serif; font-size: 16px;
+  color: #000; opacity: 0.8; line-height: 1;
 }
 .fsize-knob {
   width: 18px; height: 18px; border-radius: 50%;
   background: radial-gradient(circle at 38% 38%, #d4cdc4, #8a7e72);
   border: 1px solid #3d3830;
   box-shadow: 1px 1px 0 #2a2520, inset 1px 1px 0 rgba(255,255,255,0.3);
-  position: relative; flex-shrink: 0;
-  transition: transform 0.1s;
+  position: relative; flex-shrink: 0; transition: transform 0.1s;
 }
 .fsize-knob::after {
-  content: '';
-  position: absolute; top: 2px; left: 50%; transform: translateX(-50%);
+  content: ''; position: absolute; top: 2px; left: 50%; transform: translateX(-50%);
   width: 2px; height: 5px; background: #2a2520; border-radius: 1px;
 }
 
-.fsize-popup {
-  position: absolute; bottom: calc(100% + 6px); right: 0;
+/* ── GRAPH TOGGLE LED ── */
+.gknob-btn {
+  height: calc(100% - 10px); padding: 0 10px; margin: 0 2px 0 0;
+  display: flex; align-items: center; justify-content: center; gap: 6px;
+  background: #AFA191;
+  border-top: 2px solid #d4cdc4; border-left: 2px solid #d4cdc4;
+  border-right: 2px solid #3d3830; border-bottom: 2px solid #3d3830;
+  box-shadow: inset 1px 1px 0 #d4cdc4, inset -1px -1px 0 #7a7068;
+  cursor: pointer; flex-shrink: 0; user-select: none; position: relative;
+}
+.g-led {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: #3d3830;
+  box-shadow: inset 1px 1px 1px rgba(0,0,0,0.5);
+  transition: background 0.2s, box-shadow 0.2s;
+}
+.gknob-btn.open .g-led {
+  background: #8acc7c;
+  box-shadow: 0 0 5px #8acc7c, inset 1px 1px 1px rgba(255,255,255,0.5);
+}
+
+.fsize-popup, .gknob-popup {
+  position: absolute; top: calc(100% + 6px); right: 0;
   background: #AFA191;
   border-top: 2px solid #d4cdc4; border-left: 2px solid #d4cdc4;
   border-right: 2px solid #3d3830; border-bottom: 2px solid #3d3830;
   box-shadow: 2px 2px 0 #2a2520;
   padding: 8px 10px; z-index: 9000;
-  display: none; flex-direction: column; gap: 6px; min-width: 120px;
+  display: none; flex-direction: column; gap: 6px; min-width: 140px;
 }
-.fsize-popup.open { display: flex; }
-.fsize-popup-title {
-  font-family: 'Fixedsys', monospace; font-size: 8px;
-  color: #000; opacity: 0.6; letter-spacing: .1em; text-transform: uppercase;
-  border-bottom: 1px solid #7a7068; padding-bottom: 4px; margin-bottom: 2px;
-}
-.fsize-track {
-  display: flex; align-items: center; gap: 6px;
-}
-.fsize-track-label {
-  font-family: 'Fixedsys', monospace; font-size: 8px; color: #000; opacity: 0.5; width: 12px;
-}
-.fsize-slider {
+.fsize-popup.open, .gknob-popup.open { display: flex; }
+
+.fsize-track, .gknob-track { display: flex; align-items: center; gap: 6px; }
+.fsize-slider, .gknob-slider {
   flex: 1; height: 14px; position: relative; cursor: pointer;
   background: #8a7e72;
   border-top: 1px solid #3d3830; border-left: 1px solid #3d3830;
   border-right: 1px solid #d4cdc4; border-bottom: 1px solid #d4cdc4;
 }
-.fsize-thumb {
+.fsize-thumb, .gknob-thumb {
   position: absolute; top: 1px; width: 10px; height: 10px;
   background: #AFA191;
   border-top: 1px solid #d4cdc4; border-left: 1px solid #d4cdc4;
@@ -377,141 +403,35 @@ header > * { pointer-events: auto; }
   cursor: grab; transform: translateX(-50%);
 }
 
-/* ── Win95 scrollbar for right panel ── */
+/* ── RIGHT PANEL ── */
+.win-r { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.rbody { flex: 1; background: #b5ad9e; display: flex; flex-direction: column; overflow: hidden; position: relative; min-height: 0; }
 .rscroll {
   flex: 1; overflow-y: scroll; padding: 20px 28px 28px; position: relative; z-index: 2;
   scrollbar-width: auto; scrollbar-color: #AFA191 #5a5145;
 }
 .rscroll::-webkit-scrollbar { width: 16px; }
-.rscroll::-webkit-scrollbar-track {
-  background: #5a5145;
-  border-left: 1px solid #3d3830;
-}
+.rscroll::-webkit-scrollbar-track { background: #5a5145; border-left: 1px solid #3d3830; }
 .rscroll::-webkit-scrollbar-thumb {
-  background: #AFA191;
-  border-top: 2px solid #d4cdc4; border-left: 2px solid #d4cdc4;
+  background: #AFA191; border-top: 2px solid #d4cdc4; border-left: 2px solid #d4cdc4;
   border-right: 2px solid #3d3830; border-bottom: 2px solid #3d3830;
-  min-height: 20px;
-}
-.rscroll::-webkit-scrollbar-button {
-  background: #AFA191; height: 16px;
-  border-top: 2px solid #d4cdc4; border-left: 2px solid #d4cdc4;
-  border-right: 2px solid #3d3830; border-bottom: 2px solid #3d3830;
-  display: block;
 }
 
-/* ── Obsidian path in right tbar ── */
-#rtitle {
-  font-family: 'Fixedsys', monospace;
-  font-size: 8px; letter-spacing: .08em;
-}
-#rtitle .rpath-root { color: var(--tdim); }
-#rtitle .rpath-cur  { color: var(--ttxt); }
-
-/* ── RIGHT PANEL ── */
-.win-r { flex: 1; min-width: 0; }
-
-.rbody {
-  flex: 1; background: #b5ad9e;
-  display: flex; flex-direction: column; overflow: hidden; position: relative;
-}
-
-/* feed */
-.fe {
-  padding: 20px 0;
-  border-bottom: 1px solid rgba(93,81,67,.18);
-  cursor: pointer;
-}
-.fe:first-child { padding-top: 0; }
-.fe:last-child { border-bottom: none; }
-.fe:hover .fe-title { color: #3d3020; }
-.fe:hover .fe-arrow { opacity: 1; transform: translateX(3px); }
-
-.fe-meta {
-  font-family: 'Fixedsys', monospace; font-size: 8px;
-  color: #7a6a52; margin-bottom: 8px; letter-spacing: .14em;
-  text-transform: uppercase; opacity: .75;
-}
-.fe-title {
-  font-family: 'Alkhemikal', serif; font-size: 20px; line-height: 1.2;
-  color: #2e2318; margin-bottom: 8px; transition: color .15s;
-  letter-spacing: .01em;
-}
-.fe-prev {
-  font-family: 'DotGothic16', monospace; font-size: var(--r-fsize); line-height: 1.9;
-  color: #5a4e3e; opacity: .7;
-  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
-  max-width: 580px;
-}
-.fe-arrow {
-  display: inline-block; margin-top: 8px;
-  font-family: 'Fixedsys', monospace; font-size: 8px;
-  color: #7a6a52; letter-spacing: .12em; opacity: 0;
-  transition: opacity .15s, transform .15s;
-}
-
-/* note view */
-.nv {
-  padding: 0 0 32px;
-  animation: fadein .2s ease;
-  max-width: 640px;
-}
+/* Feed & Note styles */
+.fe { padding: 20px 0; border-bottom: 1px solid rgba(93,81,67,.18); cursor: pointer; }
+.fe-meta { font-family: 'Fixedsys', monospace; font-size: 8px; color: #7a6a52; margin-bottom: 8px; text-transform: uppercase; }
+.fe-title { font-family: 'Alkhemikal', serif; font-size: 20px; color: #2e2318; margin-bottom: 8px; }
+.fe-prev { font-family: 'DotGothic16', monospace; font-size: var(--r-fsize); line-height: 1.9; color: #5a4e3e; opacity: .7; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.nv { padding: 0 0 32px; animation: fadein .2s ease; max-width: 640px; }
 @keyframes fadein { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
-
-.nbk {
-  font-family: 'Fixedsys', monospace; font-size: 8px; letter-spacing: .12em;
-  text-transform: uppercase;
-  color: #7a6a52; background: none; border: none; cursor: pointer;
-  padding: 0; margin-bottom: 20px; display: block; transition: color .12s;
-  opacity: .7;
-}
-.nbk:hover { color: #3d3020; opacity: 1; }
-
-.nmeta {
-  font-family: 'Fixedsys', monospace; font-size: 8px; letter-spacing: .14em;
-  text-transform: uppercase;
-  color: #7a6a52; margin-bottom: 12px; opacity: .6;
-}
-.ntitle {
-  font-family: 'Alkhemikal', serif; font-size: 26px; line-height: 1.15;
-  color: #1e1710; margin-bottom: 8px; letter-spacing: .01em;
-}
-.n-rule {
-  width: 40px; height: 1px; background: rgba(93,81,67,.4);
-  margin: 14px 0 18px;
-}
-.nbody {
-  font-family: 'DotGothic16', monospace; font-size: var(--r-fsize);
-  line-height: 2.1; color: #3d3428;
-}
-.nbody p { margin-bottom: 18px; max-width: 560px; }
-.nbody h2 {
-  font-family: 'Alkhemikal', serif; font-size: 17px; color: #1e1710;
-  margin: 36px 0 14px; letter-spacing: .02em; font-weight: 400;
-}
-.nbody blockquote {
-  border-left: 1px solid rgba(93,81,67,.4); padding-left: 20px;
-  margin: 24px 0; color: #6a5c4a; font-style: normal;
-}
-.nbody strong { color: #1e1710; font-weight: 400; }
-
-/* statusbar */
-.sbar {
-  background: rgba(93,81,67,.12); border-top: 1px solid rgba(93,81,67,.2);
-  display: flex; align-items: center; padding: 3px 14px; gap: 10px;
-  flex-shrink: 0; position: relative; z-index: 2;
-}
-.si { font-family: 'Fixedsys', monospace; font-size: 8px; color: #7a6a52; opacity: .55; letter-spacing: .08em; text-transform: uppercase; }
-.sdv { width: 1px; height: 7px; background: rgba(93,81,67,.3); }
+.ntitle { font-family: 'Alkhemikal', serif; font-size: 26px; color: #1e1710; margin-bottom: 8px; }
+.nbody { font-family: 'DotGothic16', monospace; font-size: var(--r-fsize); line-height: 2.1; color: #3d3428; }
+.sbar { background: rgba(93,81,67,.12); border-top: 1px solid rgba(93,81,67,.2); display: flex; align-items: center; padding: 3px 14px; gap: 10px; flex-shrink: 0; }
+.si { font-family: 'Fixedsys', monospace; font-size: 8px; color: #7a6a52; opacity: .55; text-transform: uppercase; }
 
 @media (max-width: 600px) {
-  .page-main { height: auto; }
-  .desktop { flex-direction: column; height: auto; padding: 8px; }
-  .win { width: 100% !important; }
-  .win-l { height: auto; }
-  .lbody { height: auto; }
-  .flist { max-height: 180px; }
-  .win-r { min-height: 60vh; }
+  .win-l.expanded { width: 100%; }
+  .desktop { flex-direction: column; overflow-y: auto; }
 }
 </style>
 </head>
@@ -526,9 +446,7 @@ header > * { pointer-events: auto; }
       <span class="header-titlebar-strip-text">noeasy.xyz/garden</span>
     </div>
     <div class="header-pill">
-      <span class="pill-center">
-        <span class="pill-section">Digital Garden</span>
-      </span>
+      <span class="pill-center"><span class="pill-section">Digital Garden</span></span>
       <div style="flex:1"></div>
       <div class="pill-divider"></div>
       <div class="burger-wrap" id="fsizeWrap">
@@ -537,29 +455,34 @@ header > * { pointer-events: auto; }
           <div class="fsize-knob" id="fsizeKnob"></div>
         </button>
         <div class="fsize-popup" id="fsizePopup">
-          <div class="fsize-popup-title">Text Size</div>
           <div class="fsize-track">
-            <span class="fsize-track-label">A</span>
-            <div class="fsize-slider" id="fsizeSlider">
-              <div class="fsize-thumb" id="fsizeThumb"></div>
-            </div>
-            <span class="fsize-track-label" style="font-size:11px">A</span>
+            <span style="font-family:Fixedsys;font-size:8px">A</span>
+            <div class="fsize-slider" id="fsizeSlider"><div class="fsize-thumb" id="fsizeThumb"></div></div>
+            <span style="font-family:Fixedsys;font-size:11px">A</span>
+          </div>
+        </div>
+      </div>
+      <div class="pill-divider"></div>
+      <div class="burger-wrap" id="gknobWrap">
+        <button class="gknob-btn" id="gknobBtn" aria-label="Graph view">
+          <div class="g-led"></div>
+          <span style="font-family:Fixedsys;font-size:8px;margin-left:4px">MAP</span>
+        </button>
+        <div class="gknob-popup" id="gknobPopup">
+          <div class="gknob-track">
+            <span style="font-family:Fixedsys;font-size:8px">−</span>
+            <div class="gknob-slider" id="gknobSlider"><div class="gknob-thumb" id="gknobThumb"></div></div>
+            <span style="font-family:Fixedsys;font-size:8px">+</span>
           </div>
         </div>
       </div>
       <div class="pill-divider"></div>
       <div class="burger-wrap">
         <button class="sword-btn" id="swordBtn" aria-label="Menu">
-          <span class="line"></span>
-          <span class="line"></span>
-          <span class="line"></span>
+          <span class="line"></span><span class="line"></span><span class="line"></span>
         </button>
         <div class="nav-overlay" id="navOverlay">
-          <a href="/">Home</a>
-          <a href="/about/">About</a>
-          <a href="/gallery/">Gallery</a>
-          <a href="/garden/" class="current">Digital Garden</a>
-          <a href="/links/">Links</a>
+          <a href="/">Home</a><a href="/about/">About</a><a href="/gallery/">Gallery</a><a href="/garden/" class="current">Digital Garden</a><a href="/links/">Links</a>
         </div>
       </div>
     </div>
@@ -568,50 +491,51 @@ header > * { pointer-events: auto; }
 
 <div class="page-main">
   <div class="desktop">
-
     <div class="win win-l">
-      <div class="tbar">
-        <div class="tbar-inner">
-          <div class="tbar-t">GARDEN.MD</div>
-          <div class="tbbtns" id="lbtns"></div>
-        </div>
+      <div class="tbar"><div class="tbar-inner"><div class="tbar-t">GARDEN.MD</div><div class="tbbtns" id="lbtns"></div></div></div>
+      <div class="mbar">
+        <button class="lm-btn" id="collapseAllBtn"><span id="collapseIcon">⊟</span><span class="lm-label" id="collapseLabel">FOLD ALL</span></button>
       </div>
-      <div class="mbar"><span class="mi">File</span><span class="mi">View</span></div>
       <div class="lbody">
         <div class="scan"></div>
         <div class="flist" id="flist"></div>
-      </div>
-    </div>
-
-    <div class="win win-r">
-      <div class="tbar">
-        <div class="tbar-inner">
-          <div class="tbar-t" id="rtitle"><span class="rpath-root">noeasy.xyz/garden/</span><span class="rpath-cur" id="rpathCur"></span></div>
-          <div class="tbbtns" id="rbtns"></div>
+        <div class="graph-panel" id="graphPanel">
+          <div class="graph-wrap" id="graphWrap"><canvas id="graphCanvas"></canvas></div>
         </div>
       </div>
+    </div>
+    <div class="win win-r">
+      <div class="tbar"><div class="tbar-inner"><div class="tbar-t" id="rtitle"><span class="rpath-root">noeasy.xyz/garden/</span><span class="rpath-cur" id="rpathCur"></span></div><div class="tbbtns" id="rbtns"></div></div></div>
       <div class="rbody">
         <div class="rscroll" id="reader"></div>
-        <div class="sbar">
-          <span class="si" id="s1">READY</span>
-          <div class="sdv"></div><span class="si" id="s2"></span>
-          <div class="sdv"></div><span class="si" id="s3"></span>
-        </div>
+        <div class="sbar"><span class="si" id="s1">READY</span><div class="sdv"></div><span class="si" id="s2"></span><div class="sdv"></div><span class="si" id="s3"></span></div>
       </div>
     </div>
-
   </div>
 </div>
 
 <script>
-// ── Grain (identical to gallery) ──
+// ── MUTEX & UI LOGIC ──
+const ui = {
+  nav: { btn: document.getElementById('swordBtn'), el: document.getElementById('navOverlay') },
+  fsize: { btn: document.getElementById('fsizeBtn'), el: document.getElementById('fsizePopup') },
+  graph: { btn: document.getElementById('gknobBtn'), el: document.getElementById('gknobPopup') }
+};
+
+function closeAllExcept(key) {
+  Object.keys(ui).forEach(k => {
+    if (k !== key) {
+      ui[k].el.classList.remove('open');
+      ui[k].btn.classList.remove('open');
+    }
+  });
+}
+
+// ── GRAIN ──
 const grain = document.getElementById('grain');
 const gc = grain.getContext('2d');
 let gw, gh;
-function resizeGrain() {
-  gw = grain.width  = window.innerWidth  + 20;
-  gh = grain.height = window.innerHeight + 120;
-}
+function resizeGrain() { gw = grain.width = window.innerWidth + 20; gh = grain.height = window.innerHeight + 120; }
 resizeGrain();
 window.addEventListener('resize', resizeGrain);
 (function tick() {
@@ -625,257 +549,140 @@ window.addEventListener('resize', resizeGrain);
   requestAnimationFrame(tick);
 })();
 
-// ── Header visible ──
 setTimeout(() => document.getElementById('siteHeader').classList.add('visible'), 100);
 
-// ── Burger menu ──
-const swordBtn = document.getElementById('swordBtn');
-const navOverlay = document.getElementById('navOverlay');
-swordBtn.addEventListener('click', e => {
-  e.stopPropagation();
-  const open = navOverlay.classList.toggle('open');
-  swordBtn.classList.toggle('open', open);
-});
-document.addEventListener('click', () => {
-  navOverlay.classList.remove('open');
-  swordBtn.classList.remove('open');
-});
+// ── HEADER BUTTONS ──
+ui.nav.btn.onclick = (e) => { e.stopPropagation(); closeAllExcept('nav'); ui.nav.btn.classList.toggle('open'); ui.nav.el.classList.toggle('open'); };
+ui.fsize.btn.onclick = (e) => { e.stopPropagation(); closeAllExcept('fsize'); ui.fsize.el.classList.toggle('open'); };
+document.addEventListener('click', () => { Object.values(ui).forEach(o => { o.el.classList.remove('open'); o.btn.classList.remove('open'); }); });
 
-// ── Templar cross pattée SVG ──
 const crossSVG = `<svg width="11" height="11" viewBox="0 0 11 11" fill="none" xmlns="http://www.w3.org/2000/svg" style="display:block;image-rendering:pixelated;shape-rendering:crispEdges"><rect x="5" y="0" width="1" height="11" fill="#1a1612"/><rect x="4" y="1" width="3" height="1" fill="#1a1612"/><rect x="4" y="9" width="3" height="1" fill="#1a1612"/><rect x="3" y="0" width="5" height="1" fill="#1a1612"/><rect x="3" y="10" width="5" height="1" fill="#1a1612"/><rect x="0" y="5" width="11" height="1" fill="#1a1612"/><rect x="1" y="4" width="1" height="3" fill="#1a1612"/><rect x="9" y="4" width="1" height="3" fill="#1a1612"/><rect x="0" y="3" width="1" height="5" fill="#1a1612"/><rect x="10" y="3" width="1" height="5" fill="#1a1612"/></svg>`;
+function makeBtns(c) { ['Min','Max','Close'].forEach(() => { const b = document.createElement('div'); b.className='tbbtn'; b.innerHTML=crossSVG; c.appendChild(b); }); }
+makeBtns(document.getElementById('lbtns')); makeBtns(document.getElementById('rbtns'));
 
-function makeBtns(container) {
-  ['Minimize','Maximize','Close'].forEach(t => {
-    const b = document.createElement('div');
-    b.className = 'tbbtn'; b.title = t;
-    b.innerHTML = crossSVG;
-    container.appendChild(b);
-  });
-}
-makeBtns(document.getElementById('lbtns'));
-makeBtns(document.getElementById('rbtns'));
-
-// ── Data ──
+// ── DATA ──
 const vault = [
-  {
-    folder: "Esoterica",
-    notes: [
-      {
-        id:1, date:"2026-04-22", tags:["theurgy","plato"],
-        title:"On Theurgy and the Purpose of Prayer",
-        body:`Iamblichus says that prayer works not because the gods learn of our desire. The gods know everything. Prayer works because it changes the one who prays.
-
-We do not inform heaven — we tune ourselves. Like tuning an instrument before drawing sound from it.
-
-## Ritual as Calibration
-
-You bring your structure into alignment with that which you address. And in that alignment, something begins to move.
-
-> "The gods hear because the soul has lifted itself to them." — Iamblichus
-
-The hexagram ritual works precisely this way. Not explanation first — a form that does something to you when you work with it.`
-      },
-      {
-        id:4, date:"2026-03-29", tags:["symbols","jung"],
-        title:"The Symbol as Entrance, Not Sign",
-        body:`Jung distinguished sign from symbol. A sign points to something known. A symbol points to something that cannot be expressed otherwise.
-
-The cross as sign — a specific religion. The cross as symbol — the intersection of axes, the point where vertical and horizontal meet. This cannot be explained — only felt.
-
-Symbols do not explain — they open.`
-      }
-    ]
-  },
-  {
-    folder: "Tarot",
-    notes: [
-      {
-        id:2, date:"2026-04-18", tags:["arcana"],
-        title:"The Magician: Will as Channel",
-        body:`The Magician is the first arcana after the Fool. The Fool is potential without form. The Magician is the moment when potential takes up its tools.
-
-On the table lie all four suits. One hand raised to heaven, the other lowered to earth. This is not about control — it is about channel.
-
-## The Artist as Magician
-
-He conducts what already exists — from above downward, through himself, into matter. Your task is to become transparent enough for it to pass through.
-
-This relieves some of the anxiety around "creation." Not to invent — but to be the place through which it passes.`
-      }
-    ]
-  },
-  {
-    folder: "Philosophy",
-    notes: [
-      {
-        id:3, date:"2026-04-10", tags:["plato","media"],
-        title:"Plato's Cave and Screens",
-        body:`It is common to read the cave as a metaphor for ignorance. But the prisoners are not foolish — they are rational. They study shadows, build theories, predict the next shadow. The problem is not the intellect — it is aimed in the wrong direction.
-
-Metrics, reach, algorithms — these are shadows on the wall. One can reason about them very cleverly. But they remain shadows all the same.
-
-Reality is what happens when you paint.`
-      },
-      {
-        id:5, date:"2026-03-15", tags:["archaic"],
-        title:"The Archaic as Living",
-        body:`The archaic is not chronology. It is a layer of reality.
-
-Mythological thinking has not disappeared. It went underground. People still live by rituals, seek initiation, need symbols capable of holding their experience.
-
-Working with occult aesthetics is not nostalgia. It is an attempt to feel out what is still alive and waiting for form.`
-      }
-    ]
-  }
+  { folder: "Esoterica", notes: [{ id:1, date:"2026-04-22", tags:["theurgy","plato"], title:"On Theurgy and the Purpose of Prayer", body:`Iamblichus says that prayer works...` }] },
+  { folder: "Tarot", notes: [{ id:2, date:"2026-04-18", tags:["arcana"], title:"The Magician: Will as Channel", body:`The Magician is...` }] }
 ];
-
 const allNotes = vault.flatMap(f => f.notes.map(n => ({...n, folder: f.folder})));
-let openFolders = new Set();
-let activeNote = null;
+let openFolders = new Set(), activeNote = null;
 
 function buildLeft() {
-  const fl = document.getElementById('flist');
-  fl.innerHTML = '';
+  const fl = document.getElementById('flist'); fl.innerHTML = '';
   vault.forEach(({folder, notes}) => {
-    const isOpen = openFolders.has(folder);
-    const row = document.createElement('div');
-    row.className = 'folder-row';
-    row.textContent = `[${folder.toUpperCase()}]`;
-    row.onclick = () => {
-      openFolders.has(folder) ? openFolders.delete(folder) : openFolders.add(folder);
-      activeNote = null;
-      buildLeft();
-      showFeed(notes.map(n => ({...n, folder})), folder);
-    };
+    const row = document.createElement('div'); row.className = 'folder-row'; row.textContent = `[${folder.toUpperCase()}]`;
+    row.onclick = () => { openFolders.has(folder) ? openFolders.delete(folder) : openFolders.add(folder); buildLeft(); showFeed(notes.map(n=>({...n, folder})), folder); };
     fl.appendChild(row);
-
-    const children = document.createElement('div');
-    children.className = 'folder-children' + (isOpen ? ' open' : '');
+    const children = document.createElement('div'); children.className = 'folder-children' + (openFolders.has(folder)?' open':'');
     notes.forEach(note => {
-      const nr = document.createElement('div');
-      nr.className = 'note-row' + (activeNote?.id === note.id ? ' act' : '');
-      nr.textContent = note.title;
-      nr.title = note.title;
-      nr.onclick = e => {
-        e.stopPropagation();
-        activeNote = note;
-        buildLeft();
-        openNote({...note, folder});
-      };
+      const nr = document.createElement('div'); nr.className = 'note-row'+(activeNote?.id===note.id?' act':'');
+      nr.textContent = note.title; nr.onclick = e => { e.stopPropagation(); activeNote = note; buildLeft(); openNote({...note, folder}); };
       children.appendChild(nr);
     });
     fl.appendChild(children);
   });
 }
 
-function setRPath(cur) {
-  const el = document.getElementById('rpathCur');
-  if (el) el.textContent = cur;
-}
-
 function showFeed(notes, folderName) {
-  const sorted = [...notes].sort((a,b) => b.date.localeCompare(a.date));
-  const lbl = folderName || '';
-  setRPath(lbl ? lbl.toLowerCase() + '/' : '');
-  document.getElementById('s1').textContent = (lbl || 'GARDEN').toUpperCase();
-  document.getElementById('s2').textContent = sorted.length + ' entries';
-  document.getElementById('s3').textContent = sorted[0]?.date || '';
-  const r = document.getElementById('reader');
-  r.innerHTML = '';
-  sorted.forEach(n => {
-    const e = document.createElement('div');
-    e.className = 'fe';
-    const preview = n.body.replace(/[#>*_\n]/g,' ').replace(/\s+/g,' ').slice(0,140);
-    e.innerHTML = `<div class="fe-meta">${n.date}  ·  ${n.tags.join(' · ')}</div><div class="fe-title">${n.title}</div><div class="fe-prev">${preview}</div><span class="fe-arrow">READ →</span>`;
+  const r = document.getElementById('reader'); r.innerHTML = '';
+  notes.forEach(n => {
+    const e = document.createElement('div'); e.className = 'fe';
+    e.innerHTML = `<div class="fe-meta">${n.date}</div><div class="fe-title">${n.title}</div>`;
     e.onclick = () => { activeNote = n; buildLeft(); openNote({...n, folder: n.folder||folderName}); };
     r.appendChild(e);
   });
-  r.scrollTop = 0;
 }
 
 function openNote(n) {
-  setRPath(n.folder.toLowerCase() + '/' + n.title.toLowerCase().replace(/\s+/g,'-').replace(/[^a-z0-9\-]/g,'') + '.md');
-  document.getElementById('s1').textContent = n.folder.toUpperCase();
-  document.getElementById('s2').textContent = n.tags.join(' · ');
-  document.getElementById('s3').textContent = n.date;
-  const r = document.getElementById('reader');
-  r.innerHTML = '';
-  const v = document.createElement('div');
-  v.className = 'nv';
-  v.innerHTML = `<button class="nbk" id="nbk">← back</button><div class="nmeta">${n.date}  ·  ${[n.folder,...n.tags].join(' · ')}</div><div class="ntitle">${n.title}</div><div class="n-rule"></div><div class="nbody">${md(n.body)}</div>`;
-  v.querySelector('#nbk').onclick = () => {
-    activeNote = null; buildLeft();
-    const fn = vault.find(f => f.folder === n.folder)?.notes || [];
-    showFeed(fn.map(x => ({...x, folder: n.folder})), n.folder);
-  };
-  r.appendChild(v);
-  r.scrollTop = 0;
+  const r = document.getElementById('reader'); r.innerHTML = `<div class="nv"><div class="ntitle">${n.title}</div><div class="nbody">${n.body}</div></div>`;
 }
 
-function md(t) {
-  return t.split('\n\n').map(b => {
-    if (b.startsWith('## ')) return `<h2>${b.slice(3)}</h2>`;
-    if (b.startsWith('> '))  return `<blockquote>${b.slice(2)}</blockquote>`;
-    return `<p>${b.replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>').replace(/\n/g,'<br>')}</p>`;
-  }).join('');
-}
-
-document.getElementById('rtitle').textContent = 'NOEASY / GARDEN';
-document.getElementById('s1').textContent = 'GARDEN';
-
-buildLeft();
-showFeed(allNotes, null);
-setRPath('');
-
-// ── Font size knob ──
+// ── GRAPH LOGIC ──
 (function() {
-  const MIN = 9, MAX = 15, DEFAULT = 11;
-  let cur = DEFAULT;
-  const popup   = document.getElementById('fsizePopup');
-  const btn     = document.getElementById('fsizeBtn');
-  const knob    = document.getElementById('fsizeKnob');
-  const slider  = document.getElementById('fsizeSlider');
-  const thumb   = document.getElementById('fsizeThumb');
-  const wrap    = document.getElementById('fsizeWrap');
-
-  function pct() { return (cur - MIN) / (MAX - MIN); }
-
-  function apply() {
-    document.documentElement.style.setProperty('--r-fsize', cur + 'px');
-    const deg = -135 + pct() * 270;
-    knob.style.transform = `rotate(${deg}deg)`;
-    const sliderW = slider.offsetWidth;
-    thumb.style.left = (pct() * (sliderW - 10) + 5) + 'px';
-  }
-
-  apply();
+  const btn = document.getElementById('gknobBtn');
+  const panel = document.getElementById('graphPanel');
+  const winL = document.querySelector('.win-l');
+  const flist = document.getElementById('flist');
+  let graphVisible = false;
 
   btn.addEventListener('click', e => {
     e.stopPropagation();
-    popup.classList.toggle('open');
-  });
-
-  // drag on slider
-  let dragging = false;
-  function setFromX(x) {
-    const rect = slider.getBoundingClientRect();
-    let t = (x - rect.left) / rect.width;
-    t = Math.max(0, Math.min(1, t));
-    cur = Math.round(MIN + t * (MAX - MIN));
-    apply();
-  }
-
-  slider.addEventListener('mousedown', e => { dragging = true; setFromX(e.clientX); });
-  slider.addEventListener('touchstart', e => { dragging = true; setFromX(e.touches[0].clientX); }, {passive:true});
-  document.addEventListener('mousemove', e => { if (dragging) setFromX(e.clientX); });
-  document.addEventListener('touchmove', e => { if (dragging) setFromX(e.touches[0].clientX); }, {passive:true});
-  document.addEventListener('mouseup', () => { dragging = false; });
-  document.addEventListener('touchend', () => { dragging = false; });
-
-  document.addEventListener('click', e => {
-    if (!wrap.contains(e.target)) popup.classList.remove('open');
+    closeAllExcept('graph');
+    graphVisible = !graphVisible;
+    btn.classList.toggle('open', graphVisible);
+    panel.classList.toggle('open', graphVisible);
+    winL.classList.toggle('expanded', graphVisible);
+    flist.style.display = graphVisible ? 'none' : '';
+    if (graphVisible) { ui.graph.el.classList.add('open'); initGraph(); }
+    else { ui.graph.el.classList.remove('open'); }
   });
 })();
+
+function initGraph() {
+  if (window._graphInitialized) return; window._graphInitialized = true;
+  const canvas = document.getElementById('graphCanvas');
+  const ctx = canvas.getContext('2d');
+  const wrap = document.getElementById('graphWrap');
+  let zoom = 1.0;
+
+  function resize() { canvas.width = wrap.clientWidth; canvas.height = wrap.clientHeight; }
+  window.addEventListener('resize', resize); resize();
+
+  function drawStars(time) {
+    ctx.fillStyle = '#f6f1da';
+    for(let i=0; i<80; i++) {
+      let x = (Math.sin(i * 123.4) * 0.5 + 0.5) * canvas.width;
+      let y = (Math.cos(i * 567.8) * 0.5 + 0.5) * canvas.height;
+      let size = (Math.sin(time * 0.002 + i) * 0.5 + 0.5);
+      if (size > 0.6) ctx.fillRect(x, y, 1, 1);
+    }
+  }
+
+  const nodes = vault.map((f, i) => ({ x: Math.random()*200, y: Math.random()*200, label: f.folder, type: 'folder' }));
+
+  function draw(time) {
+    ctx.fillStyle = '#0c0a06'; ctx.fillRect(0,0,canvas.width,canvas.height);
+    drawStars(time);
+    nodes.forEach(n => {
+      ctx.fillStyle = n.type === 'folder' ? '#D6D5A9' : '#7a6a52';
+      ctx.fillRect(n.x, n.y, 6, 6);
+      ctx.fillStyle = '#e8d0a0'; ctx.font = '8px Fixedsys';
+      ctx.fillText(n.label, n.x + 8, n.y + 8);
+    });
+    requestAnimationFrame(draw);
+  }
+  requestAnimationFrame(draw);
+}
+
+// ── FONT SIZE KNOB ──
+(function() {
+  const btn = document.getElementById('fsizeBtn');
+  const knob = document.getElementById('fsizeKnob');
+  const slider = document.getElementById('fsizeSlider');
+  const thumb = document.getElementById('fsizeThumb');
+  let cur = 11;
+
+  function apply() {
+    document.documentElement.style.setProperty('--r-fsize', cur + 'px');
+    const t = (cur - 9) / (15 - 9);
+    knob.style.transform = `rotate(${-135 + t*270}deg)`;
+    thumb.style.left = (t * 90) + '%';
+  }
+  apply();
+
+  slider.onmousedown = (e) => {
+    let move = (e) => {
+      let rect = slider.getBoundingClientRect();
+      let t = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+      cur = Math.round(9 + t * 6); apply();
+    };
+    move(e); document.onmousemove = move; document.onmouseup = () => document.onmousemove = null;
+  };
+})();
+
+buildLeft();
+showFeed(allNotes, null);
 </script>
 </body>
 </html>
