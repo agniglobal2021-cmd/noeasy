@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#5D5143">
+<title>NOEASY / garden</title>
+<style>
+@font-face {
+  font-family: 'Alkhemikal';
+  src: url('../fonts/Alkhemikal.ttf') format('truetype');
+  font-weight: normal; font-style: normal;
+}
+@font-face {
+  font-family: 'DotGothic16';
+  src: url('../fonts/DotGothic16-Regular.ttf') format('truetype');
+  font-weight: normal; font-style: normal;
+}
+@font-face {
+  font-family: 'Fixedsys';
+  src: url('../fonts/Fixedsys.ttf') format('truetype');
+  font-weight: normal; font-style: normal;
+}
+
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+:root {
+  --bg:    #e8e0c4;
+  --text:  #353535;
+  --desk:  #5D5143;
+  --tb:    #5D5143;
+  --ttxt:  #f6f1da;
+  --btn:   #AFA191;
+  --blt:   #d4cdc4;
+  --bdk:   #3d3830;
+  --bsh:   #2a2520;
+  /* terminal — left panel bg: #221c14 ≈ #2e2820 darkened ~10% */
+  --lbg:   #1e1a12;
+  --tbg:   #2e2820;
+  --ta:    #c9a472;
+  --tdim:  #7a6a52;
+  --thl:   #e8d0a0;
+  --tbar:  #181410;
+  --tsel:  #6a5535;
+  --header-titlebar-h: 22px;
+  --header-pill-h: 44px;
+  --header-total-h: calc(env(safe-area-inset-top, 0px) + var(--header-titlebar-h) + var(--header-pill-h));
+}
+
+html { background: #5D5143; overflow-x: hidden; }
+
+body::before {
+  content: '';
+  position: fixed; top: -100vh; left: 0; right: 0;
+  height: 100vh; background: #5D5143;
+  z-index: 9001; pointer-events: none;
+}
+
+body {
+  background: var(--bg);
+  font-family: 'DotGothic16', monospace;
+  color: var(--text);
+  overflow: hidden;
+  overscroll-behavior: none;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-font-smoothing: none;
+  height: 100vh;
+}
+
+/* ── Grain canvas (same as gallery) ── */
+#grain {
+  position: fixed;
+  top: -60px; bottom: -60px; left: -10px; right: -10px;
+  z-index: 9998; pointer-events: none;
+}
+
+/* ── HEADER (identical to gallery) ── */
+header {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 500;
+  display: flex; flex-direction: column; align-items: stretch;
+  pointer-events: none;
+  opacity: 0; transition: opacity 0.7s ease;
+  background: var(--desk);
+}
+header.visible { opacity: 1; }
+header > * { pointer-events: auto; }
+
+.header-safe-top {
+  height: env(safe-area-inset-top, 0px);
+  background: var(--desk); flex-shrink: 0;
+}
+.header-inner { display: flex; flex-direction: column; align-items: stretch; width: 100%; }
+
+.header-titlebar-strip {
+  width: 100%; height: var(--header-titlebar-h);
+  background: #5D5143;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 0 0 8px; flex-shrink: 0;
+  border-bottom: 1px solid #3e352d;
+}
+.header-titlebar-strip-text {
+  font-family: 'DotGothic16', monospace;
+  font-size: 9px; font-weight: 700; letter-spacing: 0.14em;
+  color: #f6f1da; line-height: 1;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex: 1;
+}
+
+.header-pill {
+  display: flex; align-items: center;
+  position: relative; width: 100%; height: var(--header-pill-h);
+  background: #AFA191;
+  border-top: 1px solid #d4cdc4; border-bottom: 2px solid #7a7068;
+  box-shadow: 0 1px 0 #404040;
+  overflow: visible; padding: 0 4px;
+}
+
+.pill-divider {
+  width: 2px; height: 26px; flex-shrink: 0;
+  background: #808080; border-right: 1px solid #d4cdc4;
+  align-self: center; margin: 0 2px;
+}
+
+.pill-center {
+  position: absolute; left: 50%; transform: translateX(-50%);
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 1px; pointer-events: none; user-select: none; white-space: nowrap;
+}
+.pill-section {
+  font-family: 'Alkhemikal', serif;
+  font-size: 19px; letter-spacing: 0.08em; opacity: 0.9; color: #000;
+}
+
+.sword-btn {
+  height: calc(100% - 10px); padding: 0 12px; margin: 0 2px;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: 4px;
+  background: #AFA191;
+  border-top: 2px solid #d4cdc4; border-left: 2px solid #d4cdc4;
+  border-right: 2px solid #3d3830; border-bottom: 2px solid #3d3830;
+  box-shadow: inset 1px 1px 0 #d4cdc4, inset -1px -1px 0 #7a7068;
+  cursor: pointer; -webkit-tap-highlight-color: transparent;
+  transition: none; flex-shrink: 0;
+}
+.sword-btn:active, .sword-btn.open {
+  border-top: 2px solid #3d3830; border-left: 2px solid #3d3830;
+  border-right: 2px solid #d4cdc4; border-bottom: 2px solid #d4cdc4;
+  box-shadow: inset 1px 1px 0 #7a7068;
+}
+.sword-btn .line {
+  position: relative; height: 2px; width: 18px; background: #000;
+  opacity: 0.8;
+  transition: transform 0.38s cubic-bezier(0.16,1,0.3,1), opacity 0.25s, width 0.38s cubic-bezier(0.16,1,0.3,1);
+}
+.sword-btn.open .line:nth-child(1) { transform: translateY(6px) rotate(45deg); }
+.sword-btn.open .line:nth-child(2) { opacity: 0; transform: scaleX(0); }
+.sword-btn.open .line:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
+
+.burger-wrap { position: relative; height: 100%; display: flex; align-items: center; }
+
+.nav-overlay {
+  position: absolute; top: calc(100% + 4px); right: 0; z-index: 8999;
+  min-width: 160px; padding: 2px;
+  background: #AFA191;
+  border-top: 2px solid #d4cdc4; border-left: 2px solid #d4cdc4;
+  border-right: 2px solid #3d3830; border-bottom: 2px solid #3d3830;
+  box-shadow: 2px 2px 0 #2a2520;
+  display: flex; flex-direction: column;
+  opacity: 0; pointer-events: none;
+  transform: translateY(-4px); transform-origin: top right;
+  transition: opacity 0.15s ease, transform 0.15s ease;
+}
+.nav-overlay.open { opacity: 1; pointer-events: auto; transform: translateY(0); }
+.nav-overlay a {
+  font-family: 'DotGothic16', monospace;
+  font-size: 10px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase;
+  color: #000; text-decoration: none; padding: 8px 12px 8px 8px;
+  display: flex; align-items: center;
+}
+.nav-overlay a::before { content: '/'; margin-right: 7px; font-size: 10px; }
+.nav-overlay a:hover { background: #5D5143; color: #f6f1da; }
+.nav-overlay a + a { border-top: 1px solid #7a7068; }
+.nav-overlay a.current { background: #c8c2ba; }
+
+/* ── Main layout — below header ── */
+.page-main {
+  padding-top: var(--header-total-h);
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.desktop {
+  display: flex; gap: 7px;
+  padding: 10px 10px 10px;
+  flex: 1; overflow: hidden;
+  max-width: 1200px;
+  width: 100%;
+  margin: 0 auto;
+  box-sizing: border-box;
+}
+
+/* ── Win95 window chrome ── */
+.win {
+  display: flex; flex-direction: column; overflow: hidden;
+  border-top: 2px solid var(--blt); border-left: 2px solid var(--blt);
+  border-right: 2px solid var(--bdk); border-bottom: 2px solid var(--bdk);
+  box-shadow: 2px 2px 0 var(--bsh);
+}
+
+.tbar {
+  height: 22px; background: var(--btn);
+  display: flex; align-items: stretch; padding: 1px; flex-shrink: 0; user-select: none;
+}
+.tbar-inner {
+  flex: 1; background: var(--tb);
+  display: flex; align-items: center; padding: 0 1px 0 6px; gap: 2px; overflow: hidden; min-width: 0;
+}
+.tbar-t {
+  flex: 1; font-size: 8px; font-weight: 700; letter-spacing: .12em;
+  color: var(--ttxt); overflow: hidden; white-space: nowrap; text-overflow: ellipsis; line-height: 1;
+}
+.tbbtns { display: flex; gap: 1px; flex-shrink: 0; align-items: stretch; }
+.tbbtn {
+  width: 16px; background: var(--btn);
+  border-top: 1px solid var(--blt); border-left: 1px solid var(--blt);
+  border-right: 1px solid var(--bdk); border-bottom: 1px solid var(--bdk);
+  display: flex; align-items: center; justify-content: center;
+  cursor: default; flex-shrink: 0; padding: 0 0 1px 0;
+}
+.tbbtn:active {
+  border-top: 1px solid var(--bdk); border-left: 1px solid var(--bdk);
+  border-right: 1px solid var(--blt); border-bottom: 1px solid var(--blt);
+}
+
+.mbar {
+  display: flex; padding: 1px 2px; flex-shrink: 0;
+  background: var(--lbg); border-bottom: 1px solid rgba(201,164,114,.1);
+}
+.mi { font-family: 'Alkhemikal', serif; font-size: 11px; letter-spacing: .06em; padding: 2px 8px; cursor: pointer; color: var(--ta); }
+.mi:hover { color: var(--thl); }
+
+/* scanlines overlay */
+.scan {
+  position: absolute; inset: 0; pointer-events: none; z-index: 3;
+  background: repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.07) 2px,rgba(0,0,0,0.07) 4px);
+}
+
+/* ── LEFT PANEL ── */
+.win-l { width: 200px; flex-shrink: 0; }
+
+/* entire lbody: uniform dark bg, same as tbar */
+.lbody {
+  flex: 1; background: var(--lbg);
+  display: flex; flex-direction: column; overflow: hidden; position: relative;
+}
+
+/* text flicker on all left-panel text */
+@keyframes flicker {
+  0%,100% { opacity: 1; }
+  92%      { opacity: 1; }
+  93%      { opacity: .82; }
+  94%      { opacity: 1; }
+  97%      { opacity: .9; }
+  98%      { opacity: 1; }
+}
+.lbody * { animation: flicker 4s step-end infinite; }
+
+/* phosphor text-shadow blur */
+.folder-row, .note-row {
+  text-shadow: 0 0 6px currentColor;
+}
+
+.flist {
+  flex: 1; display: flex; flex-direction: column; padding: 8px 0;
+  position: relative; z-index: 2; overflow-y: auto; overflow-x: hidden;
+  scrollbar-width: none;
+}
+.flist::-webkit-scrollbar { display: none; }
+
+.folder-row {
+  padding: 1px 12px; cursor: pointer; user-select: none;
+  font-family: 'Fixedsys', monospace; font-size: 11px; line-height: 1.7;
+  color: var(--ta); letter-spacing: .03em;
+  white-space: nowrap; overflow: hidden;
+  transition: color .08s;
+}
+.folder-row:hover { color: var(--thl); }
+
+.folder-children { display: none; flex-direction: column; margin-bottom: 3px; }
+.folder-children.open { display: flex; }
+
+.note-row {
+  padding: 0 12px 0 20px; cursor: pointer; user-select: none;
+  font-family: 'Fixedsys', monospace; font-size: 10px; line-height: 1.75;
+  color: var(--tdim);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  transition: color .08s; position: relative;
+}
+.note-row::before { content: '· '; }
+.note-row:hover { color: var(--ta); }
+.note-row.act { color: var(--thl); }
+.note-row.act::after {
+  content: '▌'; margin-left: 2px;
+  animation: bl .9s step-end infinite;
+}
+
+@keyframes bl { 50% { opacity: 0; } }
+
+/* ── RIGHT PANEL ── */
+.win-r { flex: 1; min-width: 0; }
+
+.rbody {
+  flex: 1; background: #b5ad9e;
+  display: flex; flex-direction: column; overflow: hidden; position: relative;
+}
+
+.r-head {
+  padding: 4px 13px; font-size: 8px; letter-spacing: .10em; text-transform: uppercase;
+  color: var(--tdim); border-bottom: 1px solid var(--tdim);
+  display: flex; align-items: center; gap: 10px; flex-shrink: 0; position: relative; z-index: 2;
+}
+.rh-path {
+  flex: 1; overflow: hidden; white-space: nowrap; text-overflow: ellipsis;
+  font-family: 'Fixedsys', monospace; font-size: 9px; letter-spacing: .04em;
+}
+
+.rscroll {
+  flex: 1; overflow-y: auto; padding: 40px 52px 56px; position: relative; z-index: 2;
+  scrollbar-width: thin; scrollbar-color: rgba(93,81,67,.25) transparent;
+}
+.rscroll::-webkit-scrollbar { width: 2px; }
+.rscroll::-webkit-scrollbar-thumb { background: rgba(93,81,67,.3); }
+
+/* feed */
+.fe {
+  padding: 32px 0;
+  border-bottom: 1px solid rgba(93,81,67,.18);
+  cursor: pointer;
+}
+.fe:first-child { padding-top: 0; }
+.fe:last-child { border-bottom: none; }
+.fe:hover .fe-title { color: #3d3020; }
+.fe:hover .fe-arrow { opacity: 1; transform: translateX(3px); }
+
+.fe-meta {
+  font-family: 'Fixedsys', monospace; font-size: 8px;
+  color: #7a6a52; margin-bottom: 13px; letter-spacing: .14em;
+  text-transform: uppercase; opacity: .75;
+}
+.fe-title {
+  font-family: 'Alkhemikal', serif; font-size: 26px; line-height: 1.2;
+  color: #2e2318; margin-bottom: 12px; transition: color .15s;
+  letter-spacing: .01em;
+}
+.fe-prev {
+  font-family: 'DotGothic16', monospace; font-size: 9px; line-height: 2;
+  color: #5a4e3e; opacity: .7;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+  max-width: 580px;
+}
+.fe-arrow {
+  display: inline-block; margin-top: 14px;
+  font-family: 'Fixedsys', monospace; font-size: 8px;
+  color: #7a6a52; letter-spacing: .12em; opacity: 0;
+  transition: opacity .15s, transform .15s;
+}
+
+/* note view */
+.nv {
+  padding: 0 0 48px;
+  animation: fadein .2s ease;
+  max-width: 640px;
+}
+@keyframes fadein { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+
+.nbk {
+  font-family: 'Fixedsys', monospace; font-size: 8px; letter-spacing: .12em;
+  text-transform: uppercase;
+  color: #7a6a52; background: none; border: none; cursor: pointer;
+  padding: 0; margin-bottom: 40px; display: block; transition: color .12s;
+  opacity: .7;
+}
+.nbk:hover { color: #3d3020; opacity: 1; }
+
+.nmeta {
+  font-family: 'Fixedsys', monospace; font-size: 8px; letter-spacing: .14em;
+  text-transform: uppercase;
+  color: #7a6a52; margin-bottom: 18px; opacity: .6;
+}
+.ntitle {
+  font-family: 'Alkhemikal', serif; font-size: 34px; line-height: 1.15;
+  color: #1e1710; margin-bottom: 10px; letter-spacing: .01em;
+}
+.n-rule {
+  width: 40px; height: 1px; background: rgba(93,81,67,.4);
+  margin: 22px 0 28px;
+}
+.nbody {
+  font-family: 'DotGothic16', monospace; font-size: 9px;
+  line-height: 2.1; color: #3d3428;
+}
+.nbody p { margin-bottom: 18px; max-width: 560px; }
+.nbody h2 {
+  font-family: 'Alkhemikal', serif; font-size: 17px; color: #1e1710;
+  margin: 36px 0 14px; letter-spacing: .02em; font-weight: 400;
+}
+.nbody blockquote {
+  border-left: 1px solid rgba(93,81,67,.4); padding-left: 20px;
+  margin: 24px 0; color: #6a5c4a; font-style: normal;
+}
+.nbody strong { color: #1e1710; font-weight: 400; }
+
+/* statusbar */
+.sbar {
+  background: rgba(93,81,67,.12); border-top: 1px solid rgba(93,81,67,.2);
+  display: flex; align-items: center; padding: 3px 14px; gap: 10px;
+  flex-shrink: 0; position: relative; z-index: 2;
+}
+.si { font-family: 'Fixedsys', monospace; font-size: 8px; color: #7a6a52; opacity: .55; letter-spacing: .08em; text-transform: uppercase; }
+.sdv { width: 1px; height: 7px; background: rgba(93,81,67,.3); }
+
+@media (max-width: 600px) {
+  .page-main { height: auto; }
+  .desktop { flex-direction: column; height: auto; padding: 8px; }
+  .win { width: 100% !important; }
+  .win-l { height: auto; }
+  .lbody { height: auto; }
+  .flist { max-height: 180px; }
+  .win-r { min-height: 60vh; }
+}
+</style>
+</head>
+<body>
+
+<canvas id="grain"></canvas>
+
+<header id="siteHeader">
+  <div class="header-safe-top"></div>
+  <div class="header-inner">
+    <div class="header-titlebar-strip">
+      <span class="header-titlebar-strip-text">noeasy.xyz/garden</span>
+    </div>
+    <div class="header-pill">
+      <span class="pill-center">
+        <span class="pill-section">Digital Garden</span>
+      </span>
+      <div style="flex:1"></div>
+      <div class="pill-divider"></div>
+      <div class="burger-wrap">
+        <button class="sword-btn" id="swordBtn" aria-label="Menu">
+          <span class="line"></span>
+          <span class="line"></span>
+          <span class="line"></span>
+        </button>
+        <div class="nav-overlay" id="navOverlay">
+          <a href="/">Home</a>
+          <a href="/about/">About</a>
+          <a href="/gallery/">Gallery</a>
+          <a href="/garden/" class="current">Digital Garden</a>
+          <a href="/links/">Links</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="page-main">
+  <div class="desktop">
+
+    <div class="win win-l">
+      <div class="tbar">
+        <div class="tbar-inner">
+          <div class="tbar-t">GARDEN.MD</div>
+          <div class="tbbtns" id="lbtns"></div>
+        </div>
+      </div>
+      <div class="mbar"><span class="mi">File</span><span class="mi">View</span></div>
+      <div class="lbody">
+        <div class="scan"></div>
+        <div class="flist" id="flist"></div>
+      </div>
+    </div>
+
+    <div class="win win-r">
+      <div class="tbar">
+        <div class="tbar-inner">
+          <div class="tbar-t" id="rtitle">NOEASY / GARDEN</div>
+          <div class="tbbtns" id="rbtns"></div>
+        </div>
+      </div>
+      <div class="rbody">
+        <div class="rscroll" id="reader"></div>
+        <div class="sbar">
+          <span class="si" id="s1">READY</span>
+          <div class="sdv"></div><span class="si" id="s2"></span>
+          <div class="sdv"></div><span class="si" id="s3"></span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+// ── Grain (identical to gallery) ──
+const grain = document.getElementById('grain');
+const gc = grain.getContext('2d');
+let gw, gh;
+function resizeGrain() {
+  gw = grain.width  = window.innerWidth  + 20;
+  gh = grain.height = window.innerHeight + 120;
+}
+resizeGrain();
+window.addEventListener('resize', resizeGrain);
+(function tick() {
+  const img = gc.createImageData(gw, gh);
+  for (let i = 0; i < img.data.length; i += 4) {
+    const v = Math.random() * 255 | 0;
+    img.data[i] = img.data[i+1] = img.data[i+2] = v;
+    img.data[i+3] = Math.random() * 22 | 0;
+  }
+  gc.putImageData(img, 0, 0);
+  requestAnimationFrame(tick);
+})();
+
+// ── Header visible ──
+setTimeout(() => document.getElementById('siteHeader').classList.add('visible'), 100);
+
+// ── Burger menu ──
+const swordBtn = document.getElementById('swordBtn');
+const navOverlay = document.getElementById('navOverlay');
+swordBtn.addEventListener('click', e => {
+  e.stopPropagation();
+  const open = navOverlay.classList.toggle('open');
+  swordBtn.classList.toggle('open', open);
+});
+document.addEventListener('click', () => {
+  navOverlay.classList.remove('open');
+  swordBtn.classList.remove('open');
+});
+
+// ── Templar cross pattée SVG ──
+const crossSVG = `<svg width="11" height="11" viewBox="0 0 11 11" fill="none" xmlns="http://www.w3.org/2000/svg" style="display:block;image-rendering:pixelated;shape-rendering:crispEdges"><rect x="5" y="0" width="1" height="11" fill="#1a1612"/><rect x="4" y="1" width="3" height="1" fill="#1a1612"/><rect x="4" y="9" width="3" height="1" fill="#1a1612"/><rect x="3" y="0" width="5" height="1" fill="#1a1612"/><rect x="3" y="10" width="5" height="1" fill="#1a1612"/><rect x="0" y="5" width="11" height="1" fill="#1a1612"/><rect x="1" y="4" width="1" height="3" fill="#1a1612"/><rect x="9" y="4" width="1" height="3" fill="#1a1612"/><rect x="0" y="3" width="1" height="5" fill="#1a1612"/><rect x="10" y="3" width="1" height="5" fill="#1a1612"/></svg>`;
+
+function makeBtns(container) {
+  ['Minimize','Maximize','Close'].forEach(t => {
+    const b = document.createElement('div');
+    b.className = 'tbbtn'; b.title = t;
+    b.innerHTML = crossSVG;
+    container.appendChild(b);
+  });
+}
+makeBtns(document.getElementById('lbtns'));
+makeBtns(document.getElementById('rbtns'));
+
+// ── Data ──
+const vault = [
+  {
+    folder: "Esoterica",
+    notes: [
+      {
+        id:1, date:"2026-04-22", tags:["theurgy","plato"],
+        title:"On Theurgy and the Purpose of Prayer",
+        body:`Iamblichus says that prayer works not because the gods learn of our desire. The gods know everything. Prayer works because it changes the one who prays.
+
+We do not inform heaven — we tune ourselves. Like tuning an instrument before drawing sound from it.
+
+## Ritual as Calibration
+
+You bring your structure into alignment with that which you address. And in that alignment, something begins to move.
+
+> "The gods hear because the soul has lifted itself to them." — Iamblichus
+
+The hexagram ritual works precisely this way. Not explanation first — a form that does something to you when you work with it.`
+      },
+      {
+        id:4, date:"2026-03-29", tags:["symbols","jung"],
+        title:"The Symbol as Entrance, Not Sign",
+        body:`Jung distinguished sign from symbol. A sign points to something known. A symbol points to something that cannot be expressed otherwise.
+
+The cross as sign — a specific religion. The cross as symbol — the intersection of axes, the point where vertical and horizontal meet. This cannot be explained — only felt.
+
+Symbols do not explain — they open.`
+      }
+    ]
+  },
+  {
+    folder: "Tarot",
+    notes: [
+      {
+        id:2, date:"2026-04-18", tags:["arcana"],
+        title:"The Magician: Will as Channel",
+        body:`The Magician is the first arcana after the Fool. The Fool is potential without form. The Magician is the moment when potential takes up its tools.
+
+On the table lie all four suits. One hand raised to heaven, the other lowered to earth. This is not about control — it is about channel.
+
+## The Artist as Magician
+
+He conducts what already exists — from above downward, through himself, into matter. Your task is to become transparent enough for it to pass through.
+
+This relieves some of the anxiety around "creation." Not to invent — but to be the place through which it passes.`
+      }
+    ]
+  },
+  {
+    folder: "Philosophy",
+    notes: [
+      {
+        id:3, date:"2026-04-10", tags:["plato","media"],
+        title:"Plato's Cave and Screens",
+        body:`It is common to read the cave as a metaphor for ignorance. But the prisoners are not foolish — they are rational. They study shadows, build theories, predict the next shadow. The problem is not the intellect — it is aimed in the wrong direction.
+
+Metrics, reach, algorithms — these are shadows on the wall. One can reason about them very cleverly. But they remain shadows all the same.
+
+Reality is what happens when you paint.`
+      },
+      {
+        id:5, date:"2026-03-15", tags:["archaic"],
+        title:"The Archaic as Living",
+        body:`The archaic is not chronology. It is a layer of reality.
+
+Mythological thinking has not disappeared. It went underground. People still live by rituals, seek initiation, need symbols capable of holding their experience.
+
+Working with occult aesthetics is not nostalgia. It is an attempt to feel out what is still alive and waiting for form.`
+      }
+    ]
+  }
+];
+
+const allNotes = vault.flatMap(f => f.notes.map(n => ({...n, folder: f.folder})));
+let openFolders = new Set();
+let activeNote = null;
+
+function buildLeft() {
+  const fl = document.getElementById('flist');
+  fl.innerHTML = '';
+  vault.forEach(({folder, notes}) => {
+    const isOpen = openFolders.has(folder);
+    const row = document.createElement('div');
+    row.className = 'folder-row';
+    row.textContent = `[${folder.toUpperCase()}]`;
+    row.onclick = () => {
+      openFolders.has(folder) ? openFolders.delete(folder) : openFolders.add(folder);
+      activeNote = null;
+      buildLeft();
+      showFeed(notes.map(n => ({...n, folder})), folder);
+    };
+    fl.appendChild(row);
+
+    const children = document.createElement('div');
+    children.className = 'folder-children' + (isOpen ? ' open' : '');
+    notes.forEach(note => {
+      const nr = document.createElement('div');
+      nr.className = 'note-row' + (activeNote?.id === note.id ? ' act' : '');
+      nr.textContent = note.title;
+      nr.title = note.title;
+      nr.onclick = e => {
+        e.stopPropagation();
+        activeNote = note;
+        buildLeft();
+        openNote({...note, folder});
+      };
+      children.appendChild(nr);
+    });
+    fl.appendChild(children);
+  });
+}
+
+function showFeed(notes, folderName) {
+  const sorted = [...notes].sort((a,b) => b.date.localeCompare(a.date));
+  const lbl = folderName || 'ALL';
+  document.getElementById('rtitle').textContent = `NOEASY / GARDEN / ${lbl.toUpperCase()}`;
+  document.getElementById('s1').textContent = lbl.toUpperCase();
+  document.getElementById('s2').textContent = sorted.length + ' entries';
+  document.getElementById('s3').textContent = sorted[0]?.date || '';
+  const r = document.getElementById('reader');
+  r.innerHTML = '';
+  sorted.forEach(n => {
+    const e = document.createElement('div');
+    e.className = 'fe';
+    const preview = n.body.replace(/[#>*_\n]/g,' ').replace(/\s+/g,' ').slice(0,140);
+    e.innerHTML = `<div class="fe-meta">${n.date}  ·  ${n.tags.join(' · ')}</div><div class="fe-title">${n.title}</div><div class="fe-prev">${preview}</div><span class="fe-arrow">READ →</span>`;
+    e.onclick = () => { activeNote = n; buildLeft(); openNote({...n, folder: n.folder||folderName}); };
+    r.appendChild(e);
+  });
+  r.scrollTop = 0;
+}
+
+function openNote(n) {
+  document.getElementById('rtitle').textContent = `NOEASY / ${n.folder.toUpperCase()} / NOTE`;
+  document.getElementById('s1').textContent = n.folder.toUpperCase();
+  document.getElementById('s2').textContent = n.tags.join(' · ');
+  document.getElementById('s3').textContent = n.date;
+  const r = document.getElementById('reader');
+  r.innerHTML = '';
+  const v = document.createElement('div');
+  v.className = 'nv';
+  v.innerHTML = `<button class="nbk" id="nbk">← back</button><div class="nmeta">${n.date}  ·  ${[n.folder,...n.tags].join(' · ')}</div><div class="ntitle">${n.title}</div><div class="n-rule"></div><div class="nbody">${md(n.body)}</div>`;
+  v.querySelector('#nbk').onclick = () => {
+    activeNote = null; buildLeft();
+    const fn = vault.find(f => f.folder === n.folder)?.notes || [];
+    showFeed(fn.map(x => ({...x, folder: n.folder})), n.folder);
+  };
+  r.appendChild(v);
+  r.scrollTop = 0;
+}
+
+function md(t) {
+  return t.split('\n\n').map(b => {
+    if (b.startsWith('## ')) return `<h2>${b.slice(3)}</h2>`;
+    if (b.startsWith('> '))  return `<blockquote>${b.slice(2)}</blockquote>`;
+    return `<p>${b.replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>').replace(/\n/g,'<br>')}</p>`;
+  }).join('');
+}
+
+document.getElementById('rtitle').textContent = 'NOEASY / GARDEN';
+document.getElementById('s1').textContent = 'GARDEN';
+</script>
+</body>
+</html>
