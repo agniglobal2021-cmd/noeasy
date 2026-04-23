@@ -258,23 +258,77 @@ header > * { pointer-events: auto; }
 .lm-btn.active { color: var(--thl); background: var(--tsel); }
 .lm-label { font-size: 7px; letter-spacing: .1em; }
 
+/* ── Star background canvas ── */
+canvas#starsBg {
+  position: absolute;
+  top: 0; left: 0; width: 100%; height: 100%;
+  display: block;
+  z-index: 0;
+  image-rendering: pixelated;
+}
+canvas#graphCanvas {
+  display: block;
+  position: relative;
+  z-index: 1;
+  image-rendering: auto;
+}
+
+/* ── CRT turn-on overlay ── */
+#crtOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 8000;
+  pointer-events: none;
+  opacity: 0;
+  background: #D6D5A9;
+  mix-blend-mode: screen;
+}
+@keyframes crtOn {
+  0%   { opacity: 0.95; clip-path: inset(48% 0 48% 0); }
+  18%  { opacity: 0.9;  clip-path: inset(44% 0 44% 0); }
+  30%  { opacity: 0.7;  clip-path: inset(30% 0 30% 0); }
+  50%  { opacity: 0.5;  clip-path: inset(10% 0 10% 0); }
+  70%  { opacity: 0.25; clip-path: inset(2% 0 2% 0); }
+  88%  { opacity: 0.1;  clip-path: inset(0% 0 0% 0); }
+  100% { opacity: 0;    clip-path: inset(0% 0 0% 0); }
+}
+#crtOverlay.firing {
+  animation: crtOn 0.38s steps(6, end) forwards;
+}
+
+/* ── Graph panel fold-appear animation ── */
+@keyframes graphFoldIn {
+  0%   { transform: scaleY(0); opacity: 0; }
+  60%  { transform: scaleY(1.04); opacity: 1; }
+  100% { transform: scaleY(1); opacity: 1; }
+}
+.graph-panel.open {
+  display: block;
+  transform-origin: top center;
+  animation: graphFoldIn 0.32s cubic-bezier(0.16,1,0.3,1) forwards;
+}
+
+/* ── Win-l expand / Win-r shrink when graph open ── */
+.desktop.graph-active .win-l { width: 340px; transition: width 0.35s cubic-bezier(0.16,1,0.3,1); }
+.win-l { transition: width 0.35s cubic-bezier(0.16,1,0.3,1); }
+
+/* ── Hide fold-all when graph open ── */
+.graph-panel-open #lmbar { opacity: 0; pointer-events: none; transition: opacity 0.15s; }
+#lmbar { transition: opacity 0.15s; }
+
+
+
 /* ── Graph panel — full left-panel overlay ── */
 .graph-panel {
   position: absolute; inset: 0; z-index: 10;
   background: #0c0a06;
   display: none; overflow: hidden;
 }
-.graph-panel.open { display: block; }
 
 .graph-wrap {
   width: 100%; height: 100%;
   position: relative; overflow: hidden;
   background: #0c0a06;
-}
-
-canvas#graphCanvas {
-  display: block;
-  image-rendering: auto;
 }
 
 /* hide old graph pill toggle */
@@ -365,8 +419,8 @@ canvas#graphCanvas {
   box-shadow: inset 1px 1px 0 #7a7068;
 }
 .fsize-label {
-  font-family: 'Fixedsys', monospace; font-size: 8px;
-  color: #000; opacity: 0.7; letter-spacing: .05em; line-height: 1;
+  font-family: 'Alkhemikal', serif; font-size: 13px;
+  color: #000; opacity: 0.75; letter-spacing: .02em; line-height: 1;
 }
 .fsize-knob {
   width: 18px; height: 18px; border-radius: 50%;
@@ -418,18 +472,10 @@ canvas#graphCanvas {
   font-family: 'Fixedsys', monospace; font-size: 8px;
   color: #000; opacity: 0.7; letter-spacing: .05em; line-height: 1;
 }
-.gknob-knob {
-  width: 18px; height: 18px; border-radius: 50%;
-  background: radial-gradient(circle at 38% 38%, #d4cdc4, #8a7e72);
-  border: 1px solid #3d3830;
-  box-shadow: 1px 1px 0 #2a2520, inset 1px 1px 0 rgba(255,255,255,0.3);
-  position: relative; flex-shrink: 0;
-  transition: transform 0.1s;
-}
-.gknob-knob::after {
-  content: '';
-  position: absolute; top: 2px; left: 50%; transform: translateX(-50%);
-  width: 2px; height: 5px; background: #2a2520; border-radius: 1px;
+.gknob-knob { display: none; }
+.gknob-map-icon {
+  width: 20px; height: 20px;
+  flex-shrink: 0; display: block;
 }
 .gknob-popup {
   position: absolute; top: calc(100% + 6px); right: 0;
@@ -662,8 +708,34 @@ canvas#graphCanvas {
       <div class="pill-divider"></div>
       <div class="burger-wrap" id="gknobWrap">
         <button class="gknob-btn" id="gknobBtn" aria-label="Graph view">
-          <span class="gknob-label">⬡</span>
-          <div class="gknob-knob" id="gknobKnob"></div>
+          <svg class="gknob-map-icon" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" style="image-rendering:pixelated;shape-rendering:crispEdges">
+            <!-- parchment base -->
+            <rect x="1" y="2" width="18" height="14" fill="#c8bfaa" stroke="#3d3020" stroke-width="1"/>
+            <!-- rolled edges top/bottom -->
+            <rect x="1" y="2" width="18" height="2" fill="#b0a690" stroke="#3d3020" stroke-width="0"/>
+            <rect x="1" y="14" width="18" height="2" fill="#b0a690" stroke="#3d3020" stroke-width="0"/>
+            <!-- left scroll curl -->
+            <rect x="0" y="3" width="2" height="12" rx="1" fill="#a09080" stroke="#3d3020" stroke-width="1"/>
+            <!-- right scroll curl -->
+            <rect x="18" y="3" width="2" height="12" rx="1" fill="#a09080" stroke="#3d3020" stroke-width="1"/>
+            <!-- grid lines horizontal -->
+            <line x1="2" y1="7"  x2="18" y2="7"  stroke="#8a7a60" stroke-width="0.5"/>
+            <line x1="2" y1="11" x2="18" y2="11" stroke="#8a7a60" stroke-width="0.5"/>
+            <!-- grid lines vertical -->
+            <line x1="7"  y1="4" x2="7"  y2="14" stroke="#8a7a60" stroke-width="0.5"/>
+            <line x1="13" y1="4" x2="13" y2="14" stroke="#8a7a60" stroke-width="0.5"/>
+            <!-- mountain peaks (left) -->
+            <polygon points="3,12 5,8 7,12" fill="#9a8a72" stroke="#3d3020" stroke-width="0.5"/>
+            <polygon points="5,12 7,9 9,12" fill="#8a7a62" stroke="#3d3020" stroke-width="0.5"/>
+            <!-- dot/town marker (right side) -->
+            <rect x="13" y="8" width="2" height="2" fill="#3d3020"/>
+            <rect x="12" y="9" width="4" height="1" fill="#3d3020" opacity="0.5"/>
+            <!-- cross compass (center-right) -->
+            <rect x="15" y="5"  width="1" height="3" fill="#3d3020"/>
+            <rect x="14" y="6"  width="3" height="1" fill="#3d3020"/>
+            <!-- river line -->
+            <path d="M2 13 Q5 11 8 12 Q11 13 14 11" stroke="#5a7a8a" stroke-width="0.8" fill="none"/>
+          </svg>
         </button>
         <div class="gknob-popup" id="gknobPopup">
           <div class="gknob-popup-title">Graph Zoom</div>
@@ -717,11 +789,13 @@ canvas#graphCanvas {
         <div class="flist" id="flist"></div>
         <div class="graph-panel" id="graphPanel">
           <div class="graph-wrap" id="graphWrap">
+            <canvas id="starsBg"></canvas>
             <canvas id="graphCanvas"></canvas>
           </div>
         </div>
       </div>
     </div>
+    <div id="crtOverlay"></div>
 
     <div class="win win-r">
       <div class="tbar">
@@ -1000,8 +1074,20 @@ function md(t) {
   const wrap   = document.getElementById('gknobWrap');
   const panel  = document.getElementById('graphPanel');
   const flist  = document.getElementById('flist');
+  const desktop = document.querySelector('.desktop');
+  const winL   = document.querySelector('.win-l');
+  const lbody  = document.querySelector('.lbody');
+  const lmbar  = document.getElementById('lmbar');
+  const crtEl  = document.getElementById('crtOverlay');
 
   let graphVisible = false;
+
+  function fireCRT() {
+    crtEl.classList.remove('firing');
+    void crtEl.offsetWidth; // reflow
+    crtEl.classList.add('firing');
+    setTimeout(() => crtEl.classList.remove('firing'), 420);
+  }
 
   function zoomPct() { return (zoomCur - ZOOM_MIN) / (ZOOM_MAX - ZOOM_MIN); }
 
@@ -1015,18 +1101,37 @@ function md(t) {
 
   applyKnob();
 
+  function openGraph() {
+    graphVisible = true;
+    btn.classList.add('open');
+    fireCRT();
+    // hide fold-all
+    lbody.classList.add('graph-panel-open');
+    // expand win-l
+    desktop.classList.add('graph-active');
+    // show panel (will animate fold-in)
+    panel.classList.add('open');
+    flist.style.display = 'none';
+    popup.classList.add('open');
+    initGraph();
+  }
+
+  function closeGraph() {
+    graphVisible = false;
+    btn.classList.remove('open');
+    panel.classList.remove('open');
+    flist.style.display = '';
+    popup.classList.remove('open');
+    desktop.classList.remove('graph-active');
+    lbody.classList.remove('graph-panel-open');
+  }
+
   btn.addEventListener('click', e => {
     e.stopPropagation();
-    graphVisible = !graphVisible;
-    btn.classList.toggle('open', graphVisible);
-    panel.classList.toggle('open', graphVisible);
-    flist.style.display = graphVisible ? 'none' : '';
     if (graphVisible) {
-      // open popup too
-      popup.classList.add('open');
-      initGraph();
+      closeGraph();
     } else {
-      popup.classList.remove('open');
+      openGraph();
     }
   });
 
@@ -1056,6 +1161,9 @@ function md(t) {
     zoomCur = Math.max(ZOOM_MIN, Math.min(ZOOM_MAX, newZoom));
     applyKnob();
   };
+
+  // Mutex: fsizeBtn closes graph popup when opened
+  window._closeGraphPopup = () => { if (graphVisible) popup.classList.remove('open'); };
 })();
 
 // ── Win95 Graph — pan/zoom, smooth labels ──
@@ -1065,6 +1173,58 @@ function initGraph() {
 
   const wrap   = document.getElementById('graphWrap');
   const canvas = document.getElementById('graphCanvas');
+
+  // ── Star background with parallax & pixel flicker ──
+  const starsCv = document.getElementById('starsBg');
+  const sctx = starsCv.getContext('2d');
+  const NUM_STARS = 120;
+  let stars = [];
+  function initStars(w, h) {
+    stars = Array.from({length: NUM_STARS}, () => ({
+      x: Math.random() * w,
+      y: Math.random() * h,
+      size: Math.random() < 0.15 ? 2 : 1,
+      bright: Math.random(),
+      flickerPhase: Math.random() * 1000,
+      flickerSpeed: 0.3 + Math.random() * 1.2,
+      parallax: 0.1 + Math.random() * 0.6,
+    }));
+  }
+  function drawStars(w, h, px, py, t) {
+    sctx.clearRect(0, 0, w, h);
+    sctx.fillStyle = '#0c0a06';
+    sctx.fillRect(0, 0, w, h);
+    stars.forEach(s => {
+      // parallax offset: move slightly opposite to pan
+      const ox = (px / w - 0.5) * s.parallax * 30;
+      const oy = (py / h - 0.5) * s.parallax * 30;
+      const sx = (s.x + ox + w) % w;
+      const sy = (s.y + oy + h) % h;
+      // pixel flicker: step-based, old-school
+      const flickerT = t * s.flickerSpeed + s.flickerPhase;
+      const flicker = Math.sin(flickerT) > 0.6 ? 0.4 : 1.0;
+      const alpha = (0.4 + s.bright * 0.6) * flicker;
+      // color: mostly warm white/amber, a few blue-ish
+      const hue = s.bright > 0.8 ? 'rgba(214,213,200,' : s.bright < 0.2 ? 'rgba(180,190,214,' : 'rgba(200,195,170,';
+      sctx.fillStyle = hue + alpha + ')';
+      sctx.fillRect(Math.floor(sx), Math.floor(sy), s.size, s.size);
+    });
+  }
+  function resizeStars() {
+    starsCv.width  = wrap.clientWidth;
+    starsCv.height = wrap.clientHeight;
+    initStars(starsCv.width, starsCv.height);
+  }
+  resizeStars();
+  let starT = 0;
+  function tickStars() {
+    starT += 0.018;
+    drawStars(starsCv.width, starsCv.height, panX, panY, starT);
+    window._starAnimId = requestAnimationFrame(tickStars);
+  }
+  if (window._starAnimId) cancelAnimationFrame(window._starAnimId);
+  tickStars();
+  window.addEventListener('resize', resizeStars);
 
   // ── Viewport transform: pan + zoom ──
   let zoom = window._graphZoom ? window._graphZoom() : 1.0;
@@ -1152,25 +1312,26 @@ function initGraph() {
 
   // ── Draw ──
   const COL_BG      = '#0c0a06';
-  const COL_EDGE    = '#2a4a22';
-  const COL_EDGE_W  = '#162810';
-  const COL_FOLD    = '#4a8840';
-  const COL_NOTE    = '#2e6828';
-  const COL_FOLD_HL = '#8acc7c';
-  const COL_NOTE_HL = '#5aaa50';
-  const COL_FOLD_LB = '#9ad890';
-  const COL_NOTE_LB = '#6ab860';
-  const COL_GLOW    = 'rgba(80,180,60,0.18)';
+  const COL_EDGE    = '#3a3228';
+  const COL_EDGE_W  = '#252018';
+  const COL_FOLD    = '#D6D5A9';   // --ta
+  const COL_NOTE    = '#7a6a52';   // --tdim
+  const COL_FOLD_HL = '#f0efcc';
+  const COL_NOTE_HL = '#a89878';
+  const COL_FOLD_LB = '#D6D5A9';   // --ta
+  const COL_NOTE_LB = '#b0a080';
+  const COL_GLOW    = 'rgba(214,213,169,0.12)'; // --ta glow
 
   function draw() {
     const W = canvas.width, H = canvas.height;
     const ctx = canvas.getContext('2d');
     ctx.clearRect(0, 0, W, H);
-    ctx.fillStyle = COL_BG; ctx.fillRect(0,0,W,H);
+    // transparent bg — stars canvas shows through
+    // ctx.fillStyle = COL_BG; ctx.fillRect(0,0,W,H);  // removed — stars layer handles bg
 
     // CRT scanlines
     for (let y = 0; y < H; y += 3) {
-      ctx.fillStyle = 'rgba(0,0,0,0.12)'; ctx.fillRect(0, y, W, 1);
+      ctx.fillStyle = 'rgba(0,0,0,0.10)'; ctx.fillRect(0, y, W, 1);
     }
 
     ctx.save();
@@ -1331,6 +1492,7 @@ setRPath('');
 
   btn.addEventListener('click', e => {
     e.stopPropagation();
+    if (window._closeGraphPopup) window._closeGraphPopup();
     popup.classList.toggle('open');
   });
 
