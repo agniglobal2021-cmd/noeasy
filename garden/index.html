@@ -21,6 +21,11 @@
   src: url('../fonts/Fixedsys.ttf') format('truetype');
   font-weight: normal; font-style: normal;
 }
+@font-face {
+  font-family: 'PageFont';
+  src: url('../fonts/PageFont.ttf') format('truetype');
+  font-weight: normal; font-style: normal;
+}
 
 *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
 
@@ -275,21 +280,20 @@ canvas#graphCanvas {
 
 /* ── CRT turn-on overlay ── */
 #crtOverlay {
-  position: fixed;
+  position: absolute;
   inset: 0;
-  z-index: 8000;
+  z-index: 20;
   pointer-events: none;
   opacity: 0;
   background: #D6D5A9;
-  mix-blend-mode: screen;
 }
 @keyframes crtOn {
-  0%   { opacity: 0.95; clip-path: inset(48% 0 48% 0); }
-  18%  { opacity: 0.9;  clip-path: inset(44% 0 44% 0); }
-  30%  { opacity: 0.7;  clip-path: inset(30% 0 30% 0); }
-  50%  { opacity: 0.5;  clip-path: inset(10% 0 10% 0); }
-  70%  { opacity: 0.25; clip-path: inset(2% 0 2% 0); }
-  88%  { opacity: 0.1;  clip-path: inset(0% 0 0% 0); }
+  0%   { opacity: 0.76; clip-path: inset(48% 0 48% 0); }
+  18%  { opacity: 0.72; clip-path: inset(44% 0 44% 0); }
+  30%  { opacity: 0.56; clip-path: inset(30% 0 30% 0); }
+  50%  { opacity: 0.40; clip-path: inset(10% 0 10% 0); }
+  70%  { opacity: 0.20; clip-path: inset(2% 0 2% 0); }
+  88%  { opacity: 0.08; clip-path: inset(0% 0 0% 0); }
   100% { opacity: 0;    clip-path: inset(0% 0 0% 0); }
 }
 #crtOverlay.firing {
@@ -341,7 +345,7 @@ canvas#graphCanvas {
 }
 
 /* ── LEFT PANEL ── */
-.win-l { width: 200px; flex-shrink: 0; display: flex; flex-direction: column; }
+.win-l { width: 200px; flex-shrink: 0; display: flex; flex-direction: column; position: relative; overflow: hidden; }
 
 /* entire lbody: uniform dark bg, same as tbar */
 .lbody {
@@ -638,7 +642,7 @@ canvas#graphCanvas {
   margin: 14px 0 18px;
 }
 .nbody {
-  font-family: 'DotGothic16', monospace; font-size: var(--r-fsize);
+  font-family: 'PageFont', 'DotGothic16', monospace; font-size: var(--r-fsize);
   line-height: 2.1; color: #3d3428;
 }
 .nbody p { margin-bottom: 18px; max-width: 560px; }
@@ -781,11 +785,12 @@ canvas#graphCanvas {
       </div>
       <div class="mbar" id="lmbar">
         <button class="lm-btn" id="collapseAllBtn" title="Collapse / expand all">
-          <span id="collapseIcon">⊟</span><span class="lm-label" id="collapseLabel">FOLD ALL</span>
+          <span id="collapseIcon">⊞</span><span class="lm-label" id="collapseLabel">CLOSE ALL</span>
         </button>
       </div>
       <div class="lbody">
         <div class="scan"></div>
+        <div id="crtOverlay"></div>
         <div class="flist" id="flist"></div>
         <div class="graph-panel" id="graphPanel">
           <div class="graph-wrap" id="graphWrap">
@@ -795,8 +800,6 @@ canvas#graphCanvas {
         </div>
       </div>
     </div>
-    <div id="crtOverlay"></div>
-
     <div class="win win-r">
       <div class="tbar">
         <div class="tbar-inner">
@@ -944,7 +947,7 @@ Working with occult aesthetics is not nostalgia. It is an attempt to feel out wh
 ];
 
 const allNotes = vault.flatMap(f => f.notes.map(n => ({...n, folder: f.folder})));
-let openFolders = new Set();
+let openFolders = new Set(vault.map(f => f.folder)); // all open by default
 let activeNote = null;
 
 function buildLeft() {
@@ -1040,7 +1043,7 @@ function md(t) {
   const btn = document.getElementById('collapseAllBtn');
   const icon = document.getElementById('collapseIcon');
   const label = document.getElementById('collapseLabel');
-  let allOpen = false;
+  let allOpen = true; // matches default open state
 
   btn.addEventListener('click', () => {
     if (allOpen) {
@@ -1092,8 +1095,6 @@ function md(t) {
   function zoomPct() { return (zoomCur - ZOOM_MIN) / (ZOOM_MAX - ZOOM_MIN); }
 
   function applyKnob() {
-    const deg = -135 + zoomPct() * 270;
-    knob.style.transform = `rotate(${deg}deg)`;
     const sliderW = slider.offsetWidth;
     thumb.style.left = (zoomPct() * (sliderW - 10) + 5) + 'px';
     if (window._graphSetZoom) window._graphSetZoom(zoomCur);
