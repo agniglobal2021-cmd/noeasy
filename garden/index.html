@@ -6,18 +6,27 @@
 <meta name="theme-color" content="#5D5143">
 <title>NOEASY / garden</title>
 <style>
+/* Шрифты — сердце стиля */
 @font-face { font-family: 'Alkhemikal'; src: url('../fonts/Alkhemikal.ttf') format('truetype'); }
 @font-face { font-family: 'DotGothic16'; src: url('../fonts/DotGothic16-Regular.ttf') format('truetype'); }
 @font-face { font-family: 'Fixedsys'; src: url('../fonts/Fixedsys.ttf') format('truetype'); }
 
 :root {
-  --bg:    #e8e0c4; --text:  #353535; --desk:  #5D5143;
-  --tb:    #5D5143; --ttxt:  #f6f1da; --btn:   #AFA191;
-  --blt:   #d4cdc4; --bdk:   #3d3830; --bsh:   #2a2520;
-  --lbg:   #1e1a12; --tbg:   #2e2820; --ta:    #D6D5A9;
-  --tdim:  #7a6a52; --thl:   #e8d0a0; --tbar:  #181410;
-  --tsel:  #6a5535;
-  --header-total-h: calc(env(safe-area-inset-top, 0px) + 66px);
+  --bg:    #e8e0c4; /* Цвет бумаги */
+  --text:  #353535;
+  --desk:  #5D5143; /* Тот самый темно-коричневый */
+  --tb:    #5D5143;
+  --ttxt:  #f6f1da;
+  --btn:   #AFA191; /* Цвет металла кнопок */
+  --blt:   #d4cdc4;
+  --bdk:   #3d3830;
+  --bsh:   #2a2520;
+  --lbg:   #1e1a12; /* Фон левой панели */
+  --tbg:   #2e2820;
+  --ta:    #D6D5A9;
+  --tdim:  #7a6a52;
+  --thl:   #e8d0a0;
+  --header-h: calc(env(safe-area-inset-top, 0px) + 66px);
   --r-fsize: 11px;
 }
 
@@ -29,330 +38,305 @@ body {
   color: var(--text);
   overflow: hidden;
   height: 100vh;
-  overscroll-behavior: none; /* Фикс отскока на iOS */
+  overscroll-behavior: none;
 }
 
-/* Фикс дыр сверху */
-.header-fill {
-  position: fixed; top: -100vh; left: 0; right: 0;
-  height: 150vh; background: var(--desk);
-  z-index: 499; pointer-events: none;
+/* ФОН ДЛЯ ОВЕРСКРОЛЛА (Telegram/iOS) */
+.body-shield {
+  position: fixed; top: -100vh; left: 0; right: 0; height: 200vh;
+  background: var(--desk); z-index: -1;
 }
 
+#grain { position: fixed; inset: 0; pointer-events: none; z-index: 9999; opacity: 0.05; }
+
+/* HEADER */
 header {
-  position: fixed; top: 0; left: 0; right: 0; width: 100%; z-index: 500;
-  display: flex; flex-direction: column; pointer-events: none;
-}
-header > * { pointer-events: auto; }
-.header-safe-top { height: env(safe-area-inset-top, 0px); background: var(--desk); }
-
-.header-titlebar-strip {
-  height: 22px; background: var(--desk);
-  border-bottom: 1px solid #3e352d; padding: 0 10px;
-  display: flex; align-items: center;
-}
-.header-titlebar-strip-text { font-family: 'DotGothic16'; font-size: 9px; color: #f6f1da; letter-spacing: 0.1em; }
-
-.header-pill {
-  display: flex; align-items: center; height: 44px;
-  background: #AFA191; padding: 0 4px;
-  border-bottom: 2px solid #7a7068; box-shadow: 0 1px 0 #404040;
+  position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+  display: flex; flex-direction: column; background: var(--desk);
 }
 
-.pill-center {
+.h-safe { height: env(safe-area-inset-top, 0px); }
+
+.h-strip {
+  height: 22px; padding: 0 12px; display: flex; align-items: center;
+  border-bottom: 1px solid #3e352d;
+}
+.h-strip-text { font-size: 9px; color: #f6f1da; letter-spacing: 2px; font-weight: bold; }
+
+.h-pill {
+  height: 44px; background: var(--btn); display: flex; align-items: center;
+  padding: 0 6px; border-bottom: 2px solid var(--bdk); box-shadow: 0 1px 0 #000;
+}
+
+.pill-title {
   position: absolute; left: 50%; transform: translateX(-50%);
-  font-family: 'Alkhemikal'; font-size: 19px; color: #000; pointer-events: none;
+  font-family: 'Alkhemikal'; font-size: 20px; color: #1a1612; pointer-events: none;
 }
 
-.pill-btn {
-  height: 34px; padding: 0 10px; background: #AFA191;
-  border-top: 2px solid #d4cdc4; border-left: 2px solid #d4cdc4;
-  border-right: 2px solid #3d3830; border-bottom: 2px solid #3d3830;
-  cursor: pointer; display: flex; align-items: center; gap: 6px;
+/* КНОПКИ КОРПУСНЫЕ */
+.btn-case {
+  height: 34px; padding: 0 12px; background: var(--btn);
+  border-top: 2px solid var(--blt); border-left: 2px solid var(--blt);
+  border-right: 2px solid var(--bdk); border-bottom: 2px solid var(--bdk);
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
   user-select: none;
 }
-.pill-btn:active, .pill-btn.open {
-  border: 2px solid #3d3830; border-top-color: #2a2520; border-left-color: #2a2520;
-  background: #a59787;
+.btn-case:active, .btn-case.active {
+  border: 2px solid var(--bdk); background: #9e9081; padding: 2px 10px 0 14px;
 }
+.btn-divider { width: 2px; height: 28px; background: #808080; border-right: 1px solid var(--blt); margin: 0 6px; }
 
-.pill-divider { width: 2px; height: 26px; background: #808080; border-right: 1px solid #d4cdc4; margin: 0 4px; }
+/* POPUPS */
+.win-popup {
+  position: absolute; top: 50px; right: 6px; background: var(--btn);
+  border: 2px solid var(--bdk); box-shadow: 4px 4px 0 #000;
+  padding: 12px; display: none; z-index: 1100; min-width: 180px;
+}
+.win-popup.open { display: block; }
 
-/* Font Size Popup */
-.fsize-popup {
-  position: absolute; top: calc(100% + 5px); right: 8px; background: #AFA191;
-  border: 2px solid #3d3830; box-shadow: 3px 3px 0 #000;
-  padding: 12px; display: none; z-index: 1000; min-width: 160px;
-}
-.fsize-popup.open { display: block; }
-.slider-track {
-  width: 100%; height: 8px; background: #3d3830; position: relative; cursor: pointer;
-  border: 1px solid #d4cdc4;
-}
+/* SLIDER */
+.slider-container { width: 100%; padding: 10px 0; }
+.slider-rail { height: 6px; background: var(--bdk); border: 1px solid var(--blt); position: relative; cursor: pointer; }
 .slider-thumb {
-  position: absolute; top: -5px; width: 12px; height: 16px; background: #f6f1da;
-  border: 1px solid #000; transform: translateX(-50%); pointer-events: none;
+  width: 14px; height: 20px; background: #f6f1da; border: 1px solid #000;
+  position: absolute; top: -8px; transform: translateX(-50%); pointer-events: none;
 }
 
-/* Навигация */
-.nav-overlay {
-  position: absolute; top: calc(100% + 5px); right: 8px; background: #AFA191;
-  border: 2px solid #3d3830; box-shadow: 3px 3px 0 #000;
-  display: none; flex-direction: column; z-index: 1000;
+/* MAIN LAYOUT */
+.main {
+  position: fixed; top: var(--header-h); left: 0; right: 0; bottom: 0;
+  display: flex; padding: 10px; gap: 10px;
 }
-.nav-overlay.open { display: flex; }
-.nav-overlay a {
-  padding: 10px 20px; text-decoration: none; color: #000; font-size: 11px;
-  border-bottom: 1px solid #7a7068;
-}
-.nav-overlay a:hover { background: #5D5143; color: #fff; }
 
-/* Main Layout */
-.page-main {
-  position: fixed; top: var(--header-total-h); left: 0; right: 0; bottom: 0;
-  display: flex; padding: 8px; gap: 8px;
-}
-.win {
+.panel {
   display: flex; flex-direction: column; background: #b5ad9e;
   border-top: 2px solid var(--blt); border-left: 2px solid var(--blt);
   border-right: 2px solid var(--bdk); border-bottom: 2px solid var(--bdk);
-  box-shadow: 2px 2px 0 var(--bsh); overflow: hidden;
-}
-.win-l { width: 200px; transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1); flex-shrink: 0; }
-.win-l.expanded { width: 450px; }
-.win-r { flex: 1; min-width: 0; }
-
-.tbar { height: 22px; background: var(--btn); display: flex; padding: 1px; flex-shrink: 0; }
-.tbar-inner { flex: 1; background: var(--tb); display: flex; align-items: center; padding: 0 6px; }
-.tbar-t { font-size: 8px; color: #fff; font-weight: bold; letter-spacing: 1px; }
-
-.lbody { flex: 1; background: var(--lbg); position: relative; overflow-y: auto; overflow-x: hidden; }
-
-/* Карта */
-.graph-panel { position: absolute; inset: 0; background: #0c0a06; display: none; z-index: 10; }
-.graph-panel.open { display: block; }
-.graph-controls {
-  position: absolute; bottom: 12px; right: 12px; z-index: 11;
-  background: #AFA191; padding: 4px; border: 2px solid #3d3830;
-  display: flex; align-items: center; gap: 6px; box-shadow: 2px 2px 0 #000;
-}
-.zoom-btn {
-  background: #d4cdc4; color: #000; border: 1px solid #3d3830;
-  font-family: Fixedsys; font-size: 14px; width: 24px; height: 24px; cursor: pointer;
+  box-shadow: 3px 3px 0 rgba(0,0,0,0.2); overflow: hidden;
 }
 
-.rscroll { flex: 1; overflow-y: auto; padding: 24px; background: #e8e0c4; }
-.ntitle { font-family: 'Alkhemikal'; font-size: 24px; margin-bottom: 12px; }
-.nbody { font-size: var(--r-fsize); line-height: 1.6; }
+.panel-l { width: 220px; transition: width 0.4s cubic-bezier(0.19, 1, 0.22, 1); flex-shrink: 0; }
+.panel-l.expanded { width: 550px; }
+.panel-r { flex: 1; min-width: 0; }
 
-.folder-row { color: var(--ta); font-family: Fixedsys; padding: 6px 12px; cursor: pointer; font-size: 11px; }
-.note-row { color: var(--tdim); font-family: Fixedsys; padding: 4px 24px; cursor: pointer; font-size: 10px; }
-.note-row:hover { color: var(--thl); background: var(--tsel); }
+.p-bar { height: 24px; background: var(--tb); display: flex; align-items: center; padding: 0 8px; flex-shrink: 0; }
+.p-bar-t { font-size: 9px; color: #fff; font-weight: bold; letter-spacing: 1px; }
 
-#grain { position: fixed; inset: 0; pointer-events: none; z-index: 9999; opacity: 0.04; }
+.p-body { flex: 1; background: var(--lbg); position: relative; overflow-y: auto; overflow-x: hidden; }
+
+/* GRAPH AREA */
+.graph-view { position: absolute; inset: 0; background: #080705; display: none; z-index: 10; }
+.graph-view.active { display: block; }
+.graph-overlay {
+  position: absolute; bottom: 15px; right: 15px; z-index: 20;
+  display: flex; gap: 6px; background: rgba(0,0,0,0.5); padding: 4px; border: 1px solid var(--tdim);
+}
+.g-btn {
+  width: 28px; height: 28px; background: var(--btn); border: 1px solid var(--bdk);
+  color: #000; font-family: Fixedsys; cursor: pointer;
+}
+
+/* CONTENT */
+.r-scroll { flex: 1; overflow-y: auto; padding: 30px; background: #e8e0c4; }
+.note-title { font-family: 'Alkhemikal'; font-size: 28px; margin-bottom: 15px; border-bottom: 1px solid rgba(0,0,0,0.1); }
+.note-body { font-size: var(--r-fsize); line-height: 1.8; color: #2a2520; }
+
+.f-row { color: var(--ta); font-family: Fixedsys; padding: 8px 15px; cursor: pointer; font-size: 12px; }
+.n-row { color: var(--tdim); font-family: Fixedsys; padding: 4px 25px; cursor: pointer; font-size: 11px; transition: 0.1s; }
+.n-row:hover { color: var(--thl); background: rgba(255,255,255,0.05); }
+
 </style>
 </head>
 <body>
 
-<div class="header-fill"></div>
+<div class="body-shield"></div>
 <canvas id="grain"></canvas>
 
 <header>
-  <div class="header-safe-top"></div>
-  <div class="header-titlebar-strip">
-    <span class="header-titlebar-strip-text">NOEASY / GARDEN / OS_v1.0.5</span>
-  </div>
-  <div class="header-pill">
-    <span class="pill-center">Digital Garden</span>
+  <div class="h-safe"></div>
+  <div class="h-strip"><span class="h-strip-text">GARDEN // SYSTEM_READY</span></div>
+  <div class="h-pill">
+    <span class="pill-title">Digital Garden</span>
     <div style="flex:1"></div>
     
-    <button class="pill-btn" id="fsizeBtn"><span style="font-family:'Alkhemikal'; font-size:16px;">Aa</span></button>
-    <div class="fsize-popup" id="fsizePopup">
-      <div style="font-family:Fixedsys; font-size:8px; margin-bottom:8px;">TEXT_SIZE</div>
-      <div class="slider-track" id="fsizeSlider"><div class="slider-thumb" id="fsizeThumb"></div></div>
+    <div class="btn-case" id="fBtn"><span style="font-family:'Alkhemikal'; font-size:18px;">Aa</span></div>
+    <div class="win-popup" id="fPop">
+      <div style="font-family:Fixedsys; font-size:9px; margin-bottom:10px;">FONT_SCALE</div>
+      <div class="slider-rail" id="fSlider"><div class="slider-thumb" id="fThumb"></div></div>
     </div>
 
-    <div class="pill-divider"></div>
-    <button class="pill-btn" id="gknobBtn"><span style="font-family:Fixedsys; font-size:11px;">[M]</span></button>
-    <div class="pill-divider"></div>
-
-    <button class="pill-btn" id="swordBtn">
-      <div style="width:18px; display:flex; flex-direction:column; gap:3px;">
+    <div class="btn-divider"></div>
+    <div class="btn-case" id="mBtn"><span style="font-family:Fixedsys; font-size:11px;">[ MAP ]</span></div>
+    <div class="btn-divider"></div>
+    <div class="btn-case" id="nBtn">
+      <div style="width:16px; height:12px; display:flex; flex-direction:column; justify-content:space-between;">
         <div style="height:2px; background:#000;"></div>
         <div style="height:2px; background:#000;"></div>
         <div style="height:2px; background:#000;"></div>
       </div>
-    </button>
-    <div class="nav-overlay" id="navOverlay">
-      <a href="#">HOME</a>
-      <a href="#">GALLERY</a>
-      <a href="#">ABOUT</a>
     </div>
   </div>
 </header>
 
-<div class="page-main">
-  <div class="win win-l" id="winL">
-    <div class="tbar"><div class="tbar-inner"><div class="tbar-t">EXPLORER</div></div></div>
-    <div class="lbody">
-      <div id="flist"></div>
-      <div class="graph-panel" id="graphPanel">
+<div class="main">
+  <div class="panel panel-l" id="winL">
+    <div class="p-bar"><div class="p-bar-t">EXPLORER</div></div>
+    <div class="p-body">
+      <div id="fileList"></div>
+      <div class="graph-view" id="graphArea">
         <canvas id="graphCanvas"></canvas>
-        <div class="graph-controls">
-          <button class="zoom-btn" id="zoomOut">−</button>
-          <button class="zoom-btn" id="zoomIn">+</button>
+        <div class="graph-overlay">
+          <button class="g-btn" id="zOut">-</button>
+          <button class="g-btn" id="zIn">+</button>
         </div>
       </div>
     </div>
   </div>
-  
-  <div class="win win-r">
-    <div class="tbar"><div class="tbar-inner"><div class="tbar-t">READER</div></div></div>
-    <div class="rscroll" id="reader">
-      <div class="ntitle">Welcome</div>
-      <div class="nbody">Select a note to start exploring.</div>
+
+  <div class="panel panel-r">
+    <div class="p-bar"><div class="p-bar-t">VIEWER</div></div>
+    <div class="r-scroll" id="viewer">
+      <div class="note-title">Welcome, Traveler</div>
+      <div class="note-body">Выберите файл в левой панели для чтения. Используйте [MAP] для визуального поиска связей.</div>
     </div>
   </div>
 </div>
 
 <script>
-// --- DATA ---
+// --- КОНТЕНТ (ВОЗВРАЩЕНО) ---
 const vault = [
   { folder: "Grimoires", notes: [
-      { id:1, title: "The Lesser Key", body: "Lemegeton Clavicula Salomonis. Detailed notes on the 72 goetic spirits and their seals." },
-      { id:2, title: "Abramelin Mage", body: "The operation of the sacred magic. Requires 6 months of purification and intense focus." }
+      { id:1, title: "The Lesser Key", body: "Lemegeton Clavicula Salomonis. Система вызова 72 духов Гоэтии. Огромный пласт средневековой магии." },
+      { id:2, title: "Abramelin", body: "Сложнейший ритуал очищения длиной в полгода. Конечная цель — контакт с личным Ангелом-Хранителем." }
   ]},
-  { folder: "Research", notes: [
-      { id:3, title: "Cybernetic Serendipity", body: "Looking back at the 1968 exhibition. The intersection of early computer logic and organic art." },
-      { id:4, title: "Vibe Coding", body: "The era of LLMs. Software becomes a matter of intent and language rather than syntax." }
+  { folder: "Cybernetics", notes: [
+      { id:3, title: "Serendipity 1968", body: "Выставка в Лондоне, изменившая всё. Первые попытки компьютеров рисовать и сочинять музыку." },
+      { id:4, title: "Vibe Coding", body: "Программирование на кончиках пальцев. Когда ИИ понимает 'вайб', а не просто синтаксис." }
   ]},
   { folder: "Personal", notes: [
-      { id:5, title: "Garden Log", body: "Added parallax stars to the graph. Fixed the header gap issue." }
+      { id:5, title: "Todo", body: "Пропатчить графический движок, добавить больше звезд, дочитать Нейроманта." }
   ]}
 ];
 
-// --- UI STATE & MUTEX ---
-const ui = {
-  fsize: { btn: document.getElementById('fsizeBtn'), pop: document.getElementById('fsizePopup') },
-  nav: { btn: document.getElementById('swordBtn'), pop: document.getElementById('navOverlay') },
-  graph: { btn: document.getElementById('gknobBtn'), panel: document.getElementById('graphPanel') }
+// --- UI КОРЕ ---
+const fPop = document.getElementById('fPop');
+const winL = document.getElementById('winL');
+const graphArea = document.getElementById('graphArea');
+const viewer = document.getElementById('viewer');
+
+// Мутекс (Взаимоисключение)
+function closeAll() { fPop.classList.remove('open'); document.getElementById('fBtn').classList.remove('active'); }
+
+document.getElementById('fBtn').onclick = (e) => {
+  e.stopPropagation();
+  const act = fPop.classList.toggle('open');
+  document.getElementById('fBtn').classList.toggle('active', act);
 };
 
-function closePopups() {
-  ui.fsize.pop.classList.remove('open'); ui.fsize.btn.classList.remove('open');
-  ui.nav.pop.classList.remove('open'); ui.nav.btn.classList.remove('open');
-}
+document.onclick = () => closeAll();
 
-ui.fsize.btn.onclick = (e) => { e.stopPropagation(); const isO = ui.fsize.pop.classList.toggle('open'); ui.fsize.btn.classList.toggle('open', isO); if(isO) ui.nav.pop.classList.remove('open'); };
-ui.nav.btn.onclick = (e) => { e.stopPropagation(); const isO = ui.nav.pop.classList.toggle('open'); ui.nav.btn.classList.toggle('open', isO); if(isO) ui.fsize.pop.classList.remove('open'); };
-document.onclick = () => closePopups();
+// --- СЛАЙДЕР РАЗМЕРА ТЕКСТА ---
+let fSize = 11;
+const fSlider = document.getElementById('fSlider');
+const fThumb = document.getElementById('fThumb');
 
-// --- FONT SIZE SLIDER ---
-let curFsize = 11;
-const thumb = document.getElementById('fsizeThumb');
-const slider = document.getElementById('fsizeSlider');
-
-function updateFsize(x) {
-  const rect = slider.getBoundingClientRect();
-  let t = (x - rect.left) / rect.width;
+function setFSize(x) {
+  const r = fSlider.getBoundingClientRect();
+  let t = (x - r.left) / r.width;
   t = Math.max(0, Math.min(1, t));
-  curFsize = Math.round(9 + t * 9);
-  document.documentElement.style.setProperty('--r-fsize', curFsize + 'px');
-  thumb.style.left = (t * 100) + '%';
+  fSize = Math.round(9 + t * 9);
+  document.documentElement.style.setProperty('--r-fsize', fSize + 'px');
+  fThumb.style.left = (t * 100) + '%';
 }
 
-function initSlider(el, handler) {
-  const start = (e) => {
-    e.preventDefault();
-    const move = (ev) => handler(ev.touches ? ev.touches[0].clientX : ev.clientX);
-    const stop = () => { document.removeEventListener('mousemove', move); document.removeEventListener('mouseup', stop); document.removeEventListener('touchmove', move); document.removeEventListener('touchend', stop); };
-    document.addEventListener('mousemove', move); document.addEventListener('mouseup', stop);
-    document.addEventListener('touchmove', move); document.addEventListener('touchend', stop);
-    handler(e.touches ? e.touches[0].clientX : e.clientX);
-  };
-  el.addEventListener('mousedown', start); el.addEventListener('touchstart', start);
-}
-initSlider(slider, updateFsize);
-
-// --- GRAPH ---
-let graphActive = false;
-let zoom = 1.0;
-ui.graph.btn.onclick = () => {
-  graphActive = !graphActive;
-  ui.graph.btn.classList.toggle('open');
-  document.getElementById('winL').classList.toggle('expanded', graphActive);
-  ui.graph.panel.classList.toggle('open', graphActive);
-  if(graphActive) initGraph();
+fSlider.onmousedown = (e) => {
+  setFSize(e.clientX);
+  document.onmousemove = (ev) => setFSize(ev.clientX);
+  document.onmouseup = () => document.onmousemove = null;
+};
+fSlider.ontouchstart = (e) => {
+  setFSize(e.touches[0].clientX);
+  document.ontouchmove = (ev) => setFSize(ev.touches[0].clientX);
+  document.ontouchend = () => document.ontouchmove = null;
 };
 
-function initGraph() {
+// --- ГРАФ ---
+let isGraph = false;
+let gZoom = 1.0;
+document.getElementById('mBtn').onclick = () => {
+  isGraph = !isGraph;
+  document.getElementById('mBtn').classList.toggle('active', isGraph);
+  winL.classList.toggle('expanded', isGraph);
+  graphArea.classList.toggle('active', isGraph);
+  if(isGraph) startGraph();
+};
+
+function startGraph() {
   const canvas = document.getElementById('graphCanvas');
   const ctx = canvas.getContext('2d');
-  const resize = () => { canvas.width = ui.graph.panel.clientWidth; canvas.height = ui.graph.panel.clientHeight; };
+  const resize = () => { canvas.width = graphArea.clientWidth; canvas.height = graphArea.clientHeight; };
   window.addEventListener('resize', resize); resize();
 
-  document.getElementById('zoomIn').onclick = (e) => { e.stopPropagation(); zoom = Math.min(2, zoom + 0.1); };
-  document.getElementById('zoomOut').onclick = (e) => { e.stopPropagation(); zoom = Math.max(0.5, zoom - 0.1); };
+  document.getElementById('zIn').onclick = (e) => { e.stopPropagation(); gZoom += 0.2; };
+  document.getElementById('zOut').onclick = (e) => { e.stopPropagation(); gZoom = Math.max(0.4, gZoom - 0.2); };
 
-  const render = (time) => {
-    if(!graphActive) return;
-    ctx.fillStyle = '#0c0a06'; ctx.fillRect(0,0,canvas.width, canvas.height);
+  function loop(t) {
+    if(!isGraph) return;
+    ctx.fillStyle = '#080705'; ctx.fillRect(0,0,canvas.width, canvas.height);
     
-    // Stars
+    // Звезды
     ctx.fillStyle = '#f6f1da';
-    for(let i=0; i<60; i++) {
-       let x = (Math.abs(Math.sin(i*123)) * canvas.width);
-       let y = (Math.abs(Math.cos(i*456)) * canvas.height);
-       let flicker = Math.sin(time/500 + i);
-       if(flicker > 0.4) ctx.fillRect(x, y, 1, 1);
+    for(let i=0; i<40; i++) {
+      let x = (Math.abs(Math.sin(i*77)) * canvas.width);
+      let y = (Math.abs(Math.cos(i*99)) * canvas.height);
+      if(Math.sin(t/400 + i) > 0.6) ctx.fillRect(x, y, 1, 1);
     }
 
-    // Nodes
+    // Ноды
     vault.forEach((f, i) => {
-      let cx = canvas.width/2 + (Math.cos(i + time/2000) * 100 * zoom);
-      let cy = canvas.height/2 + (Math.sin(i + time/2000) * 80 * zoom);
-      ctx.fillStyle = '#D6D5A9'; ctx.fillRect(cx, cy, 5, 5);
-      ctx.font = '9px Fixedsys'; ctx.fillStyle = '#e8d0a0';
-      ctx.fillText(f.folder, cx + 10, cy + 5);
+      let x = canvas.width/2 + Math.cos(i + t/1500) * 120 * gZoom;
+      let y = canvas.height/2 + Math.sin(i + t/1500) * 100 * gZoom;
+      ctx.fillStyle = '#D6D5A9'; ctx.fillRect(x, y, 6, 6);
+      ctx.font = '10px Fixedsys'; ctx.fillStyle = '#7a6a52';
+      ctx.fillText(f.folder, x + 10, y + 6);
     });
-    requestAnimationFrame(render);
-  };
-  requestAnimationFrame(render);
+    requestAnimationFrame(loop);
+  }
+  requestAnimationFrame(loop);
 }
 
-// --- CONTENT RENDER ---
-function renderList() {
-  const flist = document.getElementById('flist');
-  flist.innerHTML = '';
+// --- РЕНДЕР СПИСКА ---
+function render() {
+  const list = document.getElementById('fileList');
+  list.innerHTML = '';
   vault.forEach(f => {
-    const fr = document.createElement('div'); fr.className = 'folder-row'; fr.textContent = `[ ${f.folder} ]`;
-    flist.appendChild(fr);
+    const fr = document.createElement('div'); fr.className = 'f-row'; fr.textContent = `[ ${f.folder} ]`;
+    list.appendChild(fr);
     f.notes.forEach(n => {
-      const nr = document.createElement('div'); nr.className = 'note-row'; nr.textContent = n.title;
+      const nr = document.createElement('div'); nr.className = 'n-row'; nr.textContent = n.title;
       nr.onclick = () => {
-        document.getElementById('reader').innerHTML = `<div class="ntitle">${n.title}</div><div class="nbody">${n.body}</div>`;
+        viewer.innerHTML = `<div class="note-title">${n.title}</div><div class="note-body">${n.body}</div>`;
       };
-      flist.appendChild(nr);
+      list.appendChild(nr);
     });
   });
 }
 
-// --- GRAIN ---
-const grain = document.getElementById('grain');
-const gc = grain.getContext('2d');
-function drawGrain() {
-  grain.width = window.innerWidth; grain.height = window.innerHeight;
-  const img = gc.createImageData(grain.width, grain.height);
-  for (let i = 0; i < img.data.length; i += 4) {
+// --- ЗЕРНО ---
+const gr = document.getElementById('grain');
+const grx = gr.getContext('2d');
+function grainLoop() {
+  gr.width = window.innerWidth; gr.height = window.innerHeight;
+  const idata = grx.createImageData(gr.width, gr.height);
+  for (let i = 0; i < idata.data.length; i += 4) {
     const v = Math.random() * 255;
-    img.data[i] = img.data[i+1] = img.data[i+2] = v; img.data[i+3] = 20;
+    idata.data[i] = idata.data[i+1] = idata.data[i+2] = v; idata.data[i+3] = 15;
   }
-  gc.putImageData(img, 0, 0);
-  setTimeout(() => requestAnimationFrame(drawGrain), 50);
+  grx.putImageData(idata, 0, 0);
+  setTimeout(() => requestAnimationFrame(grainLoop), 60);
 }
-drawGrain();
-
-renderList();
+grainLoop();
+render();
 </script>
 </body>
 </html>
