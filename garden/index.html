@@ -45,6 +45,7 @@
   --header-titlebar-h: 22px;
   --header-pill-h: 44px;
   --header-total-h: calc(env(safe-area-inset-top, 0px) + var(--header-titlebar-h) + var(--header-pill-h));
+  --r-fsize: 11px;
 }
 
 html { background: #5D5143; overflow-x: hidden; }
@@ -192,9 +193,9 @@ header > * { pointer-events: auto; }
 
 .desktop {
   display: flex; gap: 7px;
-  padding: 10px 10px 10px;
+  padding: 8px 8px 12px;
   flex: 1; overflow: hidden;
-  max-width: 1200px;
+  max-width: 1100px;
   width: 100%;
   margin: 0 auto;
   box-sizing: border-box;
@@ -307,6 +308,106 @@ header > * { pointer-events: auto; }
 
 @keyframes bl { 50% { opacity: 0; } }
 
+/* ── Font size knob button ── */
+.fsize-btn {
+  height: calc(100% - 10px); padding: 0 10px; margin: 0 2px 0 0;
+  display: flex; align-items: center; justify-content: center; gap: 5px;
+  background: #AFA191;
+  border-top: 2px solid #d4cdc4; border-left: 2px solid #d4cdc4;
+  border-right: 2px solid #3d3830; border-bottom: 2px solid #3d3830;
+  box-shadow: inset 1px 1px 0 #d4cdc4, inset -1px -1px 0 #7a7068;
+  cursor: pointer; -webkit-tap-highlight-color: transparent;
+  flex-shrink: 0; user-select: none; position: relative;
+}
+.fsize-btn:active {
+  border-top: 2px solid #3d3830; border-left: 2px solid #3d3830;
+  border-right: 2px solid #d4cdc4; border-bottom: 2px solid #d4cdc4;
+  box-shadow: inset 1px 1px 0 #7a7068;
+}
+.fsize-label {
+  font-family: 'Fixedsys', monospace; font-size: 8px;
+  color: #000; opacity: 0.7; letter-spacing: .05em; line-height: 1;
+}
+.fsize-knob {
+  width: 18px; height: 18px; border-radius: 50%;
+  background: radial-gradient(circle at 38% 38%, #d4cdc4, #8a7e72);
+  border: 1px solid #3d3830;
+  box-shadow: 1px 1px 0 #2a2520, inset 1px 1px 0 rgba(255,255,255,0.3);
+  position: relative; flex-shrink: 0;
+  transition: transform 0.1s;
+}
+.fsize-knob::after {
+  content: '';
+  position: absolute; top: 2px; left: 50%; transform: translateX(-50%);
+  width: 2px; height: 5px; background: #2a2520; border-radius: 1px;
+}
+
+.fsize-popup {
+  position: absolute; bottom: calc(100% + 6px); right: 0;
+  background: #AFA191;
+  border-top: 2px solid #d4cdc4; border-left: 2px solid #d4cdc4;
+  border-right: 2px solid #3d3830; border-bottom: 2px solid #3d3830;
+  box-shadow: 2px 2px 0 #2a2520;
+  padding: 8px 10px; z-index: 9000;
+  display: none; flex-direction: column; gap: 6px; min-width: 120px;
+}
+.fsize-popup.open { display: flex; }
+.fsize-popup-title {
+  font-family: 'Fixedsys', monospace; font-size: 8px;
+  color: #000; opacity: 0.6; letter-spacing: .1em; text-transform: uppercase;
+  border-bottom: 1px solid #7a7068; padding-bottom: 4px; margin-bottom: 2px;
+}
+.fsize-track {
+  display: flex; align-items: center; gap: 6px;
+}
+.fsize-track-label {
+  font-family: 'Fixedsys', monospace; font-size: 8px; color: #000; opacity: 0.5; width: 12px;
+}
+.fsize-slider {
+  flex: 1; height: 14px; position: relative; cursor: pointer;
+  background: #8a7e72;
+  border-top: 1px solid #3d3830; border-left: 1px solid #3d3830;
+  border-right: 1px solid #d4cdc4; border-bottom: 1px solid #d4cdc4;
+}
+.fsize-thumb {
+  position: absolute; top: 1px; width: 10px; height: 10px;
+  background: #AFA191;
+  border-top: 1px solid #d4cdc4; border-left: 1px solid #d4cdc4;
+  border-right: 1px solid #3d3830; border-bottom: 1px solid #3d3830;
+  cursor: grab; transform: translateX(-50%);
+}
+
+/* ── Win95 scrollbar for right panel ── */
+.rscroll {
+  flex: 1; overflow-y: scroll; padding: 20px 28px 28px; position: relative; z-index: 2;
+  scrollbar-width: auto; scrollbar-color: #AFA191 #5a5145;
+}
+.rscroll::-webkit-scrollbar { width: 16px; }
+.rscroll::-webkit-scrollbar-track {
+  background: #5a5145;
+  border-left: 1px solid #3d3830;
+}
+.rscroll::-webkit-scrollbar-thumb {
+  background: #AFA191;
+  border-top: 2px solid #d4cdc4; border-left: 2px solid #d4cdc4;
+  border-right: 2px solid #3d3830; border-bottom: 2px solid #3d3830;
+  min-height: 20px;
+}
+.rscroll::-webkit-scrollbar-button {
+  background: #AFA191; height: 16px;
+  border-top: 2px solid #d4cdc4; border-left: 2px solid #d4cdc4;
+  border-right: 2px solid #3d3830; border-bottom: 2px solid #3d3830;
+  display: block;
+}
+
+/* ── Obsidian path in right tbar ── */
+#rtitle {
+  font-family: 'Fixedsys', monospace;
+  font-size: 8px; letter-spacing: .08em;
+}
+#rtitle .rpath-root { color: var(--tdim); }
+#rtitle .rpath-cur  { color: var(--ttxt); }
+
 /* ── RIGHT PANEL ── */
 .win-r { flex: 1; min-width: 0; }
 
@@ -314,23 +415,6 @@ header > * { pointer-events: auto; }
   flex: 1; background: #b5ad9e;
   display: flex; flex-direction: column; overflow: hidden; position: relative;
 }
-
-.r-head {
-  padding: 4px 13px; font-size: 8px; letter-spacing: .10em; text-transform: uppercase;
-  color: var(--tdim); border-bottom: 1px solid var(--tdim);
-  display: flex; align-items: center; gap: 10px; flex-shrink: 0; position: relative; z-index: 2;
-}
-.rh-path {
-  flex: 1; overflow: hidden; white-space: nowrap; text-overflow: ellipsis;
-  font-family: 'Fixedsys', monospace; font-size: 9px; letter-spacing: .04em;
-}
-
-.rscroll {
-  flex: 1; overflow-y: auto; padding: 24px 32px 32px; position: relative; z-index: 2;
-  scrollbar-width: thin; scrollbar-color: rgba(93,81,67,.25) transparent;
-}
-.rscroll::-webkit-scrollbar { width: 2px; }
-.rscroll::-webkit-scrollbar-thumb { background: rgba(93,81,67,.3); }
 
 /* feed */
 .fe {
@@ -354,7 +438,7 @@ header > * { pointer-events: auto; }
   letter-spacing: .01em;
 }
 .fe-prev {
-  font-family: 'DotGothic16', monospace; font-size: 9px; line-height: 1.9;
+  font-family: 'DotGothic16', monospace; font-size: var(--r-fsize); line-height: 1.9;
   color: #5a4e3e; opacity: .7;
   display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
   max-width: 580px;
@@ -397,7 +481,7 @@ header > * { pointer-events: auto; }
   margin: 14px 0 18px;
 }
 .nbody {
-  font-family: 'DotGothic16', monospace; font-size: 9px;
+  font-family: 'DotGothic16', monospace; font-size: var(--r-fsize);
   line-height: 2.1; color: #3d3428;
 }
 .nbody p { margin-bottom: 18px; max-width: 560px; }
@@ -447,6 +531,23 @@ header > * { pointer-events: auto; }
       </span>
       <div style="flex:1"></div>
       <div class="pill-divider"></div>
+      <div class="burger-wrap" id="fsizeWrap">
+        <button class="fsize-btn" id="fsizeBtn" aria-label="Text size">
+          <span class="fsize-label">Aa</span>
+          <div class="fsize-knob" id="fsizeKnob"></div>
+        </button>
+        <div class="fsize-popup" id="fsizePopup">
+          <div class="fsize-popup-title">Text Size</div>
+          <div class="fsize-track">
+            <span class="fsize-track-label">A</span>
+            <div class="fsize-slider" id="fsizeSlider">
+              <div class="fsize-thumb" id="fsizeThumb"></div>
+            </div>
+            <span class="fsize-track-label" style="font-size:11px">A</span>
+          </div>
+        </div>
+      </div>
+      <div class="pill-divider"></div>
       <div class="burger-wrap">
         <button class="sword-btn" id="swordBtn" aria-label="Menu">
           <span class="line"></span>
@@ -485,7 +586,7 @@ header > * { pointer-events: auto; }
     <div class="win win-r">
       <div class="tbar">
         <div class="tbar-inner">
-          <div class="tbar-t" id="rtitle">NOEASY / GARDEN</div>
+          <div class="tbar-t" id="rtitle"><span class="rpath-root">noeasy.xyz/garden/</span><span class="rpath-cur" id="rpathCur"></span></div>
           <div class="tbbtns" id="rbtns"></div>
         </div>
       </div>
@@ -667,11 +768,16 @@ function buildLeft() {
   });
 }
 
+function setRPath(cur) {
+  const el = document.getElementById('rpathCur');
+  if (el) el.textContent = cur;
+}
+
 function showFeed(notes, folderName) {
   const sorted = [...notes].sort((a,b) => b.date.localeCompare(a.date));
-  const lbl = folderName || 'ALL';
-  document.getElementById('rtitle').textContent = `NOEASY / GARDEN / ${lbl.toUpperCase()}`;
-  document.getElementById('s1').textContent = lbl.toUpperCase();
+  const lbl = folderName || '';
+  setRPath(lbl ? lbl.toLowerCase() + '/' : '');
+  document.getElementById('s1').textContent = (lbl || 'GARDEN').toUpperCase();
   document.getElementById('s2').textContent = sorted.length + ' entries';
   document.getElementById('s3').textContent = sorted[0]?.date || '';
   const r = document.getElementById('reader');
@@ -688,7 +794,7 @@ function showFeed(notes, folderName) {
 }
 
 function openNote(n) {
-  document.getElementById('rtitle').textContent = `NOEASY / ${n.folder.toUpperCase()} / NOTE`;
+  setRPath(n.folder.toLowerCase() + '/' + n.title.toLowerCase().replace(/\s+/g,'-').replace(/[^a-z0-9\-]/g,'') + '.md');
   document.getElementById('s1').textContent = n.folder.toUpperCase();
   document.getElementById('s2').textContent = n.tags.join(' · ');
   document.getElementById('s3').textContent = n.date;
@@ -719,8 +825,57 @@ document.getElementById('s1').textContent = 'GARDEN';
 
 buildLeft();
 showFeed(allNotes, null);
-document.getElementById('rtitle').textContent = 'NOEASY / GARDEN';
-document.getElementById('s1').textContent = 'GARDEN';
+setRPath('');
+
+// ── Font size knob ──
+(function() {
+  const MIN = 9, MAX = 15, DEFAULT = 11;
+  let cur = DEFAULT;
+  const popup   = document.getElementById('fsizePopup');
+  const btn     = document.getElementById('fsizeBtn');
+  const knob    = document.getElementById('fsizeKnob');
+  const slider  = document.getElementById('fsizeSlider');
+  const thumb   = document.getElementById('fsizeThumb');
+  const wrap    = document.getElementById('fsizeWrap');
+
+  function pct() { return (cur - MIN) / (MAX - MIN); }
+
+  function apply() {
+    document.documentElement.style.setProperty('--r-fsize', cur + 'px');
+    const deg = -135 + pct() * 270;
+    knob.style.transform = `rotate(${deg}deg)`;
+    const sliderW = slider.offsetWidth;
+    thumb.style.left = (pct() * (sliderW - 10) + 5) + 'px';
+  }
+
+  apply();
+
+  btn.addEventListener('click', e => {
+    e.stopPropagation();
+    popup.classList.toggle('open');
+  });
+
+  // drag on slider
+  let dragging = false;
+  function setFromX(x) {
+    const rect = slider.getBoundingClientRect();
+    let t = (x - rect.left) / rect.width;
+    t = Math.max(0, Math.min(1, t));
+    cur = Math.round(MIN + t * (MAX - MIN));
+    apply();
+  }
+
+  slider.addEventListener('mousedown', e => { dragging = true; setFromX(e.clientX); });
+  slider.addEventListener('touchstart', e => { dragging = true; setFromX(e.touches[0].clientX); }, {passive:true});
+  document.addEventListener('mousemove', e => { if (dragging) setFromX(e.clientX); });
+  document.addEventListener('touchmove', e => { if (dragging) setFromX(e.touches[0].clientX); }, {passive:true});
+  document.addEventListener('mouseup', () => { dragging = false; });
+  document.addEventListener('touchend', () => { dragging = false; });
+
+  document.addEventListener('click', e => {
+    if (!wrap.contains(e.target)) popup.classList.remove('open');
+  });
+})();
 </script>
 </body>
 </html>
