@@ -1199,16 +1199,22 @@ function initGraph() {
 
   const wrap   = document.getElementById('graphWrap');
   const canvas = document.getElementById('graphCanvas');
-
-  // ── Star background with parallax & pixel flicker ──
   const starsCv = document.getElementById('starsBg');
   const sctx = starsCv.getContext('2d');
+  const ctx  = canvas.getContext('2d');
+
+  // ── State — declared first so all functions can reference them ──
+  let zoom = window._graphZoom ? window._graphZoom() : 1.0;
+  let panX = 0, panY = 0;
+  let starT = 0;
+  let frame = 0;
   const NUM_STARS = 120;
   let stars = [];
+
+  // ── Stars ──
   function initStars(w, h) {
     stars = Array.from({length: NUM_STARS}, () => ({
-      x: Math.random() * w,
-      y: Math.random() * h,
+      x: Math.random() * w, y: Math.random() * h,
       size: Math.random() < 0.15 ? 2 : 1,
       bright: Math.random(),
       flickerPhase: Math.random() * 1000,
@@ -1216,71 +1222,31 @@ function initGraph() {
       parallax: 0.1 + Math.random() * 0.6,
     }));
   }
-  function drawStars(w, h, px, py, t) {
+  function drawStars(w, h) {
     sctx.clearRect(0, 0, w, h);
     sctx.fillStyle = '#0c0a06';
     sctx.fillRect(0, 0, w, h);
     stars.forEach(s => {
-      // parallax offset: move slightly opposite to pan
-      const ox = (px / w - 0.5) * s.parallax * 30;
-      const oy = (py / h - 0.5) * s.parallax * 30;
+      const ox = (panX / (w||1) - 0.5) * s.parallax * 30;
+      const oy = (panY / (h||1) - 0.5) * s.parallax * 30;
       const sx = (s.x + ox + w) % w;
       const sy = (s.y + oy + h) % h;
-      // pixel flicker: step-based, old-school
-      const flickerT = t * s.flickerSpeed + s.flickerPhase;
+      const flickerT = starT * s.flickerSpeed + s.flickerPhase;
       const flicker = Math.sin(flickerT) > 0.6 ? 0.4 : 1.0;
       const alpha = (0.4 + s.bright * 0.6) * flicker;
-      // color: mostly warm white/amber, a few blue-ish
       const hue = s.bright > 0.8 ? 'rgba(214,213,200,' : s.bright < 0.2 ? 'rgba(180,190,214,' : 'rgba(200,195,170,';
       sctx.fillStyle = hue + alpha + ')';
       sctx.fillRect(Math.floor(sx), Math.floor(sy), s.size, s.size);
     });
   }
-  let starT = 0;
-  function tickStars() {
-    starT += 0.018;
-    drawStars(starsCv.width, starsCv.height, panX, panY, starT);
-    window._starAnimId = requestAnimationFrame(tickStars);
-  }
-  if (window._starAnimId) cancelAnimationFrame(window._starAnimId);
-  tickStars();
-  window.addEventListener('resize', resize);
-
-  // ── Viewport transform: pan + zoom ──
-  let zoom = window._graphZoom ? window._graphZoom() : 1.0;
-  let panX = 0, panY = 0;
-
-  window._graphSetZoom = function(z) {
-    const cx = canvas.width / 2, cy = canvas.height / 2;
-    // zoom toward center
-    const ratio = z / zoom;
-    panX = cx + (panX - cx) * ratio;
-    panY = cy + (panY - cy) * ratio;
-    zoom = z;
-    draw();
-  };
-
-  function resize() {
-    const w = wrap.clientWidth  || wrap.offsetWidth  || 300;
-    const h = wrap.clientHeight || wrap.offsetHeight || 300;
-    canvas.width  = w;
-    canvas.height = h;
-    starsCv.width  = w;
-    starsCv.height = h;
-    panX = w / 2;
-    panY = h / 2;
-    initStars(w, h);
-    draw();
-  }
 
   // ── Build nodes / edges ──
   const nodes = [], edges = [], nodeMap = {};
-
   vault.forEach((f, fi) => {
     const id = 'f_' + fi;
     nodes.push({ id, label: f.folder, type: 'folder', x: 0, y: 0, vx: 0, vy: 0 });
     nodeMap[id] = nodes[nodes.length - 1];
-    f.notes.forEach((n, ni) => {
+    f.notes.forEach(n => {
       const nid = 'n_' + n.id;
       nodes.push({ id: nid, label: n.title.split(':')[0].trim().slice(0, 18), type: 'note', x: 0, y: 0, vx: 0, vy: 0 });
       nodeMap[nid] = nodes[nodes.length - 1];
@@ -1296,8 +1262,6 @@ function initGraph() {
       }
     });
   });
-
-  // Initial circle layout
   const N = nodes.length;
   nodes.forEach((node, i) => {
     const angle = (i / N) * Math.PI * 2;
@@ -1305,8 +1269,7 @@ function initGraph() {
     node.y = Math.sin(angle) * 80;
   });
 
-  // ── Force sim (pixels, not 0-1) ──
-  let frame = 0;
+  // ── Force sim ──
   function simulate() {
     for (let iter = 0; iter < 3; iter++) {
       for (let i = 0; i < nodes.length; i++) {
@@ -1323,12 +1286,12 @@ function initGraph() {
         const dx = b.x-a.x, dy = b.y-a.y;
         const d = Math.sqrt(dx*dx+dy*dy)||0.1;
         const rest = e.weak ? 90 : 60;
-        const f = (d - rest) * 0.06;
-        a.vx += dx/d*f; a.vy += dy/d*f;
-        b.vx -= dx/d*f; b.vy -= dy/d*f;
+        const f2 = (d - rest) * 0.06;
+        a.vx += dx/d*f2; a.vy += dy/d*f2;
+        b.vx -= dx/d*f2; b.vy -= dy/d*f2;
       });
       nodes.forEach(n => {
-        n.vx += -n.x * 0.008; n.vy += -n.y * 0.008; // center gravity
+        n.vx += -n.x * 0.008; n.vy += -n.y * 0.008;
         n.vx *= 0.82; n.vy *= 0.82;
         n.x += n.vx; n.y += n.vy;
       });
@@ -1336,112 +1299,110 @@ function initGraph() {
   }
 
   // ── Draw ──
-  const COL_BG      = '#0c0a06';
-  const COL_EDGE    = '#3a3228';
-  const COL_EDGE_W  = '#252018';
-  const COL_FOLD    = '#D6D5A9';   // --ta
-  const COL_NOTE    = '#7a6a52';   // --tdim
-  const COL_FOLD_HL = '#f0efcc';
-  const COL_NOTE_HL = '#a89878';
-  const COL_FOLD_LB = '#D6D5A9';   // --ta
-  const COL_NOTE_LB = '#b0a080';
-  const COL_GLOW    = 'rgba(214,213,169,0.12)'; // --ta glow
+  const COL_EDGE='#3a3228', COL_EDGE_W='#252018';
+  const COL_FOLD='#D6D5A9', COL_NOTE='#7a6a52';
+  const COL_FOLD_HL='#f0efcc', COL_NOTE_HL='#a89878';
+  const COL_FOLD_LB='#D6D5A9', COL_NOTE_LB='#b0a080';
+  const COL_GLOW='rgba(214,213,169,0.12)';
 
   function draw() {
     const W = canvas.width, H = canvas.height;
-    const ctx = canvas.getContext('2d');
+    if (!W || !H) return;
     ctx.clearRect(0, 0, W, H);
-    // transparent bg — stars canvas shows through
-    // ctx.fillStyle = COL_BG; ctx.fillRect(0,0,W,H);  // removed — stars layer handles bg
-
-    // CRT scanlines
     for (let y = 0; y < H; y += 3) {
       ctx.fillStyle = 'rgba(0,0,0,0.10)'; ctx.fillRect(0, y, W, 1);
     }
-
     ctx.save();
     ctx.translate(panX, panY);
     ctx.scale(zoom, zoom);
-
-    // Edges
     edges.forEach(e => {
       const a = nodeMap[e.a], b = nodeMap[e.b]; if (!a||!b) return;
-      ctx.beginPath();
-      ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y);
+      ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y);
       ctx.strokeStyle = e.weak ? COL_EDGE_W : COL_EDGE;
       ctx.lineWidth = e.weak ? 0.6 : 1;
-      ctx.setLineDash(e.weak ? [3,4] : []);
-      ctx.stroke(); ctx.setLineDash([]);
+      ctx.setLineDash(e.weak ? [3,4] : []); ctx.stroke(); ctx.setLineDash([]);
     });
-
-    // Nodes
     nodes.forEach(n => {
       const r = n.type === 'folder' ? 6 : 4;
-      // glow
       const g = ctx.createRadialGradient(n.x, n.y, 0, n.x, n.y, r*3);
       g.addColorStop(0, COL_GLOW); g.addColorStop(1, 'transparent');
       ctx.fillStyle = g; ctx.beginPath(); ctx.arc(n.x, n.y, r*3, 0, Math.PI*2); ctx.fill();
-
-      // pixel square body
       ctx.fillStyle = n.type==='folder' ? COL_FOLD : COL_NOTE;
       ctx.fillRect(n.x-r, n.y-r, r*2, r*2);
-      // highlight
-      ctx.fillStyle = 'rgba(200,255,180,0.3)';
-      ctx.fillRect(n.x-r, n.y-r, 1, 1);
-      // center dot
+      ctx.fillStyle = 'rgba(200,255,180,0.3)'; ctx.fillRect(n.x-r, n.y-r, 1, 1);
       ctx.fillStyle = n.type==='folder' ? COL_FOLD_HL : COL_NOTE_HL;
       ctx.fillRect(n.x-1, n.y-1, 2, 2);
-
-      // Label — smooth font
       ctx.save();
       ctx.font = `${n.type==='folder'?'bold ':''} ${n.type==='folder'?9:8}px "DotGothic16", monospace`;
       ctx.fillStyle = n.type==='folder' ? COL_FOLD_LB : COL_NOTE_LB;
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'top';
+      ctx.textAlign = 'center'; ctx.textBaseline = 'top';
       ctx.shadowColor = '#0c0a06'; ctx.shadowBlur = 3;
       ctx.fillText(n.label, n.x, n.y + r + 3);
       ctx.restore();
     });
-
     ctx.restore();
-
-    // Win95 corner pixels
     ctx.fillStyle = '#1a3018';
     [[0,0,3,1],[0,0,1,3],[W-3,0,3,1],[W-1,0,1,3],
      [0,H-1,3,1],[0,H-3,1,3],[W-3,H-1,3,1],[W-1,H-3,1,3]
     ].forEach(([x,y,w,h]) => ctx.fillRect(x,y,w,h));
   }
 
+  // ── Resize — sets canvas dimensions from actual DOM size ──
+  function resize() {
+    const w = wrap.clientWidth  || wrap.offsetWidth  || 300;
+    const h = wrap.clientHeight || wrap.offsetHeight || 300;
+    canvas.width  = w; canvas.height = h;
+    starsCv.width = w; starsCv.height = h;
+    panX = w / 2; panY = h / 2;
+    initStars(w, h);
+    draw();
+  }
+
+  // ── Main loop ──
   function tick() {
     frame++;
+    starT += 0.018;
     if (frame < 200) simulate();
+    drawStars(starsCv.width, starsCv.height);
     draw();
     window._graphAnimId = requestAnimationFrame(tick);
   }
 
+  // ── Init: resize first, then start loop ──
   if (window._graphAnimId) cancelAnimationFrame(window._graphAnimId);
   resize();
   tick();
   window.addEventListener('resize', resize);
   window._graphForceResize = resize;
 
-  // ── Pan: touch (1 finger) + mouse drag ──
-  let panning = false, px0 = 0, py0 = 0, panX0 = 0, panY0 = 0;
+  // ── Zoom API ──
+  window._graphSetZoom = function(z) {
+    const cx = canvas.width / 2, cy = canvas.height / 2;
+    const ratio = z / zoom;
+    panX = cx + (panX - cx) * ratio;
+    panY = cy + (panY - cy) * ratio;
+    zoom = z; draw();
+  };
+  window._graphZoom = () => zoom;
+  window._graphSyncKnob = function(newZoom) {
+    zoom = Math.max(0.5, Math.min(2.5, newZoom));
+    draw();
+  };
 
+  // ── Pan: mouse ──
+  let panning = false, px0 = 0, py0 = 0, panX0 = 0, panY0 = 0;
   canvas.addEventListener('mousedown', e => {
     panning = true; px0 = e.clientX; py0 = e.clientY;
     panX0 = panX; panY0 = panY; e.preventDefault();
   });
   canvas.addEventListener('mousemove', e => {
     if (!panning) return;
-    panX = panX0 + (e.clientX - px0);
-    panY = panY0 + (e.clientY - py0);
-    draw();
+    panX = panX0 + (e.clientX - px0); panY = panY0 + (e.clientY - py0); draw();
   });
   canvas.addEventListener('mouseup', () => { panning = false; });
   canvas.addEventListener('mouseleave', () => { panning = false; });
 
-  // Touch pan (1 finger) + pinch zoom (2 fingers)
+  // ── Pan/pinch: touch ──
   let lastTouchDist = null;
   canvas.addEventListener('touchstart', e => {
     if (e.touches.length === 1) {
@@ -1459,25 +1420,21 @@ function initGraph() {
   canvas.addEventListener('touchmove', e => {
     if (e.touches.length === 1 && panning) {
       panX = panX0 + (e.touches[0].clientX - px0);
-      panY = panY0 + (e.touches[0].clientY - py0);
-      draw();
+      panY = panY0 + (e.touches[0].clientY - py0); draw();
     } else if (e.touches.length === 2 && lastTouchDist) {
       const dx = e.touches[0].clientX - e.touches[1].clientX;
       const dy = e.touches[0].clientY - e.touches[1].clientY;
       const dist = Math.sqrt(dx*dx+dy*dy);
       const newZoom = Math.max(0.5, Math.min(2.5, zoom * (dist / lastTouchDist)));
       if (window._graphSetZoom) window._graphSetZoom(newZoom);
-      lastTouchDist = dist;
-      // sync knob
       if (window._graphSyncKnob) window._graphSyncKnob(newZoom);
+      lastTouchDist = dist;
     }
     e.preventDefault();
   }, {passive:false});
-  canvas.addEventListener('touchend', e => {
-    panning = false; lastTouchDist = null;
-  });
+  canvas.addEventListener('touchend', () => { panning = false; lastTouchDist = null; });
 
-  // Mouse wheel zoom
+  // ── Mouse wheel zoom ──
   canvas.addEventListener('wheel', e => {
     e.preventDefault();
     const factor = e.deltaY < 0 ? 1.1 : 0.9;
