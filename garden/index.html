@@ -671,9 +671,15 @@ canvas#graphCanvas {
 /* ── Tree of Life panel ── */
 #treePanel {
   position: absolute; inset: 0; z-index: 10;
-  background: #0c0a06;
+  background: transparent;
   display: none; overflow: hidden;
   flex-direction: column;
+}
+#treeStars {
+  display: block;
+  position: absolute;
+  top: 0; left: 0; width: 100%; height: 100%;
+  z-index: 0;
 }
 #treeCanvas {
   display: block;
@@ -682,53 +688,116 @@ canvas#graphCanvas {
   width: 100%; height: calc(100% - 54px);
   image-rendering: pixelated;
   cursor: default;
+  z-index: 1;
+  background: transparent;
 }
 #treeInfo {
   position: absolute;
   bottom: 0; left: 0; right: 0;
-  height: 54px;
-  background: #0f0d08;
+  background: #0a0906ee;
   border-top: 1px solid #2a2518;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  font-family: 'Fixedsys', monospace;
+  overflow: hidden;
+  transition: height 0.2s ease;
+  height: 54px;
+}
+#treeInfo.expanded { height: 90px; }
+#treeInfoTop {
   display: flex;
   align-items: center;
   gap: 10px;
   padding: 0 14px;
-  font-family: 'Fixedsys', monospace;
-  overflow: hidden;
+  height: 54px;
+  flex-shrink: 0;
 }
 #treeInfoSymbol {
-  font-size: 20px;
+  font-size: 18px;
   color: #D6D5A9;
   text-shadow: 0 0 8px #D6D5A9;
-  width: 24px;
+  width: 22px;
   text-align: center;
   flex-shrink: 0;
   line-height: 1;
 }
+#treeInfoText {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+}
 #treeInfoName {
-  font-size: 11px;
+  font-size: 10px;
   color: #D6D5A9;
-  text-shadow: 0 0 6px #D6D5A9;
+  text-shadow: 0 0 5px #D6D5A9;
   letter-spacing: .08em;
   font-weight: bold;
-  flex-shrink: 0;
-  min-width: 60px;
-}
-#treeInfoTheme {
-  font-size: 8px;
-  color: #7a6a52;
-  letter-spacing: .12em;
-  text-transform: uppercase;
-  flex: 1;
+  white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+#treeInfoTheme {
+  font-size: 7px;
+  color: #7a6a52;
+  letter-spacing: .1em;
+  text-transform: uppercase;
   white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 #treeInfoCount {
   font-size: 8px;
-  color: #7a6a52;
+  color: #D6D5A9;
   letter-spacing: .1em;
   flex-shrink: 0;
+  opacity: 0.7;
+  text-align: right;
+  min-width: 40px;
+}
+/* Weight bars */
+#treeBars {
+  padding: 0 14px 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.tree-bar-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.tree-bar-label {
+  font-size: 7px;
+  color: #7a6a52;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  width: 52px;
+  flex-shrink: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.tree-bar-track {
+  flex: 1;
+  height: 3px;
+  background: #1e1c14;
+  border-top: 1px solid #111008;
+  border-left: 1px solid #111008;
+  border-right: 1px solid #3a3828;
+  border-bottom: 1px solid #3a3828;
+  position: relative;
+  overflow: hidden;
+}
+.tree-bar-fill {
+  height: 100%;
+  background: #D6D5A9;
+  box-shadow: 0 0 4px #D6D5A9aa;
+  transition: width 0.35s cubic-bezier(0.16,1,0.3,1);
+  width: 0%;
 }
 .treeBtn.open {
   border-top: 2px solid #3d3830 !important;
@@ -916,12 +985,22 @@ canvas#graphCanvas {
           </div>
         </div>
         <div class="graph-panel" id="treePanel">
+          <canvas id="treeStars"></canvas>
           <canvas id="treeCanvas"></canvas>
           <div id="treeInfo">
-            <span id="treeInfoSymbol"></span>
-            <span id="treeInfoName"></span>
-            <span id="treeInfoTheme"></span>
-            <span id="treeInfoCount"></span>
+            <div id="treeInfoTop">
+              <span id="treeInfoSymbol"></span>
+              <div id="treeInfoText">
+                <span id="treeInfoName"></span>
+                <span id="treeInfoTheme"></span>
+              </div>
+              <span id="treeInfoCount"></span>
+            </div>
+            <div id="treeBars" style="display:none">
+              <div class="tree-bar-row" id="treeBar0"><div class="tree-bar-label" id="treeBarLabel0"></div><div class="tree-bar-track"><div class="tree-bar-fill" id="treeBarFill0"></div></div></div>
+              <div class="tree-bar-row" id="treeBar1"><div class="tree-bar-label" id="treeBarLabel1"></div><div class="tree-bar-track"><div class="tree-bar-fill" id="treeBarFill1"></div></div></div>
+              <div class="tree-bar-row" id="treeBar2"><div class="tree-bar-label" id="treeBarLabel2"></div><div class="tree-bar-track"><div class="tree-bar-fill" id="treeBarFill2"></div></div></div>
+            </div>
           </div>
         </div>
       </div>
@@ -1017,7 +1096,7 @@ const vault = [
     folder: "Esoterica",
     notes: [
       {
-        id:1, date:"2026-04-22", tags:["theurgy","plato"], sephirot:["Tifaret","Binah"],
+        id:1, date:"2026-04-22", tags:["theurgy","plato"], sephirot:["Tifaret","Binah"], weights:{"Tifaret": 55, "Binah": 45},
         title:"On Theurgy and the Purpose of Prayer",
         body:`Iamblichus says that prayer works not because the gods learn of our desire. The gods know everything. Prayer works because it changes the one who prays.
 
@@ -1032,7 +1111,7 @@ You bring your structure into alignment with that which you address. And in that
 The hexagram ritual works precisely this way. Not explanation first — a form that does something to you when you work with it.`
       },
       {
-        id:4, date:"2026-03-29", tags:["symbols","jung"], sephirot:["Yesod","Hod"],
+        id:4, date:"2026-03-29", tags:["symbols","jung"], sephirot:["Yesod","Hod"], weights:{"Yesod": 40, "Hod": 60},
         title:"The Symbol as Entrance, Not Sign",
         body:`Jung distinguished sign from symbol. A sign points to something known. A symbol points to something that cannot be expressed otherwise.
 
@@ -1046,7 +1125,7 @@ Symbols do not explain — they open.`
     folder: "Tarot",
     notes: [
       {
-        id:2, date:"2026-04-18", tags:["arcana"], sephirot:["Hod","Tifaret"],
+        id:2, date:"2026-04-18", tags:["arcana"], sephirot:["Hod","Tifaret"], weights:{"Hod": 35, "Tifaret": 65},
         title:"The Magician: Will as Channel",
         body:`The Magician is the first arcana after the Fool. The Fool is potential without form. The Magician is the moment when potential takes up its tools.
 
@@ -1064,7 +1143,7 @@ This relieves some of the anxiety around "creation." Not to invent — but to be
     folder: "Philosophy",
     notes: [
       {
-        id:3, date:"2026-04-10", tags:["plato","media"], sephirot:["Yesod","Malkuth"],
+        id:3, date:"2026-04-10", tags:["plato","media"], sephirot:["Yesod","Malkuth"], weights:{"Yesod": 50, "Malkuth": 50},
         title:"Plato's Cave and Screens",
         body:`It is common to read the cave as a metaphor for ignorance. But the prisoners are not foolish — they are rational. They study shadows, build theories, predict the next shadow. The problem is not the intellect — it is aimed in the wrong direction.
 
@@ -1073,7 +1152,7 @@ Metrics, reach, algorithms — these are shadows on the wall. One can reason abo
 Reality is what happens when you paint.`
       },
       {
-        id:5, date:"2026-03-15", tags:["archaic"], sephirot:["Netzach","Malkuth"],
+        id:5, date:"2026-03-15", tags:["archaic"], sephirot:["Netzach","Malkuth"], weights:{"Netzach": 60, "Malkuth": 40},
         title:"The Archaic as Living",
         body:`The archaic is not chronology. It is a layer of reality.
 
@@ -1130,7 +1209,7 @@ function setRPath(cur) {
 }
 
 function showFeed(notes, folderName) {
-  if (window._treeSetNote) window._treeSetNote([]);
+  if (window._treeSetNote) window._treeSetNote([], null);
   const sorted = [...notes].sort((a,b) => b.date.localeCompare(a.date));
   const lbl = folderName || '';
   setRPath(lbl ? lbl.toLowerCase() + '/' : '');
@@ -1151,7 +1230,7 @@ function showFeed(notes, folderName) {
 }
 
 function openNote(n) {
-  if (window._treeSetNote) window._treeSetNote(n.sephirot || []);
+  if (window._treeSetNote) window._treeSetNote(n.sephirot || [], n);
   setRPath(n.folder.toLowerCase() + '/' + n.title.toLowerCase().replace(/\s+/g,'-').replace(/[^a-z0-9\-]/g,'') + '.md');
   document.getElementById('s1').textContent = n.folder.toUpperCase();
   document.getElementById('s2').textContent = n.tags.join(' · ');
@@ -1420,7 +1499,32 @@ function initGraph() {
     }
   }
 
-  // ── Draw ──
+  // ── Per-node drag offsets (world-space) + spring return ──
+  nodes.forEach(n => { n.odx = 0; n.ody = 0; n.ovx = 0; n.ovy = 0; });
+
+  let gSpringId = null;
+  let gDragNode = null;
+
+  function gStartSpring() {
+    if (gSpringId) return;
+    function step() {
+      let any = false;
+      nodes.forEach(n => {
+        if (n === gDragNode) return;
+        const k = 0.14, damp = 0.68;
+        n.ovx = (n.ovx - k * n.odx) * damp;
+        n.ovy = (n.ovy - k * n.ody) * damp;
+        n.odx += n.ovx;
+        n.ody += n.ovy;
+        if (Math.abs(n.odx) > 0.15 || Math.abs(n.ody) > 0.15) any = true;
+        else { n.odx = 0; n.ody = 0; n.ovx = 0; n.ovy = 0; }
+      });
+      draw();
+      gSpringId = (any || gDragNode) ? requestAnimationFrame(step) : null;
+    }
+    gSpringId = requestAnimationFrame(step);
+  }
+
   const COL_EDGE='#3a3228', COL_EDGE_W='#252018';
   const COL_FOLD='#D6D5A9', COL_NOTE='#7a6a52';
   const COL_FOLD_HL='#f0efcc', COL_NOTE_HL='#a89878';
@@ -1439,27 +1543,30 @@ function initGraph() {
     ctx.scale(zoom, zoom);
     edges.forEach(e => {
       const a = nodeMap[e.a], b = nodeMap[e.b]; if (!a||!b) return;
-      ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y);
+      const ax = a.x + a.odx, ay = a.y + a.ody;
+      const bx = b.x + b.odx, by = b.y + b.ody;
+      ctx.beginPath(); ctx.moveTo(ax, ay); ctx.lineTo(bx, by);
       ctx.strokeStyle = e.weak ? COL_EDGE_W : COL_EDGE;
       ctx.lineWidth = e.weak ? 0.6 : 1;
       ctx.setLineDash(e.weak ? [3,4] : []); ctx.stroke(); ctx.setLineDash([]);
     });
     nodes.forEach(n => {
+      const nx = n.x + n.odx, ny = n.y + n.ody;
       const r = n.type === 'folder' ? 6 : 4;
-      const g = ctx.createRadialGradient(n.x, n.y, 0, n.x, n.y, r*3);
+      const g = ctx.createRadialGradient(nx, ny, 0, nx, ny, r*3);
       g.addColorStop(0, COL_GLOW); g.addColorStop(1, 'transparent');
-      ctx.fillStyle = g; ctx.beginPath(); ctx.arc(n.x, n.y, r*3, 0, Math.PI*2); ctx.fill();
+      ctx.fillStyle = g; ctx.beginPath(); ctx.arc(nx, ny, r*3, 0, Math.PI*2); ctx.fill();
       ctx.fillStyle = n.type==='folder' ? COL_FOLD : COL_NOTE;
-      ctx.fillRect(n.x-r, n.y-r, r*2, r*2);
-      ctx.fillStyle = 'rgba(200,255,180,0.3)'; ctx.fillRect(n.x-r, n.y-r, 1, 1);
+      ctx.fillRect(nx-r, ny-r, r*2, r*2);
+      ctx.fillStyle = 'rgba(200,255,180,0.3)'; ctx.fillRect(nx-r, ny-r, 1, 1);
       ctx.fillStyle = n.type==='folder' ? COL_FOLD_HL : COL_NOTE_HL;
-      ctx.fillRect(n.x-1, n.y-1, 2, 2);
+      ctx.fillRect(nx-1, ny-1, 2, 2);
       ctx.save();
       ctx.font = `${n.type==='folder'?'bold ':''} ${n.type==='folder'?9:8}px "DotGothic16", monospace`;
       ctx.fillStyle = n.type==='folder' ? COL_FOLD_LB : COL_NOTE_LB;
       ctx.textAlign = 'center'; ctx.textBaseline = 'top';
       ctx.shadowColor = '#0c0a06'; ctx.shadowBlur = 3;
-      ctx.fillText(n.label, n.x, n.y + r + 3);
+      ctx.fillText(n.label, nx, ny + r + 3);
       ctx.restore();
     });
     ctx.restore();
@@ -1511,38 +1618,158 @@ function initGraph() {
     draw();
   };
 
-  // ── Pan: mouse ──
-  let panning = false, px0 = 0, py0 = 0, panX0 = 0, panY0 = 0;
-  canvas.addEventListener('mousedown', e => {
-    panning = true; px0 = e.clientX; py0 = e.clientY;
-    panX0 = panX; panY0 = panY; e.preventDefault();
-  });
-  canvas.addEventListener('mousemove', e => {
-    if (!panning) return;
-    panX = panX0 + (e.clientX - px0); panY = panY0 + (e.clientY - py0); draw();
-  });
-  canvas.addEventListener('mouseup', () => { panning = false; });
-  canvas.addEventListener('mouseleave', () => { panning = false; });
+  // ── Hit test using offset-adjusted positions ──
+  function nodeAt(cx, cy) {
+    const wx = (cx - panX) / zoom;
+    const wy = (cy - panY) / zoom;
+    for (const n of nodes) {
+      const r = (n.type === 'folder' ? 6 : 4) + 7;
+      const dx = wx - (n.x + n.odx), dy = wy - (n.y + n.ody);
+      if (dx*dx + dy*dy <= r*r) return n;
+    }
+    return null;
+  }
 
-  // ── Pan/pinch: touch ──
+  // ── Drag state ──
+  let panning = false, px0 = 0, py0 = 0, panX0 = 0, panY0 = 0;
+  let mouseDownAt = null;
+  const G_DRAG_THRESH = 4;
+  let gIsDragging = false;
+  // Grab offset: where inside the node the user grabbed (world space)
+  let gGrabOdx = 0, gGrabOdy = 0;
+
+  function gBeginDrag(node, cx, cy) {
+    gDragNode = node;
+    const wx = (cx - panX) / zoom;
+    const wy = (cy - panY) / zoom;
+    // Grab offset = cursor world pos - node render pos
+    gGrabOdx = wx - (node.x + node.odx);
+    gGrabOdy = wy - (node.y + node.ody);
+    node.ovx = 0; node.ovy = 0;
+    gStartSpring();
+  }
+
+  function gMoveDrag(cx, cy) {
+    if (!gDragNode) return;
+    const wx = (cx - panX) / zoom;
+    const wy = (cy - panY) / zoom;
+    // Target offset so node render pos follows cursor with RESIST
+    const targetOdx = wx - gGrabOdx - gDragNode.x;
+    const targetOdy = wy - gGrabOdy - gDragNode.y;
+    // Smooth follow: lerp toward target at 55% per frame (called on mousemove, not rAF — so direct set)
+    gDragNode.odx = targetOdx;
+    gDragNode.ody = targetOdy;
+    draw();
+  }
+
+  function gEndDrag() {
+    if (!gDragNode) return;
+    // Launch spring return with a little velocity
+    gDragNode.ovx = -gDragNode.odx * 0.07;
+    gDragNode.ovy = -gDragNode.ody * 0.07;
+    gDragNode = null;
+    gStartSpring();
+  }
+
+  canvas.addEventListener('mousedown', e => {
+    const rect = canvas.getBoundingClientRect();
+    const cx = e.clientX - rect.left, cy = e.clientY - rect.top;
+    mouseDownAt = {x: e.clientX, y: e.clientY};
+    gIsDragging = false;
+    const hit = nodeAt(cx, cy);
+    if (hit) {
+      gBeginDrag(hit, cx, cy);
+    } else {
+      panning = true;
+      px0 = e.clientX; py0 = e.clientY;
+      panX0 = panX; panY0 = panY;
+    }
+    e.preventDefault();
+  });
+
+  canvas.addEventListener('mousemove', e => {
+    if (gDragNode) {
+      if (!gIsDragging) {
+        const dd = Math.hypot(e.clientX - mouseDownAt.x, e.clientY - mouseDownAt.y);
+        if (dd > G_DRAG_THRESH) gIsDragging = true;
+      }
+      if (gIsDragging) {
+        const rect = canvas.getBoundingClientRect();
+        gMoveDrag(e.clientX - rect.left, e.clientY - rect.top);
+        canvas.style.cursor = 'grabbing';
+      }
+      return;
+    }
+    if (panning) {
+      panX = panX0 + (e.clientX - px0); panY = panY0 + (e.clientY - py0); draw();
+      return;
+    }
+    const rect = canvas.getBoundingClientRect();
+    canvas.style.cursor = nodeAt(e.clientX - rect.left, e.clientY - rect.top) ? 'grab' : 'default';
+  });
+
+  canvas.addEventListener('mouseup', () => {
+    if (gDragNode) {
+      if (!gIsDragging) { gDragNode = null; gStartSpring(); } // was a click, just release
+      else gEndDrag();
+      gIsDragging = false;
+      mouseDownAt = null;
+      canvas.style.cursor = 'default';
+      return;
+    }
+    panning = false;
+  });
+
+  canvas.addEventListener('mouseleave', () => {
+    if (gDragNode) { gEndDrag(); gIsDragging = false; }
+    panning = false;
+    canvas.style.cursor = 'default';
+  });
+
+  // ── Touch: pan / pinch / node-drag ──
   let lastTouchDist = null;
+  let touchPanning = false, tpx0 = 0, tpy0 = 0, tPanX0 = 0, tPanY0 = 0;
+  let touchDownAt = null, touchIsDragging = false, touchDragNode = null;
+
   canvas.addEventListener('touchstart', e => {
     if (e.touches.length === 1) {
-      panning = true;
-      px0 = e.touches[0].clientX; py0 = e.touches[0].clientY;
-      panX0 = panX; panY0 = panY;
+      const rect = canvas.getBoundingClientRect();
+      const cx = e.touches[0].clientX - rect.left, cy = e.touches[0].clientY - rect.top;
+      touchDownAt = {x: e.touches[0].clientX, y: e.touches[0].clientY};
+      touchIsDragging = false;
+      const hit = nodeAt(cx, cy);
+      if (hit) {
+        touchDragNode = hit;
+        gBeginDrag(hit, cx, cy);
+      } else {
+        touchPanning = true;
+        tpx0 = e.touches[0].clientX; tpy0 = e.touches[0].clientY;
+        tPanX0 = panX; tPanY0 = panY;
+      }
     } else if (e.touches.length === 2) {
-      panning = false;
+      touchPanning = false;
+      if (touchDragNode) { gEndDrag(); touchDragNode = null; }
       const dx = e.touches[0].clientX - e.touches[1].clientX;
       const dy = e.touches[0].clientY - e.touches[1].clientY;
       lastTouchDist = Math.sqrt(dx*dx+dy*dy);
     }
     e.preventDefault();
   }, {passive:false});
+
   canvas.addEventListener('touchmove', e => {
-    if (e.touches.length === 1 && panning) {
-      panX = panX0 + (e.touches[0].clientX - px0);
-      panY = panY0 + (e.touches[0].clientY - py0); draw();
+    if (touchDragNode && e.touches.length === 1) {
+      const rect = canvas.getBoundingClientRect();
+      const cx = e.touches[0].clientX - rect.left, cy = e.touches[0].clientY - rect.top;
+      if (!touchIsDragging) {
+        const dd = Math.hypot(e.touches[0].clientX - touchDownAt.x, e.touches[0].clientY - touchDownAt.y);
+        if (dd > G_DRAG_THRESH) touchIsDragging = true;
+      }
+      if (touchIsDragging) { gMoveDrag(cx, cy); e.preventDefault(); }
+      return;
+    }
+    if (e.touches.length === 1 && touchPanning) {
+      panX = tPanX0 + (e.touches[0].clientX - tpx0);
+      panY = tPanY0 + (e.touches[0].clientY - tpy0); draw();
     } else if (e.touches.length === 2 && lastTouchDist) {
       const dx = e.touches[0].clientX - e.touches[1].clientX;
       const dy = e.touches[0].clientY - e.touches[1].clientY;
@@ -1554,7 +1781,14 @@ function initGraph() {
     }
     e.preventDefault();
   }, {passive:false});
-  canvas.addEventListener('touchend', () => { panning = false; lastTouchDist = null; });
+
+  canvas.addEventListener('touchend', () => {
+    if (touchDragNode) {
+      if (!touchIsDragging) { gDragNode = null; } else gEndDrag();
+      touchDragNode = null; touchIsDragging = false;
+    }
+    touchPanning = false; lastTouchDist = null;
+  });
 
   // ── Mouse wheel zoom ──
   canvas.addEventListener('wheel', e => {
@@ -1581,21 +1815,24 @@ function initGraph() {
     { id:'Malkuth', symbol:'⊕', en:'Malkuth', theme:'Matter / Body',         col:'#b8b0a0', dimCol:'#504840' },
   ];
 
-  // Canonical Tree of Life positions (normalised 0-1)
+  // Fixed logical grid — tree never distorts on resize
+  // Mirrored standard: Chokmah=right (Mercy), Binah=left (Severity)
+  // Logical space: LW=200, LH=360. Rendered with uniform scale + centering.
+  const LW = 200, LH = 360;
   const POS = {
-    Kether:  [0.500, 0.055],
-    Chokmah: [0.235, 0.160],
-    Binah:   [0.765, 0.160],
-    Chesed:  [0.200, 0.370],
-    Geburah: [0.800, 0.370],
-    Tifaret: [0.500, 0.480],
-    Netzach: [0.200, 0.630],
-    Hod:     [0.800, 0.630],
-    Yesod:   [0.500, 0.750],
-    Malkuth: [0.500, 0.920],
+    Kether:  [100,  18],
+    Chokmah: [160,  68],
+    Binah:   [ 40,  68],
+    Chesed:  [160, 148],
+    Geburah: [ 40, 148],
+    Tifaret: [100, 198],
+    Netzach: [160, 268],
+    Hod:     [ 40, 268],
+    Yesod:   [100, 308],
+    Malkuth: [100, 348],
   };
 
-  // 22 paths (Tarot = 22 letters)
+  // 22 paths
   const PATHS = [
     ['Kether','Chokmah'],['Kether','Binah'],['Kether','Tifaret'],
     ['Chokmah','Binah'],['Chokmah','Chesed'],['Chokmah','Tifaret'],
@@ -1607,6 +1844,20 @@ function initGraph() {
     ['Hod','Yesod'],['Hod','Malkuth'],
     ['Yesod','Malkuth'],
   ];
+
+  // Transform: logical → canvas pixels (uniform scale, centered, with padding)
+  function logicalToCanvas(lx, ly, cw, ch) {
+    const PAD = 28;
+    const scale = Math.min((cw - PAD*2) / LW, (ch - PAD*2) / LH);
+    const offX  = (cw - LW * scale) / 2;
+    const offY  = (ch - LH * scale) / 2;
+    return [Math.round(lx * scale + offX), Math.round(ly * scale + offY)];
+  }
+
+  function getScale(cw, ch) {
+    const PAD = 28;
+    return Math.min((cw - PAD*2) / LW, (ch - PAD*2) / LH);
+  }
 
   const treeBtn   = document.getElementById('treeBtn');
   const treePanel = document.getElementById('treePanel');
@@ -1625,7 +1876,8 @@ function initGraph() {
 
   let treeVisible = false;
   let hoveredSeph = null;
-  let activeSephs = new Set(); // sephirot of currently open note
+  let activeSephs = new Set();   // lit by open note
+  let selectedSephs = [];        // user-selected (max 3)
   let ctx;
 
   function fireCRTTree() {
@@ -1635,196 +1887,477 @@ function initGraph() {
     setTimeout(() => crtEl.classList.remove('firing'), 420);
   }
 
-  function getCanvasSize() {
-    const infoH = 54;
+  // Canvas pixel size from DOM (excluding info bar)
+  function canvasDims() {
+    const INFO_H = 54;
     return {
-      w: canvas.parentElement.clientWidth  || 200,
-      h: (canvas.parentElement.clientHeight || 300) - infoH,
+      cw: treePanel.clientWidth  || 200,
+      ch: (treePanel.clientHeight || 354) - INFO_H,
     };
   }
 
-  function sephPx(id) {
-    const {w, h} = getCanvasSize();
-    const [nx, ny] = POS[id];
-    return [Math.round(nx * w), Math.round(ny * h)];
+  // Logical → canvas with UNIFORM scale (no distortion)
+  function l2c(lx, ly) {
+    const {cw, ch} = canvasDims();
+    const PAD   = 24;
+    const scale = Math.min((cw - PAD*2) / LW, (ch - PAD*2) / LH);
+    const offX  = (cw - LW * scale) / 2;
+    const offY  = (ch - LH * scale) / 2;
+    return [lx * scale + offX, ly * scale + offY];
+  }
+
+  // Node radius in canvas pixels (based on scale, clamped)
+  function nodeR() {
+    const {cw, ch} = canvasDims();
+    const PAD   = 24;
+    const scale = Math.min((cw - PAD*2) / LW, (ch - PAD*2) / LH);
+    return Math.max(6, Math.min(13, Math.round(scale * 8)));
+  }
+
+  // ── Drag offsets: each sephirah can be displaced from canonical pos ──
+  const dragOffsets = {};
+  SEPHIROT.forEach(s => { dragOffsets[s.id] = {dx:0, dy:0, vx:0, vy:0}; });
+
+  // Get canvas position of sephirah including drag offset
+  function sephPos(id) {
+    const [bx, by] = l2c(...POS[id]);
+    const o = dragOffsets[id];
+    return [bx + o.dx, by + o.dy];
+  }
+
+
+  // Spring animation: pull offsets back toward 0 gently
+  let springAnimId = null;
+  function startSpring() {
+    if (springAnimId) return;
+    function step() {
+      let anyMoving = false;
+      SEPHIROT.forEach(s => {
+        const o = dragOffsets[s.id];
+        if (s.id === dragState.id) return; // skip actively dragged node
+        const k = 0.12, damp = 0.70;
+        o.vx = (o.vx - k * o.dx) * damp;
+        o.vy = (o.vy - k * o.dy) * damp;
+        o.dx += o.vx;
+        o.dy += o.vy;
+        if (Math.abs(o.dx) > 0.2 || Math.abs(o.dy) > 0.2 || Math.abs(o.vx) > 0.1) anyMoving = true;
+        else { o.dx = 0; o.dy = 0; o.vx = 0; o.vy = 0; }
+      });
+      drawTree();
+      if (anyMoving || dragState.id) {
+        springAnimId = requestAnimationFrame(step);
+      } else {
+        springAnimId = null;
+      }
+    }
+    springAnimId = requestAnimationFrame(step);
+  }
+
+  const dragState = { id: null };
+
+  function beginDrag(seph, canvasX, canvasY) {
+    dragState.id = seph.id;
+    dragState.startCanvasX = canvasX;
+    dragState.startCanvasY = canvasY;
+    dragState.startDx = dragOffsets[seph.id].dx;
+    dragState.startDy = dragOffsets[seph.id].dy;
+    dragOffsets[seph.id].vx = 0;
+    dragOffsets[seph.id].vy = 0;
+    startSpring();
+  }
+
+  function moveDrag(canvasX, canvasY) {
+    if (!dragState.id) return false;
+    const rawDx = canvasX - dragState.startCanvasX;
+    const rawDy = canvasY - dragState.startCanvasY;
+    const RESIST = 0.28;
+    dragOffsets[dragState.id].dx = dragState.startDx + rawDx * RESIST;
+    dragOffsets[dragState.id].dy = dragState.startDy + rawDy * RESIST;
+    drawTree();
+    return true;
+  }
+
+  function endDrag() {
+    if (!dragState.id) return;
+    const o = dragOffsets[dragState.id];
+    o.vx = -o.dx * 0.06;
+    o.vy = -o.dy * 0.06;
+    dragState.id = null;
+    startSpring();
   }
 
   function drawTree() {
     if (!ctx) return;
-    const {w, h} = getCanvasSize();
-    canvas.width  = w;
-    canvas.height = h;
-    ctx.clearRect(0, 0, w, h);
+    const {cw, ch} = canvasDims();
+    canvas.width  = cw;
+    canvas.height = ch;
 
-    // dark bg
-    ctx.fillStyle = '#0c0a06';
-    ctx.fillRect(0, 0, w, h);
+    // Clear — transparent so stars canvas shows through
+    ctx.clearRect(0, 0, cw, ch);
 
-    // scanlines
-    for (let y = 0; y < h; y += 3) {
-      ctx.fillStyle = 'rgba(0,0,0,0.12)';
-      ctx.fillRect(0, y, w, 1);
+    // Scanlines over stars
+    for (let y = 0; y < ch; y += 3) {
+      ctx.fillStyle = 'rgba(0,0,0,0.08)';
+      ctx.fillRect(0, y, cw, 1);
     }
 
-    // Paths
-    ctx.save();
+    // ── Paths ──
     PATHS.forEach(([a, b]) => {
-      const [ax, ay] = sephPx(a);
-      const [bx, by] = sephPx(b);
-      const aActive = activeSephs.has(a) && activeSephs.has(b);
-      const hovered = (hoveredSeph === a || hoveredSeph === b);
+      const [ax, ay] = sephPos(a);
+      const [bx, by] = sephPos(b);
+      const bothActive   = activeSephs.has(a) && activeSephs.has(b);
+      const bothSelected = selectedSephs.includes(a) && selectedSephs.includes(b);
+      const eitherHov    = hoveredSeph === a || hoveredSeph === b;
       ctx.beginPath();
       ctx.moveTo(ax, ay);
       ctx.lineTo(bx, by);
-      if (aActive) {
-        ctx.strokeStyle = 'rgba(214,210,140,0.38)';
-        ctx.lineWidth = 1.5;
-      } else if (hovered) {
-        ctx.strokeStyle = 'rgba(200,195,140,0.22)';
-        ctx.lineWidth = 1;
+      if (bothSelected) {
+        ctx.strokeStyle = 'rgba(230,220,130,0.55)';
+        ctx.lineWidth   = 1.5;
+      } else if (bothActive) {
+        ctx.strokeStyle = 'rgba(214,210,140,0.35)';
+        ctx.lineWidth   = 1.5;
+      } else if (eitherHov) {
+        ctx.strokeStyle = 'rgba(200,190,120,0.22)';
+        ctx.lineWidth   = 1;
       } else {
-        ctx.strokeStyle = '#1e1c14';
-        ctx.lineWidth = 1;
+        ctx.strokeStyle = '#26231a';
+        ctx.lineWidth   = 1;
       }
       ctx.stroke();
     });
-    ctx.restore();
 
-    // R — circle radius proportional to canvas
-    const R = Math.max(7, Math.min(12, Math.round(w * 0.045)));
-
-    // Sephirot nodes
+    // ── Nodes ──
+    const R = nodeR();
     SEPHIROT.forEach(s => {
-      const [sx, sy] = sephPx(s.id);
-      const isActive  = activeSephs.has(s.id);
-      const isHovered = hoveredSeph === s.id;
-      const col = isActive ? s.col : (isHovered ? s.col : s.dimCol);
+      const [sx, sy] = sephPos(s.id);
+      const isActive   = activeSephs.has(s.id);
+      const isSelected = selectedSephs.includes(s.id);
+      const isHovered  = hoveredSeph === s.id;
+      const col = (isActive || isSelected || isHovered) ? s.col : s.dimCol;
 
-      // glow
+      // Glow halo
       if (isActive || isHovered) {
-        const g = ctx.createRadialGradient(sx, sy, 0, sx, sy, R * 3.5);
-        const gc = isActive ? s.col : '#a09060';
-        g.addColorStop(0, gc.replace('#', 'rgba(') + ',0.18)');
-        g.addColorStop(0, 'rgba(200,190,120,0.14)');
+        const g = ctx.createRadialGradient(sx, sy, 0, sx, sy, R * 3);
+        g.addColorStop(0, isActive ? 'rgba(220,210,140,0.22)' : 'rgba(180,170,110,0.12)');
         g.addColorStop(1, 'transparent');
         ctx.save();
-        ctx.beginPath(); ctx.arc(sx, sy, R * 3.5, 0, Math.PI*2);
+        ctx.beginPath(); ctx.arc(sx, sy, R * 3, 0, Math.PI*2);
         ctx.fillStyle = g; ctx.fill();
         ctx.restore();
       }
 
-      // circle (pixel: drawn as arc, 1px stroke)
+      // Circle
       ctx.save();
-      ctx.beginPath();
-      ctx.arc(sx, sy, R, 0, Math.PI * 2);
-      ctx.fillStyle = '#0c0a06';
-      ctx.fill();
+      ctx.beginPath(); ctx.arc(sx, sy, R, 0, Math.PI*2);
+      ctx.fillStyle = '#0c0a06'; ctx.fill();
       ctx.strokeStyle = col;
-      ctx.lineWidth = isActive ? 1.5 : 1;
+      ctx.lineWidth = isActive ? 2 : 1;
       ctx.stroke();
 
-      // inner dot when active
-      if (isActive) {
-        ctx.beginPath();
-        ctx.arc(sx, sy, Math.max(2, R * 0.35), 0, Math.PI * 2);
-        ctx.fillStyle = s.col;
-        ctx.fill();
+      // Inner fill dot (active note OR selected by user)
+      if (isActive || isSelected) {
+        ctx.beginPath(); ctx.arc(sx, sy, Math.max(2, R * 0.32), 0, Math.PI*2);
+        ctx.fillStyle = isSelected ? s.col : s.dimCol; ctx.fill();
+      }
+      // Selection ring (extra outer ring for user-selected)
+      if (isSelected) {
+        ctx.save();
+        ctx.beginPath(); ctx.arc(sx, sy, R + 3, 0, Math.PI*2);
+        ctx.strokeStyle = s.col + '88';
+        ctx.lineWidth = 1;
+        ctx.stroke();
+        ctx.restore();
       }
       ctx.restore();
 
-      // symbol inside
+      // Astrological symbol
       ctx.save();
-      const fsize = Math.max(8, Math.min(13, Math.round(R * 1.1)));
-      ctx.font = `${fsize}px serif`;
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
+      const fsz = Math.max(9, Math.min(14, Math.round(R * 1.05)));
+      ctx.font = `${fsz}px serif`;
+      ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
       ctx.fillStyle = col;
-      if (isActive) ctx.shadowColor = s.col, ctx.shadowBlur = 6;
+      if (isActive) { ctx.shadowColor = s.col; ctx.shadowBlur = 7; }
       ctx.fillText(s.symbol, sx, sy);
       ctx.restore();
 
-      // label below
+      // Label
       ctx.save();
-      const lblSize = Math.max(6, Math.min(9, Math.round(w * 0.032)));
-      ctx.font = `${lblSize}px "Fixedsys", monospace`;
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'top';
+      const lsz = Math.max(6, Math.min(8, Math.round(R * 0.65)));
+      ctx.font = `${lsz}px "Fixedsys", monospace`;
+      ctx.textAlign = 'center'; ctx.textBaseline = 'top';
       ctx.fillStyle = isActive ? '#D6D5A9' : '#3a3228';
-      if (isActive) ctx.shadowColor = '#D6D5A9', ctx.shadowBlur = 4;
+      if (isActive) { ctx.shadowColor = '#D6D5A9'; ctx.shadowBlur = 4; }
       ctx.fillText(s.en.toUpperCase(), sx, sy + R + 3);
       ctx.restore();
     });
 
-    // pixel corners
+    // Pixel corner marks
     ctx.fillStyle = '#1a3018';
-    [[0,0,3,1],[0,0,1,3],[w-3,0,3,1],[w-1,0,1,3],
-     [0,h-1,3,1],[0,h-3,1,3],[w-3,h-1,3,1],[w-1,h-3,1,3]
-    ].forEach(([x,y,ww,hh]) => ctx.fillRect(x,y,ww,hh));
+    [[0,0,3,1],[0,0,1,3],[cw-3,0,3,1],[cw-1,0,1,3],
+     [0,ch-1,3,1],[0,ch-3,1,3],[cw-3,ch-1,3,1],[cw-1,ch-3,1,3]
+    ].forEach(([x,y,w,h]) => ctx.fillRect(x,y,w,h));
   }
 
   function setInfo(s) {
     if (!s) {
       infoSym.textContent   = '';
       infoName.textContent  = '';
-      infoTheme.textContent = 'SELECT A SEPHIRA';
-      infoCount.textContent = '';
+      infoTheme.textContent = selectedSephs.length ? selectedSephs.join(' · ') : 'SELECT A TAG';
+      infoCount.textContent = selectedSephs.length ? (() => {
+        const n = allNotes.filter(x => x.sephirot && selectedSephs.some(id => x.sephirot.includes(id))).length;
+        return n + (n === 1 ? ' note' : ' notes');
+      })() : '';
       return;
     }
     const count = allNotes.filter(n => n.sephirot && n.sephirot.includes(s.id)).length;
     infoSym.textContent   = s.symbol;
     infoName.textContent  = s.en.toUpperCase();
     infoTheme.textContent = s.theme;
-    infoCount.textContent = count + (count === 1 ? ' note' : ' notes');
+    infoCount.textContent = count + (count === 1 ? ' note' : ' notes') +
+      (selectedSephs.includes(s.id) ? '  ✓' : '');
   }
 
   function getSephAt(mx, my) {
-    const {w, h} = getCanvasSize();
-    const R = Math.max(7, Math.min(12, Math.round(w * 0.045)));
-    const hitR = R + 6;
+    const R = nodeR();
+    const hitR = R + 8;
     for (const s of SEPHIROT) {
-      const [sx, sy] = sephPx(s.id);
+      const [sx, sy] = sephPos(s.id);
       const dx = mx - sx, dy = my - sy;
       if (dx*dx + dy*dy <= hitR*hitR) return s;
     }
     return null;
   }
 
+  let mouseDownSeph = null;
+  let mouseDownX = 0, mouseDownY = 0;
+  let isDragging = false;
+  const DRAG_THRESHOLD = 4;
+
+  canvas.addEventListener('mousedown', e => {
+    const rect = canvas.getBoundingClientRect();
+    const mx = e.clientX - rect.left, my = e.clientY - rect.top;
+    const s = getSephAt(mx, my);
+    if (s) {
+      mouseDownSeph = s;
+      mouseDownX = mx; mouseDownY = my;
+      isDragging = false;
+      e.preventDefault();
+    }
+  });
+
   canvas.addEventListener('mousemove', e => {
     const rect = canvas.getBoundingClientRect();
-    const s = getSephAt(e.clientX - rect.left, e.clientY - rect.top);
+    const mx = e.clientX - rect.left, my = e.clientY - rect.top;
+
+    // Handle drag
+    if (mouseDownSeph) {
+      const dist = Math.hypot(mx - mouseDownX, my - mouseDownY);
+      if (!isDragging && dist > DRAG_THRESHOLD) {
+        isDragging = true;
+        beginDrag(mouseDownSeph, mouseDownX, mouseDownY);
+      }
+      if (isDragging) {
+        moveDrag(mx, my);
+        canvas.style.cursor = 'grabbing';
+        return;
+      }
+    }
+
+    // Normal hover
+    const s = getSephAt(mx, my);
     const newId = s ? s.id : null;
     if (newId !== hoveredSeph) {
       hoveredSeph = newId;
       setInfo(s || null);
       drawTree();
-      canvas.style.cursor = s ? 'pointer' : 'default';
+      canvas.style.cursor = s ? 'grab' : 'default';
     }
   });
 
+  canvas.addEventListener('mouseup', e => {
+    if (isDragging) {
+      endDrag();
+      isDragging = false;
+      mouseDownSeph = null;
+      canvas.style.cursor = 'default';
+      return;
+    }
+    // treat as click
+    if (mouseDownSeph) {
+      const rect = canvas.getBoundingClientRect();
+      handleSephClick(getSephAt(e.clientX - rect.left, e.clientY - rect.top));
+    }
+    mouseDownSeph = null;
+    isDragging = false;
+  });
+
   canvas.addEventListener('mouseleave', () => {
+    if (isDragging) { endDrag(); isDragging = false; }
+    mouseDownSeph = null;
     hoveredSeph = null;
-    setInfo(null);
+    const last = selectedSephs.length ? SEPHIROT.find(s => s.id === selectedSephs[selectedSephs.length-1]) : null;
+    setInfo(last || null);
     drawTree();
+    canvas.style.cursor = 'default';
   });
 
-  canvas.addEventListener('click', e => {
-    const rect = canvas.getBoundingClientRect();
-    const s = getSephAt(e.clientX - rect.left, e.clientY - rect.top);
+  function handleSephClick(s) {
     if (!s) return;
-    // filter feed by this sephira
-    const filtered = allNotes.filter(n => n.sephirot && n.sephirot.includes(s.id));
-    showFeed(filtered, s.en);
-  });
+    const idx = selectedSephs.indexOf(s.id);
+    if (idx !== -1) {
+      selectedSephs.splice(idx, 1);
+    } else {
+      if (selectedSephs.length >= 3) selectedSephs.shift();
+      selectedSephs.push(s.id);
+    }
+    drawTree();
+    applyTreeFilter();
+    // update bars — clear when no note open
+    hideBars();
+  }
 
-  // Touch support
+  function applyTreeFilter() {
+    if (selectedSephs.length === 0) {
+      showFeed(allNotes, null);
+      return;
+    }
+    // notes that match ANY of selected (union)
+    const filtered = allNotes.filter(n =>
+      n.sephirot && selectedSephs.some(id => n.sephirot.includes(id))
+    );
+    const label = selectedSephs.join(' · ');
+    showFeed(filtered, label);
+  }
+
+  function clearTreeSelection() {
+    selectedSephs = [];
+    drawTree();
+  }
+
+  // (click handled in mouseup above)
+
+  // Touch support with drag
+  let touchDownSeph = null;
+  let touchDownX = 0, touchDownY = 0;
+  let touchDragging = false;
+
+  canvas.addEventListener('touchstart', e => {
+    const rect = canvas.getBoundingClientRect();
+    const t = e.touches[0];
+    const mx = t.clientX - rect.left, my = t.clientY - rect.top;
+    const s = getSephAt(mx, my);
+    if (s) {
+      touchDownSeph = s;
+      touchDownX = mx; touchDownY = my;
+      touchDragging = false;
+      e.preventDefault();
+    }
+  }, {passive: false});
+
+  canvas.addEventListener('touchmove', e => {
+    if (!touchDownSeph) return;
+    const rect = canvas.getBoundingClientRect();
+    const t = e.touches[0];
+    const mx = t.clientX - rect.left, my = t.clientY - rect.top;
+    const dist = Math.hypot(mx - touchDownX, my - touchDownY);
+    if (!touchDragging && dist > DRAG_THRESHOLD) {
+      touchDragging = true;
+      beginDrag(touchDownSeph, touchDownX, touchDownY);
+    }
+    if (touchDragging) {
+      moveDrag(mx, my);
+      e.preventDefault();
+    }
+  }, {passive: false});
+
   canvas.addEventListener('touchend', e => {
-    const rect = canvas.getBoundingClientRect();
-    const t = e.changedTouches[0];
-    const s = getSephAt(t.clientX - rect.left, t.clientY - rect.top);
-    if (!s) return;
-    const filtered = allNotes.filter(n => n.sephirot && n.sephirot.includes(s.id));
-    showFeed(filtered, s.en);
+    if (touchDragging) {
+      endDrag();
+      touchDragging = false;
+      touchDownSeph = null;
+      return;
+    }
+    if (touchDownSeph) {
+      const rect = canvas.getBoundingClientRect();
+      const t = e.changedTouches[0];
+      handleSephClick(getSephAt(t.clientX - rect.left, t.clientY - rect.top));
+    }
+    touchDownSeph = null;
+    touchDragging = false;
   }, {passive: true});
+
+  // ── Weight bars ──
+  const treeBars   = document.getElementById('treeBars');
+  const treeInfoEl = document.getElementById('treeInfo');
+  const barRows    = [0,1,2].map(i => ({
+    row:   document.getElementById('treeBar'+i),
+    label: document.getElementById('treeBarLabel'+i),
+    fill:  document.getElementById('treeBarFill'+i),
+  }));
+
+  function showBars(note) {
+    if (!note || !note.weights) { hideBars(); return; }
+    const entries = Object.entries(note.weights);
+    treeBars.style.display = 'flex';
+    treeInfoEl.classList.add('expanded');
+    barRows.forEach((b, i) => {
+      if (i < entries.length) {
+        const [seph, val] = entries[i];
+        b.row.style.display = 'flex';
+        b.label.textContent = seph.toUpperCase();
+        requestAnimationFrame(() => { b.fill.style.width = val + '%'; });
+      } else {
+        b.row.style.display = 'none';
+        b.fill.style.width = '0%';
+      }
+    });
+  }
+
+  function hideBars() {
+    treeBars.style.display = 'none';
+    treeInfoEl.classList.remove('expanded');
+    barRows.forEach(b => { b.fill.style.width = '0%'; });
+  }
+
+  // ── Stars background for tree ──
+  const starsCvTree = document.getElementById('treeStars');
+  let treeStarCtx, treeStars = [], treeStarT = 0;
+  let treeStarAnim = null;
+
+  function initTreeStars() {
+    treeStarCtx = starsCvTree.getContext('2d');
+    const w = treePanel.clientWidth  || 200;
+    const h = treePanel.clientHeight || 400;
+    starsCvTree.width = w; starsCvTree.height = h;
+    treeStars = Array.from({length: 90}, () => ({
+      x: Math.random() * w, y: Math.random() * h,
+      size: Math.random() < 0.12 ? 2 : 1,
+      bright: Math.random(),
+      phase: Math.random() * 1000,
+      speed: 0.2 + Math.random() * 0.8,
+    }));
+  }
+
+  function drawTreeStars() {
+    if (!treeStarCtx) return;
+    const w = starsCvTree.width, h = starsCvTree.height;
+    treeStarCtx.fillStyle = '#0c0a06';
+    treeStarCtx.fillRect(0, 0, w, h);
+    treeStars.forEach(s => {
+      const flicker = Math.sin(treeStarT * s.speed + s.phase) > 0.55 ? 0.35 : 1.0;
+      const alpha = (0.3 + s.bright * 0.65) * flicker;
+      const hue = s.bright > 0.8 ? 'rgba(214,213,200,' : s.bright < 0.2 ? 'rgba(180,190,214,' : 'rgba(200,195,170,';
+      treeStarCtx.fillStyle = hue + alpha + ')';
+      treeStarCtx.fillRect(Math.floor(s.x), Math.floor(s.y), s.size, s.size);
+    });
+    treeStarT += 0.015;
+    treeStarAnim = requestAnimationFrame(drawTreeStars);
+  }
+
+  function stopTreeStars() {
+    if (treeStarAnim) { cancelAnimationFrame(treeStarAnim); treeStarAnim = null; }
+  }
 
   function openTree() {
     treeVisible = true;
@@ -1838,12 +2371,35 @@ function initGraph() {
     treePanel.classList.add('open');
     flist.style.display = 'none';
     ctx = canvas.getContext('2d');
-    requestAnimationFrame(() => { drawTree(); setInfo(null); });
-    window.addEventListener('resize', drawTree);
+
+    function doInitDraw() {
+      initTreeStars();
+      drawTreeStars();
+      drawTree();
+      setInfo(null);
+    }
+
+    // Fire at multiple intervals — layout can settle at different points on mobile/desktop
+    requestAnimationFrame(() => requestAnimationFrame(doInitDraw));
+    setTimeout(doInitDraw, 80);
+    setTimeout(doInitDraw, 180);
+    setTimeout(doInitDraw, 350);
+
+    function onResize() { if (treeVisible) { initTreeStars(); drawTree(); } }
+    window.addEventListener('resize', onResize);
+    // store cleanup ref
+    openTree._resizeFn = onResize;
   }
 
   function closeTree() {
     treeVisible = false;
+    selectedSephs = [];
+    // Reset all drag offsets
+    SEPHIROT.forEach(s => { dragOffsets[s.id] = {dx:0, dy:0, vx:0, vy:0}; });
+    if (springAnimId) { cancelAnimationFrame(springAnimId); springAnimId = null; }
+    dragState.id = null;
+    hideBars();
+    stopTreeStars();
     treeBtn.classList.remove('open');
     treePanel.classList.remove('open');
     treePanel.style.display = 'none';
@@ -1875,10 +2431,10 @@ function initGraph() {
     }
   });
 
-  // exposed: call this when opening a note to update tree highlights
-  window._treeSetNote = function(sephirotArr) {
+  window._treeSetNote = function(sephirotArr, note) {
     activeSephs = new Set(sephirotArr || []);
-    if (treeVisible) drawTree();
+    if (treeVisible) { drawTree(); showBars(note); }
+    else { hideBars(); }
   };
 })();
 
