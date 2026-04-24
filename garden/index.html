@@ -668,6 +668,76 @@ canvas#graphCanvas {
 .si { font-family: 'Fixedsys', monospace; font-size: 8px; color: #7a6a52; opacity: .55; letter-spacing: .08em; text-transform: uppercase; }
 .sdv { width: 1px; height: 7px; background: rgba(93,81,67,.3); }
 
+/* ── Tree of Life panel ── */
+#treePanel {
+  position: absolute; inset: 0; z-index: 10;
+  background: #0c0a06;
+  display: none; overflow: hidden;
+  flex-direction: column;
+}
+#treeCanvas {
+  display: block;
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: calc(100% - 54px);
+  image-rendering: pixelated;
+  cursor: default;
+}
+#treeInfo {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 54px;
+  background: #0f0d08;
+  border-top: 1px solid #2a2518;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 14px;
+  font-family: 'Fixedsys', monospace;
+  overflow: hidden;
+}
+#treeInfoSymbol {
+  font-size: 20px;
+  color: #D6D5A9;
+  text-shadow: 0 0 8px #D6D5A9;
+  width: 24px;
+  text-align: center;
+  flex-shrink: 0;
+  line-height: 1;
+}
+#treeInfoName {
+  font-size: 11px;
+  color: #D6D5A9;
+  text-shadow: 0 0 6px #D6D5A9;
+  letter-spacing: .08em;
+  font-weight: bold;
+  flex-shrink: 0;
+  min-width: 60px;
+}
+#treeInfoTheme {
+  font-size: 8px;
+  color: #7a6a52;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+#treeInfoCount {
+  font-size: 8px;
+  color: #7a6a52;
+  letter-spacing: .1em;
+  flex-shrink: 0;
+}
+.treeBtn.open {
+  border-top: 2px solid #3d3830 !important;
+  border-left: 2px solid #3d3830 !important;
+  border-right: 2px solid #d4cdc4 !important;
+  border-bottom: 2px solid #d4cdc4 !important;
+  box-shadow: inset 1px 1px 0 #7a7068 !important;
+}
+
 @media (max-width: 600px) {
   .page-main { position: fixed; }
   .desktop { flex-direction: column; height: auto; overflow-y: auto; padding: 8px; padding-bottom: calc(12px + env(safe-area-inset-bottom, 16px)); }
@@ -677,7 +747,6 @@ canvas#graphCanvas {
   .lbody { height: auto; max-height: 220px; }
   .flist { max-height: 200px; }
   .rscroll { min-height: 38vh; }
-  /* graph open on mobile — take 55vh, push right panel to remainder */
   .win-l.graph-open-mobile { height: 55vh; min-height: 260px; max-height: none; }
   .win-l.graph-open-mobile .lbody { max-height: none; height: 100%; }
   .win-l.graph-open-mobile ~ .win-r { min-height: 35vh; }
@@ -715,6 +784,48 @@ canvas#graphCanvas {
           </div>
         </div>
       </div>
+      <div class="pill-divider"></div>
+      <button class="gknob-btn treeBtn" id="treeBtn" aria-label="Tree of Life" style="padding:0 8px;">
+        <svg width="18" height="22" viewBox="0 0 18 22" fill="none" xmlns="http://www.w3.org/2000/svg" style="image-rendering:pixelated;shape-rendering:crispEdges">
+          <!-- Kether -->
+          <rect x="8" y="0" width="2" height="2" fill="#D6D5A9"/>
+          <!-- Chokmah -->
+          <rect x="2" y="3" width="2" height="2" fill="#D6D5A9"/>
+          <!-- Binah -->
+          <rect x="14" y="3" width="2" height="2" fill="#D6D5A9"/>
+          <!-- Chesed -->
+          <rect x="2" y="9" width="2" height="2" fill="#7a6a52"/>
+          <!-- Geburah -->
+          <rect x="14" y="9" width="2" height="2" fill="#7a6a52"/>
+          <!-- Tifaret -->
+          <rect x="8" y="10" width="2" height="2" fill="#D6D5A9"/>
+          <!-- Netzach -->
+          <rect x="2" y="15" width="2" height="2" fill="#7a6a52"/>
+          <!-- Hod -->
+          <rect x="14" y="15" width="2" height="2" fill="#7a6a52"/>
+          <!-- Yesod -->
+          <rect x="8" y="16" width="2" height="2" fill="#D6D5A9"/>
+          <!-- Malkuth -->
+          <rect x="8" y="20" width="2" height="2" fill="#7a6a52"/>
+          <!-- paths: vertical spine -->
+          <line x1="9" y1="2" x2="9" y2="10" stroke="#3a3228" stroke-width="1"/>
+          <line x1="9" y1="12" x2="9" y2="16" stroke="#3a3228" stroke-width="1"/>
+          <line x1="9" y1="18" x2="9" y2="20" stroke="#3a3228" stroke-width="1"/>
+          <!-- Kether to Chokmah/Binah -->
+          <line x1="9" y1="1" x2="3" y2="4" stroke="#3a3228" stroke-width="1"/>
+          <line x1="9" y1="1" x2="15" y2="4" stroke="#3a3228" stroke-width="1"/>
+          <!-- pillars -->
+          <line x1="3" y1="5" x2="3" y2="16" stroke="#3a3228" stroke-width="1"/>
+          <line x1="15" y1="5" x2="15" y2="16" stroke="#3a3228" stroke-width="1"/>
+          <!-- cross connections -->
+          <line x1="4" y1="10" x2="8" y2="11" stroke="#3a3228" stroke-width="1"/>
+          <line x1="14" y1="10" x2="10" y2="11" stroke="#3a3228" stroke-width="1"/>
+          <line x1="4" y1="16" x2="8" y2="17" stroke="#3a3228" stroke-width="1"/>
+          <line x1="14" y1="16" x2="10" y2="17" stroke="#3a3228" stroke-width="1"/>
+          <!-- Yesod to Malkuth -->
+          <line x1="9" y1="18" x2="9" y2="20" stroke="#3a3228" stroke-width="1"/>
+        </svg>
+      </button>
       <div class="pill-divider"></div>
       <div class="burger-wrap" id="gknobWrap">
         <button class="gknob-btn" id="gknobBtn" aria-label="Graph view">
@@ -802,6 +913,15 @@ canvas#graphCanvas {
           <div class="graph-wrap" id="graphWrap">
             <canvas id="starsBg"></canvas>
             <canvas id="graphCanvas"></canvas>
+          </div>
+        </div>
+        <div class="graph-panel" id="treePanel">
+          <canvas id="treeCanvas"></canvas>
+          <div id="treeInfo">
+            <span id="treeInfoSymbol"></span>
+            <span id="treeInfoName"></span>
+            <span id="treeInfoTheme"></span>
+            <span id="treeInfoCount"></span>
           </div>
         </div>
       </div>
@@ -897,7 +1017,7 @@ const vault = [
     folder: "Esoterica",
     notes: [
       {
-        id:1, date:"2026-04-22", tags:["theurgy","plato"],
+        id:1, date:"2026-04-22", tags:["theurgy","plato"], sephirot:["Tifaret","Binah"],
         title:"On Theurgy and the Purpose of Prayer",
         body:`Iamblichus says that prayer works not because the gods learn of our desire. The gods know everything. Prayer works because it changes the one who prays.
 
@@ -912,7 +1032,7 @@ You bring your structure into alignment with that which you address. And in that
 The hexagram ritual works precisely this way. Not explanation first — a form that does something to you when you work with it.`
       },
       {
-        id:4, date:"2026-03-29", tags:["symbols","jung"],
+        id:4, date:"2026-03-29", tags:["symbols","jung"], sephirot:["Yesod","Hod"],
         title:"The Symbol as Entrance, Not Sign",
         body:`Jung distinguished sign from symbol. A sign points to something known. A symbol points to something that cannot be expressed otherwise.
 
@@ -926,7 +1046,7 @@ Symbols do not explain — they open.`
     folder: "Tarot",
     notes: [
       {
-        id:2, date:"2026-04-18", tags:["arcana"],
+        id:2, date:"2026-04-18", tags:["arcana"], sephirot:["Hod","Tifaret"],
         title:"The Magician: Will as Channel",
         body:`The Magician is the first arcana after the Fool. The Fool is potential without form. The Magician is the moment when potential takes up its tools.
 
@@ -944,7 +1064,7 @@ This relieves some of the anxiety around "creation." Not to invent — but to be
     folder: "Philosophy",
     notes: [
       {
-        id:3, date:"2026-04-10", tags:["plato","media"],
+        id:3, date:"2026-04-10", tags:["plato","media"], sephirot:["Yesod","Malkuth"],
         title:"Plato's Cave and Screens",
         body:`It is common to read the cave as a metaphor for ignorance. But the prisoners are not foolish — they are rational. They study shadows, build theories, predict the next shadow. The problem is not the intellect — it is aimed in the wrong direction.
 
@@ -953,7 +1073,7 @@ Metrics, reach, algorithms — these are shadows on the wall. One can reason abo
 Reality is what happens when you paint.`
       },
       {
-        id:5, date:"2026-03-15", tags:["archaic"],
+        id:5, date:"2026-03-15", tags:["archaic"], sephirot:["Netzach","Malkuth"],
         title:"The Archaic as Living",
         body:`The archaic is not chronology. It is a layer of reality.
 
@@ -1010,6 +1130,7 @@ function setRPath(cur) {
 }
 
 function showFeed(notes, folderName) {
+  if (window._treeSetNote) window._treeSetNote([]);
   const sorted = [...notes].sort((a,b) => b.date.localeCompare(a.date));
   const lbl = folderName || '';
   setRPath(lbl ? lbl.toLowerCase() + '/' : '');
@@ -1030,6 +1151,7 @@ function showFeed(notes, folderName) {
 }
 
 function openNote(n) {
+  if (window._treeSetNote) window._treeSetNote(n.sephirot || []);
   setRPath(n.folder.toLowerCase() + '/' + n.title.toLowerCase().replace(/\s+/g,'-').replace(/[^a-z0-9\-]/g,'') + '.md');
   document.getElementById('s1').textContent = n.folder.toUpperCase();
   document.getElementById('s2').textContent = n.tags.join(' · ');
@@ -1443,6 +1565,322 @@ function initGraph() {
     if (window._graphSyncKnob) window._graphSyncKnob(newZoom);
   }, {passive:false});
 }
+
+// ── Tree of Life ──
+(function() {
+  const SEPHIROT = [
+    { id:'Kether',  symbol:'♅', en:'Kether',  theme:'Unity / Source',       col:'#e8e4c0', dimCol:'#6a6440' },
+    { id:'Chokmah', symbol:'⛢', en:'Chokmah', theme:'Vision / Flash',        col:'#c8d4e0', dimCol:'#485870' },
+    { id:'Binah',   symbol:'♄', en:'Binah',   theme:'Understanding / Form',  col:'#b0a8c8', dimCol:'#483858' },
+    { id:'Chesed',  symbol:'♃', en:'Chesed',  theme:'Grace / Expansion',     col:'#b8cce0', dimCol:'#3a5870' },
+    { id:'Geburah', symbol:'♂', en:'Geburah', theme:'Strength / Will',       col:'#d8a8a0', dimCol:'#683028' },
+    { id:'Tifaret', symbol:'☉', en:'Tifaret', theme:'Beauty / Heart',        col:'#e8d890', dimCol:'#786840' },
+    { id:'Netzach', symbol:'♀', en:'Netzach', theme:'Desire / Nature',       col:'#a8d0a0', dimCol:'#385830' },
+    { id:'Hod',     symbol:'☿', en:'Hod',     theme:'Intellect / Language',  col:'#e0d0a0', dimCol:'#706030' },
+    { id:'Yesod',   symbol:'☽', en:'Yesod',   theme:'Dream / Image',         col:'#c0c8e0', dimCol:'#484870' },
+    { id:'Malkuth', symbol:'⊕', en:'Malkuth', theme:'Matter / Body',         col:'#b8b0a0', dimCol:'#504840' },
+  ];
+
+  // Canonical Tree of Life positions (normalised 0-1)
+  const POS = {
+    Kether:  [0.500, 0.055],
+    Chokmah: [0.235, 0.160],
+    Binah:   [0.765, 0.160],
+    Chesed:  [0.200, 0.370],
+    Geburah: [0.800, 0.370],
+    Tifaret: [0.500, 0.480],
+    Netzach: [0.200, 0.630],
+    Hod:     [0.800, 0.630],
+    Yesod:   [0.500, 0.750],
+    Malkuth: [0.500, 0.920],
+  };
+
+  // 22 paths (Tarot = 22 letters)
+  const PATHS = [
+    ['Kether','Chokmah'],['Kether','Binah'],['Kether','Tifaret'],
+    ['Chokmah','Binah'],['Chokmah','Chesed'],['Chokmah','Tifaret'],
+    ['Binah','Geburah'],['Binah','Tifaret'],
+    ['Chesed','Geburah'],['Chesed','Tifaret'],['Chesed','Netzach'],
+    ['Geburah','Tifaret'],['Geburah','Hod'],
+    ['Tifaret','Netzach'],['Tifaret','Hod'],['Tifaret','Yesod'],
+    ['Netzach','Hod'],['Netzach','Yesod'],['Netzach','Malkuth'],
+    ['Hod','Yesod'],['Hod','Malkuth'],
+    ['Yesod','Malkuth'],
+  ];
+
+  const treeBtn   = document.getElementById('treeBtn');
+  const treePanel = document.getElementById('treePanel');
+  const canvas    = document.getElementById('treeCanvas');
+  const infoSym   = document.getElementById('treeInfoSymbol');
+  const infoName  = document.getElementById('treeInfoName');
+  const infoTheme = document.getElementById('treeInfoTheme');
+  const infoCount = document.getElementById('treeInfoCount');
+  const flist     = document.getElementById('flist');
+  const desktop   = document.querySelector('.desktop');
+  const winL      = document.querySelector('.win-l');
+  const lbody     = document.querySelector('.lbody');
+  const graphPanel= document.getElementById('graphPanel');
+  const graphBtn  = document.getElementById('gknobBtn');
+  const crtEl     = document.getElementById('crtOverlay');
+
+  let treeVisible = false;
+  let hoveredSeph = null;
+  let activeSephs = new Set(); // sephirot of currently open note
+  let ctx;
+
+  function fireCRTTree() {
+    crtEl.classList.remove('firing');
+    void crtEl.offsetWidth;
+    crtEl.classList.add('firing');
+    setTimeout(() => crtEl.classList.remove('firing'), 420);
+  }
+
+  function getCanvasSize() {
+    const infoH = 54;
+    return {
+      w: canvas.parentElement.clientWidth  || 200,
+      h: (canvas.parentElement.clientHeight || 300) - infoH,
+    };
+  }
+
+  function sephPx(id) {
+    const {w, h} = getCanvasSize();
+    const [nx, ny] = POS[id];
+    return [Math.round(nx * w), Math.round(ny * h)];
+  }
+
+  function drawTree() {
+    if (!ctx) return;
+    const {w, h} = getCanvasSize();
+    canvas.width  = w;
+    canvas.height = h;
+    ctx.clearRect(0, 0, w, h);
+
+    // dark bg
+    ctx.fillStyle = '#0c0a06';
+    ctx.fillRect(0, 0, w, h);
+
+    // scanlines
+    for (let y = 0; y < h; y += 3) {
+      ctx.fillStyle = 'rgba(0,0,0,0.12)';
+      ctx.fillRect(0, y, w, 1);
+    }
+
+    // Paths
+    ctx.save();
+    PATHS.forEach(([a, b]) => {
+      const [ax, ay] = sephPx(a);
+      const [bx, by] = sephPx(b);
+      const aActive = activeSephs.has(a) && activeSephs.has(b);
+      const hovered = (hoveredSeph === a || hoveredSeph === b);
+      ctx.beginPath();
+      ctx.moveTo(ax, ay);
+      ctx.lineTo(bx, by);
+      if (aActive) {
+        ctx.strokeStyle = 'rgba(214,210,140,0.38)';
+        ctx.lineWidth = 1.5;
+      } else if (hovered) {
+        ctx.strokeStyle = 'rgba(200,195,140,0.22)';
+        ctx.lineWidth = 1;
+      } else {
+        ctx.strokeStyle = '#1e1c14';
+        ctx.lineWidth = 1;
+      }
+      ctx.stroke();
+    });
+    ctx.restore();
+
+    // R — circle radius proportional to canvas
+    const R = Math.max(7, Math.min(12, Math.round(w * 0.045)));
+
+    // Sephirot nodes
+    SEPHIROT.forEach(s => {
+      const [sx, sy] = sephPx(s.id);
+      const isActive  = activeSephs.has(s.id);
+      const isHovered = hoveredSeph === s.id;
+      const col = isActive ? s.col : (isHovered ? s.col : s.dimCol);
+
+      // glow
+      if (isActive || isHovered) {
+        const g = ctx.createRadialGradient(sx, sy, 0, sx, sy, R * 3.5);
+        const gc = isActive ? s.col : '#a09060';
+        g.addColorStop(0, gc.replace('#', 'rgba(') + ',0.18)');
+        g.addColorStop(0, 'rgba(200,190,120,0.14)');
+        g.addColorStop(1, 'transparent');
+        ctx.save();
+        ctx.beginPath(); ctx.arc(sx, sy, R * 3.5, 0, Math.PI*2);
+        ctx.fillStyle = g; ctx.fill();
+        ctx.restore();
+      }
+
+      // circle (pixel: drawn as arc, 1px stroke)
+      ctx.save();
+      ctx.beginPath();
+      ctx.arc(sx, sy, R, 0, Math.PI * 2);
+      ctx.fillStyle = '#0c0a06';
+      ctx.fill();
+      ctx.strokeStyle = col;
+      ctx.lineWidth = isActive ? 1.5 : 1;
+      ctx.stroke();
+
+      // inner dot when active
+      if (isActive) {
+        ctx.beginPath();
+        ctx.arc(sx, sy, Math.max(2, R * 0.35), 0, Math.PI * 2);
+        ctx.fillStyle = s.col;
+        ctx.fill();
+      }
+      ctx.restore();
+
+      // symbol inside
+      ctx.save();
+      const fsize = Math.max(8, Math.min(13, Math.round(R * 1.1)));
+      ctx.font = `${fsize}px serif`;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillStyle = col;
+      if (isActive) ctx.shadowColor = s.col, ctx.shadowBlur = 6;
+      ctx.fillText(s.symbol, sx, sy);
+      ctx.restore();
+
+      // label below
+      ctx.save();
+      const lblSize = Math.max(6, Math.min(9, Math.round(w * 0.032)));
+      ctx.font = `${lblSize}px "Fixedsys", monospace`;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'top';
+      ctx.fillStyle = isActive ? '#D6D5A9' : '#3a3228';
+      if (isActive) ctx.shadowColor = '#D6D5A9', ctx.shadowBlur = 4;
+      ctx.fillText(s.en.toUpperCase(), sx, sy + R + 3);
+      ctx.restore();
+    });
+
+    // pixel corners
+    ctx.fillStyle = '#1a3018';
+    [[0,0,3,1],[0,0,1,3],[w-3,0,3,1],[w-1,0,1,3],
+     [0,h-1,3,1],[0,h-3,1,3],[w-3,h-1,3,1],[w-1,h-3,1,3]
+    ].forEach(([x,y,ww,hh]) => ctx.fillRect(x,y,ww,hh));
+  }
+
+  function setInfo(s) {
+    if (!s) {
+      infoSym.textContent   = '';
+      infoName.textContent  = '';
+      infoTheme.textContent = 'SELECT A SEPHIRA';
+      infoCount.textContent = '';
+      return;
+    }
+    const count = allNotes.filter(n => n.sephirot && n.sephirot.includes(s.id)).length;
+    infoSym.textContent   = s.symbol;
+    infoName.textContent  = s.en.toUpperCase();
+    infoTheme.textContent = s.theme;
+    infoCount.textContent = count + (count === 1 ? ' note' : ' notes');
+  }
+
+  function getSephAt(mx, my) {
+    const {w, h} = getCanvasSize();
+    const R = Math.max(7, Math.min(12, Math.round(w * 0.045)));
+    const hitR = R + 6;
+    for (const s of SEPHIROT) {
+      const [sx, sy] = sephPx(s.id);
+      const dx = mx - sx, dy = my - sy;
+      if (dx*dx + dy*dy <= hitR*hitR) return s;
+    }
+    return null;
+  }
+
+  canvas.addEventListener('mousemove', e => {
+    const rect = canvas.getBoundingClientRect();
+    const s = getSephAt(e.clientX - rect.left, e.clientY - rect.top);
+    const newId = s ? s.id : null;
+    if (newId !== hoveredSeph) {
+      hoveredSeph = newId;
+      setInfo(s || null);
+      drawTree();
+      canvas.style.cursor = s ? 'pointer' : 'default';
+    }
+  });
+
+  canvas.addEventListener('mouseleave', () => {
+    hoveredSeph = null;
+    setInfo(null);
+    drawTree();
+  });
+
+  canvas.addEventListener('click', e => {
+    const rect = canvas.getBoundingClientRect();
+    const s = getSephAt(e.clientX - rect.left, e.clientY - rect.top);
+    if (!s) return;
+    // filter feed by this sephira
+    const filtered = allNotes.filter(n => n.sephirot && n.sephirot.includes(s.id));
+    showFeed(filtered, s.en);
+  });
+
+  // Touch support
+  canvas.addEventListener('touchend', e => {
+    const rect = canvas.getBoundingClientRect();
+    const t = e.changedTouches[0];
+    const s = getSephAt(t.clientX - rect.left, t.clientY - rect.top);
+    if (!s) return;
+    const filtered = allNotes.filter(n => n.sephirot && n.sephirot.includes(s.id));
+    showFeed(filtered, s.en);
+  }, {passive: true});
+
+  function openTree() {
+    treeVisible = true;
+    treeBtn.classList.add('open');
+    fireCRTTree();
+    lbody.classList.add('graph-panel-open');
+    desktop.classList.add('graph-active');
+    winL.classList.add('graph-open-mobile');
+    treePanel.style.display = 'flex';
+    treePanel.style.flexDirection = 'column';
+    treePanel.classList.add('open');
+    flist.style.display = 'none';
+    ctx = canvas.getContext('2d');
+    requestAnimationFrame(() => { drawTree(); setInfo(null); });
+    window.addEventListener('resize', drawTree);
+  }
+
+  function closeTree() {
+    treeVisible = false;
+    treeBtn.classList.remove('open');
+    treePanel.classList.remove('open');
+    treePanel.style.display = 'none';
+    flist.style.display = '';
+    desktop.classList.remove('graph-active');
+    winL.classList.remove('graph-open-mobile');
+    lbody.classList.remove('graph-panel-open');
+    window.removeEventListener('resize', drawTree);
+  }
+
+  window._registerPopup('tree', () => { if (treeVisible) closeTree(); });
+
+  treeBtn.addEventListener('click', e => {
+    e.stopPropagation();
+    if (treeVisible) {
+      closeTree();
+    } else {
+      window._closeAllPopups('tree');
+      // close graph if open
+      if (graphPanel.classList.contains('open')) {
+        graphPanel.classList.remove('open');
+        flist.style.display = '';
+        desktop.classList.remove('graph-active');
+        winL.classList.remove('graph-open-mobile');
+        lbody.classList.remove('graph-panel-open');
+        graphBtn.classList.remove('open');
+      }
+      openTree();
+    }
+  });
+
+  // exposed: call this when opening a note to update tree highlights
+  window._treeSetNote = function(sephirotArr) {
+    activeSephs = new Set(sephirotArr || []);
+    if (treeVisible) drawTree();
+  };
+})();
 
 document.getElementById('s1').textContent = 'GARDEN';
 
