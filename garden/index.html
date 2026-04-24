@@ -672,13 +672,14 @@ canvas#graphCanvas {
   .desktop { flex-direction: column; height: auto; overflow-y: auto; padding: 8px; padding-bottom: calc(12px + env(safe-area-inset-bottom, 16px)); }
   .win { width: 100% !important; }
   .win-l { height: auto; flex-shrink: 0; }
-  .win-r { min-height: 55vh; flex: none; }
+  .win-r { min-height: 40vh; flex: none; }
   .lbody { height: auto; max-height: 220px; }
   .flist { max-height: 200px; }
-  .rscroll { min-height: 50vh; }
-  /* graph open on mobile — give win-l a real height so graph-panel (absolute) has something to fill */
-  .win-l.graph-open-mobile { height: 52vw; min-height: 200px; max-height: 320px; }
+  .rscroll { min-height: 38vh; }
+  /* graph open on mobile — take 55vh, push right panel to remainder */
+  .win-l.graph-open-mobile { height: 55vh; min-height: 260px; max-height: none; }
   .win-l.graph-open-mobile .lbody { max-height: none; height: 100%; }
+  .win-l.graph-open-mobile ~ .win-r { min-height: 35vh; }
 }
 </style>
 </head>
@@ -1128,9 +1129,15 @@ function md(t) {
     panel.classList.add('open');
     flist.style.display = 'none';
     popup.classList.add('open');
-    // sync thumb now that popup is visible and slider has width
     requestAnimationFrame(() => applyKnob());
     initGraph();
+    // Force canvas resize after layout settles — critical on mobile
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      if (window._graphForceResize) window._graphForceResize();
+    }));
+    setTimeout(() => {
+      if (window._graphForceResize) window._graphForceResize();
+    }, 120);
   }
 
   function closeGraph() {
@@ -1416,6 +1423,7 @@ function initGraph() {
   resize();
   tick();
   window.addEventListener('resize', resize);
+  window._graphForceResize = resize;
 
   // ── Pan: touch (1 finger) + mouse drag ──
   let panning = false, px0 = 0, py0 = 0, panX0 = 0, panY0 = 0;
