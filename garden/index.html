@@ -825,6 +825,13 @@ canvas#graphCanvas {
 </div>
 
 <script>
+// ── Global popup mutex — one popup open at a time ──
+window._popups = {};
+window._registerPopup = function(name, closeFn) { window._popups[name] = closeFn; };
+window._closeAllPopups = function(except) {
+  Object.entries(window._popups).forEach(([k, fn]) => { if (k !== except) fn(); });
+};
+
 // ── Grain (identical to gallery) ──
 const grain = document.getElementById('grain');
 const gc = grain.getContext('2d');
@@ -855,11 +862,11 @@ const navOverlay = document.getElementById('navOverlay');
 swordBtn.addEventListener('click', e => {
   e.stopPropagation();
   const willOpen = !navOverlay.classList.contains('open');
-  if (willOpen) window._closeAllPopups && window._closeAllPopups('burger');
+  if (willOpen) window._closeAllPopups('burger');
   const open = navOverlay.classList.toggle('open');
   swordBtn.classList.toggle('open', open);
 });
-if (window._registerPopup) window._registerPopup('burger', () => {
+window._registerPopup('burger', () => {
   navOverlay.classList.remove('open');
   swordBtn.classList.remove('open');
 });
@@ -1080,7 +1087,6 @@ function md(t) {
   let zoomCur = ZOOM_DEFAULT;
 
   const btn    = document.getElementById('gknobBtn');
-  const knob   = document.getElementById('gknobKnob');
   const popup  = document.getElementById('gknobPopup');
   const slider = document.getElementById('gknobSlider');
   const thumb  = document.getElementById('gknobThumb');
@@ -1106,11 +1112,11 @@ function md(t) {
 
   function applyKnob() {
     const sliderW = slider.offsetWidth;
-    thumb.style.left = (zoomPct() * (sliderW - 10) + 5) + 'px';
+    if (sliderW > 0) thumb.style.left = (zoomPct() * (sliderW - 10) + 5) + 'px';
     if (window._graphSetZoom) window._graphSetZoom(zoomCur);
   }
 
-  applyKnob();
+  // Don't call applyKnob here — slider is hidden, offsetWidth=0
 
   function openGraph() {
     graphVisible = true;
@@ -1122,6 +1128,8 @@ function md(t) {
     panel.classList.add('open');
     flist.style.display = 'none';
     popup.classList.add('open');
+    // sync thumb now that popup is visible and slider has width
+    requestAnimationFrame(() => applyKnob());
     initGraph();
   }
 
@@ -1169,15 +1177,11 @@ function md(t) {
     if (!wrap.contains(e.target) && graphVisible) popup.classList.remove('open');
   });
 
-  // Expose initial zoom
   window._graphZoom = () => zoomCur;
   window._graphSyncKnob = function(newZoom) {
     zoomCur = Math.max(ZOOM_MIN, Math.min(ZOOM_MAX, newZoom));
     applyKnob();
   };
-
-  // Mutex: fsizeBtn closes graph popup when opened
-  window._closeGraphPopup = () => { if (graphVisible) popup.classList.remove('open'); };
 })();
 
 // ── Win95 Graph — pan/zoom, smooth labels ──
@@ -1481,13 +1485,6 @@ buildLeft();
 showFeed(allNotes, null);
 setRPath('');
 
-// ── Global popup mutex — one popup open at a time ──
-window._popups = {};
-window._registerPopup = function(name, closeFn) { window._popups[name] = closeFn; };
-window._closeAllPopups = function(except) {
-  Object.entries(window._popups).forEach(([k, fn]) => { if (k !== except) fn(); });
-};
-
 // ── Font size knob ──
 (function() {
   const MIN = 9, MAX = 15, DEFAULT = 11;
@@ -1548,28 +1545,22 @@ window._closeAllPopups = function(except) {
   if (!reader) return;
 
   function applyParallax() {
-    const scrollY = reader.scrollTop;
-    const cards = reader.querySelectorAll('.feed-card');
-    cards.forEach((card, i) => {
+    const cards = reader.querySelectorAll('.fe');
+    const readerRect = reader.getBoundingClientRect();
+    cards.forEach(card => {
       const rect = card.getBoundingClientRect();
-      const readerRect = reader.getBoundingClientRect();
-      const relY = rect.top - readerRect.top;
-      const centerOffset = relY - readerRect.height * 0.5;
-      // date/tags line moves a little faster than scroll
-      const tag = card.querySelector('.feed-meta');
-      if (tag) tag.style.transform = `translateY(${centerOffset * 0.04}px)`;
-      // title moves subtly opposite
-      const title = card.querySelector('.feed-title');
-      if (title) title.style.transform = `translateY(${centerOffset * -0.02}px)`;
-      // excerpt barely moves
-      const excerpt = card.querySelector('.feed-excerpt');
-      if (excerpt) excerpt.style.transform = `translateY(${centerOffset * 0.015}px)`;
+      const centerOffset = (rect.top - readerRect.top) - readerRect.height * 0.5;
+      const meta = card.querySelector('.fe-meta');
+      if (meta) meta.style.transform = `translateY(${centerOffset * 0.018}px)`;
+      const title = card.querySelector('.fe-title');
+      if (title) title.style.transform = `translateY(${centerOffset * -0.010}px)`;
+      const prev = card.querySelector('.fe-prev');
+      if (prev) prev.style.transform = `translateY(${centerOffset * 0.008}px)`;
     });
   }
 
   reader.addEventListener('scroll', applyParallax, {passive: true});
-  // re-apply when content changes (MutationObserver)
-  new MutationObserver(applyParallax).observe(reader, {childList: true, subtree: false});
+  new MutationObserver(applyParallax).observe(reader, {childList: true});
 })();
 </script>
 </body>
