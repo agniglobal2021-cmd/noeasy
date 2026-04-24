@@ -127,13 +127,15 @@ header > * { pointer-events: auto; }
 }
 
 .pill-center {
-  position: absolute; left: 50%; transform: translateX(-50%);
+  flex: 1; min-width: 0;
   display: flex; flex-direction: column; align-items: center; justify-content: center;
-  gap: 1px; pointer-events: none; user-select: none; white-space: nowrap;
+  gap: 1px; pointer-events: none; user-select: none;
+  overflow: hidden;
 }
 .pill-section {
   font-family: 'Alkhemikal', serif;
-  font-size: 19px; letter-spacing: 0.08em; opacity: 0.9; color: #000;
+  font-size: clamp(13px, 4vw, 19px); letter-spacing: 0.08em; opacity: 0.9; color: #000;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%;
 }
 
 .sword-btn {
@@ -363,7 +365,7 @@ canvas#graphCanvas {
   97%      { opacity: .9; }
   98%      { opacity: 1; }
 }
-.lbody * { animation: flicker 4s step-end infinite; }
+.lbody *:not(#crtOverlay) { animation: flicker 4s step-end infinite; }
 
 /* phosphor text-shadow blur */
 .folder-row, .note-row {
@@ -671,9 +673,12 @@ canvas#graphCanvas {
   .win { width: 100% !important; }
   .win-l { height: auto; flex-shrink: 0; }
   .win-r { min-height: 55vh; flex: none; }
-  .lbody { height: auto; max-height: 200px; }
-  .flist { max-height: 180px; }
+  .lbody { height: auto; max-height: 220px; }
+  .flist { max-height: 200px; }
   .rscroll { min-height: 50vh; }
+  /* graph view on mobile — give it real height */
+  .graph-panel-open .lbody { max-height: 55vw; min-height: 180px; }
+  .graph-panel-open .lbody .graph-panel { display: block; }
 }
 </style>
 </head>
@@ -691,7 +696,6 @@ canvas#graphCanvas {
       <span class="pill-center">
         <span class="pill-section">Digital Garden</span>
       </span>
-      <div style="flex:1"></div>
       <div class="pill-divider"></div>
       <div class="burger-wrap" id="fsizeWrap">
         <button class="fsize-btn" id="fsizeBtn" aria-label="Text size">
