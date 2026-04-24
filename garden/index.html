@@ -1208,8 +1208,8 @@ function setRPath(cur) {
   if (el) el.textContent = cur;
 }
 
-function showFeed(notes, folderName) {
-  if (window._treeSetNote) window._treeSetNote([], null);
+function showFeed(notes, folderName, _fromTree) {
+  if (!_fromTree && window._treeSetNote) window._treeSetNote([], null);
   const sorted = [...notes].sort((a,b) => b.date.localeCompare(a.date));
   const lbl = folderName || '';
   setRPath(lbl ? lbl.toLowerCase() + '/' : '');
@@ -2212,22 +2212,22 @@ function initGraph() {
       selectedSephs.push(s.id);
     }
     drawTree();
+    // Update info bar to reflect new selection state
+    setInfo(hoveredSeph ? SEPHIROT.find(x => x.id === hoveredSeph) : null);
     applyTreeFilter();
-    // update bars — clear when no note open
     hideBars();
   }
 
   function applyTreeFilter() {
     if (selectedSephs.length === 0) {
-      showFeed(allNotes, null);
+      showFeed(allNotes, null, true);
       return;
     }
-    // notes that match ANY of selected (union)
     const filtered = allNotes.filter(n =>
       n.sephirot && selectedSephs.some(id => n.sephirot.includes(id))
     );
     const label = selectedSephs.join(' · ');
-    showFeed(filtered, label);
+    showFeed(filtered, label, true);
   }
 
   function clearTreeSelection() {
