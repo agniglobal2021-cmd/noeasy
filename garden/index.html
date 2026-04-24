@@ -275,7 +275,8 @@ canvas#starsBg {
 }
 canvas#graphCanvas {
   display: block;
-  position: relative;
+  position: absolute;
+  top: 0; left: 0; width: 100%; height: 100%;
   z-index: 1;
   image-rendering: auto;
 }
@@ -1235,12 +1236,6 @@ function initGraph() {
       sctx.fillRect(Math.floor(sx), Math.floor(sy), s.size, s.size);
     });
   }
-  function resizeStars() {
-    starsCv.width  = wrap.clientWidth;
-    starsCv.height = wrap.clientHeight;
-    initStars(starsCv.width, starsCv.height);
-  }
-  resizeStars();
   let starT = 0;
   function tickStars() {
     starT += 0.018;
@@ -1249,7 +1244,7 @@ function initGraph() {
   }
   if (window._starAnimId) cancelAnimationFrame(window._starAnimId);
   tickStars();
-  window.addEventListener('resize', resizeStars);
+  window.addEventListener('resize', resize);
 
   // ── Viewport transform: pan + zoom ──
   let zoom = window._graphZoom ? window._graphZoom() : 1.0;
@@ -1266,10 +1261,15 @@ function initGraph() {
   };
 
   function resize() {
-    canvas.width  = wrap.clientWidth;
-    canvas.height = wrap.clientHeight;
-    panX = canvas.width / 2;
-    panY = canvas.height / 2;
+    const w = wrap.clientWidth  || wrap.offsetWidth  || 300;
+    const h = wrap.clientHeight || wrap.offsetHeight || 300;
+    canvas.width  = w;
+    canvas.height = h;
+    starsCv.width  = w;
+    starsCv.height = h;
+    panX = w / 2;
+    panY = h / 2;
+    initStars(w, h);
     draw();
   }
 
