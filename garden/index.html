@@ -676,9 +676,9 @@ canvas#graphCanvas {
   .lbody { height: auto; max-height: 220px; }
   .flist { max-height: 200px; }
   .rscroll { min-height: 50vh; }
-  /* graph view on mobile — give it real height */
-  .graph-panel-open .lbody { max-height: 55vw; min-height: 180px; }
-  .graph-panel-open .lbody .graph-panel { display: block; }
+  /* graph open on mobile — give win-l a real height so graph-panel (absolute) has something to fill */
+  .win-l.graph-open-mobile { height: 52vw; min-height: 200px; max-height: 320px; }
+  .win-l.graph-open-mobile .lbody { max-height: none; height: 100%; }
 }
 </style>
 </head>
@@ -854,8 +854,14 @@ const swordBtn = document.getElementById('swordBtn');
 const navOverlay = document.getElementById('navOverlay');
 swordBtn.addEventListener('click', e => {
   e.stopPropagation();
+  const willOpen = !navOverlay.classList.contains('open');
+  if (willOpen) window._closeAllPopups && window._closeAllPopups('burger');
   const open = navOverlay.classList.toggle('open');
   swordBtn.classList.toggle('open', open);
+});
+if (window._registerPopup) window._registerPopup('burger', () => {
+  navOverlay.classList.remove('open');
+  swordBtn.classList.remove('open');
 });
 document.addEventListener('click', () => {
   navOverlay.classList.remove('open');
@@ -1110,11 +1116,9 @@ function md(t) {
     graphVisible = true;
     btn.classList.add('open');
     fireCRT();
-    // hide fold-all
     lbody.classList.add('graph-panel-open');
-    // expand win-l
     desktop.classList.add('graph-active');
-    // show panel (will animate fold-in)
+    winL.classList.add('graph-open-mobile');
     panel.classList.add('open');
     flist.style.display = 'none';
     popup.classList.add('open');
@@ -1128,14 +1132,19 @@ function md(t) {
     flist.style.display = '';
     popup.classList.remove('open');
     desktop.classList.remove('graph-active');
+    winL.classList.remove('graph-open-mobile');
     lbody.classList.remove('graph-panel-open');
   }
+
+  window._registerPopup('graph', () => { if (graphVisible) { closeGraph(); } else { popup.classList.remove('open'); } });
+  window._closeGraphPopup = () => { if (graphVisible) popup.classList.remove('open'); };
 
   btn.addEventListener('click', e => {
     e.stopPropagation();
     if (graphVisible) {
       closeGraph();
     } else {
+      window._closeAllPopups('graph');
       openGraph();
     }
   });
@@ -1472,6 +1481,13 @@ buildLeft();
 showFeed(allNotes, null);
 setRPath('');
 
+// ── Global popup mutex — one popup open at a time ──
+window._popups = {};
+window._registerPopup = function(name, closeFn) { window._popups[name] = closeFn; };
+window._closeAllPopups = function(except) {
+  Object.entries(window._popups).forEach(([k, fn]) => { if (k !== except) fn(); });
+};
+
 // ── Font size knob ──
 (function() {
   const MIN = 9, MAX = 15, DEFAULT = 11;
@@ -1495,10 +1511,13 @@ setRPath('');
 
   apply();
 
+  window._registerPopup('fsize', () => popup.classList.remove('open'));
+
   btn.addEventListener('click', e => {
     e.stopPropagation();
-    if (window._closeGraphPopup) window._closeGraphPopup();
-    popup.classList.toggle('open');
+    const isOpen = popup.classList.contains('open');
+    window._closeAllPopups('fsize');
+    popup.classList.toggle('open', !isOpen);
   });
 
   // drag on slider
@@ -1521,6 +1540,36 @@ setRPath('');
   document.addEventListener('click', e => {
     if (!wrap.contains(e.target)) popup.classList.remove('open');
   });
+})();
+
+// ── Parallax in note feed ──
+(function() {
+  const reader = document.getElementById('reader');
+  if (!reader) return;
+
+  function applyParallax() {
+    const scrollY = reader.scrollTop;
+    const cards = reader.querySelectorAll('.feed-card');
+    cards.forEach((card, i) => {
+      const rect = card.getBoundingClientRect();
+      const readerRect = reader.getBoundingClientRect();
+      const relY = rect.top - readerRect.top;
+      const centerOffset = relY - readerRect.height * 0.5;
+      // date/tags line moves a little faster than scroll
+      const tag = card.querySelector('.feed-meta');
+      if (tag) tag.style.transform = `translateY(${centerOffset * 0.04}px)`;
+      // title moves subtly opposite
+      const title = card.querySelector('.feed-title');
+      if (title) title.style.transform = `translateY(${centerOffset * -0.02}px)`;
+      // excerpt barely moves
+      const excerpt = card.querySelector('.feed-excerpt');
+      if (excerpt) excerpt.style.transform = `translateY(${centerOffset * 0.015}px)`;
+    });
+  }
+
+  reader.addEventListener('scroll', applyParallax, {passive: true});
+  // re-apply when content changes (MutationObserver)
+  new MutationObserver(applyParallax).observe(reader, {childList: true, subtree: false});
 })();
 </script>
 </body>
