@@ -1890,9 +1890,11 @@ function initGraph() {
   // Canvas pixel size from DOM (excluding info bar)
   function canvasDims() {
     const INFO_H = 54;
+    const dpr = window.devicePixelRatio || 1;
     return {
-      cw: treePanel.clientWidth  || 200,
+      cw: (treePanel.clientWidth  || 200),
       ch: (treePanel.clientHeight || 354) - INFO_H,
+      dpr,
     };
   }
 
@@ -2070,9 +2072,12 @@ function initGraph() {
 
   function drawTree() {
     if (!ctx) return;
-    const {cw, ch} = canvasDims();
-    canvas.width  = cw;
-    canvas.height = ch;
+    const {cw, ch, dpr} = canvasDims();
+    canvas.width  = cw * dpr;
+    canvas.height = ch * dpr;
+    canvas.style.width  = cw + 'px';
+    canvas.style.height = ch + 'px';
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
     // Clear — transparent so stars canvas shows through
     ctx.clearRect(0, 0, cw, ch);
@@ -2118,49 +2123,52 @@ function initGraph() {
       const isHovered  = hoveredSeph === s.id;
       const lit = isActive || isSelected || isHovered;
 
-      // Glow halo
+      // ── Glow halo — bigger and brighter for active ──
       if (lit) {
-        const g = ctx.createRadialGradient(sx, sy, 0, sx, sy, R * 3.2);
-        g.addColorStop(0, 'rgba(214,213,169,0.18)');
+        const glowR = isActive ? R * 4.5 : R * 3;
+        const g = ctx.createRadialGradient(sx, sy, 0, sx, sy, glowR);
+        g.addColorStop(0, isActive   ? 'rgba(214,213,169,0.45)'
+                        : isSelected ? 'rgba(214,213,169,0.25)'
+                        :              'rgba(214,213,169,0.12)');
         g.addColorStop(1, 'transparent');
         ctx.save();
-        ctx.beginPath(); ctx.arc(sx, sy, R * 3.2, 0, Math.PI*2);
+        ctx.beginPath(); ctx.arc(sx, sy, glowR, 0, Math.PI*2);
         ctx.fillStyle = g; ctx.fill();
         ctx.restore();
       }
 
       if (s.id === 'Tifaret') {
-        // ── Rose ─────────────────────────────────────────────
         drawRose(ctx, sx, sy, R, lit, isSelected, isActive);
       } else {
-        // ── Plain circle ─────────────────────────────────────
         ctx.save();
         ctx.beginPath(); ctx.arc(sx, sy, R, 0, Math.PI*2);
-        // Fill: dark when dim, medium when hovered, bright when selected/active
-        ctx.fillStyle = isSelected || isActive ? '#D6D5A9'
-                      : isHovered              ? '#7a6a52'
+        ctx.fillStyle = isActive                ? '#D6D5A9'
+                      : isSelected             ? '#c8c4a0'
+                      : isHovered              ? '#3a3228'
                       :                          '#0c0a06';
         ctx.fill();
-        ctx.strokeStyle = lit ? '#D6D5A9' : '#3a3228';
-        ctx.lineWidth = lit ? 1.5 : 1;
+        ctx.strokeStyle = isActive   ? '#ffffff'
+                        : lit        ? '#D6D5A9'
+                        :              '#3a3228';
+        ctx.lineWidth = isActive ? 2 : lit ? 1.5 : 1;
+        if (isActive) { ctx.shadowColor = '#D6D5A9'; ctx.shadowBlur = 8; }
         ctx.stroke();
-        // Selection ring
         if (isSelected) {
-          ctx.beginPath(); ctx.arc(sx, sy, R + 3, 0, Math.PI*2);
-          ctx.strokeStyle = '#D6D5A988';
-          ctx.lineWidth = 1;
-          ctx.stroke();
+          ctx.beginPath(); ctx.arc(sx, sy, R + 3.5, 0, Math.PI*2);
+          ctx.strokeStyle = '#D6D5A966'; ctx.lineWidth = 1; ctx.stroke();
         }
         ctx.restore();
       }
 
-      // Label
+      // ── Label — fixed readable size, Alkhemikal with DotGothic fallback ──
       ctx.save();
-      const lsz = Math.max(8, Math.min(11, Math.round(R * 0.85)));
-      ctx.font = `${lsz}px "Alkhemikal", serif`;
+      ctx.font = `12px "Alkhemikal", "DotGothic16", sans-serif`;
       ctx.textAlign = 'center'; ctx.textBaseline = 'top';
-      ctx.fillStyle = lit ? '#D6D5A9' : '#4a4232';
-      if (lit) { ctx.shadowColor = '#D6D5A9'; ctx.shadowBlur = 5; }
+      ctx.fillStyle = isActive   ? '#ffffff'
+                    : lit        ? '#D6D5A9'
+                    :              '#4a4232';
+      if (isActive)   { ctx.shadowColor = '#D6D5A9'; ctx.shadowBlur = 8; }
+      else if (lit)   { ctx.shadowColor = '#D6D5A9'; ctx.shadowBlur = 4; }
       ctx.fillText(s.en, sx, sy + R + 4);
       ctx.restore();
     });
@@ -2400,9 +2408,14 @@ function initGraph() {
 
   function initTreeStars() {
     treeStarCtx = starsCvTree.getContext('2d');
+    const dpr = window.devicePixelRatio || 1;
     const w = treePanel.clientWidth  || 200;
     const h = treePanel.clientHeight || 400;
-    starsCvTree.width = w; starsCvTree.height = h;
+    starsCvTree.width  = w * dpr;
+    starsCvTree.height = h * dpr;
+    starsCvTree.style.width  = w + 'px';
+    starsCvTree.style.height = h + 'px';
+    treeStarCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
     treeStars = Array.from({length: 90}, () => ({
       x: Math.random() * w, y: Math.random() * h,
       size: Math.random() < 0.12 ? 2 : 1,
@@ -2414,7 +2427,8 @@ function initGraph() {
 
   function drawTreeStars() {
     if (!treeStarCtx) return;
-    const w = starsCvTree.width, h = starsCvTree.height;
+    const w = starsCvTree.clientWidth || starsCvTree.width;
+    const h = starsCvTree.clientHeight || starsCvTree.height;
     treeStarCtx.fillStyle = '#0c0a06';
     treeStarCtx.fillRect(0, 0, w, h);
     treeStars.forEach(s => {
@@ -2452,11 +2466,8 @@ function initGraph() {
       setInfo(null);
     }
 
-    // Ensure Alkhemikal is loaded before drawing labels on canvas
-    const fontReady = document.fonts
-      ? document.fonts.load('11px "Alkhemikal"').catch(() => {})
-      : Promise.resolve();
-
+    // Wait for ALL fonts (including Alkhemikal) before first canvas draw
+    const fontReady = document.fonts ? document.fonts.ready : Promise.resolve();
     fontReady.then(() => {
       requestAnimationFrame(() => requestAnimationFrame(doInitDraw));
       setTimeout(doInitDraw, 80);
