@@ -1818,18 +1818,20 @@ function initGraph() {
   // Fixed logical grid — tree never distorts on resize
   // Mirrored standard: Chokmah=right (Mercy), Binah=left (Severity)
   // Logical space: LW=200, LH=360. Rendered with uniform scale + centering.
-  const LW = 200, LH = 360;
+  const LW = 200, LH = 400;
   const POS = {
-    Kether:  [100,  18],
-    Chokmah: [160,  68],
-    Binah:   [ 40,  68],
-    Chesed:  [160, 148],
-    Geburah: [ 40, 148],
-    Tifaret: [100, 198],
-    Netzach: [160, 268],
-    Hod:     [ 40, 268],
-    Yesod:   [100, 308],
-    Malkuth: [100, 348],
+    // Column X: Left=40, Center=100, Right=160  (span=120)
+    // Row Y step: 70 throughout
+    Kether:  [100,  10],   // top center
+    Chokmah: [160,  70],   // right pillar row 1
+    Binah:   [ 40,  70],   // left pillar row 1
+    Chesed:  [160, 150],   // right pillar row 2
+    Geburah: [ 40, 150],   // left pillar row 2
+    Tifaret: [100, 210],   // center: midpoint of Chesed/Geburah(y=150) and Netzach/Hod(y=270)  → (150+270)/2=210 ✓
+    Netzach: [160, 270],   // right pillar row 3
+    Hod:     [ 40, 270],   // left pillar row 3
+    Yesod:   [100, 330],   // center row 4
+    Malkuth: [100, 390],   // center row 5
   };
 
   // 22 paths
@@ -2123,13 +2125,13 @@ function initGraph() {
       const isHovered  = hoveredSeph === s.id;
       const lit = isActive || isSelected || isHovered;
 
-      // ── Glow halo — bigger and brighter for active ──
+      // ── Glow halo ──
       if (lit) {
-        const glowR = isActive ? R * 4.5 : R * 3;
+        const glowR = isActive ? R * 2.8 : R * 2.2;
         const g = ctx.createRadialGradient(sx, sy, 0, sx, sy, glowR);
-        g.addColorStop(0, isActive   ? 'rgba(214,213,169,0.45)'
-                        : isSelected ? 'rgba(214,213,169,0.25)'
-                        :              'rgba(214,213,169,0.12)');
+        g.addColorStop(0, isActive   ? 'rgba(214,213,169,0.35)'
+                        : isSelected ? 'rgba(214,213,169,0.20)'
+                        :              'rgba(214,213,169,0.10)');
         g.addColorStop(1, 'transparent');
         ctx.save();
         ctx.beginPath(); ctx.arc(sx, sy, glowR, 0, Math.PI*2);
@@ -2213,25 +2215,23 @@ function initGraph() {
   let mouseDownSeph = null;
   let mouseDownX = 0, mouseDownY = 0;
   let isDragging = false;
-  const DRAG_THRESHOLD = 4;
+  const DRAG_THRESHOLD = 5;
+  let pointerIsTouch = false;
 
   canvas.addEventListener('mousedown', e => {
+    if (pointerIsTouch) return; // touch handles its own flow
     const rect = canvas.getBoundingClientRect();
     const mx = e.clientX - rect.left, my = e.clientY - rect.top;
-    const s = getSephAt(mx, my);
-    if (s) {
-      mouseDownSeph = s;
-      mouseDownX = mx; mouseDownY = my;
-      isDragging = false;
-      e.preventDefault();
-    }
+    mouseDownSeph = getSephAt(mx, my);
+    mouseDownX = mx; mouseDownY = my;
+    isDragging = false;
   });
 
   canvas.addEventListener('mousemove', e => {
+    if (pointerIsTouch) return;
     const rect = canvas.getBoundingClientRect();
     const mx = e.clientX - rect.left, my = e.clientY - rect.top;
 
-    // Handle drag
     if (mouseDownSeph) {
       const dist = Math.hypot(mx - mouseDownX, my - mouseDownY);
       if (!isDragging && dist > DRAG_THRESHOLD) {
@@ -2245,7 +2245,6 @@ function initGraph() {
       }
     }
 
-    // Normal hover
     const s = getSephAt(mx, my);
     const newId = s ? s.id : null;
     if (newId !== hoveredSeph) {
@@ -2257,20 +2256,17 @@ function initGraph() {
   });
 
   canvas.addEventListener('mouseup', e => {
+    if (pointerIsTouch) return;
     if (isDragging) {
-      endDrag();
-      isDragging = false;
-      mouseDownSeph = null;
-      canvas.style.cursor = 'default';
-      return;
+      endDrag(); isDragging = false; mouseDownSeph = null;
+      canvas.style.cursor = 'default'; return;
     }
-    // treat as click
     if (mouseDownSeph) {
       const rect = canvas.getBoundingClientRect();
-      handleSephClick(getSephAt(e.clientX - rect.left, e.clientY - rect.top));
+      const hit = getSephAt(e.clientX - rect.left, e.clientY - rect.top);
+      if (hit && hit.id === mouseDownSeph.id) handleSephClick(hit);
     }
-    mouseDownSeph = null;
-    isDragging = false;
+    mouseDownSeph = null; isDragging = false;
   });
 
   canvas.addEventListener('mouseleave', () => {
@@ -2283,57 +2279,20 @@ function initGraph() {
     canvas.style.cursor = 'default';
   });
 
-  function handleSephClick(s) {
-    if (!s) return;
-    const idx = selectedSephs.indexOf(s.id);
-    if (idx !== -1) {
-      selectedSephs.splice(idx, 1);
-    } else {
-      if (selectedSephs.length >= 3) selectedSephs.shift();
-      selectedSephs.push(s.id);
-    }
-    drawTree();
-    // Update info bar to reflect new selection state
-    setInfo(hoveredSeph ? SEPHIROT.find(x => x.id === hoveredSeph) : null);
-    applyTreeFilter();
-    hideBars();
-  }
-
-  function applyTreeFilter() {
-    if (selectedSephs.length === 0) {
-      showFeed(allNotes, null, true);
-      return;
-    }
-    const filtered = allNotes.filter(n =>
-      n.sephirot && selectedSephs.some(id => n.sephirot.includes(id))
-    );
-    const label = selectedSephs.join(' · ');
-    showFeed(filtered, label, true);
-  }
-
-  function clearTreeSelection() {
-    selectedSephs = [];
-    drawTree();
-  }
-
-  // (click handled in mouseup above)
-
-  // Touch support with drag
+  // ── Touch ──
   let touchDownSeph = null;
   let touchDownX = 0, touchDownY = 0;
   let touchDragging = false;
 
   canvas.addEventListener('touchstart', e => {
+    pointerIsTouch = true;
     const rect = canvas.getBoundingClientRect();
     const t = e.touches[0];
     const mx = t.clientX - rect.left, my = t.clientY - rect.top;
-    const s = getSephAt(mx, my);
-    if (s) {
-      touchDownSeph = s;
-      touchDownX = mx; touchDownY = my;
-      touchDragging = false;
-      e.preventDefault();
-    }
+    touchDownSeph = getSephAt(mx, my);
+    touchDownX = mx; touchDownY = my;
+    touchDragging = false;
+    if (touchDownSeph) e.preventDefault();
   }, {passive: false});
 
   canvas.addEventListener('touchmove', e => {
@@ -2354,19 +2313,49 @@ function initGraph() {
 
   canvas.addEventListener('touchend', e => {
     if (touchDragging) {
-      endDrag();
-      touchDragging = false;
-      touchDownSeph = null;
-      return;
+      endDrag(); touchDragging = false; touchDownSeph = null;
+      e.preventDefault(); return;
     }
     if (touchDownSeph) {
       const rect = canvas.getBoundingClientRect();
       const t = e.changedTouches[0];
-      handleSephClick(getSephAt(t.clientX - rect.left, t.clientY - rect.top));
+      const hit = getSephAt(t.clientX - rect.left, t.clientY - rect.top);
+      if (hit && hit.id === touchDownSeph.id) handleSephClick(hit);
+      e.preventDefault();
     }
-    touchDownSeph = null;
-    touchDragging = false;
-  }, {passive: true});
+    touchDownSeph = null; touchDragging = false;
+  }, {passive: false});
+
+  function handleSephClick(s) {
+    if (!s) return;
+    const idx = selectedSephs.indexOf(s.id);
+    if (idx !== -1) {
+      selectedSephs.splice(idx, 1);
+    } else {
+      if (selectedSephs.length >= 3) selectedSephs.length = 0;
+      selectedSephs.push(s.id);
+    }
+    drawTree();
+    setInfo(s);
+    applyTreeFilter();
+    hideBars();
+  }
+
+  function applyTreeFilter() {
+    if (selectedSephs.length === 0) {
+      showFeed(allNotes, null, true);
+      return;
+    }
+    const filtered = allNotes.filter(n =>
+      n.sephirot && selectedSephs.some(id => n.sephirot.includes(id))
+    );
+    showFeed(filtered, selectedSephs.join(' · '), true);
+  }
+
+  function clearTreeSelection() {
+    selectedSephs = [];
+    drawTree();
+  }
 
   // ── Weight bars ──
   const treeBars   = document.getElementById('treeBars');
