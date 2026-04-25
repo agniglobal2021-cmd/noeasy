@@ -542,12 +542,13 @@ canvas#graphCanvas {
 
 /* ── Win95 scrollbar for right panel ── */
 .rscroll {
-  flex: 1; overflow-y: scroll; padding: 20px 28px 28px; position: relative; z-index: 2;
-  scrollbar-width: auto; scrollbar-color: #AFA191 #5a5145;
+  flex: 1; overflow-y: scroll; padding: 14px 14px 20px; position: relative; z-index: 2;
+  scrollbar-width: auto; scrollbar-color: #AFA191 #1a1612;
+  background: var(--lbg);
 }
 .rscroll::-webkit-scrollbar { width: 16px; }
 .rscroll::-webkit-scrollbar-track {
-  background: #5a5145;
+  background: #1a1612;
   border-left: 1px solid #3d3830;
 }
 .rscroll::-webkit-scrollbar-thumb {
@@ -575,42 +576,45 @@ canvas#graphCanvas {
 .win-r { flex: 1; min-width: 0; display: flex; flex-direction: column; }
 
 .rbody {
-  flex: 1; background: #b5ad9e;
+  flex: 1; background: var(--lbg);
   display: flex; flex-direction: column; overflow: hidden; position: relative;
   min-height: 0;
 }
 
-/* feed */
+/* feed — card style */
 .fe {
-  padding: 20px 0;
-  border-bottom: 1px solid rgba(93,81,67,.18);
+  background: #AFA191;
+  border-top: 2px solid #d4cdc4; border-left: 2px solid #d4cdc4;
+  border-right: 2px solid #3d3830; border-bottom: 2px solid #3d3830;
+  box-shadow: inset 1px 1px 0 #d4cdc4, inset -1px -1px 0 #7a7068, 2px 2px 0 #1a1612;
+  padding: 18px 20px 16px;
+  margin-bottom: 10px;
   cursor: pointer;
 }
-.fe:first-child { padding-top: 0; }
-.fe:last-child { border-bottom: none; }
-.fe:hover .fe-title { color: #3d3020; }
+.fe:last-child { margin-bottom: 0; }
+.fe:hover .fe-title { color: #1a1410; }
 .fe:hover .fe-arrow { opacity: 1; transform: translateX(3px); }
 
 .fe-meta {
   font-family: 'Fixedsys', monospace; font-size: 8px;
-  color: #7a6a52; margin-bottom: 8px; letter-spacing: .14em;
-  text-transform: uppercase; opacity: .75;
+  color: #5a4e3e; margin-bottom: 8px; letter-spacing: .14em;
+  text-transform: uppercase; opacity: .85;
 }
 .fe-title {
   font-family: 'Alkhemikal', serif; font-size: 20px; line-height: 1.2;
-  color: #2e2318; margin-bottom: 8px; transition: color .15s;
+  color: #1e1510; margin-bottom: 8px; transition: color .15s;
   letter-spacing: .01em;
 }
 .fe-prev {
   font-family: 'DotGothic16', monospace; font-size: var(--r-fsize); line-height: 1.9;
-  color: #5a4e3e; opacity: .7;
+  color: #3d3020; opacity: .75;
   display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
   max-width: 580px;
 }
 .fe-arrow {
   display: inline-block; margin-top: 8px;
   font-family: 'Fixedsys', monospace; font-size: 8px;
-  color: #7a6a52; letter-spacing: .12em; opacity: 0;
+  color: #5a4e3e; letter-spacing: .12em; opacity: 0;
   transition: opacity .15s, transform .15s;
 }
 
@@ -625,48 +629,48 @@ canvas#graphCanvas {
 .nbk {
   font-family: 'Fixedsys', monospace; font-size: 8px; letter-spacing: .12em;
   text-transform: uppercase;
-  color: #7a6a52; background: none; border: none; cursor: pointer;
+  color: var(--tdim); background: none; border: none; cursor: pointer;
   padding: 0; margin-bottom: 20px; display: block; transition: color .12s;
   opacity: .7;
 }
-.nbk:hover { color: #3d3020; opacity: 1; }
+.nbk:hover { color: var(--ta); opacity: 1; }
 
 .nmeta {
   font-family: 'Fixedsys', monospace; font-size: 8px; letter-spacing: .14em;
   text-transform: uppercase;
-  color: #7a6a52; margin-bottom: 12px; opacity: .6;
+  color: var(--tdim); margin-bottom: 12px; opacity: .6;
 }
 .ntitle {
   font-family: 'Alkhemikal', serif; font-size: 26px; line-height: 1.15;
-  color: #1e1710; margin-bottom: 8px; letter-spacing: .01em;
+  color: var(--ta); margin-bottom: 8px; letter-spacing: .01em;
 }
 .n-rule {
-  width: 40px; height: 1px; background: rgba(93,81,67,.4);
+  width: 40px; height: 1px; background: rgba(214,213,169,.2);
   margin: 14px 0 18px;
 }
 .nbody {
   font-family: 'PageFont', 'DotGothic16', monospace; font-size: var(--r-fsize);
-  line-height: 2.1; color: #3d3428;
+  line-height: 2.1; color: var(--ta); opacity: .85;
 }
 .nbody p { margin-bottom: 18px; max-width: 560px; }
 .nbody h2 {
-  font-family: 'Alkhemikal', serif; font-size: 17px; color: #1e1710;
+  font-family: 'Alkhemikal', serif; font-size: 17px; color: var(--thl);
   margin: 36px 0 14px; letter-spacing: .02em; font-weight: 400;
 }
 .nbody blockquote {
-  border-left: 1px solid rgba(93,81,67,.4); padding-left: 20px;
-  margin: 24px 0; color: #6a5c4a; font-style: normal;
+  border-left: 1px solid rgba(214,213,169,.25); padding-left: 20px;
+  margin: 24px 0; color: var(--tdim); font-style: normal;
 }
-.nbody strong { color: #1e1710; font-weight: 400; }
+.nbody strong { color: var(--thl); font-weight: 400; }
 
 /* statusbar */
 .sbar {
-  background: rgba(93,81,67,.12); border-top: 1px solid rgba(93,81,67,.2);
+  background: rgba(0,0,0,.25); border-top: 1px solid rgba(255,255,255,.06);
   display: flex; align-items: center; padding: 3px 14px; gap: 10px;
   flex-shrink: 0; position: relative; z-index: 2;
 }
-.si { font-family: 'Fixedsys', monospace; font-size: 8px; color: #7a6a52; opacity: .55; letter-spacing: .08em; text-transform: uppercase; }
-.sdv { width: 1px; height: 7px; background: rgba(93,81,67,.3); }
+.si { font-family: 'Fixedsys', monospace; font-size: 8px; color: var(--tdim); opacity: .8; letter-spacing: .08em; text-transform: uppercase; }
+.sdv { width: 1px; height: 7px; background: rgba(255,255,255,.12); }
 
 /* ── Tree of Life panel ── */
 #treePanel {
@@ -2585,20 +2589,38 @@ setRPath('');
   function applyParallax() {
     const cards = reader.querySelectorAll('.fe');
     const readerRect = reader.getBoundingClientRect();
+    const rH = readerRect.height;
     cards.forEach(card => {
       const rect = card.getBoundingClientRect();
-      const centerOffset = (rect.top - readerRect.top) - readerRect.height * 0.5;
+      const cardCenter = rect.top + rect.height / 2;
+      const readerCenter = readerRect.top + rH * 0.5;
+      const offset = cardCenter - readerCenter;
+      const norm = offset / rH; // -0.5 .. 0.5
+
+      // Inner elements move at different rates — "layers"
       const meta = card.querySelector('.fe-meta');
-      if (meta) meta.style.transform = `translateY(${centerOffset * 0.018}px)`;
       const title = card.querySelector('.fe-title');
-      if (title) title.style.transform = `translateY(${centerOffset * -0.010}px)`;
       const prev = card.querySelector('.fe-prev');
-      if (prev) prev.style.transform = `translateY(${centerOffset * 0.008}px)`;
+      const arrow = card.querySelector('.fe-arrow');
+
+      if (meta)  meta.style.transform  = `translateY(${norm * 14}px)`;
+      if (title) title.style.transform = `translateY(${norm * -9}px)`;
+      if (prev)  prev.style.transform  = `translateY(${norm * 6}px)`;
+      if (arrow) arrow.style.transform = (arrow.style.opacity !== '0')
+        ? `translateX(3px) translateY(${norm * 5}px)`
+        : `translateY(${norm * 5}px)`;
+
+      // Subtle 3D tilt — cards near edges tip slightly
+      const tilt = norm * 2.5; // degrees
+      card.style.transform = `perspective(600px) rotateX(${tilt}deg)`;
+      card.style.opacity = 1 - Math.abs(norm) * 0.35;
     });
   }
 
   reader.addEventListener('scroll', applyParallax, {passive: true});
-  new MutationObserver(applyParallax).observe(reader, {childList: true});
+  new MutationObserver(() => {
+    requestAnimationFrame(applyParallax);
+  }).observe(reader, {childList: true});
 })();
 </script>
 </body>
