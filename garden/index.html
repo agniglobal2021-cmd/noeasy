@@ -54,7 +54,7 @@
 --r-fsize: 11px;
 }
 
-html { background: #5D5143; overflow-x: hidden; }
+html { background: #5D5143; overflow-x: hidden; overscroll-behavior: none; }
 
 body::before {
 content: ‘’;
@@ -542,8 +542,9 @@ cursor: grab; transform: translateX(-50%);
 /* ── Win95 scrollbar for right panel ── */
 .rscroll {
 flex: 1; overflow-y: scroll; padding: 14px 14px 20px; position: relative; z-index: 2;
-scrollbar-width: auto; scrollbar-color: #AFA191 #5a5145;
+scrollbar-width: thin; scrollbar-color: #AFA191 #5a5145;
 background: var(--lbg);
+-webkit-overflow-scrolling: touch;
 }
 .rscroll::-webkit-scrollbar { width: 16px; }
 .rscroll::-webkit-scrollbar-track {
@@ -594,7 +595,7 @@ will-change: transform;
 .fe-meta, .fe-title, .fe-prev { will-change: transform; }
 .fe:last-child { margin-bottom: 0; }
 .fe:hover .fe-title { color: #1a1410; }
-.fe:hover .fe-arrow { opacity: 1; transform: translateX(3px); }
+.fe:hover .fe-arrow { transform: translateX(3px); }
 
 .fe-meta {
 font-family: ‘Fixedsys’, monospace; font-size: 8px;
@@ -614,15 +615,15 @@ max-width: 580px;
 }
 .fe-arrow {
 display: inline-block; margin-top: 10px;
-font-family: ‘Fixedsys’, monospace; font-size: 8px; letter-spacing: .12em;
+font-family: ‘Alkhemikal’, serif; font-size: 13px; letter-spacing: .06em;
 color: #1e1510;
 background: #AFA191;
 border-top: 2px solid #d4cdc4; border-left: 2px solid #d4cdc4;
 border-right: 2px solid #3d3830; border-bottom: 2px solid #3d3830;
 box-shadow: inset 1px 1px 0 #e0d9d0;
-padding: 3px 10px 3px 8px;
-opacity: 0;
-transition: opacity .15s, transform .15s;
+padding: 3px 12px 3px 10px;
+opacity: 1;
+transition: transform .15s;
 }
 
 /* note view */
@@ -630,6 +631,7 @@ transition: opacity .15s, transform .15s;
 padding: 0 0 32px;
 animation: fadein .2s ease;
 max-width: 640px;
+margin-left: auto; margin-right: auto;
 }
 @keyframes fadein { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
 
@@ -675,6 +677,7 @@ margin: 24px 0; color: #6a5c4a; font-style: normal;
 padding: 0 0 32px;
 animation: fadein .2s ease;
 max-width: 640px;
+margin-left: auto; margin-right: auto;
 }
 .nv-inner {
 background: #e8e0c4;
@@ -1020,7 +1023,6 @@ overflow: hidden;
 <div class="page-main">
   <div class="desktop">
 
-```
 <div class="win win-l">
   <div class="tbar">
     <div class="tbar-inner">
@@ -1080,7 +1082,6 @@ overflow: hidden;
     </div>
   </div>
 </div>
-```
 
   </div>
 </div>
@@ -1643,7 +1644,7 @@ function initGraph() {
     canvas.width  = w; canvas.height = h;
     starsCv.width = w; starsCv.height = h;
     panX = w / 2; panY = h / 2;
-    initStars(w, h);
+    if (!stars.length) initStars(w, h);
     draw();
   }
 
@@ -2465,13 +2466,15 @@ function initGraph() {
     starsCvTree.style.width  = w + 'px';
     starsCvTree.style.height = h + 'px';
     treeStarCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    treeStars = Array.from({length: 90}, () => ({
-      x: Math.random() * w, y: Math.random() * h,
-      size: Math.random() < 0.12 ? 2 : 1,
-      bright: Math.random(),
-      phase: Math.random() * 1000,
-      speed: 0.2 + Math.random() * 0.8,
-    }));
+    if (!treeStars.length) {
+      treeStars = Array.from({length: 90}, () => ({
+        x: Math.random() * w, y: Math.random() * h,
+        size: Math.random() < 0.12 ? 2 : 1,
+        bright: Math.random(),
+        phase: Math.random() * 1000,
+        speed: 0.2 + Math.random() * 0.8,
+      }));
+    }
   }
 
   function drawTreeStars() {
@@ -2533,6 +2536,7 @@ function initGraph() {
   function closeTree() {
     treeVisible = false;
     selectedSephs = [];
+    treeStars = []; // reset so next open re-randomizes
     // Reset all drag offsets
     SEPHIROT.forEach(s => { dragOffsets[s.id] = {dx:0, dy:0, vx:0, vy:0}; });
     if (springAnimId) { cancelAnimationFrame(springAnimId); springAnimId = null; }
