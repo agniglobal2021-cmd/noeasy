@@ -1803,16 +1803,16 @@ function initGraph() {
 // ── Tree of Life ──
 (function() {
   const SEPHIROT = [
-    { id:'Kether',  symbol:'♅', en:'Kether',  theme:'Unity / Source',       col:'#e8e4c0', dimCol:'#6a6440' },
-    { id:'Chokmah', symbol:'⛢', en:'Chokmah', theme:'Vision / Flash',        col:'#c8d4e0', dimCol:'#485870' },
-    { id:'Binah',   symbol:'♄', en:'Binah',   theme:'Understanding / Form',  col:'#b0a8c8', dimCol:'#483858' },
-    { id:'Chesed',  symbol:'♃', en:'Chesed',  theme:'Grace / Expansion',     col:'#b8cce0', dimCol:'#3a5870' },
-    { id:'Geburah', symbol:'♂', en:'Geburah', theme:'Strength / Will',       col:'#d8a8a0', dimCol:'#683028' },
-    { id:'Tifaret', symbol:'☉', en:'Tifaret', theme:'Beauty / Heart',        col:'#e8d890', dimCol:'#786840' },
-    { id:'Netzach', symbol:'♀', en:'Netzach', theme:'Desire / Nature',       col:'#a8d0a0', dimCol:'#385830' },
-    { id:'Hod',     symbol:'☿', en:'Hod',     theme:'Intellect / Language',  col:'#e0d0a0', dimCol:'#706030' },
-    { id:'Yesod',   symbol:'☽', en:'Yesod',   theme:'Dream / Image',         col:'#c0c8e0', dimCol:'#484870' },
-    { id:'Malkuth', symbol:'⊕', en:'Malkuth', theme:'Matter / Body',         col:'#b8b0a0', dimCol:'#504840' },
+    { id:'Kether',  symbol:'', en:'Kether',  theme:'Unity / Source',       col:'#D6D5A9', dimCol:'#3a3228' },
+    { id:'Chokmah', symbol:'', en:'Chokmah', theme:'Vision / Flash',        col:'#D6D5A9', dimCol:'#3a3228' },
+    { id:'Binah',   symbol:'', en:'Binah',   theme:'Understanding / Form',  col:'#D6D5A9', dimCol:'#3a3228' },
+    { id:'Chesed',  symbol:'', en:'Chesed',  theme:'Grace / Expansion',     col:'#D6D5A9', dimCol:'#3a3228' },
+    { id:'Geburah', symbol:'', en:'Geburah', theme:'Strength / Will',       col:'#D6D5A9', dimCol:'#3a3228' },
+    { id:'Tifaret', symbol:'', en:'Tifaret', theme:'Beauty / Heart',        col:'#D6D5A9', dimCol:'#3a3228' },
+    { id:'Netzach', symbol:'', en:'Netzach', theme:'Desire / Nature',       col:'#D6D5A9', dimCol:'#3a3228' },
+    { id:'Hod',     symbol:'', en:'Hod',     theme:'Intellect / Language',  col:'#D6D5A9', dimCol:'#3a3228' },
+    { id:'Yesod',   symbol:'', en:'Yesod',   theme:'Dream / Image',         col:'#D6D5A9', dimCol:'#3a3228' },
+    { id:'Malkuth', symbol:'', en:'Malkuth', theme:'Matter / Body',         col:'#D6D5A9', dimCol:'#3a3228' },
   ];
 
   // Fixed logical grid — tree never distorts on resize
@@ -1986,6 +1986,88 @@ function initGraph() {
     startSpring();
   }
 
+  // ── Medieval Heraldic Rose for Tifaret ───────────────────────────────
+  // Multilayer rose: 3 rings of rounded petals, each rotated, like a real rose bloom
+  function drawRose(ctx, cx, cy, R, lit, isSelected, isActive) {
+    const strokeCol = lit ? '#D6D5A9' : '#3a3228';
+    const fillBright = isSelected || isActive ? '#D6D5A9' : (lit ? '#7a6a52' : '#1a1710');
+    const fillMid    = isSelected || isActive ? '#7a6a52' : (lit ? '#3a3228' : '#0f0d09');
+    const fillDark   = '#0c0a06';
+    const lw = lit ? 1.2 : 0.8;
+
+    ctx.save();
+    ctx.translate(cx, cy);
+
+    if (isSelected) {
+      ctx.beginPath(); ctx.arc(0, 0, R + 3, 0, Math.PI*2);
+      ctx.strokeStyle = '#D6D5A988'; ctx.lineWidth = 1; ctx.stroke();
+    }
+
+    // Helper: draw one ring of rounded petals
+    // count = number of petals, r = tip radius, baseR = base radius, rot = rotation offset
+    function petalRing(count, tipR, baseR, rot, fill) {
+      for (let i = 0; i < count; i++) {
+        const a = (i / count) * Math.PI * 2 + rot;
+        // Petal tip point
+        const tx = Math.cos(a) * tipR;
+        const ty = Math.sin(a) * tipR;
+        // Base left/right points at baseR
+        const halfSpan = (Math.PI * 2 / count) * 0.42;
+        const lx = Math.cos(a - halfSpan) * baseR;
+        const ly = Math.sin(a - halfSpan) * baseR;
+        const rx = Math.cos(a + halfSpan) * baseR;
+        const ry = Math.sin(a + halfSpan) * baseR;
+        // Control points: bulge outward for rounded petal shape
+        const bulge = 1.18;
+        const clx = Math.cos(a - halfSpan * 0.5) * tipR * bulge;
+        const cly = Math.sin(a - halfSpan * 0.5) * tipR * bulge;
+        const crx = Math.cos(a + halfSpan * 0.5) * tipR * bulge;
+        const cry = Math.sin(a + halfSpan * 0.5) * tipR * bulge;
+
+        ctx.beginPath();
+        ctx.moveTo(lx, ly);
+        ctx.bezierCurveTo(clx, cly, clx, cly, tx, ty);
+        ctx.bezierCurveTo(crx, cry, crx, cry, rx, ry);
+        ctx.quadraticCurveTo(0, 0, lx, ly);
+        ctx.closePath();
+        ctx.fillStyle = fill;
+        ctx.fill();
+        ctx.strokeStyle = strokeCol;
+        ctx.lineWidth = lw * 0.75;
+        ctx.stroke();
+      }
+    }
+
+    // ── Layer 3 (outermost): 8 petals ──
+    petalRing(8, R * 0.92, R * 0.38, 0, fillMid);
+
+    // ── Layer 2: 6 petals, rotated, slightly smaller ──
+    petalRing(6, R * 0.66, R * 0.28, Math.PI / 6, fillBright);
+
+    // ── Layer 1 (innermost): 5 petals, rotated again ──
+    petalRing(5, R * 0.42, R * 0.14, Math.PI / 10, fillMid);
+
+    // ── Outer ring border ──
+    ctx.beginPath(); ctx.arc(0, 0, R, 0, Math.PI * 2);
+    ctx.strokeStyle = strokeCol; ctx.lineWidth = lw; ctx.stroke();
+
+    // ── Sepal notches on outer ring (between outer petals) ──
+    for (let i = 0; i < 8; i++) {
+      const a = ((i + 0.5) / 8) * Math.PI * 2;
+      const ox = Math.cos(a) * R, oy = Math.sin(a) * R;
+      const ix = Math.cos(a) * R * 0.80, iy = Math.sin(a) * R * 0.80;
+      ctx.beginPath();
+      ctx.moveTo(ox, oy); ctx.lineTo(ix, iy);
+      ctx.strokeStyle = strokeCol; ctx.lineWidth = lw * 0.5; ctx.stroke();
+    }
+
+    // ── Center ──
+    ctx.beginPath(); ctx.arc(0, 0, R * 0.13, 0, Math.PI * 2);
+    ctx.fillStyle = strokeCol; ctx.fill();
+
+    ctx.restore();
+  }
+
   function drawTree() {
     if (!ctx) return;
     const {cw, ch} = canvasDims();
@@ -2034,61 +2116,52 @@ function initGraph() {
       const isActive   = activeSephs.has(s.id);
       const isSelected = selectedSephs.includes(s.id);
       const isHovered  = hoveredSeph === s.id;
-      const col = (isActive || isSelected || isHovered) ? s.col : s.dimCol;
+      const lit = isActive || isSelected || isHovered;
 
       // Glow halo
-      if (isActive || isHovered) {
-        const g = ctx.createRadialGradient(sx, sy, 0, sx, sy, R * 3);
-        g.addColorStop(0, isActive ? 'rgba(220,210,140,0.22)' : 'rgba(180,170,110,0.12)');
+      if (lit) {
+        const g = ctx.createRadialGradient(sx, sy, 0, sx, sy, R * 3.2);
+        g.addColorStop(0, 'rgba(214,213,169,0.18)');
         g.addColorStop(1, 'transparent');
         ctx.save();
-        ctx.beginPath(); ctx.arc(sx, sy, R * 3, 0, Math.PI*2);
+        ctx.beginPath(); ctx.arc(sx, sy, R * 3.2, 0, Math.PI*2);
         ctx.fillStyle = g; ctx.fill();
         ctx.restore();
       }
 
-      // Circle
-      ctx.save();
-      ctx.beginPath(); ctx.arc(sx, sy, R, 0, Math.PI*2);
-      ctx.fillStyle = '#0c0a06'; ctx.fill();
-      ctx.strokeStyle = col;
-      ctx.lineWidth = isActive ? 2 : 1;
-      ctx.stroke();
-
-      // Inner fill dot (active note OR selected by user)
-      if (isActive || isSelected) {
-        ctx.beginPath(); ctx.arc(sx, sy, Math.max(2, R * 0.32), 0, Math.PI*2);
-        ctx.fillStyle = isSelected ? s.col : s.dimCol; ctx.fill();
-      }
-      // Selection ring (extra outer ring for user-selected)
-      if (isSelected) {
+      if (s.id === 'Tifaret') {
+        // ── Rose ─────────────────────────────────────────────
+        drawRose(ctx, sx, sy, R, lit, isSelected, isActive);
+      } else {
+        // ── Plain circle ─────────────────────────────────────
         ctx.save();
-        ctx.beginPath(); ctx.arc(sx, sy, R + 3, 0, Math.PI*2);
-        ctx.strokeStyle = s.col + '88';
-        ctx.lineWidth = 1;
+        ctx.beginPath(); ctx.arc(sx, sy, R, 0, Math.PI*2);
+        // Fill: dark when dim, medium when hovered, bright when selected/active
+        ctx.fillStyle = isSelected || isActive ? '#D6D5A9'
+                      : isHovered              ? '#7a6a52'
+                      :                          '#0c0a06';
+        ctx.fill();
+        ctx.strokeStyle = lit ? '#D6D5A9' : '#3a3228';
+        ctx.lineWidth = lit ? 1.5 : 1;
         ctx.stroke();
+        // Selection ring
+        if (isSelected) {
+          ctx.beginPath(); ctx.arc(sx, sy, R + 3, 0, Math.PI*2);
+          ctx.strokeStyle = '#D6D5A988';
+          ctx.lineWidth = 1;
+          ctx.stroke();
+        }
         ctx.restore();
       }
-      ctx.restore();
-
-      // Astrological symbol
-      ctx.save();
-      const fsz = Math.max(9, Math.min(14, Math.round(R * 1.05)));
-      ctx.font = `${fsz}px serif`;
-      ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-      ctx.fillStyle = col;
-      if (isActive) { ctx.shadowColor = s.col; ctx.shadowBlur = 7; }
-      ctx.fillText(s.symbol, sx, sy);
-      ctx.restore();
 
       // Label
       ctx.save();
-      const lsz = Math.max(6, Math.min(8, Math.round(R * 0.65)));
-      ctx.font = `${lsz}px "Fixedsys", monospace`;
+      const lsz = Math.max(8, Math.min(11, Math.round(R * 0.85)));
+      ctx.font = `${lsz}px "Alkhemikal", serif`;
       ctx.textAlign = 'center'; ctx.textBaseline = 'top';
-      ctx.fillStyle = isActive ? '#D6D5A9' : '#3a3228';
-      if (isActive) { ctx.shadowColor = '#D6D5A9'; ctx.shadowBlur = 4; }
-      ctx.fillText(s.en.toUpperCase(), sx, sy + R + 3);
+      ctx.fillStyle = lit ? '#D6D5A9' : '#4a4232';
+      if (lit) { ctx.shadowColor = '#D6D5A9'; ctx.shadowBlur = 5; }
+      ctx.fillText(s.en, sx, sy + R + 4);
       ctx.restore();
     });
 
@@ -2111,7 +2184,7 @@ function initGraph() {
       return;
     }
     const count = allNotes.filter(n => n.sephirot && n.sephirot.includes(s.id)).length;
-    infoSym.textContent   = s.symbol;
+    infoSym.textContent   = '';
     infoName.textContent  = s.en.toUpperCase();
     infoTheme.textContent = s.theme;
     infoCount.textContent = count + (count === 1 ? ' note' : ' notes') +
@@ -2379,11 +2452,17 @@ function initGraph() {
       setInfo(null);
     }
 
-    // Fire at multiple intervals — layout can settle at different points on mobile/desktop
-    requestAnimationFrame(() => requestAnimationFrame(doInitDraw));
-    setTimeout(doInitDraw, 80);
-    setTimeout(doInitDraw, 180);
-    setTimeout(doInitDraw, 350);
+    // Ensure Alkhemikal is loaded before drawing labels on canvas
+    const fontReady = document.fonts
+      ? document.fonts.load('11px "Alkhemikal"').catch(() => {})
+      : Promise.resolve();
+
+    fontReady.then(() => {
+      requestAnimationFrame(() => requestAnimationFrame(doInitDraw));
+      setTimeout(doInitDraw, 80);
+      setTimeout(doInitDraw, 180);
+      setTimeout(doInitDraw, 350);
+    });
 
     function onResize() { if (treeVisible) { initTreeStars(); drawTree(); } }
     window.addEventListener('resize', onResize);
