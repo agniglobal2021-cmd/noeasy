@@ -9,22 +9,21 @@
 <style>
 @font-face {
   font-family: 'Alkhemikal';
-  src: url('fonts/Alkhemikal.ttf') format('truetype');
+  src: url('../fonts/Alkhemikal.ttf') format('truetype');
   font-weight: normal; font-style: normal;
 }
 @font-face {
   font-family: 'DotGothic16';
-  src: url('fonts/DotGothic16-Regular.ttf') format('truetype');
+  src: url('../fonts/DotGothic16-Regular.ttf') format('truetype');
   font-weight: normal; font-style: normal;
 }
 @font-face {
-  font-family: 'Fixedsys';
-  src: url('fonts/Fixedsys.ttf') format('truetype');
+  font-family: 'DotGothic16';
   font-weight: normal; font-style: normal;
 }
 @font-face {
   font-family: 'PageFont';
-  src: url('fonts/PageFont.ttf') format('truetype');
+  src: url('../fonts/PageFont.ttf') format('truetype');
   font-weight: normal; font-style: normal;
 }
 
@@ -251,7 +250,7 @@ display: flex; padding: 2px 3px; flex-shrink: 0; gap: 2px;
 background: var(--lbg); border-bottom: 1px solid rgba(201,164,114,.1);
 }
 .lm-btn {
-font-family: Fixedsys, monospace; font-size: 8px; letter-spacing: .08em;
+font-family: DotGothic16, monospace; font-size: 8px; letter-spacing: .08em;
 display: flex; align-items: center; gap: 3px;
 padding: 2px 7px; cursor: pointer; color: var(--ta);
 background: var(--tbg);
@@ -382,7 +381,7 @@ scrollbar-width: none;
 
 .folder-row {
 padding: 1px 12px; cursor: pointer; user-select: none;
-font-family: Fixedsys, monospace; font-size: 11px; line-height: 1.7;
+font-family: DotGothic16, monospace; font-size: 11px; line-height: 1.7;
 color: var(--ta); letter-spacing: .03em;
 white-space: nowrap; overflow: hidden;
 transition: color .08s;
@@ -394,7 +393,7 @@ transition: color .08s;
 
 .note-row {
 padding: 0 12px 0 20px; cursor: pointer; user-select: none;
-font-family: Fixedsys, monospace; font-size: 10px; line-height: 1.75;
+font-family: DotGothic16, monospace; font-size: 10px; line-height: 1.75;
 color: var(--tdim);
 white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 transition: color .08s; position: relative;
@@ -454,7 +453,7 @@ display: none; flex-direction: column; gap: 6px; min-width: 140px;
 }
 .fsize-popup.open { display: flex; }
 .fsize-popup-title {
-font-family: Fixedsys, monospace; font-size: 8px;
+font-family: DotGothic16, monospace; font-size: 8px;
 color: #000; opacity: 0.6; letter-spacing: .1em; text-transform: uppercase;
 border-bottom: 1px solid #7a7068; padding-bottom: 4px; margin-bottom: 2px;
 }
@@ -476,7 +475,7 @@ border-right: 2px solid #d4cdc4; border-bottom: 2px solid #d4cdc4;
 box-shadow: inset 1px 1px 0 #7a7068;
 }
 .gknob-label {
-font-family: Fixedsys, monospace; font-size: 8px;
+font-family: DotGothic16, monospace; font-size: 8px;
 color: #000; opacity: 0.7; letter-spacing: .05em; line-height: 1;
 }
 .gknob-knob { display: none; }
@@ -495,7 +494,7 @@ display: none; flex-direction: column; gap: 6px; min-width: 140px;
 }
 .gknob-popup.open { display: flex; }
 .gknob-popup-title {
-font-family: Fixedsys, monospace; font-size: 8px;
+font-family: DotGothic16, monospace; font-size: 8px;
 color: #000; opacity: 0.6; letter-spacing: .1em; text-transform: uppercase;
 border-bottom: 1px solid #7a7068; padding-bottom: 4px; margin-bottom: 2px;
 }
@@ -503,7 +502,7 @@ border-bottom: 1px solid #7a7068; padding-bottom: 4px; margin-bottom: 2px;
 display: flex; align-items: center; gap: 6px;
 }
 .gknob-track-label {
-font-family: Fixedsys, monospace; font-size: 8px; color: #000; opacity: 0.5; width: 12px; text-align: center;
+font-family: DotGothic16, monospace; font-size: 8px; color: #000; opacity: 0.5; width: 12px; text-align: center;
 }
 .gknob-slider {
 flex: 1; height: 14px; position: relative; cursor: pointer;
@@ -524,7 +523,7 @@ cursor: grab; transform: translateX(-50%);
 display: flex; align-items: center; gap: 6px;
 }
 .fsize-track-label {
-font-family: Fixedsys, monospace; font-size: 8px; color: #000; opacity: 0.5; width: 12px;
+font-family: DotGothic16, monospace; font-size: 8px; color: #000; opacity: 0.5; width: 12px;
 }
 .fsize-slider {
 flex: 1; height: 14px; position: relative; cursor: pointer;
@@ -567,7 +566,7 @@ display: block;
 
 /* ── Obsidian path in right tbar ── */
 #rtitle {
-font-family: Fixedsys, monospace;
+font-family: DotGothic16, monospace;
 font-size: 8px; letter-spacing: .08em;
 }
 #rtitle .rpath-root { color: var(--tdim); }
@@ -599,7 +598,7 @@ will-change: transform;
 .fe:hover .fe-arrow { transform: translateX(3px); }
 
 .fe-meta {
-font-family: Fixedsys, monospace; font-size: 8px;
+font-family: DotGothic16, monospace; font-size: 8px;
 color: #5a4e3e; margin-bottom: 8px; letter-spacing: .14em;
 text-transform: uppercase; opacity: .85;
 }
@@ -637,7 +636,7 @@ margin-left: auto; margin-right: auto;
 @keyframes fadein { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
 
 .nbk {
-font-family: Fixedsys, monospace; font-size: 8px; letter-spacing: .12em;
+font-family: DotGothic16, monospace; font-size: 8px; letter-spacing: .12em;
 text-transform: uppercase;
 color: #7a6a52; background: none; border: none; cursor: pointer;
 padding: 0; margin-bottom: 20px; display: block; transition: color .12s;
@@ -646,7 +645,7 @@ opacity: .7;
 .nbk:hover { color: #3d3020; opacity: 1; }
 
 .nmeta {
-font-family: Fixedsys, monospace; font-size: 8px; letter-spacing: .14em;
+font-family: DotGothic16, monospace; font-size: 8px; letter-spacing: .14em;
 text-transform: uppercase;
 color: #7a6a52; margin-bottom: 12px; opacity: .6;
 }
@@ -695,7 +694,7 @@ background: rgba(0,0,0,.25); border-top: 1px solid rgba(255,255,255,.06);
 display: flex; align-items: center; padding: 3px 14px; gap: 10px;
 flex-shrink: 0; position: relative; z-index: 2;
 }
-.si { font-family: Fixedsys, monospace; font-size: 8px; color: var(--tdim); opacity: .8; letter-spacing: .08em; text-transform: uppercase; }
+.si { font-family: DotGothic16, monospace; font-size: 8px; color: var(--tdim); opacity: .8; letter-spacing: .08em; text-transform: uppercase; }
 .sdv { width: 1px; height: 7px; background: rgba(255,255,255,.12); }
 
 /* ── Tree of Life panel ── */
@@ -729,7 +728,7 @@ border-top: 1px solid #2a2518;
 display: flex;
 flex-direction: column;
 gap: 0;
-font-family: Fixedsys, monospace;
+font-family: DotGothic16, monospace;
 overflow: hidden;
 transition: height 0.2s ease;
 height: 54px;
