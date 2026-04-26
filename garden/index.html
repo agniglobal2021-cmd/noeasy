@@ -884,22 +884,29 @@ overflow: hidden;
 
 /* ── Mobile fixes ── */
 @media (max-width: 500px) {
-  /* Шапка — уменьшаем кнопки и отступы */
-  .header-pill { padding: 0 2px; }
-  .sword-btn { padding: 0 7px; }
-  .pill-divider { margin: 0 1px; }
-  .pill-section { font-size: clamp(11px, 3.5vw, 15px); }
-  /* Контент */
+  .header-pill { padding: 0 2px; box-sizing: border-box; width: 100%; }
+  .pill-right { flex-shrink: 0; }
+  .sword-btn { padding: 0 6px; }
+  .fsize-btn { padding: 0 6px; }
+  .gknob-btn { padding: 0 5px !important; }
+  .pill-divider { margin: 0 0px; }
+  .pill-section { font-size: clamp(10px, 3vw, 15px); }
   .desktop { padding: 5px 5px 8px; gap: 4px; }
-  .win-l { width: 150px; }
-  /* Убираем body overflow */
+  .win-l { width: 145px; }
   body { max-width: 100vw; overflow-x: hidden; }
 }
 @media (max-width: 390px) {
-  .sword-btn { padding: 0 5px; }
-  .win-l { width: 120px; }
-  .pill-section { font-size: 11px; }
-  .pill-divider { display: none; }
+  .sword-btn { padding: 0 4px; }
+  .fsize-btn { padding: 0 4px; }
+  .gknob-btn { padding: 0 4px !important; }
+  .win-l { width: 115px; }
+  .pill-section { font-size: 10px; letter-spacing: 0.04em; }
+}
+
+
+.pill-right {
+  display: flex; align-items: center; flex-shrink: 0;
+  gap: 0; overflow: visible;
 }
 
 </style>
@@ -920,6 +927,7 @@ overflow: hidden;
         <span class="pill-section">Digital Garden</span>
       </span>
       <div class="pill-divider"></div>
+      <div class="pill-right">
       <div class="burger-wrap" id="fsizeWrap">
         <button class="fsize-btn" id="fsizeBtn" aria-label="Text size">
           <span class="fsize-label">Aa</span>
@@ -1022,6 +1030,7 @@ overflow: hidden;
         </div>
       </div>
       <div class="pill-divider"></div>
+      </div><!-- /pill-right -->
       <button class="graph-toggle-pill" id="graphToggleBtn" aria-label="Toggle graph view">⬡ MAP</button>
       <div class="pill-divider"></div>
       <div class="burger-wrap">
