@@ -17,10 +17,7 @@
   src: url('../fonts/DotGothic16-Regular.ttf') format('truetype');
   font-weight: normal; font-style: normal;
 }
-@font-face {
-  font-family: 'DotGothic16';
-  font-weight: normal; font-style: normal;
-}
+
 @font-face {
   font-family: 'PageFont';
   src: url('../fonts/PageFont.ttf') format('truetype');
@@ -54,7 +51,6 @@
 }
 
 html { background: #5D5143; overflow-x: hidden; overscroll-behavior: none; }
-body { max-width: 100vw; overflow-x: hidden; }
 
 body::before {
 content: ‘’;
@@ -65,7 +61,7 @@ z-index: 9001; pointer-events: none;
 
 body {
 background: var(--bg);
-font-family: DotGothic16, monospace;
+font-family: ‘DotGothic16’, monospace;
 color: var(--text);
 overflow: hidden;
 overscroll-behavior: none;
@@ -106,7 +102,7 @@ padding: 0 0 0 8px; flex-shrink: 0;
 border-bottom: 1px solid #3e352d;
 }
 .header-titlebar-strip-text {
-font-family: DotGothic16, monospace;
+font-family: ‘DotGothic16’, monospace;
 font-size: 9px; font-weight: 700; letter-spacing: 0.14em;
 color: #f6f1da; line-height: 1;
 white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex: 1;
@@ -134,7 +130,7 @@ gap: 1px; pointer-events: none; user-select: none;
 overflow: hidden;
 }
 .pill-section {
-font-family: Alkhemikal, serif;
+font-family: ‘Alkhemikal’, serif;
 font-size: clamp(13px, 4vw, 19px); letter-spacing: 0.08em; opacity: 0.9; color: #000;
 white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%;
 }
@@ -180,7 +176,7 @@ transition: opacity 0.15s ease, transform 0.15s ease;
 }
 .nav-overlay.open { opacity: 1; pointer-events: auto; transform: translateY(0); }
 .nav-overlay a {
-font-family: DotGothic16, monospace;
+font-family: ‘DotGothic16’, monospace;
 font-size: 10px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase;
 color: #000; text-decoration: none; padding: 8px 12px 8px 8px;
 display: flex; align-items: center;
@@ -425,7 +421,7 @@ border-right: 2px solid #d4cdc4; border-bottom: 2px solid #d4cdc4;
 box-shadow: inset 1px 1px 0 #7a7068;
 }
 .fsize-label {
-font-family: Alkhemikal, serif; font-size: 13px;
+font-family: ‘Alkhemikal’, serif; font-size: 13px;
 color: #000; opacity: 0.75; letter-spacing: .02em; line-height: 1;
 }
 .fsize-knob {
@@ -542,10 +538,8 @@ cursor: grab; transform: translateX(-50%);
 /* ── Win95 scrollbar for right panel ── */
 .rscroll {
 flex: 1; overflow-y: scroll; padding: 14px 14px 20px; position: relative; z-index: 2;
-scrollbar-width: thin; scrollbar-color: #AFA191 #5a5145;
+scrollbar-width: auto; scrollbar-color: #AFA191 #5a5145;
 background: var(--lbg);
--webkit-overflow-scrolling: touch;
-
 }
 .rscroll::-webkit-scrollbar { width: 16px; }
 .rscroll::-webkit-scrollbar-track {
@@ -604,25 +598,25 @@ color: #5a4e3e; margin-bottom: 8px; letter-spacing: .14em;
 text-transform: uppercase; opacity: .85;
 }
 .fe-title {
-font-family: Alkhemikal, serif; font-size: 20px; line-height: 1.2;
+font-family: ‘Alkhemikal’, serif; font-size: 20px; line-height: 1.2;
 color: #1e1510; margin-bottom: 8px; transition: color .15s;
 letter-spacing: .01em;
 }
 .fe-prev {
-font-family: PageFont, DotGothic16, monospace; font-size: var(--r-fsize); line-height: 1.75;
-color: #3d3020; opacity: .85;
+font-family: PageFont, DotGothic16, monospace; font-size: var(--r-fsize); line-height: 1.9;
+color: #3d3020; opacity: .75;
 display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
 max-width: 580px;
 }
 .fe-arrow {
 display: inline-block; margin-top: 10px;
-font-family: DotGothic16, monospace; font-size: 9px; letter-spacing: .1em;
+font-family: DotGothic16, monospace; font-size: 9px; letter-spacing: .12em;
 color: #1e1510;
 background: #AFA191;
 border-top: 2px solid #d4cdc4; border-left: 2px solid #d4cdc4;
 border-right: 2px solid #3d3830; border-bottom: 2px solid #3d3830;
 box-shadow: inset 1px 1px 0 #e0d9d0;
-padding: 3px 12px 3px 10px;
+padding: 3px 10px 3px 8px;
 opacity: 1;
 transition: transform .15s;
 }
@@ -653,7 +647,7 @@ text-transform: uppercase;
 color: #7a6a52; margin-bottom: 12px; opacity: .6;
 }
 .ntitle {
-font-family: Alkhemikal, serif; font-size: 26px; line-height: 1.15;
+font-family: ‘Alkhemikal’, serif; font-size: 26px; line-height: 1.15;
 color: #1e1710; margin-bottom: 8px; letter-spacing: .01em;
 }
 .n-rule {
@@ -661,12 +655,12 @@ width: 40px; height: 1px; background: rgba(93,81,67,.4);
 margin: 14px 0 18px;
 }
 .nbody {
-font-family: PageFont, DotGothic16, monospace; font-size: var(--r-fsize);
+font-family: ‘PageFont’, ‘DotGothic16’, monospace; font-size: var(--r-fsize);
 line-height: 2.1; color: #3d3428; opacity: 1;
 }
 .nbody p { margin-bottom: 18px; max-width: 560px; }
 .nbody h2 {
-font-family: Alkhemikal, serif; font-size: 17px; color: #1e1710;
+font-family: ‘Alkhemikal’, serif; font-size: 17px; color: #1e1710;
 margin: 36px 0 14px; letter-spacing: .02em; font-weight: 400;
 }
 .nbody blockquote {
@@ -680,11 +674,11 @@ margin: 24px 0; color: #6a5c4a; font-style: normal;
 padding: 0 0 32px;
 animation: fadein .2s ease;
 max-width: 640px;
-margin-left: auto; margin-right: auto;
 }
 .nv-inner {
 background: #c4bdb0;
-border: none; box-shadow: none;
+border: none;
+box-shadow: none;
 padding: 24px 28px 28px;
 margin-bottom: 12px;
 }
@@ -882,33 +876,19 @@ overflow: hidden;
 .win-l.graph-open-mobile .lbody { max-height: none; height: 100%; }
 }
 
-/* ── Mobile fixes ── */
+/* ── Mobile ── */
 @media (max-width: 500px) {
-  .header-pill { padding: 0 2px; box-sizing: border-box; width: 100%; }
-  .pill-right { flex-shrink: 0; }
-  .sword-btn { padding: 0 6px; }
-  .fsize-btn { padding: 0 6px; }
-  .gknob-btn { padding: 0 5px !important; }
-  .pill-divider { margin: 0 0px; }
-  .pill-section { font-size: clamp(10px, 3vw, 15px); }
-  .desktop { padding: 5px 5px 8px; gap: 4px; }
-  .win-l { width: 145px; }
-  body { max-width: 100vw; overflow-x: hidden; }
+  .header-pill { box-sizing: border-box; width: 100%; }
+  .pill-section { font-size: clamp(11px, 3.5vw, 19px); }
+  .sword-btn { padding: 0 8px; flex-shrink: 0; }
+  .fsize-btn { padding: 0 7px; flex-shrink: 0; }
+  .gknob-btn { padding: 0 7px !important; flex-shrink: 0; }
+  .treeBtn   { padding: 0 7px !important; flex-shrink: 0; }
+  .pill-divider { flex-shrink: 0; margin: 0 1px; }
+  .desktop { padding: 5px; gap: 4px; box-sizing: border-box; width: 100%; overflow: hidden; }
+  .win-l { width: 130px; flex-shrink: 0; }
+  .win-r { flex: 1; min-width: 0; overflow: hidden; }
 }
-@media (max-width: 390px) {
-  .sword-btn { padding: 0 4px; }
-  .fsize-btn { padding: 0 4px; }
-  .gknob-btn { padding: 0 4px !important; }
-  .win-l { width: 115px; }
-  .pill-section { font-size: 10px; letter-spacing: 0.04em; }
-}
-
-
-.pill-right {
-  display: flex; align-items: center; flex-shrink: 0;
-  gap: 0; overflow: visible;
-}
-
 </style>
 
 </head>
@@ -927,7 +907,6 @@ overflow: hidden;
         <span class="pill-section">Digital Garden</span>
       </span>
       <div class="pill-divider"></div>
-      <div class="pill-right">
       <div class="burger-wrap" id="fsizeWrap">
         <button class="fsize-btn" id="fsizeBtn" aria-label="Text size">
           <span class="fsize-label">Aa</span>
@@ -1030,7 +1009,6 @@ overflow: hidden;
         </div>
       </div>
       <div class="pill-divider"></div>
-      </div><!-- /pill-right -->
       <button class="graph-toggle-pill" id="graphToggleBtn" aria-label="Toggle graph view">⬡ MAP</button>
       <div class="pill-divider"></div>
       <div class="burger-wrap">
@@ -2497,15 +2475,13 @@ function initGraph() {
     starsCvTree.style.width  = w + 'px';
     starsCvTree.style.height = h + 'px';
     treeStarCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    if (!treeStars.length) {
-      treeStars = Array.from({length: 90}, () => ({
-        x: Math.random() * w, y: Math.random() * h,
-        size: Math.random() < 0.12 ? 2 : 1,
-        bright: Math.random(),
-        phase: Math.random() * 1000,
-        speed: 0.2 + Math.random() * 0.8,
-      }));
-    }
+    if (!treeStars.length) treeStars = Array.from({length: 90}, () => ({
+      x: Math.random() * w, y: Math.random() * h,
+      size: Math.random() < 0.12 ? 2 : 1,
+      bright: Math.random(),
+      phase: Math.random() * 1000,
+      speed: 0.2 + Math.random() * 0.8,
+    }));
   }
 
   function drawTreeStars() {
@@ -2567,7 +2543,6 @@ function initGraph() {
   function closeTree() {
     treeVisible = false;
     selectedSephs = [];
-    treeStars = []; // reset so next open re-randomizes
     // Reset all drag offsets
     SEPHIROT.forEach(s => { dragOffsets[s.id] = {dx:0, dy:0, vx:0, vy:0}; });
     if (springAnimId) { cancelAnimationFrame(springAnimId); springAnimId = null; }
