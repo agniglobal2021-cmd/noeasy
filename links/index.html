@@ -99,7 +99,7 @@ main{min-height:100vh;display:flex;flex-direction:column;align-items:center;padd
 .con-scroll::-webkit-scrollbar-track{background:#1a1610;border-left:1px solid #2a2010;}
 .con-scroll::-webkit-scrollbar-thumb{background:#3a3020;border-top:1px solid #5a4a30;border-left:1px solid #5a4a30;border-right:1px solid #111008;border-bottom:1px solid #111008;}
 
-/* Section header — Alkhemikal */
+/* Section header */
 .con-section-hd{
   display:block;
   padding:10px 12px 4px;
@@ -111,7 +111,7 @@ main{min-height:100vh;display:flex;flex-direction:column;align-items:center;padd
   text-shadow:0 0 8px rgba(214,213,169,0.35);
 }
 
-/* Link rows — Fixedsys, left-aligned */
+/* Link rows — starts with / */
 a.con-link{
   display:block;
   padding:1px 12px 1px 20px;
@@ -125,25 +125,81 @@ a.con-link{
   position:relative;z-index:2;
   -webkit-tap-highlight-color:transparent;
 }
-a.con-link::before{content:'· ';}
+a.con-link::before{content:'/ ';}
 a.con-link:hover{color:var(--ta);}
+
+/* Brighter text on wide screens */
+@media(min-width:681px){
+  a.con-link{color:#9e8e6e;}
+  a.con-link:hover{color:var(--thl);}
+  .con-section-hd{color:#ddd9b0;text-shadow:0 0 10px rgba(214,213,169,0.5);}
+}
 
 /* Status bar */
 .con-sbar{background:#181410;border-top:1px solid rgba(201,164,114,.08);display:flex;align-items:center;padding:3px 10px;gap:8px;flex-shrink:0;position:relative;z-index:2;}
 .con-si{font-family:'Fixedsys',monospace;font-size:7px;color:var(--tdim);opacity:.55;letter-spacing:.1em;text-transform:uppercase;animation:flicker 4s step-end infinite;}
 .con-sdv{width:1px;height:7px;background:rgba(122,106,82,.3);}
 
-/* ── Form window body ── */
-.form-body{background:var(--bg);padding:16px 14px 18px;display:flex;flex-direction:column;gap:8px;}
+/* ── Form window — header/toolbar style ── */
+.form-body{
+  background:#AFA191;
+  padding:14px 14px 16px;
+  display:flex;flex-direction:column;gap:10px;
+}
 .form-field{width:100%;}
-.form-field input,.form-field textarea{width:100%;background:var(--bg);color:var(--text);border-top:1px solid #7a7068;border-left:1px solid #7a7068;border-right:1px solid #d4cdc4;border-bottom:1px solid #d4cdc4;box-shadow:inset 1px 1px 0 rgba(0,0,0,0.08);padding:7px 9px;font-family:'DotGothic16',monospace;font-size:10px;letter-spacing:0.10em;outline:none;resize:none;display:block;border-radius:0;-webkit-appearance:none;appearance:none;transition:box-shadow 0.15s;}
-.form-field input:focus,.form-field textarea:focus{box-shadow:inset 1px 1px 0 rgba(0,0,0,0.18),0 0 0 1px #5D5143;}
-.form-field input::placeholder,.form-field textarea::placeholder{color:var(--text);opacity:0.28;font-size:8px;letter-spacing:0.16em;text-transform:uppercase;}
+.form-label{
+  display:block;
+  font-family:'DotGothic16',monospace;font-size:8px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;
+  color:#3d3020;margin-bottom:4px;
+  padding-left:2px;
+}
+.form-field input,.form-field textarea{
+  width:100%;
+  background:#c8c2b8;
+  color:#1e1a14;
+  border-top:1px solid #7a7068;
+  border-left:1px solid #7a7068;
+  border-right:1px solid #d4cdc4;
+  border-bottom:1px solid #d4cdc4;
+  box-shadow:inset 1px 1px 0 rgba(0,0,0,0.12);
+  padding:7px 9px;
+  font-family:'DotGothic16',monospace;
+  font-size:10px;letter-spacing:0.08em;
+  outline:none;resize:none;display:block;border-radius:0;
+  -webkit-appearance:none;appearance:none;
+  transition:box-shadow 0.15s;
+}
+.form-field input:focus,.form-field textarea:focus{
+  box-shadow:inset 1px 1px 0 rgba(0,0,0,0.2),0 0 0 1px #5D5143;
+}
+.form-field input::placeholder,.form-field textarea::placeholder{
+  color:#7a6a52;opacity:0.6;font-size:8px;letter-spacing:0.14em;text-transform:uppercase;
+}
 .form-field textarea{min-height:80px;}
-button.form-submit{margin-top:4px;height:28px;padding:0 16px;display:inline-flex;align-items:center;gap:8px;font-family:'DotGothic16',monospace;font-size:9px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:#000;background:#AFA191;border-top:2px solid #d4cdc4;border-left:2px solid #d4cdc4;border-right:2px solid #3d3830;border-bottom:2px solid #3d3830;box-shadow:inset 1px 1px 0 #d4cdc4,inset -1px -1px 0 #7a7068;cursor:pointer;-webkit-appearance:none;}
-button.form-submit:active{border-top:2px solid #3d3830;border-left:2px solid #3d3830;border-right:2px solid #d4cdc4;border-bottom:2px solid #d4cdc4;box-shadow:inset 1px 1px 0 #7a7068;}
-.form-status{font-size:8px;letter-spacing:0.22em;text-transform:uppercase;opacity:0;transition:opacity 0.4s;font-family:'DotGothic16',monospace;}
-.form-status.show{opacity:0.5;}
+
+.form-footer{display:flex;align-items:center;gap:12px;}
+button.form-submit{
+  height:28px;padding:0 18px;
+  display:inline-flex;align-items:center;
+  font-family:'Alkhemikal',serif;font-size:15px;letter-spacing:0.06em;
+  color:#1e1a14;
+  background:#AFA191;
+  border-top:2px solid #d4cdc4;border-left:2px solid #d4cdc4;
+  border-right:2px solid #3d3830;border-bottom:2px solid #3d3830;
+  box-shadow:inset 1px 1px 0 #d4cdc4,inset -1px -1px 0 #7a7068;
+  cursor:pointer;-webkit-appearance:none;flex-shrink:0;
+}
+button.form-submit:active{
+  border-top:2px solid #3d3830;border-left:2px solid #3d3830;
+  border-right:2px solid #d4cdc4;border-bottom:2px solid #d4cdc4;
+  box-shadow:inset 1px 1px 0 #7a7068;
+  padding-top:2px;padding-left:20px;
+}
+.form-status{
+  font-family:'DotGothic16',monospace;font-size:8px;letter-spacing:0.18em;text-transform:uppercase;
+  color:#3d3020;opacity:0;transition:opacity 0.4s;
+}
+.form-status.show{opacity:0.6;}
 
 @media(max-width:600px){
   main{padding-top:calc(var(--header-total-h) + 14px);padding-bottom:60px;}
@@ -174,7 +230,6 @@ button.form-submit:active{border-top:2px solid #3d3830;border-left:2px solid #3d
           <a href="/">Home</a>
           <a href="/about/">About</a>
           <a href="/gallery/">Gallery</a>
-          <a href="/garden/">Garden</a>
           <a href="/links/" class="current">Links</a>
         </div>
       </div>
@@ -207,18 +262,23 @@ button.form-submit:active{border-top:2px solid #3d3830;border-left:2px solid #3d
         </div>
       </div>
       <div class="form-body">
-        <form id="contact-form" action="https://formspree.io/f/xqewvwkv" method="POST">
+        <form id="contact-form" action="https://formspree.io/f/xqewvwkv" method="POST" style="display:flex;flex-direction:column;gap:10px;">
           <div class="form-field">
+            <label class="form-label">Name</label>
             <input type="text" name="name" placeholder="Your name" required autocomplete="off">
           </div>
-          <div class="form-field" style="margin-top:8px;">
+          <div class="form-field">
+            <label class="form-label">Email</label>
             <input type="email" name="email" placeholder="Your email" required autocomplete="off">
           </div>
-          <div class="form-field" style="margin-top:8px;">
-            <textarea name="message" placeholder="Message" required></textarea>
+          <div class="form-field">
+            <label class="form-label">Message</label>
+            <textarea name="message" placeholder="Write something..." required></textarea>
           </div>
-          <button type="submit" class="form-submit">Send →</button>
-          <div class="form-status" id="form-status"></div>
+          <div class="form-footer">
+            <button type="submit" class="form-submit">Send</button>
+            <div class="form-status" id="form-status"></div>
+          </div>
         </form>
       </div>
     </div>
@@ -325,7 +385,6 @@ const groups = [
 
 // Build console
 const scroll = document.getElementById('conScroll');
-let totalLinks = 0;
 
 groups.forEach(group => {
   const hd = document.createElement('div');
@@ -342,11 +401,8 @@ groups.forEach(group => {
     a.addEventListener('mouseenter', () => cursor.classList.add('active'));
     a.addEventListener('mouseleave', () => cursor.classList.remove('active'));
     scroll.appendChild(a);
-    totalLinks++;
   });
 });
-
-
 
 // Reveal
 setTimeout(() => {
@@ -358,7 +414,7 @@ setTimeout(() => {
 }, 220);
 
 // Form
-const form   = document.getElementById('contact-form');
+const form    = document.getElementById('contact-form');
 const fstatus = document.getElementById('form-status');
 form.addEventListener('submit', async e => {
   e.preventDefault();
