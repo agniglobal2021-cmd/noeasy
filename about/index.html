@@ -44,10 +44,14 @@ header>*{pointer-events:auto;}
 .pill-section{font-family:'Alkhemikal',serif;font-size:19px;letter-spacing:0.08em;opacity:0.9;color:#000;}
 .sword-btn{height:calc(100% - 10px);padding:0 12px;margin:0 2px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;background:#AFA191;border-top:2px solid #d4cdc4;border-left:2px solid #d4cdc4;border-right:2px solid #3d3830;border-bottom:2px solid #3d3830;box-shadow:inset 1px 1px 0 #d4cdc4,inset -1px -1px 0 #7a7068;cursor:pointer;-webkit-tap-highlight-color:transparent;flex-shrink:0;}
 .sword-btn:active,.sword-btn.open{border-top:2px solid #3d3830;border-left:2px solid #3d3830;border-right:2px solid #d4cdc4;border-bottom:2px solid #d4cdc4;box-shadow:inset 1px 1px 0 #7a7068;}
-.sword-btn .line{height:2px;background:#000;opacity:0.8;transition:transform 0.38s cubic-bezier(0.16,1,0.3,1),opacity 0.25s;width:18px;}
-.sword-btn.open .line:nth-child(1){transform:translateY(6px) rotate(45deg);}
+.sword-btn .line{position:relative;height:2px;background:#000;border-radius:0;opacity:0.8;transition:transform 0.38s cubic-bezier(0.16,1,0.3,1),opacity 0.25s,width 0.38s cubic-bezier(0.16,1,0.3,1);}
+.sword-btn .line:nth-child(1),.sword-btn .line:nth-child(2),.sword-btn .line:nth-child(3){width:18px;}
+.sword-btn .line::after{content:'';position:absolute;right:3px;top:50%;transform:translateY(-50%);width:2px;height:6px;background:#000;border-radius:0;opacity:0;transition:opacity 0.25s;}
+.sword-btn.open .line{opacity:1;}
+.sword-btn.open .line:nth-child(1){width:18px;transform:translateY(6px) rotate(45deg);}
 .sword-btn.open .line:nth-child(2){opacity:0;transform:scaleX(0);}
-.sword-btn.open .line:nth-child(3){transform:translateY(-6px) rotate(-45deg);}
+.sword-btn.open .line:nth-child(3){width:18px;transform:translateY(-6px) rotate(-45deg);}
+.sword-btn.open .line::after{opacity:0.55;}
 .burger-wrap{position:relative;height:100%;display:flex;align-items:center;}
 .nav-overlay{position:absolute;top:calc(100% + 4px);right:0;z-index:8999;min-width:160px;padding:2px;background:#AFA191;border-top:2px solid #d4cdc4;border-left:2px solid #d4cdc4;border-right:2px solid #3d3830;border-bottom:2px solid #3d3830;box-shadow:2px 2px 0 #2a2520;display:flex;flex-direction:column;opacity:0;pointer-events:none;transform:translateY(-4px);transform-origin:top right;transition:opacity 0.15s ease,transform 0.15s ease;}
 .nav-overlay.open{opacity:1;pointer-events:auto;transform:translateY(0);}
@@ -60,13 +64,17 @@ header>*{pointer-events:auto;}
 /* ── LAYOUT ── */
 main{
   position:fixed;
-  top:var(--header-total-h);
-  left:16px;right:16px;bottom:16px;
-  display:flex;align-items:center;justify-content:center;
+  top:calc(var(--header-total-h) + 14px);
+  left:12px; right:12px; bottom:12px;
+  display:flex;
+  align-items:flex-start;
+  justify-content:center;
 }
 
 .win{
-  width:100%;max-width:480px;height:100%;
+  width:100%;
+  max-width:660px;
+  height:100%;
   display:flex;flex-direction:column;
   border-top:2px solid var(--blt);border-left:2px solid var(--blt);
   border-right:2px solid var(--bdk);border-bottom:2px solid var(--bdk);
@@ -81,6 +89,7 @@ main{
 .tbar-t{flex:1;font-size:8px;font-weight:700;letter-spacing:.12em;color:var(--ttxt);overflow:hidden;white-space:nowrap;text-overflow:ellipsis;line-height:1;}
 .tbbtns{display:flex;gap:1px;flex-shrink:0;align-items:stretch;}
 .tbbtn{width:16px;background:var(--btn);border-top:1px solid var(--blt);border-left:1px solid var(--blt);border-right:1px solid var(--bdk);border-bottom:1px solid var(--bdk);display:flex;align-items:center;justify-content:center;cursor:default;flex-shrink:0;padding:0 0 1px 0;}
+.tbbtn:active{border-top:1px solid var(--bdk);border-left:1px solid var(--bdk);border-right:1px solid var(--blt);border-bottom:1px solid var(--blt);}
 
 .con-body{
   flex:1;min-height:0;
@@ -104,11 +113,6 @@ main{
   border-bottom:1px solid rgba(42,37,32,0.15);
 }
 
-/*
-  Все три элемента выровнены по ширине подписи.
-  .hero-stack — inline-flex колонка, ширина = max-content подписи.
-  Аватарка и лого растягиваются на 100% этой ширины.
-*/
 .hero-stack{
   display:inline-flex;
   flex-direction:column;
@@ -116,7 +120,6 @@ main{
   gap:12px;
 }
 
-/* Аватарка — квадрат со стороной = ширина стека, обрезан в круг */
 .hero-avatar{
   width:100%;
   aspect-ratio:1/1;
@@ -135,7 +138,6 @@ main{
   -webkit-user-drag:none;
 }
 
-/* Лого — растягивается на ту же ширину, пропорция сохраняется */
 .hero-logo{
   width:100%;
   aspect-ratio:1609/590;
@@ -146,7 +148,6 @@ main{
   -webkit-user-drag:none;
 }
 
-/* Подпись — якорь ширины, не переносится */
 .about-role{
   font-family:'Fixedsys',monospace;
   font-size:9px;letter-spacing:0.2em;text-transform:uppercase;
@@ -181,8 +182,20 @@ main{
 }
 .section-text em{color:#2a2520;font-style:normal;}
 
-@media(max-width:600px){
-  main{left:8px;right:8px;bottom:8px;}
+/* Portrait: window fills screen snugly */
+@media (orientation:portrait) {
+  main{ left:8px; right:8px; bottom:8px; }
+  .win{ max-width:100%; }
+}
+
+/* Landscape: wider but not forced full */
+@media (orientation:landscape) {
+  main{ left:16px; right:16px; bottom:12px; }
+  .win{ max-width:700px; }
+}
+
+@media(max-width:400px){
+  main{left:6px;right:6px;bottom:6px;}
 }
 </style>
 </head>
@@ -208,6 +221,7 @@ main{
         <a href="/">Home</a>
         <a href="/about/" class="current">About</a>
         <a href="/gallery/">Gallery</a>
+        <a href="/garden/">Garden</a>
         <a href="/links/">Links</a>
       </div>
     </div>
@@ -225,18 +239,13 @@ main{
 
     <div class="con-body">
       <div class="about-hero">
-
         <div class="hero-stack">
-          <!-- 1. Аватарка -->
           <div class="hero-avatar">
-            <img src="assets/avatar.png" alt="" draggable="false">
+            <img src="avatar.png" alt="" draggable="false">
           </div>
-          <!-- 2. Лого -->
-          <img class="hero-logo" src="assets/logo.png" alt="Noeasy" draggable="false">
-          <!-- 3. Подпись — задаёт ширину всего стека -->
+          <img class="hero-logo" src="logo.png" alt="Noeasy" draggable="false">
           <div class="about-role">Artist &amp; Illustrator ☩ Based Worldwide</div>
         </div>
-
         <span class="about-divider">✠ ✠ ✠</span>
       </div>
 
@@ -264,7 +273,6 @@ main{
         <div class="section-label">Medium</div>
         <div class="section-text">I work digitally and have a background in <em>frame-by-frame animation</em>. My portfolio includes album covers, collaborations with hip-hop artists, prints and digital art. Ahead — works on physical canvas and an <em>original Tarot deck</em>.</div>
       </div>
-
     </div>
   </div>
 </main>
