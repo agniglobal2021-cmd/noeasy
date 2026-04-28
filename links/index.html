@@ -69,7 +69,7 @@ header>*{pointer-events:auto;}
 .nav-overlay{position:absolute;top:calc(100% + 4px);right:0;z-index:8999;min-width:160px;padding:2px;background:#AFA191;border-top:2px solid #d4cdc4;border-left:2px solid #d4cdc4;border-right:2px solid #3d3830;border-bottom:2px solid #3d3830;box-shadow:2px 2px 0 #2a2520;display:flex;flex-direction:column;opacity:0;pointer-events:none;transform:translateY(-4px);transform-origin:top right;transition:opacity 0.15s ease,transform 0.15s ease;}
 .nav-overlay.open{opacity:1;pointer-events:auto;transform:translateY(0);}
 .nav-overlay a{font-family:'DotGothic16',monospace;font-size:10px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:#000;text-decoration:none;padding:8px 12px 8px 8px;display:flex;align-items:center;}
-.nav-overlay a::before{content:'/';margin-right:7px;font-size:10px;}
+.nav-overlay a::before{content:'';margin-right:0;font-size:10px;}
 .nav-overlay a:hover{background:#5D5143;color:#f6f1da;}
 .nav-overlay a+a{border-top:1px solid #7a7068;}
 .nav-overlay a.current{background:#c8c2ba;}
@@ -140,7 +140,7 @@ a.con-link{
   position:relative;z-index:2;
   -webkit-tap-highlight-color:transparent;
 }
-a.con-link::before{content:'/ ';}
+a.con-link::before{content:'';}
 a.con-link:hover{color:var(--ta);}
 
 /* Brighter text on wide screens */
@@ -216,9 +216,66 @@ button.form-submit:active{
 }
 .form-status.show{opacity:0.6;}
 
-@media(max-width:600px){
+/* ── Support Me button ── */
+@keyframes blink-text{
+  0%,49.9%{opacity:1;text-shadow:0 2px 0 #2a2520,0 3px 0 #1a1510,0 0 12px rgba(90,60,20,0.7);}
+  50%,100%{opacity:0;text-shadow:none;}
+}
+.support-btn{
+  display:flex;align-items:center;justify-content:center;
+  height:38px;padding:0 18px;
+  background:#AFA191;
+  border-top:2px solid #d4cdc4;border-left:2px solid #d4cdc4;
+  border-right:2px solid #3d3830;border-bottom:2px solid #3d3830;
+  box-shadow:inset 1px 1px 0 #d4cdc4,inset -1px -1px 0 #7a7068,2px 2px 0 #2a2520;
+  text-decoration:none;cursor:pointer;flex-shrink:0;
+  -webkit-tap-highlight-color:transparent;
+}
+.support-btn span{
+  font-family:'Alkhemikal',serif;font-size:18px;letter-spacing:0.1em;
+  color:#2a1e10;
+  animation:blink-text 0.9s step-end infinite;
+  display:block;line-height:1;
+}
+.support-btn:active{
+  border-top:2px solid #3d3830;border-left:2px solid #3d3830;
+  border-right:2px solid #d4cdc4;border-bottom:2px solid #d4cdc4;
+  box-shadow:inset 1px 1px 0 #7a7068;
+}
+
+/* ── Right column ── */
+.right-col{display:flex;flex-direction:column;gap:20px;}
+
+/* ── Mobile ── */
+@media(max-width:680px){
   main{padding-top:calc(var(--header-total-h) + 14px);padding-bottom:60px;}
-  .con-scroll{max-height:62vh;}
+  .con-scroll{max-height:none;overflow-y:visible;}
+}
+
+/* ── Desktop two-column layout ── */
+@media(min-width:681px){
+  main{
+    padding-top:calc(var(--header-total-h) + 18px);
+    padding-bottom:18px;
+    justify-content:flex-start;
+    align-items:center;
+  }
+  .content-wrap{
+    max-width:min(740px,96vw);
+    flex-direction:row;
+    align-items:stretch;
+    height:calc(100vh - var(--header-total-h) - 36px);
+    gap:16px;
+  }
+  #linksWin{
+    flex:1;min-width:0;
+    display:flex;flex-direction:column;
+  }
+  #linksWin .con-body{flex:1;min-height:0;}
+  #linksWin .con-scroll{max-height:none;flex:1;overflow-y:auto;}
+  .right-col{flex:1;min-width:0;gap:12px;}
+  #formWin{flex:1;min-height:0;}
+  .form-body{height:100%;box-sizing:border-box;}
 }
 </style>
 </head>
@@ -269,6 +326,8 @@ button.form-submit:active{
       </div>
     </div>
 
+    <div class="right-col">
+    <a href="https://buymeacoffee.com/noeasyvision" class="support-btn" target="_blank" rel="noopener noreferrer"><span>Support Me</span></a>
     <!-- WINDOW 2: Form -->
     <div class="win" id="formWin">
       <div class="tbar">
@@ -297,7 +356,8 @@ button.form-submit:active{
           </div>
         </form>
       </div>
-    </div>
+    </div><!-- /formWin -->
+    </div><!-- /right-col -->
 
   </div>
 </main>
