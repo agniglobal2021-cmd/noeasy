@@ -20,6 +20,7 @@
   --ttxt:#f6f1da; --btn:#AFA191; --blt:#d4cdc4; --bdk:#3d3830; --bsh:#2a2520;
   --header-titlebar-h:22px; --header-pill-h:44px;
   --header-total-h:calc(env(safe-area-inset-top,0px) + var(--header-titlebar-h) + var(--header-pill-h));
+  --page-gap:14px;
 }
 
 html,body{height:100%;overflow:hidden;background:#5D5143;}
@@ -32,13 +33,13 @@ body::before{content:'';position:fixed;top:-100vh;left:0;right:0;height:100vh;ba
 #cursor.pressed{transform:translate(-50%,-50%) scale(0.6);}
 
 /* ── HEADER ── */
-header{position:fixed;top:0;left:0;right:0;z-index:500;display:flex;flex-direction:column;pointer-events:none;opacity:0;transition:opacity 0.7s ease;background:var(--desk);}
+header{position:fixed;top:0;left:0;right:0;width:100%;z-index:500;display:flex;flex-direction:column;pointer-events:none;opacity:0;transition:opacity 0.7s ease;background:var(--desk);box-sizing:border-box;}
 header.visible{opacity:1;}
 header>*{pointer-events:auto;}
 .header-safe-top{height:env(safe-area-inset-top,0px);background:var(--desk);}
-.header-titlebar-strip{height:var(--header-titlebar-h);background:#5D5143;display:flex;align-items:center;padding:0 0 0 8px;border-bottom:1px solid #3e352d;}
+.header-titlebar-strip{height:var(--header-titlebar-h);background:#5D5143;display:flex;align-items:center;padding:0 0 0 8px;border-bottom:1px solid #3e352d;width:100%;}
 .header-titlebar-strip-text{font-family:'DotGothic16',monospace;font-size:9px;font-weight:700;letter-spacing:0.14em;color:#f6f1da;line-height:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:1;}
-.header-pill{display:flex;align-items:center;position:relative;height:var(--header-pill-h);background:#AFA191;border-top:1px solid #d4cdc4;border-bottom:2px solid #7a7068;box-shadow:0 1px 0 #404040;padding:0 4px;}
+.header-pill{display:flex;align-items:center;position:relative;height:var(--header-pill-h);background:#AFA191;border-top:1px solid #d4cdc4;border-bottom:2px solid #7a7068;box-shadow:0 1px 0 #404040;padding:0 4px;width:100%;}
 .pill-divider{width:2px;height:26px;background:#808080;border-right:1px solid #d4cdc4;margin:0 2px;flex-shrink:0;}
 .pill-center{position:absolute;left:50%;transform:translateX(-50%);pointer-events:none;user-select:none;white-space:nowrap;}
 .pill-section{font-family:'Alkhemikal',serif;font-size:19px;letter-spacing:0.08em;opacity:0.9;color:#000;}
@@ -64,8 +65,8 @@ header>*{pointer-events:auto;}
 /* ── LAYOUT ── */
 main{
   position:fixed;
-  top:calc(var(--header-total-h) + 14px);
-  left:12px; right:12px; bottom:12px;
+  top:calc(var(--header-total-h) + var(--page-gap));
+  left:12px; right:12px; bottom:var(--page-gap);
   display:flex;
   align-items:flex-start;
   justify-content:center;
@@ -184,18 +185,18 @@ main{
 
 /* Portrait: window fills screen snugly */
 @media (orientation:portrait) {
-  main{ left:8px; right:8px; bottom:8px; }
+  main{ left:8px; right:8px; }
   .win{ max-width:100%; }
 }
 
 /* Landscape: wider but not forced full */
 @media (orientation:landscape) {
-  main{ left:16px; right:16px; bottom:12px; }
+  main{ left:16px; right:16px; }
   .win{ max-width:700px; }
 }
 
 @media(max-width:400px){
-  main{left:6px;right:6px;bottom:6px;}
+  main{left:6px;right:6px;}
 }
 </style>
 </head>
@@ -221,7 +222,6 @@ main{
         <a href="/">Home</a>
         <a href="/about/" class="current">About</a>
         <a href="/gallery/">Gallery</a>
-        <a href="/garden/">Garden</a>
         <a href="/links/">Links</a>
       </div>
     </div>
@@ -241,9 +241,9 @@ main{
       <div class="about-hero">
         <div class="hero-stack">
           <div class="hero-avatar">
-            <img src="avatar.png" alt="" draggable="false">
+            <img src="../assets/avatar.png" alt="" draggable="false">
           </div>
-          <img class="hero-logo" src="logo.png" alt="Noeasy" draggable="false">
+          <img class="hero-logo" src="../assets/logo.png" alt="Noeasy" draggable="false">
           <div class="about-role">Artist &amp; Illustrator ☩ Based Worldwide</div>
         </div>
         <span class="about-divider">✠ ✠ ✠</span>
