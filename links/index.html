@@ -75,8 +75,8 @@ header>*{pointer-events:auto;}
 .nav-overlay a.current{background:#c8c2ba;}
 
 /* ── MAIN ── */
-main{min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:calc(var(--header-total-h) + 24px) 16px 80px;}
-.content-wrap{width:100%;max-width:min(480px,96vw);display:flex;flex-direction:column;gap:20px;}
+main{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:calc(var(--header-total-h) + 24px) 16px 60px;}
+.content-wrap{width:100%;max-width:min(320px,92vw);display:flex;flex-direction:column;gap:20px;}
 
 /* ── Win95 window ── */
 .win{display:flex;flex-direction:column;overflow:hidden;border-top:2px solid var(--blt);border-left:2px solid var(--blt);border-right:2px solid var(--bdk);border-bottom:2px solid var(--bdk);box-shadow:2px 2px 0 var(--bsh);opacity:0;transform:translateY(12px);transition:opacity 0.5s cubic-bezier(0.16,1,0.3,1),transform 0.5s cubic-bezier(0.16,1,0.3,1);}
@@ -99,24 +99,39 @@ main{min-height:100vh;display:flex;flex-direction:column;align-items:center;padd
 .con-scroll::-webkit-scrollbar-track{background:#1a1610;border-left:1px solid #2a2010;}
 .con-scroll::-webkit-scrollbar-thumb{background:#3a3020;border-top:1px solid #5a4a30;border-left:1px solid #5a4a30;border-right:1px solid #111008;border-bottom:1px solid #111008;}
 
+/* ── Cross grid background ── */
+.cross-grid{
+  position:absolute;inset:0;width:100%;height:100%;
+  pointer-events:none;z-index:1;opacity:0.55;
+}
+
 /* Section header */
 .con-section-hd{
   display:block;
-  padding:10px 12px 4px;
+  padding:6px 12px 5px;
   font-family:'Alkhemikal',serif;
   font-size:16px;letter-spacing:0.06em;
   color:var(--ta);
   user-select:none;
+  text-align:center;
   animation:flicker 4.5s step-end infinite;
   text-shadow:0 0 8px rgba(214,213,169,0.35);
 }
+.con-group{
+  margin:8px 8px 0;
+  border:1px solid rgba(214,213,169,0.1);
+  overflow:hidden;
+}
+.con-group:last-child{ margin-bottom:8px; }
+.con-group-gap{ display:none; }
 
 /* Link rows — starts with / */
 a.con-link{
   display:block;
-  padding:1px 12px 1px 20px;
-  font-family:'Fixedsys',monospace;font-size:10px;line-height:1.75;
+  padding:2px 12px;
+  font-family:'Fixedsys',monospace;font-size:13px;line-height:1.9;
   color:var(--tdim);text-decoration:none;
+  text-align:center;
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
   transition:color .08s;
   animation:flicker 5s step-end infinite;
@@ -249,6 +264,7 @@ button.form-submit:active{
         </div>
       </div>
       <div class="con-body">
+        <canvas class="cross-grid" id="crossGrid"></canvas>
         <div class="con-scroll" id="conScroll"></div>
       </div>
     </div>
@@ -288,6 +304,53 @@ button.form-submit:active{
 
 <script>
 document.addEventListener('contextmenu', e => e.preventDefault());
+
+// ── Cross grid ──
+(function(){
+  const canvas = document.getElementById('crossGrid');
+  const ctx = canvas.getContext('2d');
+  const STEP = 16;
+  const SYMBOL = '✠';
+  let w, h, cols, rows;
+
+  function resize() {
+    const body = canvas.parentElement;
+    w = canvas.width  = body.offsetWidth;
+    h = canvas.height = body.offsetHeight;
+    cols = Math.ceil(w / STEP) + 1;
+    rows = Math.ceil(h / STEP) + 1;
+  }
+
+  new ResizeObserver(resize).observe(canvas.parentElement);
+  resize();
+
+  ctx.font = '11px monospace';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+
+  let t = 0;
+  function draw() {
+    ctx.clearRect(0, 0, w, h);
+    for (let r = 0; r < rows; r++) {
+      for (let c = 0; c < cols; c++) {
+        const x = c * STEP;
+        const y = r * STEP;
+        const dx = (x - w * 0.5) / w;
+        const dy = (y - h * 0.5) / h;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        const wave1 = Math.sin(dist * 9 - t * 0.7);
+        const wave2 = Math.sin(dist * 5 + t * 0.4 + c * 0.3);
+        const pulse = (wave1 * 0.6 + wave2 * 0.4) * 0.5 + 0.5;
+        const alpha = 0.04 + pulse * 0.18;
+        ctx.fillStyle = `rgba(160,130,80,${alpha.toFixed(3)})`;
+        ctx.fillText(SYMBOL, x, y);
+      }
+    }
+    t += 0.018;
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
 
 // Grain
 const grain = document.getElementById('grain');
@@ -354,7 +417,7 @@ const groups = [
     label: 'Social',
     items: [
       { name: 'Instagram', url: 'https://instagram.com/noeasyvision' },
-      { name: 'Pinterest', url: 'https://pinterest.com/noeasyvision' },
+
       { name: 'X',         url: 'https://x.com/noeasyvision' },
       { name: 'Telegram',  url: 'https://t.me/noeasyeye' },
       { name: 'Tumblr',    url: 'https://www.tumblr.com/noeasyvision' },
@@ -386,11 +449,20 @@ const groups = [
 // Build console
 const scroll = document.getElementById('conScroll');
 
-groups.forEach(group => {
+groups.forEach((group, gi) => {
+  if (gi > 0) {
+    const gap = document.createElement('span');
+    gap.className = 'con-group-gap';
+    scroll.appendChild(gap);
+  }
+
+  const grpDiv = document.createElement('div');
+  grpDiv.className = 'con-group';
+
   const hd = document.createElement('div');
   hd.className = 'con-section-hd';
   hd.textContent = group.label;
-  scroll.appendChild(hd);
+  grpDiv.appendChild(hd);
 
   group.items.forEach(link => {
     const a = document.createElement('a');
@@ -400,8 +472,10 @@ groups.forEach(group => {
     if (!link.url.startsWith('mailto')) { a.target = '_blank'; a.rel = 'noopener noreferrer'; }
     a.addEventListener('mouseenter', () => cursor.classList.add('active'));
     a.addEventListener('mouseleave', () => cursor.classList.remove('active'));
-    scroll.appendChild(a);
+    grpDiv.appendChild(a);
   });
+
+  scroll.appendChild(grpDiv);
 });
 
 // Reveal
