@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#5D5143">
 <meta name="msapplication-navbutton-color" content="#5D5143">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<title>Links | NOEASY</title>
+<title>About | NOEASY</title>
 <link rel="icon" type="image/png" href="IMG_8091.png">
 <style>
 @font-face { font-family:'Alkhemikal'; src:url('../fonts/Alkhemikal.ttf') format('truetype'); }
@@ -16,20 +16,17 @@
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
 
 :root{
-  --bg:#e8e0c4; --text:#353535; --desk:#5D5143; --tb:#5D5143;
+  --bg:#e8e0c4; --desk:#5D5143; --tb:#5D5143;
   --ttxt:#f6f1da; --btn:#AFA191; --blt:#d4cdc4; --bdk:#3d3830; --bsh:#2a2520;
-  --lbg:#1e1a12; --tbg:#2e2820; --ta:#D6D5A9; --tdim:#7a6a52;
-  --thl:#e8d0a0; --tsel:#6a5535;
   --header-titlebar-h:22px; --header-pill-h:44px;
   --header-total-h:calc(env(safe-area-inset-top,0px) + var(--header-titlebar-h) + var(--header-pill-h));
 }
 
-html{background:#5D5143;overflow-x:hidden;}
+html,body{height:100%;overflow:hidden;background:#5D5143;}
+body{font-family:'DotGothic16',monospace;background:var(--bg);-webkit-tap-highlight-color:transparent;-webkit-font-smoothing:none;}
 body::before{content:'';position:fixed;top:-100vh;left:0;right:0;height:100vh;background:#5D5143;z-index:9001;pointer-events:none;}
-body{background:var(--bg);font-family:'DotGothic16',monospace;color:var(--text);overflow-x:hidden;overscroll-behavior:none;-webkit-tap-highlight-color:transparent;-webkit-font-smoothing:none;}
 
 #grain{position:fixed;top:-60px;bottom:-60px;left:-10px;right:-10px;z-index:9998;pointer-events:none;}
-
 #cursor{position:fixed;z-index:9999;pointer-events:none;width:28px;height:28px;border-radius:50%;border:1px solid rgba(53,53,53,0.35);transform:translate(-50%,-50%) scale(0);transition:transform .22s cubic-bezier(.34,1.56,.64,1),opacity .2s;opacity:0;mix-blend-mode:multiply;}
 #cursor.active{transform:translate(-50%,-50%) scale(1);opacity:1;}
 #cursor.pressed{transform:translate(-50%,-50%) scale(0.6);}
@@ -50,21 +47,10 @@ header>*{pointer-events:auto;}
 .sword-btn:active,.sword-btn.open{border-top:2px solid #3d3830;border-left:2px solid #3d3830;border-right:2px solid #d4cdc4;border-bottom:2px solid #d4cdc4;box-shadow:inset 1px 1px 0 #7a7068;}
 .sword-btn .line{position:relative;height:2px;background:#000;border-radius:0;opacity:0.8;transition:transform 0.38s cubic-bezier(0.16,1,0.3,1),opacity 0.25s,width 0.38s cubic-bezier(0.16,1,0.3,1);}
 .sword-btn .line:nth-child(1),.sword-btn .line:nth-child(2),.sword-btn .line:nth-child(3){width:18px;}
-.sword-btn .line::after{content:'';position:absolute;right:3px;top:50%;transform:translateY(-50%);width:2px;height:6px;background:#000;border-radius:0;opacity:0;transition:opacity 0.25s;}
 .sword-btn.open .line{opacity:1;}
 .sword-btn.open .line:nth-child(1){width:18px;transform:translateY(6px) rotate(45deg);}
 .sword-btn.open .line:nth-child(2){opacity:0;transform:scaleX(0);}
 .sword-btn.open .line:nth-child(3){width:18px;transform:translateY(-6px) rotate(-45deg);}
-.sword-btn.open .line::after{opacity:0.55;}
-@media(min-width:681px){
-  .sword-btn{gap:4px;padding:0 14px;}
-  .sword-btn .line{height:2px;opacity:0.8;}
-  .sword-btn .line:nth-child(1),.sword-btn .line:nth-child(2),.sword-btn .line:nth-child(3){width:18px;}
-  .sword-btn .line::after{height:6px;width:2px;opacity:0;}
-  .sword-btn.open .line:nth-child(1){width:17px;transform:translateY(6px) rotate(45deg);}
-  .sword-btn.open .line:nth-child(3){width:17px;transform:translateY(-6px) rotate(-45deg);}
-  .sword-btn.open .line::after{opacity:0.55;}
-}
 .burger-wrap{position:relative;height:100%;display:flex;align-items:center;}
 .nav-overlay{position:absolute;top:calc(100% + 4px);right:0;z-index:8999;min-width:160px;padding:2px;background:#AFA191;border-top:2px solid #d4cdc4;border-left:2px solid #d4cdc4;border-right:2px solid #3d3830;border-bottom:2px solid #3d3830;box-shadow:2px 2px 0 #2a2520;display:flex;flex-direction:column;opacity:0;pointer-events:none;transform:translateY(-4px);transform-origin:top right;transition:opacity 0.15s ease,transform 0.15s ease;}
 .nav-overlay.open{opacity:1;pointer-events:auto;transform:translateY(0);}
@@ -74,151 +60,97 @@ header>*{pointer-events:auto;}
 .nav-overlay a+a{border-top:1px solid #7a7068;}
 .nav-overlay a.current{background:#c8c2ba;}
 
-/* ── MAIN ── */
-main{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:calc(var(--header-total-h) + 24px) 16px 60px;}
-.content-wrap{width:100%;max-width:min(320px,92vw);display:flex;flex-direction:column;gap:20px;}
+/* ── MAIN — fills remaining screen ── */
+main{
+  position:fixed;
+  top:var(--header-total-h);
+  left:16px; right:16px; bottom:16px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
 
 /* ── Win95 window ── */
-.win{display:flex;flex-direction:column;overflow:hidden;border-top:2px solid var(--blt);border-left:2px solid var(--blt);border-right:2px solid var(--bdk);border-bottom:2px solid var(--bdk);box-shadow:2px 2px 0 var(--bsh);opacity:0;transform:translateY(12px);transition:opacity 0.5s cubic-bezier(0.16,1,0.3,1),transform 0.5s cubic-bezier(0.16,1,0.3,1);}
+.win{
+  width:100%;max-width:480px;height:100%;
+  display:flex;flex-direction:column;
+  border-top:2px solid var(--blt);border-left:2px solid var(--blt);
+  border-right:2px solid var(--bdk);border-bottom:2px solid var(--bdk);
+  box-shadow:2px 2px 0 var(--bsh);
+  opacity:0;transform:translateY(14px);
+  transition:opacity 0.6s cubic-bezier(0.16,1,0.3,1),transform 0.6s cubic-bezier(0.16,1,0.3,1);
+}
 .win.visible{opacity:1;transform:none;}
+
 .tbar{height:22px;background:var(--btn);display:flex;align-items:stretch;padding:1px;flex-shrink:0;user-select:none;}
 .tbar-inner{flex:1;background:var(--tb);display:flex;align-items:center;padding:0 1px 0 6px;gap:2px;overflow:hidden;min-width:0;}
 .tbar-t{flex:1;font-size:8px;font-weight:700;letter-spacing:.12em;color:var(--ttxt);overflow:hidden;white-space:nowrap;text-overflow:ellipsis;line-height:1;}
 .tbbtns{display:flex;gap:1px;flex-shrink:0;align-items:stretch;}
 .tbbtn{width:16px;background:var(--btn);border-top:1px solid var(--blt);border-left:1px solid var(--blt);border-right:1px solid var(--bdk);border-bottom:1px solid var(--bdk);display:flex;align-items:center;justify-content:center;cursor:default;flex-shrink:0;padding:0 0 1px 0;}
-.tbbtn:active{border-top:1px solid var(--bdk);border-left:1px solid var(--bdk);border-right:1px solid var(--blt);border-bottom:1px solid var(--blt);}
 
-/* ── Console body ── */
-.con-body{background:var(--lbg);display:flex;flex-direction:column;position:relative;overflow:hidden;}
-.con-body::after{content:'';position:absolute;inset:0;pointer-events:none;z-index:3;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.06) 2px,rgba(0,0,0,0.06) 4px);}
-
-@keyframes flicker{0%,100%{opacity:1;}92%{opacity:1;}93%{opacity:.82;}94%{opacity:1;}97%{opacity:.9;}98%{opacity:1;}}
-
-.con-scroll{overflow-y:auto;overflow-x:hidden;padding:8px 0 12px;scrollbar-width:thin;scrollbar-color:#3a3020 #1a1610;position:relative;z-index:2;max-height:70vh;}
-.con-scroll::-webkit-scrollbar{width:8px;}
-.con-scroll::-webkit-scrollbar-track{background:#1a1610;border-left:1px solid #2a2010;}
-.con-scroll::-webkit-scrollbar-thumb{background:#3a3020;border-top:1px solid #5a4a30;border-left:1px solid #5a4a30;border-right:1px solid #111008;border-bottom:1px solid #111008;}
-
-/* ── Cross grid background ── */
-.cross-grid{
-  position:absolute;inset:0;width:100%;height:100%;
-  pointer-events:none;z-index:1;opacity:0.55;
+/* ── Body: warm grey, scrolls inside ── */
+.con-body{
+  flex:1;min-height:0;
+  overflow-y:auto;overflow-x:hidden;
+  background:#AFA191;
+  -webkit-overflow-scrolling:touch;
+  scrollbar-width:thin;
+  scrollbar-color:#7a6a58 #9e9080;
 }
+.con-body::-webkit-scrollbar{width:8px;}
+.con-body::-webkit-scrollbar-track{background:#9e9080;}
+.con-body::-webkit-scrollbar-thumb{background:#7a6a58;border:1px solid #5D5143;}
 
-/* Section header */
-.con-section-hd{
-  display:block;
-  padding:6px 12px 5px;
+/* ── Hero ── */
+.about-hero{
+  padding:28px 22px 22px;
+  text-align:center;
+  border-bottom:1px solid rgba(42,37,32,0.15);
+}
+.about-name{
   font-family:'Alkhemikal',serif;
-  font-size:16px;letter-spacing:0.06em;
-  color:var(--ta);
-  user-select:none;
-  text-align:center;
-  animation:flicker 4.5s step-end infinite;
-  text-shadow:0 0 8px rgba(214,213,169,0.35);
+  font-size:34px;letter-spacing:0.1em;
+  color:#2a2520;line-height:1.1;
 }
-.con-group{
-  margin:8px 8px 0;
-  border:1px solid rgba(214,213,169,0.1);
-  overflow:hidden;
+.about-role{
+  margin-top:8px;
+  font-family:'Fixedsys',monospace;
+  font-size:9px;letter-spacing:0.2em;text-transform:uppercase;
+  color:#5D5143;
 }
-.con-group:last-child{ margin-bottom:8px; }
-.con-group-gap{ display:none; }
-
-/* Link rows — starts with / */
-a.con-link{
-  display:block;
-  padding:2px 12px;
-  font-family:'Fixedsys',monospace;font-size:13px;line-height:1.9;
-  color:var(--tdim);text-decoration:none;
-  text-align:center;
-  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
-  transition:color .08s;
-  animation:flicker 5s step-end infinite;
-  text-shadow:0 0 5px currentColor;
-  cursor:pointer;user-select:none;
-  position:relative;z-index:2;
-  -webkit-tap-highlight-color:transparent;
-}
-a.con-link::before{content:'/ ';}
-a.con-link:hover{color:var(--ta);}
-
-/* Brighter text on wide screens */
-@media(min-width:681px){
-  a.con-link{color:#9e8e6e;}
-  a.con-link:hover{color:var(--thl);}
-  .con-section-hd{color:#ddd9b0;text-shadow:0 0 10px rgba(214,213,169,0.5);}
+.about-divider{
+  display:block;margin:16px auto 0;
+  font-size:16px;color:#7a6a58;opacity:0.5;letter-spacing:0.3em;
 }
 
-/* Status bar */
-.con-sbar{background:#181410;border-top:1px solid rgba(201,164,114,.08);display:flex;align-items:center;padding:3px 10px;gap:8px;flex-shrink:0;position:relative;z-index:2;}
-.con-si{font-family:'Fixedsys',monospace;font-size:7px;color:var(--tdim);opacity:.55;letter-spacing:.1em;text-transform:uppercase;animation:flicker 4s step-end infinite;}
-.con-sdv{width:1px;height:7px;background:rgba(122,106,82,.3);}
+/* ── Sections — uniform, no stripes ── */
+.about-section{
+  padding:16px 22px 14px;
+  border-bottom:1px solid rgba(42,37,32,0.1);
+}
+.about-section:last-child{border-bottom:none;padding-bottom:24px;}
 
-/* ── Form window — header/toolbar style ── */
-.form-body{
-  background:#AFA191;
-  padding:14px 14px 16px;
-  display:flex;flex-direction:column;gap:10px;
+.section-label{
+  font-family:'Alkhemikal',serif;
+  font-size:14px;letter-spacing:0.12em;
+  color:#3d3830;
+  margin-bottom:9px;
 }
-.form-field{width:100%;}
-.form-label{
-  display:block;
-  font-family:'DotGothic16',monospace;font-size:8px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;
-  color:#3d3020;margin-bottom:4px;
-  padding-left:2px;
-}
-.form-field input,.form-field textarea{
-  width:100%;
-  background:#c8c2b8;
-  color:#1e1a14;
-  border-top:1px solid #7a7068;
-  border-left:1px solid #7a7068;
-  border-right:1px solid #d4cdc4;
-  border-bottom:1px solid #d4cdc4;
-  box-shadow:inset 1px 1px 0 rgba(0,0,0,0.12);
-  padding:7px 9px;
-  font-family:'DotGothic16',monospace;
-  font-size:10px;letter-spacing:0.08em;
-  outline:none;resize:none;display:block;border-radius:0;
-  -webkit-appearance:none;appearance:none;
-  transition:box-shadow 0.15s;
-}
-.form-field input:focus,.form-field textarea:focus{
-  box-shadow:inset 1px 1px 0 rgba(0,0,0,0.2),0 0 0 1px #5D5143;
-}
-.form-field input::placeholder,.form-field textarea::placeholder{
-  color:#7a6a52;opacity:0.6;font-size:8px;letter-spacing:0.14em;text-transform:uppercase;
-}
-.form-field textarea{min-height:80px;}
 
-.form-footer{display:flex;align-items:center;gap:12px;}
-button.form-submit{
-  height:28px;padding:0 18px;
-  display:inline-flex;align-items:center;
-  font-family:'Alkhemikal',serif;font-size:15px;letter-spacing:0.06em;
-  color:#1e1a14;
-  background:#AFA191;
-  border-top:2px solid #d4cdc4;border-left:2px solid #d4cdc4;
-  border-right:2px solid #3d3830;border-bottom:2px solid #3d3830;
-  box-shadow:inset 1px 1px 0 #d4cdc4,inset -1px -1px 0 #7a7068;
-  cursor:pointer;-webkit-appearance:none;flex-shrink:0;
+.section-text{
+  font-family:'Fixedsys',monospace;
+  font-size:10px;line-height:1.9;
+  color:#5a4a38;
+  letter-spacing:0.03em;
 }
-button.form-submit:active{
-  border-top:2px solid #3d3830;border-left:2px solid #3d3830;
-  border-right:2px solid #d4cdc4;border-bottom:2px solid #d4cdc4;
-  box-shadow:inset 1px 1px 0 #7a7068;
-  padding-top:2px;padding-left:20px;
+.section-text em{
+  color:#2a2520;
+  font-style:normal;
 }
-.form-status{
-  font-family:'DotGothic16',monospace;font-size:8px;letter-spacing:0.18em;text-transform:uppercase;
-  color:#3d3020;opacity:0;transition:opacity 0.4s;
-}
-.form-status.show{opacity:0.6;}
 
 @media(max-width:600px){
-  main{padding-top:calc(var(--header-total-h) + 14px);padding-bottom:60px;}
-  .con-scroll{max-height:62vh;}
+  .about-name{font-size:26px;}
+  main{left:8px;right:8px;bottom:8px;}
 }
 </style>
 </head>
@@ -231,10 +163,10 @@ button.form-submit:active{
   <div class="header-safe-top"></div>
   <div class="header-inner">
     <div class="header-titlebar-strip">
-      <span class="header-titlebar-strip-text">noeasy.xyz/links</span>
+      <span class="header-titlebar-strip-text">noeasy.xyz/about</span>
     </div>
     <div class="header-pill">
-      <span class="pill-center"><span class="pill-section">Links</span></span>
+      <span class="pill-center"><span class="pill-section">About</span></span>
       <div style="flex:1"></div>
       <div class="pill-divider"></div>
       <div class="burger-wrap">
@@ -243,9 +175,9 @@ button.form-submit:active{
         </button>
         <div class="nav-overlay" id="navOverlay">
           <a href="/">Home</a>
-          <a href="/about/">About</a>
+          <a href="/about/" class="current">About</a>
           <a href="/gallery/">Gallery</a>
-          <a href="/links/" class="current">Links</a>
+          <a href="/links/">Links</a>
         </div>
       </div>
     </div>
@@ -253,258 +185,95 @@ button.form-submit:active{
 </header>
 
 <main>
-  <div class="content-wrap">
-
-    <!-- WINDOW 1: Links -->
-    <div class="win" id="linksWin">
-      <div class="tbar">
-        <div class="tbar-inner">
-          <div class="tbar-t">noeasy.xyz/links</div>
-          <div class="tbbtns" id="lbtns"></div>
-        </div>
-      </div>
-      <div class="con-body">
-        <canvas class="cross-grid" id="crossGrid"></canvas>
-        <div class="con-scroll" id="conScroll"></div>
+  <div class="win" id="aboutWin">
+    <div class="tbar">
+      <div class="tbar-inner">
+        <div class="tbar-t">ABOUT.EXE — NOEASY</div>
+        <div class="tbbtns" id="abtns"></div>
       </div>
     </div>
+    <div class="con-body">
 
-    <!-- WINDOW 2: Form -->
-    <div class="win" id="formWin">
-      <div class="tbar">
-        <div class="tbar-inner">
-          <div class="tbar-t">WRITE_ME.EXE</div>
-          <div class="tbbtns" id="rbtns"></div>
-        </div>
+      <div class="about-hero">
+        <div class="about-name">Noeasy</div>
+        <div class="about-role">Artist &amp; Illustrator ☩ Based Worldwide</div>
+        <span class="about-divider">✠ ✠ ✠</span>
       </div>
-      <div class="form-body">
-        <form id="contact-form" action="https://formspree.io/f/xqewvwkv" method="POST" style="display:flex;flex-direction:column;gap:10px;">
-          <div class="form-field">
-            <label class="form-label">Name</label>
-            <input type="text" name="name" placeholder="Your name" required autocomplete="off">
-          </div>
-          <div class="form-field">
-            <label class="form-label">Email</label>
-            <input type="email" name="email" placeholder="Your email" required autocomplete="off">
-          </div>
-          <div class="form-field">
-            <label class="form-label">Message</label>
-            <textarea name="message" placeholder="Write something..." required></textarea>
-          </div>
-          <div class="form-footer">
-            <button type="submit" class="form-submit">Send</button>
-            <div class="form-status" id="form-status"></div>
-          </div>
-        </form>
+
+      <div class="about-section">
+        <div class="section-label">Origin</div>
+        <div class="section-text">Drawing was never a conscious choice — more like <em>the only way of existing</em> that revealed itself before I had words to describe it. From early childhood to today it has remained a constant: a way to think, to process what I've seen, to hold some kind of inner balance.</div>
       </div>
+
+      <div class="about-section">
+        <div class="section-label">Language</div>
+        <div class="section-text">My visual language developed slowly and nonlinearly. Engraving and street culture, high fashion and medieval symbolism, tattooing and western esotericism — these were never separate phases, but <em>layers that accumulated and grew into one another</em>. Among the artists who left the deepest mark — Jean-Michel Basquiat, Salvador Dalí, and the Dutch artist Johfra Bosschart with his explorations of esotericism.</div>
+      </div>
+
+      <div class="about-section">
+        <div class="section-label">Path</div>
+        <div class="section-text">I am largely self-taught. A brief period studying Orthodox iconography gave me an understanding of <em>strict form and sacred symbolism</em> — it stayed with me and influenced my work in ways I only noticed later. A turning point came around the age of twenty — an internal shift, after which an interest in mysticism became part of not just the subject matter, but the approach itself. The path moved from Eastern mysticism to Western spirituality — <em>Hermeticism, Gnosticism, Gothic imagery</em>. Not only as a visual style, but as a way of looking at spiritual reality.</div>
+      </div>
+
+      <div class="about-section">
+        <div class="section-label">Process</div>
+        <div class="section-text">My work is always a movement between <em>order and chaos</em>. When things are quiet inside — the lines become sharper and cleaner. When they're not — images expand, grow denser, take on an almost primal energy. Minimalism rarely appears in my practice.</div>
+      </div>
+
+      <div class="about-section">
+        <div class="section-label">Medium</div>
+        <div class="section-text">I work digitally and have a background in <em>frame-by-frame animation</em>. My portfolio includes album covers, collaborations with hip-hop artists, prints and digital art. Ahead — works on physical canvas and an <em>original Tarot deck</em>.</div>
+      </div>
+
     </div>
-
   </div>
 </main>
 
 <script>
-document.addEventListener('contextmenu', e => e.preventDefault());
-
-// ── Cross grid ──
-(function(){
-  const canvas = document.getElementById('crossGrid');
-  const ctx = canvas.getContext('2d');
-  const STEP = 16;
-  const SYMBOL = '✠';
-  let w, h, cols, rows;
-
-  function resize() {
-    const body = canvas.parentElement;
-    w = canvas.width  = body.offsetWidth;
-    h = canvas.height = body.offsetHeight;
-    cols = Math.ceil(w / STEP) + 1;
-    rows = Math.ceil(h / STEP) + 1;
-  }
-
-  new ResizeObserver(resize).observe(canvas.parentElement);
-  resize();
-
-  ctx.font = '11px monospace';
-  ctx.textAlign = 'center';
-  ctx.textBaseline = 'middle';
-
-  let t = 0;
-  function draw() {
-    ctx.clearRect(0, 0, w, h);
-    for (let r = 0; r < rows; r++) {
-      for (let c = 0; c < cols; c++) {
-        const x = c * STEP;
-        const y = r * STEP;
-        const dx = (x - w * 0.5) / w;
-        const dy = (y - h * 0.5) / h;
-        const dist = Math.sqrt(dx * dx + dy * dy);
-        const wave1 = Math.sin(dist * 9 - t * 0.7);
-        const wave2 = Math.sin(dist * 5 + t * 0.4 + c * 0.3);
-        const pulse = (wave1 * 0.6 + wave2 * 0.4) * 0.5 + 0.5;
-        const alpha = 0.04 + pulse * 0.18;
-        ctx.fillStyle = `rgba(160,130,80,${alpha.toFixed(3)})`;
-        ctx.fillText(SYMBOL, x, y);
-      }
-    }
-    t += 0.018;
-    requestAnimationFrame(draw);
-  }
-  draw();
-})();
+document.addEventListener('contextmenu',e=>e.preventDefault());
 
 // Grain
-const grain = document.getElementById('grain');
-const gc = grain.getContext('2d');
-let gw, gh;
-function resizeGrain() {
-  gw = grain.width  = window.innerWidth  + 20;
-  gh = grain.height = window.innerHeight + 120;
-}
+const grain=document.getElementById('grain');
+const gc=grain.getContext('2d');
+let gw,gh;
+function resizeGrain(){gw=grain.width=window.innerWidth+20;gh=grain.height=window.innerHeight+120;}
 resizeGrain();
-window.addEventListener('resize', resizeGrain);
-(function tick() {
-  const img = gc.createImageData(gw, gh);
-  for (let i = 0; i < img.data.length; i += 4) {
-    const v = Math.random() * 255 | 0;
-    img.data[i] = img.data[i+1] = img.data[i+2] = v;
-    img.data[i+3] = Math.random() * 22 | 0;
+window.addEventListener('resize',resizeGrain);
+(function tick(){
+  const img=gc.createImageData(gw,gh);
+  for(let i=0;i<img.data.length;i+=4){
+    const v=Math.random()*255|0;
+    img.data[i]=img.data[i+1]=img.data[i+2]=v;
+    img.data[i+3]=Math.random()*22|0;
   }
-  gc.putImageData(img, 0, 0);
+  gc.putImageData(img,0,0);
   requestAnimationFrame(tick);
 })();
 
 // Cursor
-const cursor = document.getElementById('cursor');
-document.addEventListener('mousemove', e => {
-  cursor.style.left = e.clientX + 'px';
-  cursor.style.top  = e.clientY + 'px';
-});
-document.addEventListener('mousedown', () => cursor.classList.add('pressed'));
-document.addEventListener('mouseup',   () => cursor.classList.remove('pressed'));
+const cursor=document.getElementById('cursor');
+document.addEventListener('mousemove',e=>{cursor.style.left=e.clientX+'px';cursor.style.top=e.clientY+'px';});
+document.addEventListener('mousedown',()=>cursor.classList.add('pressed'));
+document.addEventListener('mouseup',()=>cursor.classList.remove('pressed'));
 
 // Burger
 (function(){
-  const btn = document.getElementById('swordBtn');
-  const overlay = document.getElementById('navOverlay');
-  btn.addEventListener('click', e => {
-    e.stopPropagation();
-    btn.classList.toggle('open');
-    overlay.classList.toggle('open');
-  });
-  document.addEventListener('click', e => {
-    if (!overlay.contains(e.target) && e.target !== btn) {
-      btn.classList.remove('open');
-      overlay.classList.remove('open');
-    }
-  });
+  const btn=document.getElementById('swordBtn');
+  const overlay=document.getElementById('navOverlay');
+  btn.addEventListener('click',e=>{e.stopPropagation();btn.classList.toggle('open');overlay.classList.toggle('open');});
+  document.addEventListener('click',e=>{if(!overlay.contains(e.target)&&e.target!==btn){btn.classList.remove('open');overlay.classList.remove('open');}});
 })();
 
-// Cross-pattée SVG
-const crossSVG = `<svg width="11" height="11" viewBox="0 0 11 11" fill="none" xmlns="http://www.w3.org/2000/svg" style="display:block;image-rendering:pixelated;shape-rendering:crispEdges"><rect x="5" y="0" width="1" height="11" fill="#1a1612"/><rect x="4" y="1" width="3" height="1" fill="#1a1612"/><rect x="4" y="9" width="3" height="1" fill="#1a1612"/><rect x="3" y="0" width="5" height="1" fill="#1a1612"/><rect x="3" y="10" width="5" height="1" fill="#1a1612"/><rect x="0" y="5" width="11" height="1" fill="#1a1612"/><rect x="1" y="4" width="1" height="3" fill="#1a1612"/><rect x="9" y="4" width="1" height="3" fill="#1a1612"/><rect x="0" y="3" width="1" height="5" fill="#1a1612"/><rect x="10" y="3" width="1" height="5" fill="#1a1612"/></svg>`;
-function makeBtns(c) {
-  ['Minimize','Maximize','Close'].forEach(t => {
-    const b = document.createElement('div');
-    b.className = 'tbbtn'; b.title = t; b.innerHTML = crossSVG;
-    c.appendChild(b);
-  });
-}
-makeBtns(document.getElementById('lbtns'));
-makeBtns(document.getElementById('rbtns'));
-
-// Data
-const groups = [
-  {
-    label: 'Social',
-    items: [
-      { name: 'Instagram', url: 'https://instagram.com/noeasyvision' },
-
-      { name: 'X',         url: 'https://x.com/noeasyvision' },
-      { name: 'Telegram',  url: 'https://t.me/noeasyeye' },
-      { name: 'Tumblr',    url: 'https://www.tumblr.com/noeasyvision' },
-      { name: 'DeviantArt',url: 'https://www.deviantart.com/noeasyvision' },
-    ]
-  },
-  {
-    label: 'Portfolio',
-    items: [{ name: 'Behance', url: 'https://www.behance.net/noeasyvision' }]
-  },
-  {
-    label: 'Prints',
-    items: [{ name: 'INPRNT', url: 'https://www.inprnt.com/profile/noeasy' }]
-  },
-  {
-    label: 'Digital Collectibles',
-    items: [
-      { name: 'Foundation', url: 'https://foundation.app/@noeasy' },
-      { name: 'SuperRare',  url: 'https://superrare.com/noeasy' },
-      { name: 'Objkt',      url: 'https://objkt.com/profile/noeasy' },
-    ]
-  },
-  {
-    label: 'Contact',
-    items: [{ name: 'Email', url: 'mailto:noeasyvision@proton.me' }]
-  },
-];
-
-// Build console
-const scroll = document.getElementById('conScroll');
-
-groups.forEach((group, gi) => {
-  if (gi > 0) {
-    const gap = document.createElement('span');
-    gap.className = 'con-group-gap';
-    scroll.appendChild(gap);
-  }
-
-  const grpDiv = document.createElement('div');
-  grpDiv.className = 'con-group';
-
-  const hd = document.createElement('div');
-  hd.className = 'con-section-hd';
-  hd.textContent = group.label;
-  grpDiv.appendChild(hd);
-
-  group.items.forEach(link => {
-    const a = document.createElement('a');
-    a.className = 'con-link';
-    a.href = link.url;
-    a.textContent = link.name;
-    if (!link.url.startsWith('mailto')) { a.target = '_blank'; a.rel = 'noopener noreferrer'; }
-    a.addEventListener('mouseenter', () => cursor.classList.add('active'));
-    a.addEventListener('mouseleave', () => cursor.classList.remove('active'));
-    grpDiv.appendChild(a);
-  });
-
-  scroll.appendChild(grpDiv);
-});
+// Win95 buttons
+const crossSVG=`<svg width="11" height="11" viewBox="0 0 11 11" fill="none" xmlns="http://www.w3.org/2000/svg" style="display:block;image-rendering:pixelated;shape-rendering:crispEdges"><rect x="5" y="0" width="1" height="11" fill="#1a1612"/><rect x="4" y="1" width="3" height="1" fill="#1a1612"/><rect x="4" y="9" width="3" height="1" fill="#1a1612"/><rect x="3" y="0" width="5" height="1" fill="#1a1612"/><rect x="3" y="10" width="5" height="1" fill="#1a1612"/><rect x="0" y="5" width="11" height="1" fill="#1a1612"/><rect x="1" y="4" width="1" height="3" fill="#1a1612"/><rect x="9" y="4" width="1" height="3" fill="#1a1612"/><rect x="0" y="3" width="1" height="5" fill="#1a1612"/><rect x="10" y="3" width="1" height="5" fill="#1a1612"/></svg>`;
+function makeBtns(c){['Minimize','Maximize','Close'].forEach(t=>{const b=document.createElement('div');b.className='tbbtn';b.title=t;b.innerHTML=crossSVG;c.appendChild(b);});}
+makeBtns(document.getElementById('abtns'));
 
 // Reveal
-setTimeout(() => {
+setTimeout(()=>{
   document.getElementById('siteHeader').classList.add('visible');
-  document.getElementById('linksWin').classList.add('visible');
-}, 100);
-setTimeout(() => {
-  document.getElementById('formWin').classList.add('visible');
-}, 220);
-
-// Form
-const form    = document.getElementById('contact-form');
-const fstatus = document.getElementById('form-status');
-form.addEventListener('submit', async e => {
-  e.preventDefault();
-  const btn = form.querySelector('.form-submit');
-  btn.style.opacity = '0.2';
-  try {
-    const res = await fetch(form.action, {
-      method: 'POST', body: new FormData(form),
-      headers: { 'Accept': 'application/json' }
-    });
-    fstatus.textContent = res.ok ? 'Sent — talk soon' : 'Something went wrong';
-    if (res.ok) form.reset();
-  } catch { fstatus.textContent = 'No connection'; }
-  fstatus.classList.add('show');
-  btn.style.opacity = '';
-});
+  document.getElementById('aboutWin').classList.add('visible');
+},100);
 </script>
 </body>
 </html>
