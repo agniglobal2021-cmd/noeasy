@@ -54,28 +54,6 @@
     }
   },
   {
-    "title": "Arcanum Magnum",
-    "meta": "Graphic",
-    "date": "2026-02-16",
-    "year": 2026,
-    "style": "Graphic",
-    "workType": "Personal",
-    "avail": [
-      "Print"
-    ],
-    "links": [
-      {
-        "label": "Print",
-        "url": "https://www.inprnt.com/gallery/noeasy/arcanum-magnum/"
-      }
-    ],
-    "src": "images/arcanum-magnum.JPG",
-    "ph": {
-      "color": "#9b9b9b",
-      "ratio": "100%"
-    }
-  },
-  {
     "title": "Untitled II",
     "meta": "Mixed",
     "date": "2024-12-29",
