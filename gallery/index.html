@@ -5,6 +5,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="theme-color" content="#5D5143">
+<meta name="color-scheme" content="light">
+<meta name="supported-color-schemes" content="light">
 <meta name="msapplication-navbutton-color" content="#5D5143">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>Gallery | NOEASY</title>
@@ -23,7 +25,7 @@
     font-style: normal;
   }
   *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
-  :root { --bg: #e8e0c4; --text: #353535; }
+  :root { --bg: #e8e0c4; --text: #353535; color-scheme: light; }
   * { -webkit-tap-highlight-color: transparent; }
   a:focus, button:focus { outline: none; }
 
@@ -384,8 +386,8 @@ position: relative; z-index: 20;
 /* Footer rises after image */
 .work-footer {
 width: 100%; margin-top: 10px;
-display: flex; flex-direction: column;
-gap: 5px; position: relative; z-index: 20;
+display: flex; justify-content: space-between; align-items: flex-start;
+gap: 12px; position: relative; z-index: 20;
 opacity: 0;
 transform: translateY(8px);
 transition: opacity 0.5s ease, transform 0.5s cubic-bezier(0.16,1,0.3,1);
@@ -393,14 +395,6 @@ transition: opacity 0.5s ease, transform 0.5s cubic-bezier(0.16,1,0.3,1);
 .work-item.visible .work-footer {
 opacity: 1; transform: none;
 transition-delay: 0.3s;
-}
-
-/* Second row: meta + purchase side by side */
-.work-footer-bottom {
-display: flex;
-justify-content: space-between;
-align-items: center;
-gap: 12px;
 }
 
 /* img-win95 — одинаковый отступ 1px со всех сторон внутри рамки */
@@ -511,7 +505,7 @@ filter: blur(0px);
 }
 .img-placeholder { position: relative; }
 
-.work-left { display: flex; flex-direction: column; gap: 0; }
+.work-left { display: flex; flex-direction: column; gap: 6px; }
 .work-title-row { display: flex; align-items: baseline; gap: 0; flex-wrap: wrap; }
 .work-title {
 font-family: ‘Alkhemikal’, serif;
@@ -730,6 +724,8 @@ color: var(–text); opacity: 0.2; user-select: none;
 
 /* ── Custom cursor — disabled ── */
 #cursor { display: none; }
+#cursor.active { display: none; }
+#cursor.pressed { display: none; }
 
 /* scroll progress removed */
 #scroll-progress { display: none; }
@@ -817,7 +813,7 @@ main.grid-mode .work-item {
 width: 100%; padding: 10px 0 20px;
 }
 
-/* Hover: image lifts slightly — disabled to prevent overflow from frame */
+/* Hover scale disabled — was clipping outside art frame */
 main.grid-mode .img-wrap {
 transition: none;
 overflow: hidden;
@@ -949,12 +945,13 @@ main.grid-mode .img-win95-titlebar { display: none; }
 
 /* ── Grid mode: footer fixes for narrow columns ── */
 main.grid-mode .work-footer {
-gap: 4px;
-}
-main.grid-mode .work-footer-bottom {
 flex-direction: column;
+gap: 8px;
 align-items: flex-start;
-gap: 6px;
+}
+main.grid-mode .work-left {
+min-width: 0;
+width: 100%;
 }
 main.grid-mode .work-title {
 font-size: 20px;
@@ -1311,17 +1308,19 @@ function render(scrollTop = false) {
     const tagsHtml = tagParts.map(t => `<span class="work-tag">${t}</span>`)
       .join('<span class="work-tag-sep">/</span>');
 
+    const left = document.createElement('div');
+    left.className = 'work-left';
+
     const titleRow = document.createElement('div');
     titleRow.className = 'work-title-row';
     titleRow.innerHTML = `<span class="work-title">${work.title}</span>`;
-
-    const bottomRow = document.createElement('div');
-    bottomRow.className = 'work-footer-bottom';
+    left.appendChild(titleRow);
 
     const metaRow = document.createElement('div');
     metaRow.className = 'work-meta-row';
     const dateStr = fmtDate(work.date, work.year);
     metaRow.innerHTML = `<span class="work-year">${dateStr}</span><span class="work-year-sep"></span><div class="work-tags">${tagsHtml}</div>`;
+    left.appendChild(metaRow);
 
     // No skeleton — footer always visible
 
@@ -1358,8 +1357,7 @@ function render(scrollTop = false) {
       right.appendChild(wrap);
     }
 
-    bottomRow.appendChild(metaRow); bottomRow.appendChild(right);
-    footer.appendChild(titleRow); footer.appendChild(bottomRow);
+    footer.appendChild(left); footer.appendChild(right);
 
     // ── Win95 window wrapper around the painting ──
     const win95 = document.createElement('div');
