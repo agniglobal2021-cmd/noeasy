@@ -54,33 +54,6 @@
     }
   },
   {
-    "title": "Rubedo.exe",
-    "meta": "Graphic",
-    "date": "2026-05-01",
-    "year": 2026,
-    "style": "Graphic",
-    "workType": "Personal",
-    "avail": [
-      "Crypto Art",
-      "Print"
-    ],
-    "links": [
-      {
-        "label": "Print",
-        "url": "https://www.inprnt.com/gallery/noeasy/rubedoexe/"
-      },
-      {
-        "label": "NFT",
-        "url": "https://objkt.com/tokens/KT1LiZqWuBLnT4zLMTtGapogtvvvSJxEfp1E/3"
-      }
-    ],
-    "src": "images/Rubedoexe.jpg",
-    "ph": {
-      "color": "#9b9b9b",
-      "ratio": "100%"
-    }
-  },
-  {
     "title": "Arcanum Magnum",
     "meta": "Graphic",
     "date": "2026-02-16",
