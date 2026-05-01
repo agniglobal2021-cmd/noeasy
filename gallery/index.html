@@ -589,7 +589,7 @@ display: inline-block;
 .purchase-dropdown {
 position: absolute;
 bottom: calc(100% + 4px);
-left: 0;
+right: 0;
 min-width: 140px;
 border-radius: 0;
 padding: 2px;
@@ -601,9 +601,15 @@ border-bottom: 2px solid #3d3830;
 box-shadow: 2px 2px 0 #2a2520;
 opacity: 0; pointer-events: none;
 transform: translateY(5px);
-transform-origin: bottom left;
+transform-origin: bottom right;
 transition: opacity 0.15s ease, transform 0.15s ease;
 z-index: 100;
+}
+/* Left column in grid: opens to the right */
+.purchase-dropdown.open-right {
+right: auto;
+left: 0;
+transform-origin: bottom left;
 }
 .purchase-dropdown.open {
 opacity: 1; pointer-events: auto;
@@ -1352,6 +1358,11 @@ function render(scrollTop = false) {
         haptic('light');
       });
       document.addEventListener('click', () => { dropdown.classList.remove('open'); btn.classList.remove('open'); });
+
+      // In grid mode: non-rightmost columns open dropdown to the right
+      if (isGrid && (i % numCols) < numCols - 1) {
+        dropdown.classList.add('open-right');
+      }
 
       wrap.appendChild(btn); wrap.appendChild(dropdown);
       right.appendChild(wrap);
