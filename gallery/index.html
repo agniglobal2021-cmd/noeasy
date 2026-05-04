@@ -76,14 +76,15 @@
     position: fixed; top: 0; left: 0; right: 0; z-index: 500;
     width: 100%;
     max-width: 100%;
-    /* Fill safe-area + titlebar height above pill + pill itself */
     padding: 0;
     display: flex; flex-direction: column; align-items: stretch;
     pointer-events: none;
     opacity: 0;
     transition: opacity 0.7s ease;
-    /* Solid background covers the safe-area gap (Safari) */
     background: var(--win95-titlebar-brown);
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+    will-change: transform;
   }
   header.visible {
     opacity: 1;
@@ -226,7 +227,8 @@
     border-top: 1px solid #d4cdc4;
     border-bottom: 2px solid #3d3830;
     box-shadow: 0 1px 0 #808080;
-
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
     opacity: 0; pointer-events: none;
     transform: translateY(-6px) scale(0.99);
     transform-origin: top center;
@@ -1342,8 +1344,14 @@ function render(scrollTop = false) {
 
       btn.addEventListener('click', e => {
         e.stopPropagation();
-        const open = dropdown.classList.toggle('open');
-        btn.classList.toggle('open', open);
+        const isOpen = dropdown.classList.contains('open');
+        // close all dropdowns first
+        document.querySelectorAll('.purchase-dropdown.open').forEach(d => d.classList.remove('open'));
+        document.querySelectorAll('.purchase-btn.open').forEach(b => b.classList.remove('open'));
+        if (!isOpen) {
+          dropdown.classList.add('open');
+          btn.classList.add('open');
+        }
         haptic('light');
       });
       document.addEventListener('click', () => { dropdown.classList.remove('open'); btn.classList.remove('open'); });
