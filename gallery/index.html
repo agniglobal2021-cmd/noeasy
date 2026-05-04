@@ -50,7 +50,7 @@
     --header-total-h: calc(env(safe-area-inset-top, 0px) + var(--header-titlebar-h) + var(--header-pill-h));
   }
 
-  html { background: #5D5143; overflow-x: clip; }
+  html { background: #5D5143; }
 
   /* Fill overscroll/rubber-band area above viewport in Telegram & in-app browsers.
      body::before sits fixed above the page, same color as the header bar. */
@@ -69,7 +69,7 @@
     background: #e8e0c4;
     font-family: 'DotGothic16', monospace;
     color: var(--text);
-    overflow-x: clip;
+    overflow-x: hidden;
     overscroll-behavior: none;
   }
   header {
@@ -227,8 +227,6 @@
     border-top: 1px solid #d4cdc4;
     border-bottom: 2px solid #3d3830;
     box-shadow: 0 1px 0 #808080;
-    transform: translateZ(0);
-    -webkit-transform: translateZ(0);
     opacity: 0; pointer-events: none;
     transform: translateY(-6px) scale(0.99);
     transform-origin: top center;
@@ -1490,9 +1488,8 @@ function updateAmbient(item) {
 }
 
 // ── Parallax + reveal rise ──
-// Per-column scroll speed factors for grid mode (col0=slowest, col1=fastest, col2=mid)
-const COL_FACTORS = [0.063, 0.135, 0.090];
-const FEED_FACTOR = 0.099;
+const COL_FACTORS = [0.032, 0.065, 0.045];
+const FEED_FACTOR = 0.048;
 let rafId = null;
 const revealStart = new WeakMap();
 
@@ -1514,7 +1511,6 @@ function initParallax() {
       const colIdx = parseInt(item.dataset.col ?? '-1');
       const factor = isGrid && colIdx >= 0 ? COL_FACTORS[colIdx] ?? COL_FACTORS[0] : FEED_FACTOR;
 
-      // Measure the frame itself for parallax centre
       const rect = win95.getBoundingClientRect();
       const parallax = ((rect.top + rect.height / 2) - vh / 2) * factor;
 
@@ -1530,14 +1526,12 @@ function initParallax() {
       const ease = 1 - Math.pow(1 - t, 3);
       const rise = OFFSET * (1 - ease);
 
-      // Entire frame (titlebar + image) moves with parallax
       win95.style.transform = `translateY(${(rise + parallax).toFixed(2)}px)`;
 
-      // Image inside is scaled slightly so shift doesn't reveal background at edges
-      const scale = 1.08 - 0.06 * ease; // settles at 1.02
+      const scale = 1.08 - 0.06 * ease;
       inner.style.transform = `scale(${scale.toFixed(4)})`;
 
-      // ── Footer micro-parallax & fade ──
+      // ── Footer: moves WITH the image frame, no independent drift ──
       const footer = item.querySelector('.work-footer');
       if (!footer) return;
 
@@ -1547,13 +1541,9 @@ function initParallax() {
       const fade     = 1 - normDist * 0.40 * ease;
       item.style.setProperty('--secondary-fade', fade.toFixed(3));
 
-      const titleEl = footer.querySelector('.work-title');
-      const metaEl  = footer.querySelector('.work-meta-row');
-      const rightEl = footer.querySelector('.work-right');
-
-      if (titleEl) titleEl.style.transform = `translateY(${(dist * 0.004 * ease).toFixed(2)}px)`;
-      if (metaEl)  metaEl.style.transform  = `translateY(${(dist * 0.010 * ease).toFixed(2)}px)`;
-      if (rightEl) rightEl.style.transform = `translateY(${(dist * 0.004 * ease).toFixed(2)}px)`;
+      // Footer follows image at same rate — no separation
+      const footerShift = (rise + parallax).toFixed(2);
+      footer.style.transform = `translateY(${footerShift}px)`;
     });
 
     rafId = requestAnimationFrame(tick);
