@@ -50,7 +50,7 @@
     --header-total-h: calc(env(safe-area-inset-top, 0px) + var(--header-titlebar-h) + var(--header-pill-h));
   }
 
-  html { background: #5D5143; overflow-x: hidden; }
+  html { background: #5D5143; overflow-x: clip; }
 
   /* Fill overscroll/rubber-band area above viewport in Telegram & in-app browsers.
      body::before sits fixed above the page, same color as the header bar. */
@@ -69,7 +69,7 @@
     background: #e8e0c4;
     font-family: 'DotGothic16', monospace;
     color: var(--text);
-    overflow-x: hidden;
+    overflow-x: clip;
     overscroll-behavior: none;
   }
   header {
@@ -586,7 +586,7 @@
   .purchase-dropdown {
     position: absolute;
     bottom: calc(100% + 4px);
-    right: 0;
+    left: 0;
     min-width: 140px;
     border-radius: 0;
     padding: 2px;
@@ -598,15 +598,9 @@
     box-shadow: 2px 2px 0 #2a2520;
     opacity: 0; pointer-events: none;
     transform: translateY(5px);
-    transform-origin: bottom right;
+    transform-origin: bottom left;
     transition: opacity 0.15s ease, transform 0.15s ease;
     z-index: 100;
-  }
-  /* Left column in grid: opens to the right */
-  .purchase-dropdown.open-right {
-    right: auto;
-    left: 0;
-    transform-origin: bottom left;
   }
   .purchase-dropdown.open {
     opacity: 1; pointer-events: auto;
@@ -644,6 +638,7 @@
   /* Lightbox */
   #lightbox {
     position: fixed; inset: 0; z-index: 9999;
+    width: 100vw;
     background: rgba(14,12,10,0.94);
     backdrop-filter: blur(4px);
     display: flex; align-items: center; justify-content: center;
@@ -1353,11 +1348,6 @@ function render(scrollTop = false) {
       });
       document.addEventListener('click', () => { dropdown.classList.remove('open'); btn.classList.remove('open'); });
 
-      // In grid mode: non-rightmost columns open dropdown to the right
-      if (isGrid && (i % numCols) < numCols - 1) {
-        dropdown.classList.add('open-right');
-      }
-
       wrap.appendChild(btn); wrap.appendChild(dropdown);
       right.appendChild(wrap);
     }
@@ -1663,9 +1653,10 @@ function openLb(idx) {
   lbImg.src = work.src; lbImg.alt = work.title;
   lbTitle.textContent = work.title;
   lbImg.onload = () => { lbImg.style.opacity = '1'; };
+  const scrollbarW = window.innerWidth - document.documentElement.clientWidth;
+  document.body.style.paddingRight = scrollbarW + 'px';
   lb.classList.add('open');
   document.body.style.overflow = 'hidden';
-  // Show/hide arrows — only for works that have images
   const hasPrev = currentList.slice(0, lbIndex).some(w => w.src);
   const hasNext = currentList.slice(lbIndex + 1).some(w => w.src);
   lbPrev.classList.toggle('hidden', !hasPrev);
@@ -1683,6 +1674,7 @@ function lbStep(dir) {
 function closeLb() {
   lb.classList.remove('open');
   document.body.style.overflow = '';
+  document.body.style.paddingRight = '';
   setTimeout(() => { lbImg.src = ''; lbTitle.textContent = ''; }, 420);
 }
 
