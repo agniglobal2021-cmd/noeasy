@@ -379,18 +379,18 @@
     position: relative; z-index: 20;
   }
 
-  /* Footer rises after image */
+  /* Footer fades in — transform controlled entirely by JS parallax tick */
   .work-footer {
     width: 100%; margin-top: 10px;
     display: flex; justify-content: space-between; align-items: flex-start;
     gap: 12px; position: relative; z-index: 20;
     opacity: 0;
-    transform: translateY(8px);
-    transition: opacity 0.5s ease, transform 0.5s cubic-bezier(0.16,1,0.3,1);
+    transition: opacity 0.5s ease;
+    transition-delay: 0.3s;
+    will-change: transform;
   }
   .work-item.visible .work-footer {
-    opacity: 1; transform: none;
-    transition-delay: 0.3s;
+    opacity: 1;
   }
 
   /* img-win95 — одинаковый отступ 1px со всех сторон внутри рамки */
@@ -475,7 +475,6 @@
 
   /* Image wrap — curtain reveal */
   .img-wrap {
-    z-index: 15;
     width: 100%; overflow: hidden; cursor: zoom-in;
     position: relative; z-index: 20;
     clip-path: inset(0 0 100% 0);
@@ -967,6 +966,17 @@
     .filter-panel { top: calc(var(--header-total-h)); }
     #lb-close { top: 18px; right: 18px; }
     main { padding-top: calc(var(--header-total-h) + 16px); padding-bottom: 160px; }
+
+    /* Feed mode (single column): stack footer vertically so purchase sits on the left */
+    main:not(.grid-mode) .work-footer {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 8px;
+    }
+    main:not(.grid-mode) .work-right {
+      align-items: flex-start;
+      width: 100%;
+    }
   }
 
   @media(max-width:600px) { /* mobile reserved */ }
@@ -1126,7 +1136,12 @@ function resizeGrain() {
   gw = grain.width  = window.innerWidth  + 20;
   gh = grain.height = window.innerHeight + 120;
 }
-resizeGrain(); window.addEventListener('resize', resizeGrain);
+resizeGrain();
+let _grainResizeTimer;
+window.addEventListener('resize', () => {
+  clearTimeout(_grainResizeTimer);
+  _grainResizeTimer = setTimeout(resizeGrain, 150);
+});
 (function tick() {
   const img = gc.createImageData(gw, gh);
   for (let i = 0; i < img.data.length; i += 4) {
@@ -1184,7 +1199,7 @@ function getFiltered() {
     const typeOk  = activeType  === 'all' || w.workType === activeType;
     const availOk = activeType === 'Commission'
       || activeAvail.has('all')
-      || w.avail.some(a => activeAvail.has(a));
+      || (Array.isArray(w.avail) && w.avail.some(a => activeAvail.has(a)));
     return styleOk && typeOk && availOk;
   });
 }
@@ -1299,7 +1314,7 @@ function render(scrollTop = false) {
     footer.className = 'work-footer';
 
     const tagParts = [work.style, work.workType];
-    if (work.workType === 'Personal' && work.avail.length) tagParts.push(...work.avail);
+    if (work.workType === 'Personal' && Array.isArray(work.avail) && work.avail.length) tagParts.push(...work.avail);
     const tagsHtml = tagParts.map(t => `<span class="work-tag">${t}</span>`)
       .join('<span class="work-tag-sep">/</span>');
 
@@ -1390,8 +1405,6 @@ function render(scrollTop = false) {
     </svg>`;
     btns.innerHTML = `<span class="img-win95-btn" title="Minimize">${crossSVG}</span><span class="img-win95-btn" title="Maximize">${crossSVG}</span><span class="img-win95-btn btn-close" title="Close">${crossSVG}</span>`;
     btns.addEventListener('click', e => e.stopPropagation());
-
-    titlebar.appendChild(btns);
 
     const titleInner = document.createElement('div');
     titleInner.className = 'img-win95-titlebar-inner';
@@ -1488,7 +1501,7 @@ function updateAmbient(item) {
 }
 
 // ── Parallax + reveal rise ──
-const COL_FACTORS = [0.032, 0.065, 0.045];
+const COL_FACTORS = [0.028, 0.028, 0.028]; // equal factors — prevents columns jumping at different speeds
 const FEED_FACTOR = 0.048;
 let rafId = null;
 const revealStart = new WeakMap();
