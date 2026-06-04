@@ -1,5 +1,27 @@
 [
   {
+    "title": "Pleroma’s Frontier",
+    "meta": "Digital Painting",
+    "date": "2026-05-31",
+    "year": 2026,
+    "style": "Digital Painting",
+    "workType": "Personal",
+    "avail": [
+      "Print"
+    ],
+    "links": [
+      {
+        "label": "Print",
+        "url": "https://www.inprnt.com/gallery/noeasy/frontier-of-pleroma/"
+      }
+    ],
+    "src": "images/pleroma-s-frontier.jpg",
+    "ph": {
+      "color": "#9b9b9b",
+      "ratio": "100%"
+    }
+  },
+  {
     "title": "Rubedo.exe",
     "meta": "Graphic",
     "date": "2026-05-01",
