@@ -462,6 +462,7 @@
     cursor: default;
     flex-shrink: 0;
     padding: 0;
+    line-height: 0;
   }
 
   /* All three buttons identical */
@@ -1389,19 +1390,19 @@ function render(scrollTop = false) {
     const btns = document.createElement('div');
     btns.className = 'img-win95-titlebar-btns';
     // Templar cross pattée — arms widen toward tips, pixel-perfect 11×11
-    const crossSVG = `<svg width="11" height="11" viewBox="0 0 11 11" fill="none" xmlns="http://www.w3.org/2000/svg" style="display:block;image-rendering:pixelated;shape-rendering:crispEdges">
+    const crossSVG = `<svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg" style="display:block;image-rendering:pixelated;shape-rendering:crispEdges">
       <!-- vertical arm: narrow at center, widens at top and bottom -->
-      <rect x="5" y="0" width="1" height="11" fill="#1a1612"/>
-      <rect x="4" y="1" width="3" height="1" fill="#1a1612"/>
-      <rect x="4" y="9" width="3" height="1" fill="#1a1612"/>
-      <rect x="3" y="0" width="5" height="1" fill="#1a1612"/>
-      <rect x="3" y="10" width="5" height="1" fill="#1a1612"/>
+      <rect x="4" y="0" width="2" height="10" fill="#1a1612"/>
+      <rect x="3" y="1" width="4" height="1" fill="#1a1612"/>
+      <rect x="3" y="8" width="4" height="1" fill="#1a1612"/>
+      <rect x="2" y="0" width="6" height="1" fill="#1a1612"/>
+      <rect x="2" y="9" width="6" height="1" fill="#1a1612"/>
       <!-- horizontal arm: narrow at center, widens at left and right -->
-      <rect x="0" y="5" width="11" height="1" fill="#1a1612"/>
-      <rect x="1" y="4" width="1" height="3" fill="#1a1612"/>
-      <rect x="9" y="4" width="1" height="3" fill="#1a1612"/>
-      <rect x="0" y="3" width="1" height="5" fill="#1a1612"/>
-      <rect x="10" y="3" width="1" height="5" fill="#1a1612"/>
+      <rect x="0" y="4" width="10" height="2" fill="#1a1612"/>
+      <rect x="1" y="3" width="1" height="4" fill="#1a1612"/>
+      <rect x="8" y="3" width="1" height="4" fill="#1a1612"/>
+      <rect x="0" y="2" width="1" height="6" fill="#1a1612"/>
+      <rect x="9" y="2" width="1" height="6" fill="#1a1612"/>
     </svg>`;
     btns.innerHTML = `<span class="img-win95-btn" title="Minimize">${crossSVG}</span><span class="img-win95-btn" title="Maximize">${crossSVG}</span><span class="img-win95-btn btn-close" title="Close">${crossSVG}</span>`;
     btns.addEventListener('click', e => e.stopPropagation());
