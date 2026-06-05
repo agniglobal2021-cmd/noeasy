@@ -1,3 +1,4 @@
+[links] SVG 11→10: 1x, .tbbtn CSS: fixed
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -86,7 +87,7 @@ main{min-height:100vh;display:flex;flex-direction:column;align-items:center;just
 .tbar-inner{flex:1;background:var(--tb);display:flex;align-items:center;padding:0 1px 0 6px;gap:2px;overflow:hidden;min-width:0;}
 .tbar-t{flex:1;font-size:8px;font-weight:700;letter-spacing:.12em;color:var(--ttxt);overflow:hidden;white-space:nowrap;text-overflow:ellipsis;line-height:1;}
 .tbbtns{display:flex;gap:1px;flex-shrink:0;align-items:stretch;}
-.tbbtn{width:16px;background:var(--btn);border-top:1px solid var(--blt);border-left:1px solid var(--blt);border-right:1px solid var(--bdk);border-bottom:1px solid var(--bdk);display:flex;align-items:center;justify-content:center;cursor:default;flex-shrink:0;padding:0 0 1px 0;}
+.tbbtn{width:16px;height:16px;background:var(--btn);border-top:1px solid var(--blt);border-left:1px solid var(--blt);border-right:1px solid var(--bdk);border-bottom:1px solid var(--bdk);display:flex;align-items:center;justify-content:center;cursor:default;flex-shrink:0;padding:0;line-height:0;}
 .tbbtn:active{border-top:1px solid var(--bdk);border-left:1px solid var(--bdk);border-right:1px solid var(--blt);border-bottom:1px solid var(--blt);}
 
 /* ── Console body ── */
@@ -457,7 +458,7 @@ document.addEventListener('mouseup',   () => cursor.classList.remove('pressed'))
 })();
 
 // Cross-pattée SVG
-const crossSVG = `<svg width="11" height="11" viewBox="0 0 11 11" fill="none" xmlns="http://www.w3.org/2000/svg" style="display:block;image-rendering:pixelated;shape-rendering:crispEdges"><rect x="5" y="0" width="1" height="11" fill="#1a1612"/><rect x="4" y="1" width="3" height="1" fill="#1a1612"/><rect x="4" y="9" width="3" height="1" fill="#1a1612"/><rect x="3" y="0" width="5" height="1" fill="#1a1612"/><rect x="3" y="10" width="5" height="1" fill="#1a1612"/><rect x="0" y="5" width="11" height="1" fill="#1a1612"/><rect x="1" y="4" width="1" height="3" fill="#1a1612"/><rect x="9" y="4" width="1" height="3" fill="#1a1612"/><rect x="0" y="3" width="1" height="5" fill="#1a1612"/><rect x="10" y="3" width="1" height="5" fill="#1a1612"/></svg>`;
+const crossSVG = `<svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg" style="display:block;image-rendering:pixelated;shape-rendering:crispEdges"><rect x="4" y="0" width="2" height="10" fill="#1a1612"/><rect x="3" y="1" width="4" height="1" fill="#1a1612"/><rect x="3" y="8" width="4" height="1" fill="#1a1612"/><rect x="2" y="0" width="6" height="1" fill="#1a1612"/><rect x="2" y="9" width="6" height="1" fill="#1a1612"/><rect x="0" y="4" width="10" height="2" fill="#1a1612"/><rect x="1" y="3" width="1" height="4" fill="#1a1612"/><rect x="8" y="3" width="1" height="4" fill="#1a1612"/><rect x="0" y="2" width="1" height="6" fill="#1a1612"/><rect x="9" y="2" width="1" height="6" fill="#1a1612"/></svg>`;
 function makeBtns(c) {
   ['Minimize','Maximize','Close'].forEach(t => {
     const b = document.createElement('div');
