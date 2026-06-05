@@ -1,3 +1,4 @@
+[home] SVG 11→10: 3x, .win95-btn CSS: fixed
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -123,6 +124,7 @@ html, body {
 
 .win95-btn {
   width: 16px;
+  height: 16px;
   background: #AFA191;
   border-top: 1px solid #d4cdc4;
   border-left: 1px solid #d4cdc4;
@@ -131,6 +133,8 @@ html, body {
   display: flex; align-items: center; justify-content: center;
   cursor: default;
   flex-shrink: 0;
+  padding: 0;
+  line-height: 0;
 }
 
 .win95-body {
@@ -261,42 +265,9 @@ footer a:hover { opacity:0.65; }
         <div class="win95-titlebar-inner">
           <span class="win95-titlebar-text">NOEASY.XYZ</span>
           <div class="win95-titlebar-btns">
-            <span class="win95-btn"><svg width="11" height="11" viewBox="0 0 11 11" fill="none" xmlns="http://www.w3.org/2000/svg" style="display:block;image-rendering:pixelated;shape-rendering:crispEdges">
-      <rect x="5" y="0" width="1" height="11" fill="#1a1612"/>
-      <rect x="4" y="1" width="3" height="1" fill="#1a1612"/>
-      <rect x="4" y="9" width="3" height="1" fill="#1a1612"/>
-      <rect x="3" y="0" width="5" height="1" fill="#1a1612"/>
-      <rect x="3" y="10" width="5" height="1" fill="#1a1612"/>
-      <rect x="0" y="5" width="11" height="1" fill="#1a1612"/>
-      <rect x="1" y="4" width="1" height="3" fill="#1a1612"/>
-      <rect x="9" y="4" width="1" height="3" fill="#1a1612"/>
-      <rect x="0" y="3" width="1" height="5" fill="#1a1612"/>
-      <rect x="10" y="3" width="1" height="5" fill="#1a1612"/>
-    </svg></span>
-            <span class="win95-btn"><svg width="11" height="11" viewBox="0 0 11 11" fill="none" xmlns="http://www.w3.org/2000/svg" style="display:block;image-rendering:pixelated;shape-rendering:crispEdges">
-      <rect x="5" y="0" width="1" height="11" fill="#1a1612"/>
-      <rect x="4" y="1" width="3" height="1" fill="#1a1612"/>
-      <rect x="4" y="9" width="3" height="1" fill="#1a1612"/>
-      <rect x="3" y="0" width="5" height="1" fill="#1a1612"/>
-      <rect x="3" y="10" width="5" height="1" fill="#1a1612"/>
-      <rect x="0" y="5" width="11" height="1" fill="#1a1612"/>
-      <rect x="1" y="4" width="1" height="3" fill="#1a1612"/>
-      <rect x="9" y="4" width="1" height="3" fill="#1a1612"/>
-      <rect x="0" y="3" width="1" height="5" fill="#1a1612"/>
-      <rect x="10" y="3" width="1" height="5" fill="#1a1612"/>
-    </svg></span>
-            <span class="win95-btn"><svg width="11" height="11" viewBox="0 0 11 11" fill="none" xmlns="http://www.w3.org/2000/svg" style="display:block;image-rendering:pixelated;shape-rendering:crispEdges">
-      <rect x="5" y="0" width="1" height="11" fill="#1a1612"/>
-      <rect x="4" y="1" width="3" height="1" fill="#1a1612"/>
-      <rect x="4" y="9" width="3" height="1" fill="#1a1612"/>
-      <rect x="3" y="0" width="5" height="1" fill="#1a1612"/>
-      <rect x="3" y="10" width="5" height="1" fill="#1a1612"/>
-      <rect x="0" y="5" width="11" height="1" fill="#1a1612"/>
-      <rect x="1" y="4" width="1" height="3" fill="#1a1612"/>
-      <rect x="9" y="4" width="1" height="3" fill="#1a1612"/>
-      <rect x="0" y="3" width="1" height="5" fill="#1a1612"/>
-      <rect x="10" y="3" width="1" height="5" fill="#1a1612"/>
-    </svg></span>
+            <span class="win95-btn"><svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg" style="display:block;image-rendering:pixelated;shape-rendering:crispEdges"><rect x="4" y="0" width="2" height="10" fill="#1a1612"/><rect x="3" y="1" width="4" height="1" fill="#1a1612"/><rect x="3" y="8" width="4" height="1" fill="#1a1612"/><rect x="2" y="0" width="6" height="1" fill="#1a1612"/><rect x="2" y="9" width="6" height="1" fill="#1a1612"/><rect x="0" y="4" width="10" height="2" fill="#1a1612"/><rect x="1" y="3" width="1" height="4" fill="#1a1612"/><rect x="8" y="3" width="1" height="4" fill="#1a1612"/><rect x="0" y="2" width="1" height="6" fill="#1a1612"/><rect x="9" y="2" width="1" height="6" fill="#1a1612"/></svg></span>
+            <span class="win95-btn"><svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg" style="display:block;image-rendering:pixelated;shape-rendering:crispEdges"><rect x="4" y="0" width="2" height="10" fill="#1a1612"/><rect x="3" y="1" width="4" height="1" fill="#1a1612"/><rect x="3" y="8" width="4" height="1" fill="#1a1612"/><rect x="2" y="0" width="6" height="1" fill="#1a1612"/><rect x="2" y="9" width="6" height="1" fill="#1a1612"/><rect x="0" y="4" width="10" height="2" fill="#1a1612"/><rect x="1" y="3" width="1" height="4" fill="#1a1612"/><rect x="8" y="3" width="1" height="4" fill="#1a1612"/><rect x="0" y="2" width="1" height="6" fill="#1a1612"/><rect x="9" y="2" width="1" height="6" fill="#1a1612"/></svg></span>
+            <span class="win95-btn"><svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg" style="display:block;image-rendering:pixelated;shape-rendering:crispEdges"><rect x="4" y="0" width="2" height="10" fill="#1a1612"/><rect x="3" y="1" width="4" height="1" fill="#1a1612"/><rect x="3" y="8" width="4" height="1" fill="#1a1612"/><rect x="2" y="0" width="6" height="1" fill="#1a1612"/><rect x="2" y="9" width="6" height="1" fill="#1a1612"/><rect x="0" y="4" width="10" height="2" fill="#1a1612"/><rect x="1" y="3" width="1" height="4" fill="#1a1612"/><rect x="8" y="3" width="1" height="4" fill="#1a1612"/><rect x="0" y="2" width="1" height="6" fill="#1a1612"/><rect x="9" y="2" width="1" height="6" fill="#1a1612"/></svg></span>
           </div>
         </div>
       </div>
@@ -316,14 +287,14 @@ footer a:hover { opacity:0.65; }
 
       <a href="/about/" class="shortcut">
         <div class="shortcut-icon">
-          <img src="data:image/png;base64,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" alt="About">
+          <img src="data:image/png;base64,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" alt="About">
         </div>
         <span class="shortcut-label">About</span>
       </a>
 
       <a href="/gallery/" class="shortcut">
         <div class="shortcut-icon">
-          <img src="data:image/png;base64,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" alt="Gallery">
+          <img src="data:image/png;base64,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" alt="Gallery">
         </div>
         <span class="shortcut-label">Gallery</span>
       </a>
