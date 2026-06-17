@@ -230,8 +230,9 @@ header>*{pointer-events:auto;}
 main{ min-height:100vh; padding:calc(var(--header-total-h) + 20px) 16px 80px; display:flex; flex-direction:column; align-items:center; }
 
 .product-grid{
-  width:100%; max-width:760px;
-  display:grid; grid-template-columns:repeat(auto-fill,minmax(170px,1fr)); gap:12px;
+  width:100%; max-width:800px;
+  display:grid; grid-template-columns:repeat(auto-fit,minmax(170px,190px));
+  justify-content:center; gap:16px;
 }
 
 /* ── PRODUCT CARD — компактная ── */
@@ -329,7 +330,7 @@ main{ min-height:100vh; padding:calc(var(--header-total-h) + 20px) 16px 80px; di
 /* ══════════════ Mobile ══════════════ */
 @media(max-width:680px){
   main{ padding-top:calc(var(--header-total-h) + 14px); }
-  .product-grid{ grid-template-columns:repeat(auto-fill,minmax(140px,1fr)); gap:10px; }
+  .product-grid{ grid-template-columns:repeat(auto-fit,minmax(140px,160px)); justify-content:center; gap:10px; }
 }
 </style>
 </head>
@@ -529,6 +530,44 @@ const PRODUCTS = [
     ]
   },
   {
+    id:'theosis-tee', title:'Theosis Tee', price:45, category:'tees', soldOut:false,
+    colors:[
+      { name:'Black', swatch:'#1a1a1a', tag:'THEOSIS_TEE_BLACK.IMG',
+        gallery:[ 'https://placehold.co/700x700/1a1a1a/AFA191?text=THEOSIS+TEE%0ABLACK%0AFRONT' ]
+      },
+      { name:'Bone', swatch:'#cfc6ad', tag:'THEOSIS_TEE_BONE.IMG',
+        gallery:[ 'https://placehold.co/700x700/cfc6ad/3d3020?text=THEOSIS+TEE%0ABONE%0AFRONT' ]
+      }
+    ]
+  },
+  {
+    id:'theosis-cap', title:'Theosis Cap', price:35, category:'accessories', soldOut:false,
+    colors:[
+      { name:'Black', swatch:'#1a1a1a', tag:'THEOSIS_CAP_BLACK.IMG',
+        gallery:[ 'https://placehold.co/700x700/1a1a1a/AFA191?text=THEOSIS+CAP%0ABLACK' ]
+      }
+    ]
+  },
+  {
+    id:'theosis-tote', title:'Theosis Tote', price:28, category:'accessories', soldOut:false,
+    colors:[
+      { name:'Natural', swatch:'#d8cdab', tag:'THEOSIS_TOTE_NATURAL.IMG',
+        gallery:[ 'https://placehold.co/700x700/d8cdab/3d3020?text=THEOSIS+TOTE%0ANATURAL' ]
+      }
+    ]
+  },
+  {
+    id:'theosis-joggers', title:'Theosis Joggers', price:70, category:'bottoms', soldOut:false,
+    colors:[
+      { name:'Dark Brown', swatch:'#2a2218', tag:'THEOSIS_JOGGERS_BROWN.IMG',
+        gallery:[ 'https://placehold.co/700x700/2a2218/AFA191?text=THEOSIS+JOGGERS%0ADARK+BROWN' ]
+      },
+      { name:'Dark Grey', swatch:'#2b2b2b', tag:'THEOSIS_JOGGERS_GREY.IMG',
+        gallery:[ 'https://placehold.co/700x700/252525/AFA191?text=THEOSIS+JOGGERS%0ADARK+GREY' ]
+      }
+    ]
+  },
+  {
     id:'drop-002', title:'Drop 002', price:null, category:'coming-soon', soldOut:true,
     colors:[
       { name:'TBA', swatch:'#3a3228', tag:'DROP_002.PENDING',
@@ -555,7 +594,7 @@ const filterDot = document.getElementById('filterDot');
 
 function buildFilter(){
   const cats = ['all', ...new Set(PRODUCTS.map(p => p.category))];
-  const labels = { all:'All', hoodies:'Hoodies', 'coming-soon':'Coming Soon' };
+  const labels = { all:'All', hoodies:'Hoodies', tees:'Tees', bottoms:'Bottoms', accessories:'Accessories', 'coming-soon':'Coming Soon' };
   filterDropdown.innerHTML = '';
   cats.forEach(c => {
     const b = document.createElement('button');
