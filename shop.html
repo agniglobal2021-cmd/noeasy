@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#5D5143">
+<title>Shop | NOEASY</title>
+<style>
+@font-face { font-family:'Alkhemikal'; src:url('../fonts/Alkhemikal.ttf') format('truetype'); }
+@font-face { font-family:'DotGothic16'; src:url('../fonts/DotGothic16-Regular.ttf') format('truetype'); }
+@font-face { font-family:'Fixedsys'; src:url('../fonts/Fixedsys.ttf') format('truetype'); }
+
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+
+:root{
+  --bg:#e8e0c4; --text:#353535; --desk:#5D5143;
+  --tb:#5D5143; --ttxt:#f6f1da;
+  --btn:#AFA191; --blt:#d4cdc4; --bdk:#3d3830; --bsh:#2a2520;
+  --lbg:#1e1a12; --ta:#D6D5A9; --tdim:#7a6a52;
+  --header-titlebar-h:22px; --header-pill-h:44px;
+  --header-total-h:calc(env(safe-area-inset-top,0px) + var(--header-titlebar-h) + var(--header-pill-h));
+}
+
+html{background:#5D5143;}
+body::before{content:'';position:fixed;top:-100vh;left:0;right:0;height:100vh;background:#5D5143;z-index:9001;pointer-events:none;}
+body{background:var(--bg);font-family:'DotGothic16',monospace;color:var(--text);overscroll-behavior:none;-webkit-tap-highlight-color:transparent;-webkit-font-smoothing:none;}
+
+#grain{position:fixed;top:-60px;bottom:-60px;left:-10px;right:-10px;z-index:9998;pointer-events:none;}
+
+/* ── HEADER ── */
+header{position:fixed;top:0;left:0;z-index:500;width:100vw;display:flex;flex-direction:column;align-items:stretch;pointer-events:none;opacity:0;transition:opacity 0.7s ease;background:var(--desk);}
+header.visible{opacity:1;}
+header>*{pointer-events:auto;}
+.header-safe-top{height:env(safe-area-inset-top,0px);background:var(--desk);flex-shrink:0;}
+.header-inner{display:flex;flex-direction:column;align-items:stretch;width:100vw;}
+.header-titlebar-strip{width:100vw;height:var(--header-titlebar-h);background:#5D5143;display:flex;align-items:center;padding:0 0 0 8px;flex-shrink:0;border-bottom:1px solid #3e352d;}
+.header-titlebar-strip-text{font-family:'DotGothic16',monospace;font-size:9px;font-weight:700;letter-spacing:0.14em;color:#f6f1da;line-height:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:1;}
+.header-pill{display:flex;align-items:center;position:relative;width:100vw;height:var(--header-pill-h);background:#AFA191;border-top:1px solid #d4cdc4;border-bottom:2px solid #7a7068;box-shadow:0 1px 0 #404040;overflow:visible;padding:0 4px;}
+.pill-divider{width:2px;height:26px;flex-shrink:0;background:#808080;border-right:1px solid #d4cdc4;align-self:center;margin:0 2px;}
+.pill-center{position:absolute;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;pointer-events:none;user-select:none;white-space:nowrap;}
+.pill-section{font-family:'Alkhemikal',serif;font-size:14px;letter-spacing:0.08em;opacity:0.9;white-space:nowrap;color:#000000;}
+.sword-btn{height:calc(100% - 10px);padding:0 12px;margin:0 2px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;background:#AFA191;border-top:2px solid #d4cdc4;border-left:2px solid #d4cdc4;border-right:2px solid #3d3830;border-bottom:2px solid #3d3830;box-shadow:inset 1px 1px 0 #d4cdc4,inset -1px -1px 0 #7a7068;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:none;flex-shrink:0;}
+.sword-btn:active,.sword-btn.open{border-top:2px solid #3d3830;border-left:2px solid #3d3830;border-right:2px solid #d4cdc4;border-bottom:2px solid #d4cdc4;box-shadow:inset 1px 1px 0 #7a7068;}
+.sword-btn .line{height:2px;width:18px;background:#000;opacity:0.8;transition:transform 0.38s cubic-bezier(0.16,1,0.3,1),opacity 0.25s;}
+.sword-btn.open .line:nth-child(1){transform:translateY(6px) rotate(45deg);}
+.sword-btn.open .line:nth-child(2){opacity:0;transform:scaleX(0);}
+.sword-btn.open .line:nth-child(3){transform:translateY(-6px) rotate(-45deg);}
+.burger-wrap{position:relative;height:100%;display:flex;align-items:center;}
+.nav-overlay{position:absolute;top:calc(100% + 4px);right:0;z-index:8999;min-width:160px;padding:2px;background:#AFA191;border-top:2px solid #d4cdc4;border-left:2px solid #d4cdc4;border-right:2px solid #3d3830;border-bottom:2px solid #3d3830;box-shadow:2px 2px 0 #2a2520;display:flex;flex-direction:column;opacity:0;pointer-events:none;transform:translateY(-4px);transform-origin:top right;transition:opacity 0.15s ease,transform 0.15s ease;}
+.nav-overlay.open{opacity:1;pointer-events:auto;transform:translateY(0);}
+.nav-overlay a{font-family:'DotGothic16',monospace;font-size:10px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:#000;text-decoration:none;padding:8px 12px 8px 8px;display:flex;align-items:center;}
+.nav-overlay a::before{content:'/';margin-right:7px;}
+.nav-overlay a:hover{background:#5D5143;color:#f6f1da;}
+.nav-overlay a+a{border-top:1px solid #7a7068;}
+.nav-overlay a.current{background:#c8c2ba;}
+
+/* ── Win95 window ── */
+.win{display:flex;flex-direction:column;overflow:hidden;border-top:2px solid var(--blt);border-left:2px solid var(--blt);border-right:2px solid var(--bdk);border-bottom:2px solid var(--bdk);box-shadow:2px 2px 0 var(--bsh);}
+.tbar{height:22px;background:var(--btn);display:flex;align-items:stretch;padding:1px;flex-shrink:0;user-select:none;}
+.tbar-inner{flex:1;background:var(--tb);display:flex;align-items:center;padding:0 1px 0 6px;gap:2px;overflow:hidden;min-width:0;}
+.tbar-t{flex:1;font-size:8px;font-weight:700;letter-spacing:.12em;color:var(--ttxt);overflow:hidden;white-space:nowrap;text-overflow:ellipsis;line-height:1;}
+.tbbtns{display:flex;gap:1px;flex-shrink:0;align-items:stretch;}
+.tbbtn{width:16px;height:16px;background:var(--btn);border-top:1px solid var(--blt);border-left:1px solid var(--blt);border-right:1px solid var(--bdk);border-bottom:1px solid var(--bdk);display:flex;align-items:center;justify-content:center;cursor:default;flex-shrink:0;padding:0;line-height:0;}
+
+/* ── MAIN LAYOUT ── */
+main{
+  min-height:100vh;
+  padding:calc(var(--header-total-h) + 20px) 16px 80px;
+  display:flex;flex-direction:column;align-items:center;
+}
+
+/* ── STATUS BAR (like terminal) ── */
+.shop-status{
+  width:100%;max-width:860px;
+  display:flex;align-items:center;gap:8px;
+  margin-bottom:14px;
+  opacity:0;transition:opacity 0.5s ease;
+}
+.shop-status.visible{opacity:1;}
+.sstat{font-family:'Fixedsys',monospace;font-size:8px;color:var(--tdim);letter-spacing:.12em;text-transform:uppercase;}
+.sstat-dot{width:5px;height:5px;background:#4a8a3a;box-shadow:0 0 4px #4a8a3a;flex-shrink:0;}
+.sstat-div{width:1px;height:8px;background:rgba(122,106,82,0.3);}
+
+/* ── PRODUCT GRID ── */
+.product-grid{
+  width:100%;max-width:860px;
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(260px,1fr));
+  gap:16px;
+}
+
+/* ── PRODUCT CARD ── */
+.product-card{
+  display:flex;flex-direction:column;
+  opacity:0;transform:translateY(16px);
+  transition:opacity 0.5s cubic-bezier(0.16,1,0.3,1),transform 0.5s cubic-bezier(0.16,1,0.3,1);
+  cursor:pointer;
+}
+.product-card.visible{opacity:1;transform:none;}
+
+/* image window */
+.product-img-win{
+  background:#AFA191;
+  border-top:2px solid #d4cdc4;border-left:2px solid #d4cdc4;
+  border-right:2px solid #3d3830;border-bottom:2px solid #3d3830;
+  box-shadow:2px 2px 0 #2a2520;
+  overflow:hidden;
+  transition:box-shadow 0.15s;
+}
+.product-card:hover .product-img-win{
+  box-shadow:3px 3px 0 #1a1510;
+}
+
+.product-img-tbar{
+  height:20px;background:#AFA191;
+  display:flex;align-items:stretch;padding:1px;
+  user-select:none;flex-shrink:0;
+}
+.product-img-tbar-inner{
+  flex:1;background:#5D5143;
+  display:flex;align-items:center;padding:0 1px 0 6px;
+  gap:2px;overflow:hidden;
+}
+.product-img-tbar-text{
+  flex:1;font-family:'DotGothic16',monospace;
+  font-size:8px;font-weight:700;letter-spacing:.1em;
+  color:#f6f1da;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;
+}
+.product-img-tbar-btns{display:flex;gap:1px;flex-shrink:0;align-items:center;}
+.product-img-btn{
+  width:14px;height:14px;background:#AFA191;
+  border-top:1px solid #d4cdc4;border-left:1px solid #d4cdc4;
+  border-right:1px solid #3d3830;border-bottom:1px solid #3d3830;
+  display:flex;align-items:center;justify-content:center;
+  cursor:default;flex-shrink:0;
+}
+
+.product-img-wrap{
+  position:relative;overflow:hidden;
+  background:#2a2218;
+  aspect-ratio:1/1;
+}
+.product-img-wrap img{
+  width:100%;height:100%;object-fit:cover;
+  display:block;
+  transition:transform 0.6s cubic-bezier(0.16,1,0.3,1);
+  filter:saturate(0.9);
+}
+.product-card:hover .product-img-wrap img{
+  transform:scale(1.03);
+}
+
+/* SOLD OUT overlay */
+.product-sold-overlay{
+  position:absolute;inset:0;
+  background:rgba(14,12,10,0.72);
+  display:flex;align-items:center;justify-content:center;
+  pointer-events:none;
+}
+.product-sold-label{
+  font-family:'DotGothic16',monospace;
+  font-size:9px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;
+  color:rgba(214,213,169,0.6);
+  border:1px solid rgba(214,213,169,0.2);
+  padding:6px 14px;
+}
+
+/* crypto badge */
+.crypto-badge{
+  position:absolute;top:8px;right:8px;
+  background:#1e1a12;
+  border-top:1px solid #4a4030;border-left:1px solid #4a4030;
+  border-right:1px solid #111008;border-bottom:1px solid #111008;
+  padding:3px 8px;
+  font-family:'Fixedsys',monospace;font-size:7px;letter-spacing:.12em;
+  color:#7a6a52;text-transform:uppercase;
+}
+
+/* ── PRODUCT FOOTER ── */
+.product-footer{
+  padding:12px 0 6px;
+  display:flex;flex-direction:column;gap:8px;
+}
+.product-name{
+  font-family:'Alkhemikal',serif;
+  font-size:20px;letter-spacing:.02em;
+  color:#1e1a12;line-height:1.15;
+}
+.product-meta-row{
+  display:flex;align-items:center;justify-content:space-between;gap:8px;
+}
+.product-price{
+  font-family:'Fixedsys',monospace;
+  font-size:13px;letter-spacing:.06em;
+  color:#3d3020;
+}
+.product-price span{
+  font-size:8px;letter-spacing:.14em;
+  color:var(--tdim);margin-left:4px;vertical-align:middle;
+}
+.product-tags{
+  display:flex;gap:6px;flex-wrap:wrap;
+}
+.product-tag{
+  font-family:'DotGothic16',monospace;
+  font-size:7px;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--tdim);opacity:.7;
+}
+
+/* ── BUY BUTTON ── */
+.product-buy-btn{
+  display:flex;align-items:center;justify-content:space-between;
+  height:34px;padding:0 14px;
+  background:#AFA191;
+  border-top:2px solid #d4cdc4;border-left:2px solid #d4cdc4;
+  border-right:2px solid #3d3830;border-bottom:2px solid #3d3830;
+  box-shadow:inset 1px 1px 0 #d4cdc4,inset -1px -1px 0 #7a7068;
+  cursor:pointer;-webkit-tap-highlight-color:transparent;
+  text-decoration:none;
+  transition:none;
+}
+.product-buy-btn:active{
+  border-top:2px solid #3d3830;border-left:2px solid #3d3830;
+  border-right:2px solid #d4cdc4;border-bottom:2px solid #d4cdc4;
+  box-shadow:inset 1px 1px 0 #7a7068;
+  padding-top:2px;padding-left:16px;
+}
+.product-buy-btn.sold-out{
+  opacity:.4;pointer-events:none;
+}
+.buy-label{
+  font-family:'Alkhemikal',serif;font-size:16px;letter-spacing:.04em;
+  color:#1e1a12;
+}
+.buy-crypto{
+  font-family:'Fixedsys',monospace;font-size:8px;letter-spacing:.1em;
+  color:var(--tdim);text-transform:uppercase;
+}
+
+/* ── DIVIDER between product and button ── */
+.product-rule{
+  width:100%;height:1px;
+  background:rgba(53,53,53,0.1);
+  margin:4px 0;
+}
+
+/* ── INFO PANEL (below grid) ── */
+.info-panel{
+  width:100%;max-width:860px;
+  margin-top:24px;
+  opacity:0;transform:translateY(12px);
+  transition:opacity 0.5s cubic-bezier(0.16,1,0.3,1) 0.3s,transform 0.5s cubic-bezier(0.16,1,0.3,1) 0.3s;
+}
+.info-panel.visible{opacity:1;transform:none;}
+
+.info-win-body{
+  background:#AFA191;
+  padding:16px 18px 18px;
+  display:grid;
+  grid-template-columns:1fr 1fr 1fr;
+  gap:0;
+}
+.info-col{
+  padding:0 18px;
+  border-left:1px solid rgba(61,56,48,0.2);
+}
+.info-col:first-child{padding-left:0;border-left:none;}
+.info-col-title{
+  font-family:'DotGothic16',monospace;font-size:7px;font-weight:700;
+  letter-spacing:.2em;text-transform:uppercase;
+  color:#3d3020;margin-bottom:8px;opacity:.7;
+}
+.info-col-text{
+  font-family:'DotGothic16',monospace;font-size:9px;letter-spacing:.06em;
+  color:#1e1a12;line-height:1.8;opacity:.8;
+}
+
+/* ── CRYPTO NOTICE ── */
+.crypto-notice{
+  width:100%;max-width:860px;
+  margin-top:12px;
+  background:var(--lbg);
+  border-top:2px solid var(--blt);border-left:2px solid var(--blt);
+  border-right:2px solid var(--bdk);border-bottom:2px solid var(--bdk);
+  box-shadow:2px 2px 0 var(--bsh);
+  padding:10px 14px;
+  display:flex;align-items:center;gap:10px;
+  opacity:0;transition:opacity 0.5s ease 0.5s;
+}
+.crypto-notice.visible{opacity:1;}
+.crypto-notice-icon{
+  font-family:'Fixedsys',monospace;font-size:14px;
+  color:var(--tdim);flex-shrink:0;
+  animation:blink-icon 1.4s step-end infinite;
+}
+@keyframes blink-icon{50%{opacity:0;}}
+.crypto-notice-text{
+  font-family:'Fixedsys',monospace;font-size:9px;letter-spacing:.08em;
+  color:var(--tdim);line-height:1.7;
+}
+.crypto-notice-text strong{color:var(--ta);}
+
+/* ── SCAN LINES ── */
+.product-img-scan{
+  position:absolute;inset:0;pointer-events:none;z-index:2;
+  background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.04) 2px,rgba(0,0,0,0.04) 4px);
+}
+
+/* ── Mobile ── */
+@media(max-width:680px){
+  main{padding-top:calc(var(--header-total-h) + 14px);}
+  .product-grid{grid-template-columns:1fr;}
+  .info-win-body{grid-template-columns:1fr;gap:14px;}
+  .info-col{padding:0;border-left:none;border-top:1px solid rgba(61,56,48,0.15);padding-top:14px;}
+  .info-col:first-child{border-top:none;padding-top:0;}
+}
+</style>
+</head>
+<body>
+
+<canvas id="grain"></canvas>
+
+<header id="siteHeader">
+  <div class="header-safe-top"></div>
+  <div class="header-inner">
+    <div class="header-titlebar-strip">
+      <span class="header-titlebar-strip-text">noeasy.xyz/shop</span>
+    </div>
+    <div class="header-pill">
+      <span class="pill-center"><span class="pill-section">Shop</span></span>
+      <div style="flex:1"></div>
+      <div class="pill-divider"></div>
+      <div class="burger-wrap">
+        <button class="sword-btn" id="swordBtn" aria-label="Menu">
+          <span class="line"></span><span class="line"></span><span class="line"></span>
+        </button>
+        <div class="nav-overlay" id="navOverlay">
+          <a href="/">Home</a>
+          <a href="/about/">About</a>
+          <a href="/gallery/">Gallery</a>
+          <a href="/links/">Links</a>
+          <a href="/shop/" class="current">Shop</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main>
+
+  <!-- STATUS BAR -->
+  <div class="shop-status" id="shopStatus">
+    <div class="sstat-dot"></div>
+    <span class="sstat">NOEASY RELICS</span>
+    <div class="sstat-div"></div>
+    <span class="sstat">CRYPTO ONLY</span>
+    <div class="sstat-div"></div>
+    <span class="sstat" id="dropStatus">DROP 001 — ACTIVE</span>
+  </div>
+
+  <!-- PRODUCT GRID -->
+  <div class="product-grid" id="productGrid">
+
+    <!-- CARD 1: Theosis Hoodie Dark Brown -->
+    <div class="product-card" id="card0">
+      <div class="product-img-win">
+        <div class="product-img-tbar">
+          <div class="product-img-tbar-inner">
+            <span class="product-img-tbar-text">THEOSIS_HOODIE_BROWN.IMG</span>
+            <div class="product-img-tbar-btns" id="btns0"></div>
+          </div>
+        </div>
+        <div class="product-img-wrap">
+          <!-- замени src на реальное фото -->
+          <img src="https://placehold.co/600x600/2a2218/AFA191?text=THEOSIS+HOODIE%0ADARK+BROWN" alt="Theosis Hoodie — Dark Brown">
+          <div class="product-img-scan"></div>
+          <div class="crypto-badge">USDT / BTC / ETH</div>
+        </div>
+      </div>
+      <div class="product-footer">
+        <div class="product-name">Theosis Hoodie</div>
+        <div class="product-tags">
+          <span class="product-tag">Dark Brown</span>
+          <span class="product-tag">/</span>
+          <span class="product-tag">Drop 001</span>
+          <span class="product-tag">/</span>
+          <span class="product-tag">Heavyweight</span>
+        </div>
+        <div class="product-rule"></div>
+        <div class="product-meta-row">
+          <div class="product-price">$80 <span>≈ USDT</span></div>
+        </div>
+        <button class="product-buy-btn" onclick="openCheckout('Theosis Hoodie — Dark Brown', 80)">
+          <span class="buy-label">Purchase</span>
+          <span class="buy-crypto">PAY CRYPTO →</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- CARD 2: Theosis Hoodie Dark Grey -->
+    <div class="product-card" id="card1">
+      <div class="product-img-win">
+        <div class="product-img-tbar">
+          <div class="product-img-tbar-inner">
+            <span class="product-img-tbar-text">THEOSIS_HOODIE_GREY.IMG</span>
+            <div class="product-img-tbar-btns" id="btns1"></div>
+          </div>
+        </div>
+        <div class="product-img-wrap">
+          <img src="https://placehold.co/600x600/252525/AFA191?text=THEOSIS+HOODIE%0ADARK+GREY" alt="Theosis Hoodie — Dark Grey">
+          <div class="product-img-scan"></div>
+          <div class="crypto-badge">USDT / BTC / ETH</div>
+        </div>
+      </div>
+      <div class="product-footer">
+        <div class="product-name">Theosis Hoodie</div>
+        <div class="product-tags">
+          <span class="product-tag">Dark Grey</span>
+          <span class="product-tag">/</span>
+          <span class="product-tag">Drop 001</span>
+          <span class="product-tag">/</span>
+          <span class="product-tag">Heavyweight</span>
+        </div>
+        <div class="product-rule"></div>
+        <div class="product-meta-row">
+          <div class="product-price">$80 <span>≈ USDT</span></div>
+        </div>
+        <button class="product-buy-btn" onclick="openCheckout('Theosis Hoodie — Dark Grey', 80)">
+          <span class="buy-label">Purchase</span>
+          <span class="buy-crypto">PAY CRYPTO →</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- CARD 3: Coming Soon -->
+    <div class="product-card" id="card2">
+      <div class="product-img-win">
+        <div class="product-img-tbar">
+          <div class="product-img-tbar-inner">
+            <span class="product-img-tbar-text">DROP_002.PENDING</span>
+            <div class="product-img-tbar-btns" id="btns2"></div>
+          </div>
+        </div>
+        <div class="product-img-wrap">
+          <img src="https://placehold.co/600x600/1a1610/3a3228?text=DROP+002%0ACOMING+SOON" alt="Drop 002">
+          <div class="product-img-scan"></div>
+          <div class="product-sold-overlay">
+            <div class="product-sold-label">NOT YET</div>
+          </div>
+        </div>
+      </div>
+      <div class="product-footer">
+        <div class="product-name">Drop 002</div>
+        <div class="product-tags">
+          <span class="product-tag">Unreleased</span>
+          <span class="product-tag">/</span>
+          <span class="product-tag">When it's ready</span>
+        </div>
+        <div class="product-rule"></div>
+        <div class="product-meta-row">
+          <div class="product-price">— <span>TBA</span></div>
+        </div>
+        <button class="product-buy-btn sold-out">
+          <span class="buy-label">Unavailable</span>
+          <span class="buy-crypto">SOON</span>
+        </button>
+      </div>
+    </div>
+
+  </div><!-- /product-grid -->
+
+  <!-- INFO PANEL -->
+  <div class="info-panel" id="infoPanel">
+    <div class="win">
+      <div class="tbar">
+        <div class="tbar-inner">
+          <div class="tbar-t">SHOP_INFO.TXT</div>
+          <div class="tbbtns" id="infoBtns"></div>
+        </div>
+      </div>
+      <div class="info-win-body">
+        <div class="info-col">
+          <div class="info-col-title">Production</div>
+          <div class="info-col-text">Made to order via Tapstitch. Heavyweight 400gsm. No logo visible on packaging. Ships worldwide in 7–14 days.</div>
+        </div>
+        <div class="info-col">
+          <div class="info-col-title">Payment</div>
+          <div class="info-col-text">Crypto only. USDT, BTC, ETH accepted. Price shown in USD. Converted at time of checkout via NOWPayments.</div>
+        </div>
+        <div class="info-col">
+          <div class="info-col-title">Returns</div>
+          <div class="info-col-text">Each item is made individually. No returns on sizing. Contact before purchase if unsure. Defects replaced.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CRYPTO NOTICE -->
+  <div class="crypto-notice" id="cryptoNotice">
+    <span class="crypto-notice-icon">⬡</span>
+    <div class="crypto-notice-text">
+      <strong>Crypto-only store.</strong> No card payments, no PayPal. USDT / BTC / ETH accepted.<br>
+      Price shown in USD — converted at checkout. Questions: noeasyvision@proton.me
+    </div>
+  </div>
+
+</main>
+
+<!-- ── CHECKOUT DIALOG ── -->
+<div id="checkoutOverlay" style="display:none;position:fixed;inset:0;z-index:9000;background:rgba(14,12,10,0.88);display:none;align-items:center;justify-content:center;">
+  <div class="win" style="width:min(420px,92vw);flex-direction:column;">
+    <div class="tbar">
+      <div class="tbar-inner">
+        <div class="tbar-t" id="checkoutTitle">CHECKOUT.EXE</div>
+        <div class="tbbtns" id="checkoutBtns"></div>
+      </div>
+    </div>
+    <div style="background:#AFA191;padding:20px 20px 22px;display:flex;flex-direction:column;gap:14px;">
+
+      <!-- product summary -->
+      <div style="background:#c8c2b8;border-top:1px solid #7a7068;border-left:1px solid #7a7068;border-right:1px solid #d4cdc4;border-bottom:1px solid #d4cdc4;padding:12px 14px;">
+        <div style="font-family:'DotGothic16',monospace;font-size:7px;letter-spacing:.18em;text-transform:uppercase;color:#7a6a52;margin-bottom:6px;">Order</div>
+        <div style="font-family:'Alkhemikal',serif;font-size:18px;color:#1e1a12;" id="checkoutProduct">—</div>
+        <div style="font-family:'Fixedsys',monospace;font-size:12px;color:#3d3020;margin-top:6px;" id="checkoutPrice">$80</div>
+      </div>
+
+      <!-- size selector -->
+      <div>
+        <div style="font-family:'DotGothic16',monospace;font-size:7px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#3d3020;margin-bottom:8px;">Size</div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;" id="sizeButtons">
+          <!-- filled by JS -->
+        </div>
+      </div>
+
+      <!-- email -->
+      <div>
+        <div style="font-family:'DotGothic16',monospace;font-size:7px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#3d3020;margin-bottom:6px;">Email for order confirmation</div>
+        <input type="email" id="checkoutEmail" placeholder="your@email.com" style="width:100%;background:#c8c2b8;color:#1e1a12;border-top:1px solid #7a7068;border-left:1px solid #7a7068;border-right:1px solid #d4cdc4;border-bottom:1px solid #d4cdc4;padding:8px 10px;font-family:'DotGothic16',monospace;font-size:10px;letter-spacing:.06em;outline:none;border-radius:0;-webkit-appearance:none;">
+      </div>
+
+      <!-- address -->
+      <div>
+        <div style="font-family:'DotGothic16',monospace;font-size:7px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#3d3020;margin-bottom:6px;">Shipping address</div>
+        <textarea id="checkoutAddress" rows="3" placeholder="Full name&#10;Street, City, ZIP&#10;Country" style="width:100%;background:#c8c2b8;color:#1e1a12;border-top:1px solid #7a7068;border-left:1px solid #7a7068;border-right:1px solid #d4cdc4;border-bottom:1px solid #d4cdc4;padding:8px 10px;font-family:'DotGothic16',monospace;font-size:10px;letter-spacing:.06em;outline:none;resize:none;border-radius:0;-webkit-appearance:none;"></textarea>
+      </div>
+
+      <!-- actions -->
+      <div style="display:flex;gap:8px;align-items:center;">
+        <button onclick="closeCheckout()" style="height:32px;padding:0 16px;background:#AFA191;border-top:2px solid #d4cdc4;border-left:2px solid #d4cdc4;border-right:2px solid #3d3830;border-bottom:2px solid #3d3830;box-shadow:inset 1px 1px 0 #d4cdc4;font-family:'DotGothic16',monospace;font-size:9px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#1e1a12;cursor:pointer;">Cancel</button>
+        <button onclick="proceedToPayment()" style="flex:1;height:32px;padding:0 16px;background:#AFA191;border-top:2px solid #d4cdc4;border-left:2px solid #d4cdc4;border-right:2px solid #3d3830;border-bottom:2px solid #3d3830;box-shadow:inset 1px 1px 0 #d4cdc4;font-family:'Alkhemikal',serif;font-size:17px;letter-spacing:.04em;color:#1e1a12;cursor:pointer;">Pay with Crypto →</button>
+      </div>
+
+      <div style="font-family:'Fixedsys',monospace;font-size:8px;letter-spacing:.08em;color:var(--tdim);opacity:.6;text-align:center;">
+        USDT · BTC · ETH · and more via NOWPayments
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+document.addEventListener('contextmenu', e => e.preventDefault());
+
+// Grain
+const grain = document.getElementById('grain');
+const gc = grain.getContext('2d');
+let gw, gh;
+function resizeGrain() { gw = grain.width = window.innerWidth+20; gh = grain.height = window.innerHeight+120; }
+resizeGrain();
+window.addEventListener('resize', resizeGrain);
+(function tick() {
+  const img = gc.createImageData(gw, gh);
+  for (let i = 0; i < img.data.length; i += 4) {
+    const v = Math.random()*255|0;
+    img.data[i]=img.data[i+1]=img.data[i+2]=v;
+    img.data[i+3]=Math.random()*22|0;
+  }
+  gc.putImageData(img,0,0);
+  requestAnimationFrame(tick);
+})();
+
+// Burger
+const swordBtn = document.getElementById('swordBtn');
+const navOverlay = document.getElementById('navOverlay');
+swordBtn.addEventListener('click', e => {
+  e.stopPropagation();
+  swordBtn.classList.toggle('open');
+  navOverlay.classList.toggle('open');
+});
+document.addEventListener('click', e => {
+  if (!navOverlay.contains(e.target) && e.target !== swordBtn) {
+    swordBtn.classList.remove('open');
+    navOverlay.classList.remove('open');
+  }
+});
+
+// Cross SVG
+const crossSVG = `<svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg" style="display:block;image-rendering:pixelated;shape-rendering:crispEdges"><rect x="4" y="0" width="2" height="10" fill="#1a1612"/><rect x="3" y="1" width="4" height="1" fill="#1a1612"/><rect x="3" y="8" width="4" height="1" fill="#1a1612"/><rect x="2" y="0" width="6" height="1" fill="#1a1612"/><rect x="2" y="9" width="6" height="1" fill="#1a1612"/><rect x="0" y="4" width="10" height="2" fill="#1a1612"/><rect x="1" y="3" width="1" height="4" fill="#1a1612"/><rect x="8" y="3" width="1" height="4" fill="#1a1612"/><rect x="0" y="2" width="1" height="6" fill="#1a1612"/><rect x="9" y="2" width="1" height="6" fill="#1a1612"/></svg>`;
+
+function makeBtns(el) {
+  ['Minimize','Maximize','Close'].forEach(t => {
+    const b = document.createElement('div');
+    b.className='tbbtn'; b.title=t; b.innerHTML=crossSVG;
+    el.appendChild(b);
+  });
+}
+['btns0','btns1','btns2','infoBtns','checkoutBtns'].forEach(id => {
+  const el = document.getElementById(id);
+  if (el) makeBtns(el);
+});
+
+// Reveal
+setTimeout(() => {
+  document.getElementById('siteHeader').classList.add('visible');
+  document.getElementById('shopStatus').classList.add('visible');
+}, 100);
+
+const cards = document.querySelectorAll('.product-card');
+cards.forEach((card, i) => {
+  setTimeout(() => card.classList.add('visible'), 150 + i * 100);
+});
+
+setTimeout(() => {
+  document.getElementById('infoPanel').classList.add('visible');
+  document.getElementById('cryptoNotice').classList.add('visible');
+}, 500);
+
+// Size buttons
+const SIZES = ['XS','S','M','L','XL','XXL'];
+let selectedSize = null;
+
+function buildSizes() {
+  const container = document.getElementById('sizeButtons');
+  container.innerHTML = '';
+  SIZES.forEach(sz => {
+    const btn = document.createElement('button');
+    btn.textContent = sz;
+    btn.dataset.size = sz;
+    btn.style.cssText = `
+      height:30px;padding:0 12px;
+      background:#AFA191;
+      border-top:2px solid #d4cdc4;border-left:2px solid #d4cdc4;
+      border-right:2px solid #3d3830;border-bottom:2px solid #3d3830;
+      box-shadow:inset 1px 1px 0 #d4cdc4;
+      font-family:'DotGothic16',monospace;font-size:9px;font-weight:700;
+      letter-spacing:.1em;cursor:pointer;color:#1e1a12;
+      transition:none;
+    `;
+    btn.addEventListener('click', () => {
+      selectedSize = sz;
+      container.querySelectorAll('button').forEach(b => {
+        const active = b.dataset.size === sz;
+        b.style.background = active ? '#5D5143' : '#AFA191';
+        b.style.color = active ? '#f6f1da' : '#1e1a12';
+        b.style.borderTopColor = active ? '#3d3830' : '#d4cdc4';
+        b.style.borderLeftColor = active ? '#3d3830' : '#d4cdc4';
+        b.style.borderRightColor = active ? '#d4cdc4' : '#3d3830';
+        b.style.borderBottomColor = active ? '#d4cdc4' : '#3d3830';
+        b.style.boxShadow = active ? 'inset 1px 1px 0 #7a7068' : 'inset 1px 1px 0 #d4cdc4';
+      });
+    });
+    container.appendChild(btn);
+  });
+}
+
+// Checkout
+function openCheckout(productName, price) {
+  selectedSize = null;
+  buildSizes();
+  document.getElementById('checkoutProduct').textContent = productName;
+  document.getElementById('checkoutPrice').textContent = '$' + price + ' ≈ USDT';
+  document.getElementById('checkoutTitle').textContent = 'CHECKOUT.EXE — ' + productName.toUpperCase();
+  document.getElementById('checkoutEmail').value = '';
+  document.getElementById('checkoutAddress').value = '';
+  const overlay = document.getElementById('checkoutOverlay');
+  overlay.style.display = 'flex';
+}
+
+function closeCheckout() {
+  document.getElementById('checkoutOverlay').style.display = 'none';
+}
+
+function proceedToPayment() {
+  const email = document.getElementById('checkoutEmail').value.trim();
+  const address = document.getElementById('checkoutAddress').value.trim();
+  if (!selectedSize) { alert('Please select a size'); return; }
+  if (!email) { alert('Please enter your email'); return; }
+  if (!address) { alert('Please enter your shipping address'); return; }
+  // TODO: POST to Railway backend → NOWPayments
+  alert('Proceeding to crypto payment...\n\nThis will connect to NOWPayments in production.');
+}
+
+document.getElementById('checkoutOverlay').addEventListener('click', e => {
+  if (e.target === document.getElementById('checkoutOverlay')) closeCheckout();
+});
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') closeCheckout();
+});
+</script>
+</body>
+</html>
