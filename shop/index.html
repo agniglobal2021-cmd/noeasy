@@ -21,15 +21,6 @@
   --header-total-h:calc(env(safe-area-inset-top,0px) + var(--header-titlebar-h) + var(--header-pill-h));
 }
 
-/* ── ПОЧИНКА БАГА ОТКЛЕИВАНИЯ ШАПКИ ──
-   Причина: шапка и её внутренние блоки были растянуты на 100vw.
-   100vw считает и ширину вертикального скроллбара, поэтому реальная
-   ширина шапки оказывалась больше видимой области страницы. Это создавало
-   горизонтальный оверфлоу на пару пикселей — при свайпе/реситании страницы
-   (особенно в Safari на iPad/iPhone) контент уезжал в сторону, а fixed-шапка
-   оставалась прибита к видимой области экрана и визуально "отклеивалась".
-   Фикс: шапка больше не использует vw вообще, только left:0/right:0 без width,
-   плюс overflow-x:hidden как страховка на html/body. */
 html,body{overflow-x:hidden;}
 html{background:#5D5143;}
 body::before{content:'';position:fixed;top:-100vh;left:0;right:0;height:100vh;background:#5D5143;z-index:9001;pointer-events:none;}
@@ -37,7 +28,7 @@ body{background:var(--bg);font-family:'DotGothic16',monospace;color:var(--text);
 
 #grain{position:fixed;top:-60px;bottom:-60px;left:-10px;right:-10px;z-index:9998;pointer-events:none;}
 
-/* ══════════════ HEADER — пересобран с нуля ══════════════ */
+/* ══════════════ HEADER ══════════════ */
 header{
   position:fixed; top:0; left:0; right:0; z-index:500;
   display:flex; flex-direction:column;
@@ -108,7 +99,6 @@ header>*{pointer-events:auto;}
 .header-toolbar{ position:relative; }
 .toolbar-spacer{ flex:1; }
 
-/* Бургер — стиль не трогаем, оставляем как было */
 .burger-wrap{ position:relative; height:100%; display:flex; align-items:center; }
 .sword-btn{
   height:calc(100% - 10px); padding:0 12px; margin:0 2px;
@@ -150,7 +140,7 @@ header>*{pointer-events:auto;}
 .nav-overlay a+a{ border-top:1px solid #7a7068; }
 .nav-overlay a.current{ background:#c8c2ba; }
 
-/* ── Filter dropdown (под кнопкой Filter) ── */
+/* ── Filter dropdown ── */
 .filter-dropdown{
   position:absolute; top:calc(100% + 4px); left:4px; z-index:600; min-width:140px; padding:2px;
   background:var(--btn);
@@ -172,7 +162,7 @@ header>*{pointer-events:auto;}
 .filter-dropdown button+button{ border-top:1px solid #7a7068; }
 .filter-dropdown button.active{ background:#c8c2ba; }
 
-/* ── Cart dropdown (под кнопкой Cart) ── */
+/* ── Cart dropdown ── */
 .cart-dropdown{
   position:absolute; top:calc(100% + 4px); right:4px; z-index:600; width:min(280px,86vw); padding:2px;
   background:var(--btn);
@@ -210,7 +200,7 @@ header>*{pointer-events:auto;}
   font-family:'Alkhemikal',serif; font-size:15px; letter-spacing:.04em; color:#1e1a12; cursor:pointer;
 }
 
-/* ── Win95 окно (используется и для info-блоков, и для модалок) ── */
+/* ── Win95 окно ── */
 .win{ display:flex; flex-direction:column; overflow:hidden;
   border-top:2px solid var(--blt); border-left:2px solid var(--blt);
   border-right:2px solid var(--bdk); border-bottom:2px solid var(--bdk);
@@ -230,12 +220,12 @@ header>*{pointer-events:auto;}
 main{ min-height:100vh; padding:calc(var(--header-total-h) + 20px) 16px 80px; display:flex; flex-direction:column; align-items:center; }
 
 .product-grid{
-  width:100%; max-width:800px;
-  display:grid; grid-template-columns:repeat(auto-fit,minmax(170px,190px));
-  justify-content:center; gap:16px;
+  width:100%; max-width:900px;
+  display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,240px));
+  justify-content:center; gap:20px;
 }
 
-/* ── PRODUCT CARD — компактная ── */
+/* ── PRODUCT CARD ── */
 .product-card{
   display:flex; flex-direction:column; cursor:pointer;
   opacity:0; transform:translateY(14px);
@@ -243,6 +233,7 @@ main{ min-height:100vh; padding:calc(var(--header-total-h) + 20px) 16px 80px; di
 }
 .product-card.visible{ opacity:1; transform:none; }
 
+/* Рамка вокруг фото — без тайтлбара */
 .product-img-win{
   background:var(--btn);
   border-top:2px solid var(--blt); border-left:2px solid var(--blt);
@@ -252,18 +243,6 @@ main{ min-height:100vh; padding:calc(var(--header-total-h) + 20px) 16px 80px; di
 }
 .product-card:hover .product-img-win{ box-shadow:3px 3px 0 #1a1510; }
 
-.product-img-tbar{ height:20px; background:var(--btn); display:flex; align-items:stretch; padding:1px; flex-shrink:0; user-select:none; }
-.product-img-tbar-inner{ flex:1; background:var(--tb); display:flex; align-items:center; padding:0 1px 0 6px; gap:2px; overflow:hidden; min-width:0; }
-.product-img-tbar-text{ flex:1; font-family:'DotGothic16',monospace; font-size:8px; font-weight:700; letter-spacing:.1em; color:var(--ttxt); overflow:hidden; white-space:nowrap; text-overflow:ellipsis; }
-.product-img-tbar-btns{ display:flex; gap:1px; flex-shrink:0; align-items:center; }
-.product-img-btn{
-  width:14px; height:14px; flex-shrink:0;
-  background:var(--btn);
-  border-top:1px solid var(--blt); border-left:1px solid var(--blt);
-  border-right:1px solid var(--bdk); border-bottom:1px solid var(--bdk);
-  display:flex; align-items:center; justify-content:center; cursor:default; padding:0; line-height:0;
-}
-
 .product-img-wrap{ position:relative; overflow:hidden; background:#2a2218; aspect-ratio:1/1; }
 .product-img-wrap img{ width:100%; height:100%; object-fit:cover; display:block; transition:transform .6s cubic-bezier(.16,1,.3,1); filter:saturate(.9); }
 .product-card:hover .product-img-wrap img{ transform:scale(1.03); }
@@ -271,20 +250,48 @@ main{ min-height:100vh; padding:calc(var(--header-total-h) + 20px) 16px 80px; di
 .product-sold-overlay{ position:absolute; inset:0; background:rgba(14,12,10,.72); display:flex; align-items:center; justify-content:center; pointer-events:none; }
 .product-sold-label{ font-family:'DotGothic16',monospace; font-size:8px; font-weight:700; letter-spacing:.18em; text-transform:uppercase; color:rgba(214,213,169,.6); border:1px solid rgba(214,213,169,.2); padding:4px 10px; }
 
-/* swatches */
-.swatch-row{ display:flex; gap:5px; padding:7px 1px 0; }
-.swatch{
-  width:15px; height:15px; flex-shrink:0; cursor:pointer; padding:0;
-  border-top:1px solid var(--blt); border-left:1px solid var(--blt);
-  border-right:1px solid var(--bdk); border-bottom:1px solid var(--bdk);
+/* Свотчи внутри фото */
+.swatch-overlay{
+  position:absolute; bottom:0; left:0; right:0;
+  padding:20px 8px 8px;
+  background:linear-gradient(transparent, rgba(10,8,6,.65));
+  display:flex; gap:5px; align-items:flex-end; justify-content:flex-end;
 }
-.swatch.active{ outline:2px solid var(--text); outline-offset:1px; }
+.swatch{
+  width:13px; height:13px; flex-shrink:0; cursor:pointer; padding:0;
+  border-top:1px solid rgba(255,255,255,.28);
+  border-left:1px solid rgba(255,255,255,.28);
+  border-right:1px solid rgba(0,0,0,.5);
+  border-bottom:1px solid rgba(0,0,0,.5);
+}
+.swatch.active{ outline:1.5px solid var(--ta); outline-offset:2px; }
 
-.product-info-row{ display:flex; align-items:baseline; justify-content:space-between; gap:8px; padding:6px 1px 0; }
-.product-name{ font-family:'Alkhemikal',serif; font-size:16px; letter-spacing:.02em; color:#1e1a12; line-height:1.15; }
-.product-price{ font-family:'Fixedsys',monospace; font-size:11px; letter-spacing:.04em; color:#3d3020; flex-shrink:0; white-space:nowrap; }
+/* Кнопка-подпись — точно как .tbtn из шапки */
+.product-action-btn{
+  margin-top:5px;
+  display:flex; align-items:center; gap:6px;
+  padding:0 10px;
+  height:34px;
+  font-family:'DotGothic16',monospace; font-size:9px; font-weight:700;
+  letter-spacing:.10em; text-transform:uppercase; color:#000;
+  background:var(--btn);
+  border-top:2px solid var(--blt); border-left:2px solid var(--blt);
+  border-right:2px solid var(--bdk); border-bottom:2px solid var(--bdk);
+  box-shadow:inset 1px 1px 0 var(--blt), inset -1px -1px 0 #7a7068;
+  cursor:pointer; user-select:none; width:100%; text-align:left;
+}
+.product-action-btn:active{
+  border-top:2px solid var(--bdk); border-left:2px solid var(--bdk);
+  border-right:2px solid var(--blt); border-bottom:2px solid var(--blt);
+  box-shadow:inset 1px 1px 0 #7a7068;
+  padding-top:2px; padding-left:12px;
+}
+.product-action-btn:disabled{ opacity:.45; pointer-events:none; }
+.btn-name{ flex:1; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; font-family:'Alkhemikal',serif; font-size:15px; letter-spacing:.03em; text-transform:none; font-weight:400; }
+.btn-price{ font-family:'Fixedsys',monospace; font-size:11px; letter-spacing:.02em; color:#3d3020; flex-shrink:0; }
+.btn-sep{ width:1px; height:14px; background:#808080; opacity:.5; flex-shrink:0; }
 
-/* ══════════════ PRODUCT MODAL (галерея) ══════════════ */
+/* ══════════════ PRODUCT MODAL ══════════════ */
 .modal-overlay{
   display:none; position:fixed; inset:0; z-index:8500; background:rgba(14,12,10,.88);
   align-items:center; justify-content:center; padding:16px;
@@ -326,6 +333,14 @@ main{ min-height:100vh; padding:calc(var(--header-total-h) + 20px) 16px 80px; di
 }
 .pm-btn-primary{ font-family:'Alkhemikal',serif; font-size:14px; letter-spacing:.04em; text-transform:none; font-weight:400; }
 .pm-btn:disabled{ opacity:.4; pointer-events:none; }
+
+/* Свотчи в модале — те же что в шапке, но внутри модала */
+.pm-swatch{
+  width:15px; height:15px; flex-shrink:0; cursor:pointer; padding:0;
+  border-top:1px solid var(--blt); border-left:1px solid var(--blt);
+  border-right:1px solid var(--bdk); border-bottom:1px solid var(--bdk);
+}
+.pm-swatch.active{ outline:2px solid var(--text); outline-offset:1px; }
 
 /* ══════════════ Mobile ══════════════ */
 @media(max-width:680px){
@@ -417,7 +432,6 @@ main{ min-height:100vh; padding:calc(var(--header-total-h) + 20px) 16px 80px; di
           <span class="pm-info-price" id="pmPrice">$0</span>
         </div>
         <div class="pm-swatch-row" id="pmSwatches"></div>
-        <!-- TODO: сюда позже добавим полное описание худи -->
         <div class="pm-info-text" id="pmDesc">Product info coming soon.</div>
         <div class="pm-actions">
           <button class="pm-btn" id="pmAddCart">Add to Cart</button>
@@ -510,7 +524,6 @@ function makeBtns(el) {
 ['pmBtns','checkoutBtns'].forEach(id => makeBtns(document.getElementById(id)));
 
 // ════════════════════ DATA ════════════════════
-// TODO: заменить placeholder-картинки на реальные фото мокапов, когда будут готовы
 const PRODUCTS = [
   {
     id:'theosis-hoodie', title:'Theosis Hoodie', price:80, category:'hoodies', soldOut:false,
@@ -577,13 +590,12 @@ const PRODUCTS = [
   }
 ];
 
-// per-product selected color index (карточка помнит выбранный цвет)
 const selectedColor = {};
 PRODUCTS.forEach(p => selectedColor[p.id] = 0);
 
 // ════════════════════ STATE ════════════════════
 let activeCategory = 'all';
-let cart = []; // {productId, title, color, price, qty}
+let cart = [];
 
 function fmtPrice(p){ return p === null ? 'TBA' : '$' + p; }
 
@@ -676,7 +688,7 @@ document.addEventListener('click', e => {
   if (!cartDropdown.contains(e.target) && e.target !== cartBtn && !cartBtn.contains(e.target)) closeCart();
 });
 
-// ════════════════════ BURGER MENU (стиль не менялся) ════════════════════
+// ════════════════════ BURGER MENU ════════════════════
 const swordBtn = document.getElementById('swordBtn');
 const navOverlay = document.getElementById('navOverlay');
 swordBtn.addEventListener('click', e => {
@@ -705,27 +717,26 @@ function renderGrid(){
     const card = document.createElement('div');
     card.className = 'product-card';
 
+    // Рамка с фото (без тайтлбара)
     const imgWin = document.createElement('div');
     imgWin.className = 'product-img-win';
-    imgWin.innerHTML = `
-      <div class="product-img-tbar"><div class="product-img-tbar-inner">
-        <span class="product-img-tbar-text">${p.colors[colorIdx].tag}</span>
-        <div class="product-img-tbar-btns">
-          <span class="tbbtn">${crossSVG(10)}</span>
-          <span class="tbbtn">${crossSVG(10)}</span>
-          <span class="tbbtn">${crossSVG(10)}</span>
-        </div>
-      </div></div>
-      <div class="product-img-wrap">
-        <img src="${p.colors[colorIdx].gallery[0]}" alt="${p.title} — ${p.colors[colorIdx].name}">
-        ${p.soldOut ? '<div class="product-sold-overlay"><div class="product-sold-label">' + (p.category==='coming-soon' ? 'NOT YET' : 'SOLD OUT') + '</div></div>' : ''}
-      </div>
-    `;
-    card.appendChild(imgWin);
 
-    if (p.colors.length > 1){
-      const swRow = document.createElement('div');
-      swRow.className = 'swatch-row';
+    const imgWrap = document.createElement('div');
+    imgWrap.className = 'product-img-wrap';
+    imgWrap.innerHTML = `<img src="${p.colors[colorIdx].gallery[0]}" alt="${p.title} — ${p.colors[colorIdx].name}">`;
+
+    // Sold out overlay
+    if (p.soldOut) {
+      const sol = document.createElement('div');
+      sol.className = 'product-sold-overlay';
+      sol.innerHTML = `<div class="product-sold-label">${p.category === 'coming-soon' ? 'NOT YET' : 'SOLD OUT'}</div>`;
+      imgWrap.appendChild(sol);
+    }
+
+    // Свотчи внутри фото (только если >1 цвета)
+    if (p.colors.length > 1) {
+      const swOverlay = document.createElement('div');
+      swOverlay.className = 'swatch-overlay';
       p.colors.forEach((c, ci) => {
         const sw = document.createElement('button');
         sw.className = 'swatch' + (ci === colorIdx ? ' active' : '');
@@ -734,21 +745,38 @@ function renderGrid(){
         sw.addEventListener('click', e => {
           e.stopPropagation();
           selectedColor[p.id] = ci;
-          renderGrid();
+          // Обновляем только эту карточку — без перерисовки грида
+          const img = imgWrap.querySelector('img');
+          img.src = p.colors[ci].gallery[0];
+          img.alt = p.title + ' — ' + p.colors[ci].name;
+          swOverlay.querySelectorAll('.swatch').forEach((s, si) => {
+            s.classList.toggle('active', si === ci);
+          });
         });
-        swRow.appendChild(sw);
+        swOverlay.appendChild(sw);
       });
-      card.appendChild(swRow);
+      imgWrap.appendChild(swOverlay);
     }
 
-    const infoRow = document.createElement('div');
-    infoRow.className = 'product-info-row';
-    infoRow.innerHTML = `<span class="product-name">${p.title}</span><span class="product-price">${fmtPrice(p.price)}</span>`;
-    card.appendChild(infoRow);
+    imgWin.appendChild(imgWrap);
+    card.appendChild(imgWin);
 
-    card.addEventListener('click', () => openProduct(p.id));
+    // Кнопка-подпись (стиль .tbtn из шапки)
+    const actionBtn = document.createElement('button');
+    actionBtn.className = 'product-action-btn';
+    if (p.soldOut) actionBtn.disabled = true;
+    actionBtn.innerHTML = `
+      <span class="btn-name">${p.title}</span>
+      <span class="btn-sep"></span>
+      <span class="btn-price">${fmtPrice(p.price)}</span>
+    `;
+    actionBtn.addEventListener('click', e => { e.stopPropagation(); openProduct(p.id); });
+    card.appendChild(actionBtn);
+
+    // Клик по фото тоже открывает модал
+    imgWin.addEventListener('click', () => { if (!p.soldOut) openProduct(p.id); });
+
     grid.appendChild(card);
-
     requestAnimationFrame(() => setTimeout(() => card.classList.add('visible'), 60 + i*70));
   });
 }
@@ -794,7 +822,7 @@ function renderProductModal(){
   if (pmProduct.colors.length > 1){
     pmProduct.colors.forEach((c, ci) => {
       const sw = document.createElement('button');
-      sw.className = 'swatch' + (ci === pmColorIdx ? ' active' : '');
+      sw.className = 'pm-swatch' + (ci === pmColorIdx ? ' active' : '');
       sw.style.background = c.swatch;
       sw.title = c.name;
       sw.addEventListener('click', () => {
@@ -830,7 +858,7 @@ pmBuyNow.addEventListener('click', () => {
 });
 productModal.addEventListener('click', e => { if (e.target === productModal) closeProductModal(); });
 
-// ════════════════════ CHECKOUT (как было) ════════════════════
+// ════════════════════ CHECKOUT ════════════════════
 const SIZES = ['XS','S','M','L','XL','XXL'];
 let selectedSize = null;
 
