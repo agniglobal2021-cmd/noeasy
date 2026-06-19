@@ -1,14 +1,14 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<link rel="icon" type="image/png" href="../assets/icon.png">
+<link rel="apple-touch-icon" href="../assets/icon.png">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="theme-color" content="#5D5143">
 <meta name="msapplication-navbutton-color" content="#5D5143">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>About | NOEASY</title>
-<link rel="icon" type="image/png" href="IMG_8091.png">
 <style>
 @font-face { font-family:'Alkhemikal'; src:url('../fonts/Alkhemikal.ttf') format('truetype'); }
 @font-face { font-family:'DotGothic16'; src:url('../fonts/DotGothic16-Regular.ttf') format('truetype'); }
@@ -33,7 +33,6 @@ body::before{content:'';position:fixed;top:-100vh;left:0;right:0;height:100vh;ba
 #cursor.active{transform:translate(-50%,-50%) scale(1);opacity:1;}
 #cursor.pressed{transform:translate(-50%,-50%) scale(0.6);}
 
-/* ── HEADER ── */
 header{position:fixed;top:0;left:0;right:0;width:100%;z-index:500;display:flex;flex-direction:column;pointer-events:none;opacity:0;transition:opacity 0.7s ease;background:var(--desk);box-sizing:border-box;}
 header.visible{opacity:1;}
 header>*{pointer-events:auto;}
@@ -63,29 +62,10 @@ header>*{pointer-events:auto;}
 .nav-overlay a+a{border-top:1px solid #7a7068;}
 .nav-overlay a.current{background:#c8c2ba;}
 
-/* ── LAYOUT ── */
-main{
-  position:fixed;
-  top:calc(var(--header-total-h) + var(--page-gap));
-  left:12px; right:12px; bottom:var(--page-gap);
-  display:flex;
-  align-items:flex-start;
-  justify-content:center;
-}
+main{position:fixed;top:calc(var(--header-total-h) + var(--page-gap));left:12px;right:12px;bottom:var(--page-gap);display:flex;align-items:flex-start;justify-content:center;}
 
-.win{
-  width:100%;
-  max-width:660px;
-  height:100%;
-  display:flex;flex-direction:column;
-  border-top:2px solid var(--blt);border-left:2px solid var(--blt);
-  border-right:2px solid var(--bdk);border-bottom:2px solid var(--bdk);
-  box-shadow:2px 2px 0 var(--bsh);
-  opacity:0;transform:translateY(14px);
-  transition:opacity 0.6s cubic-bezier(0.16,1,0.3,1),transform 0.6s cubic-bezier(0.16,1,0.3,1);
-}
+.win{width:100%;max-width:660px;height:100%;display:flex;flex-direction:column;border-top:2px solid var(--blt);border-left:2px solid var(--blt);border-right:2px solid var(--bdk);border-bottom:2px solid var(--bdk);box-shadow:2px 2px 0 var(--bsh);opacity:0;transform:translateY(14px);transition:opacity 0.6s cubic-bezier(0.16,1,0.3,1),transform 0.6s cubic-bezier(0.16,1,0.3,1);}
 .win.visible{opacity:1;transform:none;}
-
 .tbar{height:22px;background:var(--btn);display:flex;align-items:stretch;padding:1px;flex-shrink:0;user-select:none;}
 .tbar-inner{flex:1;background:var(--tb);display:flex;align-items:center;padding:0 1px 0 6px;gap:2px;overflow:hidden;}
 .tbar-t{flex:1;font-size:8px;font-weight:700;letter-spacing:.12em;color:var(--ttxt);overflow:hidden;white-space:nowrap;text-overflow:ellipsis;line-height:1;}
@@ -93,112 +73,28 @@ main{
 .tbbtn{width:16px;height:16px;background:var(--btn);border-top:1px solid var(--blt);border-left:1px solid var(--blt);border-right:1px solid var(--bdk);border-bottom:1px solid var(--bdk);display:flex;align-items:center;justify-content:center;cursor:default;flex-shrink:0;padding:0;line-height:0;}
 .tbbtn:active{border-top:1px solid var(--bdk);border-left:1px solid var(--bdk);border-right:1px solid var(--blt);border-bottom:1px solid var(--blt);}
 
-.con-body{
-  flex:1;min-height:0;
-  overflow-y:auto;overflow-x:hidden;
-  background:#AFA191;
-  -webkit-overflow-scrolling:touch;
-  scrollbar-width:thin;
-  scrollbar-color:#7a6a58 #9e9080;
-}
+.con-body{flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;background:#AFA191;-webkit-overflow-scrolling:touch;scrollbar-width:thin;scrollbar-color:#7a6a58 #9e9080;}
 .con-body::-webkit-scrollbar{width:8px;}
 .con-body::-webkit-scrollbar-track{background:#9e9080;}
 .con-body::-webkit-scrollbar-thumb{background:#7a6a58;border:1px solid #5D5143;}
 
-/* ── HERO ── */
-.about-hero{
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  padding:28px 24px 24px;
-  gap:14px;
-  border-bottom:1px solid rgba(42,37,32,0.15);
-}
+.about-hero{display:flex;flex-direction:column;align-items:center;padding:28px 24px 24px;gap:14px;border-bottom:1px solid rgba(42,37,32,0.15);}
+.hero-stack{display:inline-flex;flex-direction:column;align-items:stretch;gap:12px;}
+.hero-avatar{width:100%;aspect-ratio:1/1;border-radius:50%;overflow:hidden;border:2px solid rgba(42,37,32,0.18);pointer-events:none;user-select:none;flex-shrink:0;}
+.hero-avatar img{width:100%;height:100%;object-fit:cover;display:block;pointer-events:none;-webkit-user-drag:none;}
+.hero-logo{width:100%;aspect-ratio:1609/590;object-fit:contain;display:block;pointer-events:none;user-select:none;-webkit-user-drag:none;}
+.about-role{font-family:'Fixedsys',monospace;font-size:9px;letter-spacing:0.2em;text-transform:uppercase;color:#5D5143;white-space:nowrap;text-align:center;}
+.about-divider{font-size:15px;color:#7a6a58;opacity:0.45;letter-spacing:0.3em;align-self:center;}
 
-.hero-stack{
-  display:inline-flex;
-  flex-direction:column;
-  align-items:stretch;
-  gap:12px;
-}
-
-.hero-avatar{
-  width:100%;
-  aspect-ratio:1/1;
-  border-radius:50%;
-  overflow:hidden;
-  border:2px solid rgba(42,37,32,0.18);
-  pointer-events:none;
-  user-select:none;
-  flex-shrink:0;
-}
-.hero-avatar img{
-  width:100%;height:100%;
-  object-fit:cover;
-  display:block;
-  pointer-events:none;
-  -webkit-user-drag:none;
-}
-
-.hero-logo{
-  width:100%;
-  aspect-ratio:1609/590;
-  object-fit:contain;
-  display:block;
-  pointer-events:none;
-  user-select:none;
-  -webkit-user-drag:none;
-}
-
-.about-role{
-  font-family:'Fixedsys',monospace;
-  font-size:9px;letter-spacing:0.2em;text-transform:uppercase;
-  color:#5D5143;
-  white-space:nowrap;
-  text-align:center;
-}
-
-.about-divider{
-  font-size:15px;color:#7a6a58;opacity:0.45;letter-spacing:0.3em;
-  align-self:center;
-}
-
-/* ── SECTIONS ── */
-.about-section{
-  padding:16px 22px 14px;
-  border-bottom:1px solid rgba(42,37,32,0.1);
-}
+.about-section{padding:16px 22px 14px;border-bottom:1px solid rgba(42,37,32,0.1);}
 .about-section:last-child{border-bottom:none;padding-bottom:28px;}
-
-.section-label{
-  font-family:'Alkhemikal',serif;
-  font-size:14px;letter-spacing:0.12em;
-  color:#3d3830;
-  margin-bottom:9px;
-}
-
-.section-text{
-  font-family:'Fixedsys',monospace;
-  font-size:10px;line-height:1.9;
-  color:#5a4a38;letter-spacing:0.03em;
-}
+.section-label{font-family:'Alkhemikal',serif;font-size:14px;letter-spacing:0.12em;color:#3d3830;margin-bottom:9px;}
+.section-text{font-family:'Fixedsys',monospace;font-size:10px;line-height:1.9;color:#5a4a38;letter-spacing:0.03em;}
 .section-text em{color:#2a2520;font-style:normal;}
 
-/* Portrait: window fills screen snugly */
-@media (orientation:portrait) {
-  main{ left:8px; right:8px; }
-  .win{ max-width:100%; }
-}
-
-/* Landscape: wider but not forced full */
-@media (orientation:landscape) {
-  main{ left:16px; right:16px; }
-  .win{ max-width:700px; }
-}
-
-@media(max-width:400px){
-  main{left:6px;right:6px;}
-}
+@media (orientation:portrait){main{left:8px;right:8px;}.win{max-width:100%;}}
+@media (orientation:landscape){main{left:16px;right:16px;}.win{max-width:700px;}}
+@media(max-width:400px){main{left:6px;right:6px;}}
 </style>
 </head>
 <body>
@@ -237,7 +133,6 @@ main{
         <div class="tbbtns" id="abtns"></div>
       </div>
     </div>
-
     <div class="con-body">
       <div class="about-hero">
         <div class="hero-stack">
@@ -249,27 +144,22 @@ main{
         </div>
         <span class="about-divider">✠ ✠ ✠</span>
       </div>
-
       <div class="about-section">
         <div class="section-label">Origin</div>
         <div class="section-text">Drawing was never a conscious choice — more like <em>the only way of existing</em> that revealed itself before I had words to describe it. From early childhood to today it has remained a constant: a way to think, to process what I've seen, to hold some kind of inner balance.</div>
       </div>
-
       <div class="about-section">
         <div class="section-label">Language</div>
         <div class="section-text">My visual language developed slowly and nonlinearly. Engraving and street culture, high fashion and medieval symbolism, tattooing and western esotericism — these were never separate phases, but <em>layers that accumulated and grew into one another</em>. Among the artists who left the deepest mark — Jean-Michel Basquiat, Salvador Dalí, and the Dutch artist Johfra Bosschart with his explorations of esotericism.</div>
       </div>
-
       <div class="about-section">
         <div class="section-label">Path</div>
         <div class="section-text">I am largely self-taught. A brief period studying Orthodox iconography gave me an understanding of <em>strict form and sacred symbolism</em> — it stayed with me and influenced my work in ways I only noticed later. A turning point came around the age of twenty — an internal shift, after which an interest in mysticism became part of not just the subject matter, but the approach itself. The path moved from Eastern mysticism to Western spirituality — <em>Hermeticism, Gnosticism, Gothic imagery</em>. Not only as a visual style, but as a way of looking at spiritual reality.</div>
       </div>
-
       <div class="about-section">
         <div class="section-label">Process</div>
         <div class="section-text">My work is always a movement between <em>order and chaos</em>. When things are quiet inside — the lines become sharper and cleaner. When they're not — images expand, grow denser, take on an almost primal energy. Minimalism rarely appears in my practice.</div>
       </div>
-
       <div class="about-section">
         <div class="section-label">Medium</div>
         <div class="section-text">I work digitally and have a background in <em>frame-by-frame animation</em>. My portfolio includes album covers, collaborations with hip-hop artists, prints and digital art. Ahead — works on physical canvas and an <em>original Tarot deck</em>.</div>
@@ -280,44 +170,22 @@ main{
 
 <script>
 document.addEventListener('contextmenu',e=>e.preventDefault());
-
 const grain=document.getElementById('grain');
 const gc=grain.getContext('2d');
 let gw,gh;
 function resizeGrain(){gw=grain.width=window.innerWidth+20;gh=grain.height=window.innerHeight+120;}
 resizeGrain();
 window.addEventListener('resize',resizeGrain);
-(function tick(){
-  const img=gc.createImageData(gw,gh);
-  for(let i=0;i<img.data.length;i+=4){
-    const v=Math.random()*255|0;
-    img.data[i]=img.data[i+1]=img.data[i+2]=v;
-    img.data[i+3]=Math.random()*22|0;
-  }
-  gc.putImageData(img,0,0);
-  requestAnimationFrame(tick);
-})();
-
+(function tick(){const img=gc.createImageData(gw,gh);for(let i=0;i<img.data.length;i+=4){const v=Math.random()*255|0;img.data[i]=img.data[i+1]=img.data[i+2]=v;img.data[i+3]=Math.random()*22|0;}gc.putImageData(img,0,0);requestAnimationFrame(tick);})();
 const cursor=document.getElementById('cursor');
 document.addEventListener('mousemove',e=>{cursor.style.left=e.clientX+'px';cursor.style.top=e.clientY+'px';});
 document.addEventListener('mousedown',()=>cursor.classList.add('pressed'));
 document.addEventListener('mouseup',()=>cursor.classList.remove('pressed'));
-
-(function(){
-  const btn=document.getElementById('swordBtn');
-  const overlay=document.getElementById('navOverlay');
-  btn.addEventListener('click',e=>{e.stopPropagation();btn.classList.toggle('open');overlay.classList.toggle('open');});
-  document.addEventListener('click',e=>{if(!overlay.contains(e.target)&&e.target!==btn){btn.classList.remove('open');overlay.classList.remove('open');}});
-})();
-
+(function(){const btn=document.getElementById('swordBtn');const overlay=document.getElementById('navOverlay');btn.addEventListener('click',e=>{e.stopPropagation();btn.classList.toggle('open');overlay.classList.toggle('open');});document.addEventListener('click',e=>{if(!overlay.contains(e.target)&&e.target!==btn){btn.classList.remove('open');overlay.classList.remove('open');}});})();
 const crossSVG=`<svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg" style="display:block;image-rendering:pixelated;shape-rendering:crispEdges"><rect x="4" y="0" width="2" height="10" fill="#1a1612"/><rect x="3" y="1" width="4" height="1" fill="#1a1612"/><rect x="3" y="8" width="4" height="1" fill="#1a1612"/><rect x="2" y="0" width="6" height="1" fill="#1a1612"/><rect x="2" y="9" width="6" height="1" fill="#1a1612"/><rect x="0" y="4" width="10" height="2" fill="#1a1612"/><rect x="1" y="3" width="1" height="4" fill="#1a1612"/><rect x="8" y="3" width="1" height="4" fill="#1a1612"/><rect x="0" y="2" width="1" height="6" fill="#1a1612"/><rect x="9" y="2" width="1" height="6" fill="#1a1612"/></svg>`;
 function makeBtns(c){['Minimize','Maximize','Close'].forEach(t=>{const b=document.createElement('div');b.className='tbbtn';b.title=t;b.innerHTML=crossSVG;c.appendChild(b);});}
 makeBtns(document.getElementById('abtns'));
-
-setTimeout(()=>{
-  document.getElementById('siteHeader').classList.add('visible');
-  document.getElementById('aboutWin').classList.add('visible');
-},100);
+setTimeout(()=>{document.getElementById('siteHeader').classList.add('visible');document.getElementById('aboutWin').classList.add('visible');},100);
 </script>
 </body>
 </html>
