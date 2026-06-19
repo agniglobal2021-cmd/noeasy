@@ -2,9 +2,10 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<link rel="icon" type="image/png" href="assets/icon.png">
+<link rel="apple-touch-icon" href="assets/icon.png">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>NOEASY</title>
-<link rel="icon" type="image/png" href="IMG_8091.png">
 <style>
 @font-face {
   font-family: 'Alkhemikal';
@@ -37,7 +38,6 @@ html, body {
   padding: 20px;
 }
 
-/* ── Landscape: гифка слева, ярлыки справа ── */
 .layout {
   display: flex;
   flex-direction: row;
@@ -54,7 +54,6 @@ html, body {
   to   { opacity:1; transform: translateY(0); }
 }
 
-/* ── Portrait: гифка сверху, ярлыки в ряд снизу ── */
 @media (orientation: portrait) {
   .layout {
     flex-direction: column;
@@ -66,7 +65,6 @@ html, body {
   }
 }
 
-/* ── Win95 window ── */
 .win95 {
   background: #AFA191;
   border-top: 2px solid #d4cdc4;
@@ -76,13 +74,11 @@ html, body {
   box-shadow: 1px 1px 0 #2a2520;
   padding: 1px;
   flex-shrink: 0;
-  /* размер окна подстраивается под ориентацию */
   width: clamp(120px, 36vw, 300px);
 }
 
 @media (orientation: portrait) {
   .win95 {
-    /* 4 ярлыка по 64px + 3 gap по 4vw, минимум чтобы не было уже ярлыков */
     width: clamp(220px, 80vw, 400px);
   }
 }
@@ -151,14 +147,12 @@ html, body {
   image-rendering: pixelated;
 }
 
-/* ── Shortcuts: по умолчанию сетка 2×2 ── */
 .desktop {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: clamp(16px, 3vw, 36px);
 }
 
-/* В портрете — ряд из 4, ширина подстраивается под ярлыки ── */
 @media (orientation: portrait) {
   .desktop {
     display: flex;
@@ -234,7 +228,6 @@ html, body {
   pointer-events: none;
 }
 
-/* ── Footer ── */
 footer {
   position:fixed; bottom:0; left:0; right:0; z-index:2;
   display:flex; align-items:center; justify-content:space-between;
@@ -316,14 +309,12 @@ footer a:hover { opacity:0.65; }
 </footer>
 
 <script>
-// ── GIF fallback (.gif / .GIF) ──
 const heroImg = document.getElementById('hero-gif');
 heroImg.onerror = function() {
   if (this.src.endsWith('.gif')) {
     this.src = 'assets/hero.GIF';
   }
 };
-
 
 const g = document.getElementById('grain');
 const gc = g.getContext('2d');
