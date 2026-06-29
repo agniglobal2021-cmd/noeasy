@@ -11,7 +11,6 @@
 <style>
 @font-face { font-family:'Mekzantine'; src:url('../fonts/MEKZANTINE-Regular.otf') format('opentype'); font-display:swap; }
 @font-face { font-family:'DotGothic16'; src:url('../fonts/DotGothic16-Regular.ttf') format('truetype'); font-display:swap; }
-@font-face { font-family:'Fixedsys'; src:url('../fonts/Fixedsys.ttf') format('truetype'); font-display:swap; }
 
 *,*::before,*::after { margin:0; padding:0; box-sizing:border-box; }
 
@@ -19,15 +18,14 @@
   --bg:#e8e0c4; --text:#353535; --desk:#5D5143;
   --btn:#AFA191; --blt:#d4cdc4; --bdk:#3d3830; --bsh:rgba(0,0,0,.45);
   --ttxt:#f6f1da; --tdim:#7a6a52;
-  --lbg:#141008; --ltxt:#c8b888; --ldim:#6a5a38;
   --header-titlebar-h:22px; --header-pill-h:44px;
   --header-total-h:calc(env(safe-area-inset-top,0px) + var(--header-titlebar-h) + var(--header-pill-h));
 }
 
 html { background:#5D5143; }
 body::before { content:''; position:fixed; top:-100vh; left:0; right:0; height:100vh; background:#5D5143; z-index:9001; pointer-events:none; }
-body { background:var(--bg); font-family:'DotGothic16',monospace; color:var(--text); overscroll-behavior:none; -webkit-tap-highlight-color:transparent; -webkit-font-smoothing:none; }
-#grain { position:fixed; top:-60px; bottom:-60px; left:-10px; right:-10px; z-index:15; pointer-events:none; opacity:.55; }
+body { background:var(--bg); font-family:'DotGothic16',monospace; color:var(--text); overscroll-behavior:none; -webkit-tap-highlight-color:transparent; }
+#grain { position:fixed; top:-60px; bottom:-60px; left:-10px; right:-10px; z-index:15; pointer-events:none; }
 
 /* ── Header ── */
 header { position:fixed; top:0; left:0; z-index:500; width:100vw; display:flex; flex-direction:column; pointer-events:none; opacity:0; transition:opacity .7s ease; background:var(--desk); }
@@ -38,7 +36,7 @@ header > * { pointer-events:auto; }
 .header-titlebar-strip-text { font-family:'DotGothic16',monospace; font-size:9px; font-weight:700; letter-spacing:.14em; color:var(--ttxt); flex:1; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
 .header-pill { display:flex; align-items:center; position:relative; width:100%; height:var(--header-pill-h); background:var(--btn); border-top:1px solid var(--blt); border-bottom:2px solid #7a7068; box-shadow:0 1px 0 #404040; padding:0 4px; overflow:visible; }
 .pill-divider { width:2px; height:26px; background:#808080; border-right:1px solid var(--blt); margin:0 2px; flex-shrink:0; }
-.pill-center { position:absolute; left:50%; transform:translateX(-50%); display:flex; flex-direction:column; align-items:center; gap:1px; pointer-events:none; white-space:nowrap; }
+.pill-center { position:absolute; left:50%; transform:translateX(-50%); pointer-events:none; white-space:nowrap; }
 .pill-section { font-family:'Mekzantine',serif; font-size:14px; letter-spacing:.08em; color:#000; opacity:.9; }
 .sword-btn { height:calc(100% - 10px); padding:0 12px; margin:0 2px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:5px; background:var(--btn); border-top:2px solid var(--blt); border-left:2px solid var(--blt); border-right:2px solid var(--bdk); border-bottom:2px solid var(--bdk); box-shadow:inset 1px 1px 0 var(--blt),inset -1px -1px 0 #7a7068; cursor:pointer; flex-shrink:0; overflow:visible; }
 .sword-btn:active,.sword-btn.open { border-top:2px solid var(--bdk); border-left:2px solid var(--bdk); border-right:2px solid var(--blt); border-bottom:2px solid var(--blt); box-shadow:inset 1px 1px 0 #7a7068; }
@@ -54,172 +52,178 @@ header > * { pointer-events:auto; }
 .nav-overlay { position:absolute; top:calc(100% + 4px); right:0; z-index:8999; min-width:160px; padding:2px; background:var(--btn); border-top:2px solid var(--blt); border-left:2px solid var(--blt); border-right:2px solid var(--bdk); border-bottom:2px solid var(--bdk); box-shadow:2px 2px 0 #2a2520; display:flex; flex-direction:column; opacity:0; pointer-events:none; transform:translateY(-4px); transition:opacity .15s,transform .15s; }
 .nav-overlay.open { opacity:1; pointer-events:auto; transform:translateY(0); }
 .nav-overlay a { font-family:'DotGothic16',monospace; font-size:10px; font-weight:700; letter-spacing:.12em; text-transform:uppercase; color:#000; text-decoration:none; padding:8px 12px 8px 8px; display:flex; align-items:center; }
-.nav-overlay a::before { content:'/'; margin-right:7px; opacity:.6; }
+.nav-overlay a::before { content:'/'; margin-right:7px; opacity:.5; }
 .nav-overlay a:hover { background:#5D5143; color:var(--ttxt); }
 .nav-overlay a + a { border-top:1px solid #7a7068; }
 .nav-overlay a.current { background:#c8c2ba; }
 
-/* ── Win95 окно ── */
-.win { display:flex; flex-direction:column; overflow:hidden; border-top:2px solid var(--blt); border-left:2px solid var(--blt); border-right:2px solid var(--bdk); border-bottom:2px solid var(--bdk); box-shadow:2px 2px 0 var(--bsh); opacity:0; transform:translateY(16px); transition:opacity .6s cubic-bezier(.16,1,.3,1), transform .6s cubic-bezier(.16,1,.3,1); }
-.win.visible { opacity:1; transform:none; }
-.tbar { height:22px; background:var(--btn); display:flex; align-items:stretch; padding:1px; flex-shrink:0; }
-.tbar-inner { flex:1; background:#5D5143; display:flex; align-items:center; padding:0 2px 0 6px; gap:4px; justify-content:space-between; }
-.tbar-t { flex:1; min-width:0; font-family:'DotGothic16',monospace; font-size:8px; font-weight:700; letter-spacing:.12em; color:var(--ttxt); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; line-height:1; }
-.tbbtns { display:flex; gap:1px; align-items:center; flex-shrink:0; }
-.tbbtn { width:16px; height:16px; background:var(--btn); border-top:1px solid var(--blt); border-left:1px solid var(--blt); border-right:1px solid var(--bdk); border-bottom:1px solid var(--bdk); display:flex; align-items:center; justify-content:center; cursor:default; flex-shrink:0; padding:0; }
-
-/* ── Тёмное окно — ссылки ── */
-.links-body {
-  background: var(--lbg);
-  position: relative;
-  overflow: hidden;
-}
-/* Scanlines */
-.links-body::after {
-  content:''; position:absolute; inset:0; pointer-events:none; z-index:3;
-  background: repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(0,0,0,.07) 3px, rgba(0,0,0,.07) 4px);
-}
-/* Ambient glow вверху */
-.links-body::before {
-  content:''; position:absolute; top:0; left:0; right:0; height:120px;
-  background: radial-gradient(ellipse at 50% 0%, rgba(200,180,100,.08) 0%, transparent 70%);
-  pointer-events:none; z-index:2;
-}
-
-.links-scroll {
-  position:relative; z-index:4;
-  padding: 28px 0 24px;
-  overflow-y:auto; overflow-x:hidden;
-  scrollbar-width:thin; scrollbar-color:#3a3020 #0e0c08;
-}
-.links-scroll::-webkit-scrollbar { width:6px; }
-.links-scroll::-webkit-scrollbar-track { background:#0e0c08; }
-.links-scroll::-webkit-scrollbar-thumb { background:#3a3020; }
-
-/* Секция */
-.links-section { margin-bottom:24px; }
-.links-section:last-child { margin-bottom:0; }
-
-.section-title {
-  font-family:'Mekzantine',serif;
-  font-size:22px;
-  letter-spacing:.06em;
-  color:var(--ltxt);
-  text-align:center;
-  display:block;
-  margin-bottom:10px;
-  opacity:.9;
-  text-shadow:0 0 20px rgba(200,184,136,.15);
-}
-
-/* Разделитель */
-.section-rule {
-  width:40px; height:1px;
-  background:linear-gradient(to right, transparent, rgba(200,184,136,.3), transparent);
-  margin:0 auto 14px;
-}
-
-/* Ссылки */
-.link-item {
-  display:block;
-  text-align:center;
-  padding:7px 20px;
-  font-family:'DotGothic16',monospace;
-  font-size:10px;
-  font-weight:700;
-  letter-spacing:.18em;
-  text-transform:uppercase;
-  color:var(--ldim);
-  text-decoration:none;
-  transition:color .1s, background .1s;
-  position:relative; z-index:4;
-  -webkit-tap-highlight-color:transparent;
-}
-.link-item:hover { color:var(--ltxt); background:rgba(200,184,136,.04); }
-.link-item:active { color:#e8d0a0; }
-
-/* Горизонтальная линия между секциями */
-.section-sep {
-  height:1px;
-  margin:4px 24px 24px;
-  background:linear-gradient(to right, transparent, rgba(200,184,136,.12), transparent);
-}
-
-/* ── Правая колонка ── */
-.right-col { display:flex; flex-direction:column; gap:14px; }
-
-/* Support кнопка */
-.support-btn {
-  display:flex; align-items:center; justify-content:center;
-  height:44px;
-  background:var(--btn);
-  border-top:2px solid var(--blt); border-left:2px solid var(--blt);
-  border-right:2px solid var(--bdk); border-bottom:2px solid var(--bdk);
-  box-shadow:inset 1px 1px 0 var(--blt), inset -1px -1px 0 #7a7068, 2px 2px 0 var(--bsh);
-  text-decoration:none; cursor:pointer; -webkit-tap-highlight-color:transparent;
-  position:relative; overflow:hidden;
-}
-.support-btn::before {
-  content:''; position:absolute; inset:0;
-  background:linear-gradient(to right, transparent 0%, rgba(255,255,255,.06) 40%, rgba(255,255,255,.06) 60%, transparent 100%);
-}
-.support-btn span {
-  font-family:'Mekzantine',serif;
-  font-size:20px; letter-spacing:.08em; color:#1e1a12;
-  position:relative; z-index:1;
-}
-.support-btn:active { border-top:2px solid var(--bdk); border-left:2px solid var(--bdk); border-right:2px solid var(--blt); border-bottom:2px solid var(--blt); box-shadow:inset 1px 1px 0 #7a7068; }
-
-/* Форма */
-.form-body { background:var(--btn); padding:14px 14px 16px; display:flex; flex-direction:column; gap:10px; }
-.form-label { display:block; font-family:'DotGothic16',monospace; font-size:8px; font-weight:700; letter-spacing:.18em; text-transform:uppercase; color:#3d3020; margin-bottom:4px; }
-.form-field { width:100%; margin-bottom:0; }
-.form-field input, .form-field textarea {
-  width:100%;
-  background:#c8c2b8; color:#1e1a12;
-  border-top:2px solid var(--bdk); border-left:2px solid var(--bdk);
-  border-right:2px solid var(--blt); border-bottom:2px solid var(--blt);
-  box-shadow:inset 1px 1px 0 #7a7068;
-  padding:7px 9px;
-  font-family:'DotGothic16',monospace; font-size:10px; letter-spacing:.06em;
-  outline:none; resize:none; display:block; border-radius:0;
-  -webkit-appearance:none; appearance:none;
-}
-.form-field input:focus, .form-field textarea:focus { background:#d4cec8; }
-.form-field input::placeholder, .form-field textarea::placeholder { color:#7a6a52; opacity:.6; font-size:8px; letter-spacing:.14em; text-transform:uppercase; }
-.form-field textarea { min-height:80px; }
-.form-footer { display:flex; align-items:center; gap:12px; }
-button.form-submit {
-  height:30px; padding:0 18px;
-  font-family:'Mekzantine',serif; font-size:16px; letter-spacing:.04em; color:#1e1a12;
-  background:var(--btn);
-  border-top:2px solid var(--blt); border-left:2px solid var(--blt);
-  border-right:2px solid var(--bdk); border-bottom:2px solid var(--bdk);
-  box-shadow:inset 1px 1px 0 var(--blt),inset -1px -1px 0 #7a7068;
-  cursor:pointer; flex-shrink:0; display:inline-flex; align-items:center;
-}
-button.form-submit:active { border-top:2px solid var(--bdk); border-left:2px solid var(--bdk); border-right:2px solid var(--blt); border-bottom:2px solid var(--blt); box-shadow:inset 1px 1px 0 #7a7068; }
-.form-status { font-family:'DotGothic16',monospace; font-size:8px; letter-spacing:.16em; text-transform:uppercase; color:#3d3020; opacity:0; transition:opacity .4s; }
-.form-status.show { opacity:.7; }
-
-/* ── Layout ── */
+/* ── Main layout ── */
 main {
   min-height:100vh;
-  display:flex; flex-direction:column; align-items:center; justify-content:center;
-  padding:calc(var(--header-total-h) + 28px) 16px 60px;
+  padding:calc(var(--header-total-h) + 60px) 24px calc(env(safe-area-inset-bottom,0px) + 80px);
+  display:flex; flex-direction:column; align-items:center;
 }
-.content-wrap { width:100%; max-width:min(360px,96vw); display:flex; flex-direction:column; gap:16px; }
 
-@media (min-width:681px) {
-  main { padding-top:calc(var(--header-total-h) + 24px); padding-bottom:24px; }
-  .content-wrap { max-width:min(780px,96vw); flex-direction:row; align-items:flex-start; gap:18px; }
-  #linksWin { flex:1 1 0; min-width:0; }
-  .right-col { flex:0 0 300px; width:300px; }
-  .links-scroll { max-height:calc(100vh - var(--header-total-h) - 80px); }
+/* ── Content ── */
+.page-wrap {
+  width:100%; max-width:440px;
+  display:flex; flex-direction:column;
+  gap:0;
 }
-@media (max-width:680px) {
-  main { justify-content:flex-start; }
-  .links-scroll { max-height:none; overflow-y:visible; }
+
+/* ── Секция ── */
+.section {
+  padding:40px 0;
+  border-bottom:1px solid rgba(53,53,53,.1);
+  opacity:0; transform:translateY(20px);
+  transition:opacity .7s cubic-bezier(.16,1,.3,1), transform .7s cubic-bezier(.16,1,.3,1);
+}
+.section:last-child { border-bottom:none; }
+.section.visible { opacity:1; transform:none; }
+
+.section-label {
+  display:block;
+  font-family:'DotGothic16',monospace;
+  font-size:8px; font-weight:700;
+  letter-spacing:.22em; text-transform:uppercase;
+  color:var(--tdim); opacity:.7;
+  margin-bottom:14px;
+}
+
+.section-title {
+  display:block;
+  font-family:'Mekzantine',serif;
+  font-size:clamp(28px,7vw,38px);
+  letter-spacing:.03em; line-height:1.05;
+  color:#2a2118;
+  margin-bottom:20px;
+}
+
+/* ── Ссылки внутри секции ── */
+.links-list {
+  display:flex; flex-direction:column; gap:0;
+}
+
+.link-row {
+  display:flex; align-items:center;
+  padding:10px 0;
+  border-bottom:1px solid rgba(53,53,53,.07);
+  text-decoration:none;
+  color:#3d3020;
+  gap:10px;
+  transition:color .1s;
+  -webkit-tap-highlight-color:transparent;
+}
+.link-row:last-child { border-bottom:none; }
+.link-row:hover { color:#1e1a12; }
+.link-row:hover .link-arrow { opacity:1; transform:translateX(2px); }
+
+.link-name {
+  font-family:'DotGothic16',monospace;
+  font-size:11px; font-weight:700;
+  letter-spacing:.14em; text-transform:uppercase;
+  flex:1;
+}
+
+.link-arrow {
+  font-size:10px; opacity:.3;
+  transition:opacity .1s, transform .15s;
+  flex-shrink:0;
+}
+
+/* ── Support кнопка — особая секция ── */
+.section-support {
+  padding:40px 0;
+}
+.support-link {
+  display:inline-flex; align-items:center; gap:10px;
+  text-decoration:none;
+  -webkit-tap-highlight-color:transparent;
+}
+.support-link:hover .support-text { color:#1e1a12; }
+.support-link:hover .support-arrow { opacity:.7; transform:translateX(3px); }
+
+.support-text {
+  font-family:'Mekzantine',serif;
+  font-size:clamp(24px,6vw,32px);
+  letter-spacing:.03em;
+  color:#3d3020;
+  transition:color .1s;
+}
+.support-arrow {
+  font-family:'DotGothic16',monospace;
+  font-size:10px; letter-spacing:.1em;
+  color:var(--tdim); opacity:.4;
+  transition:opacity .1s, transform .15s;
+  padding-top:4px;
+}
+
+/* ── Форма — встроена в страницу без окна ── */
+.form-section { padding:40px 0 0; }
+
+.form-section-title {
+  font-family:'Mekzantine',serif;
+  font-size:clamp(28px,7vw,38px);
+  letter-spacing:.03em;
+  color:#2a2118; margin-bottom:24px;
+}
+
+.form-fields { display:flex; flex-direction:column; gap:14px; }
+
+.field-label {
+  display:block;
+  font-family:'DotGothic16',monospace;
+  font-size:8px; font-weight:700;
+  letter-spacing:.20em; text-transform:uppercase;
+  color:var(--tdim); margin-bottom:5px;
+}
+
+.field-input, .field-textarea {
+  width:100%;
+  background:#d8d0b8;
+  color:#1e1a12;
+  border:none;
+  border-bottom:2px solid rgba(53,53,53,.25);
+  padding:10px 0;
+  font-family:'DotGothic16',monospace;
+  font-size:11px; letter-spacing:.06em;
+  outline:none; display:block;
+  border-radius:0; -webkit-appearance:none; appearance:none;
+  background:transparent;
+  border-top:none; border-left:none; border-right:none;
+}
+.field-input:focus, .field-textarea:focus {
+  border-bottom-color:rgba(53,53,53,.7);
+}
+.field-input::placeholder, .field-textarea::placeholder {
+  color:var(--tdim); opacity:.5;
+  font-size:9px; letter-spacing:.14em; text-transform:uppercase;
+}
+.field-textarea { min-height:90px; resize:none; }
+
+.form-footer { display:flex; align-items:center; justify-content:space-between; margin-top:24px; }
+
+.submit-btn {
+  font-family:'Mekzantine',serif;
+  font-size:20px; letter-spacing:.04em;
+  color:#2a2118; background:transparent;
+  border:none; cursor:pointer; padding:0;
+  display:inline-flex; align-items:center; gap:8px;
+  transition:opacity .15s;
+}
+.submit-btn:active { opacity:.5; }
+.submit-arrow { font-family:'DotGothic16',monospace; font-size:10px; color:var(--tdim); opacity:.5; padding-top:3px; }
+
+.form-status {
+  font-family:'DotGothic16',monospace;
+  font-size:8px; letter-spacing:.16em; text-transform:uppercase;
+  color:var(--tdim); opacity:0; transition:opacity .4s;
+}
+.form-status.show { opacity:.7; }
+
+@media (max-width:480px) {
+  main { padding-top:calc(var(--header-total-h) + 40px); }
+  .section { padding:32px 0; }
 }
 </style>
 </head>
@@ -253,54 +257,97 @@ main {
 </header>
 
 <main>
-  <div class="content-wrap">
+  <div class="page-wrap" id="pageWrap">
 
-    <!-- Окно ссылок -->
-    <div class="win" id="linksWin">
-      <div class="tbar">
-        <div class="tbar-inner">
-          <div class="tbar-t">LINKS.EXE</div>
-          <div class="tbbtns" id="lbtns"></div>
-        </div>
-      </div>
-      <div class="links-body">
-        <div class="links-scroll" id="linksScroll"></div>
+    <div class="section">
+      <span class="section-label">01 — Social</span>
+      <span class="section-title">Find Me</span>
+      <div class="links-list">
+        <a class="link-row" href="https://instagram.com/noeasyvision" target="_blank" rel="noopener">
+          <span class="link-name">Instagram</span><span class="link-arrow">→</span>
+        </a>
+        <a class="link-row" href="https://x.com/noeasyvision" target="_blank" rel="noopener">
+          <span class="link-name">X</span><span class="link-arrow">→</span>
+        </a>
+        <a class="link-row" href="https://t.me/noeasyeye" target="_blank" rel="noopener">
+          <span class="link-name">Telegram</span><span class="link-arrow">→</span>
+        </a>
       </div>
     </div>
 
-    <!-- Правая колонка -->
-    <div class="right-col">
+    <div class="section">
+      <span class="section-label">02 — Portfolio</span>
+      <span class="section-title">See the Work</span>
+      <div class="links-list">
+        <a class="link-row" href="https://www.behance.net/noeasyvision" target="_blank" rel="noopener">
+          <span class="link-name">Behance</span><span class="link-arrow">→</span>
+        </a>
+      </div>
+    </div>
 
-      <a href="https://buymeacoffee.com/noeasyvision" class="support-btn win visible" target="_blank" rel="noopener noreferrer" style="transition-delay:.1s">
-        <span>Support the Work</span>
+    <div class="section">
+      <span class="section-label">03 — Prints</span>
+      <span class="section-title">Own a Print</span>
+      <div class="links-list">
+        <a class="link-row" href="https://www.inprnt.com/profile/noeasy" target="_blank" rel="noopener">
+          <span class="link-name">INPRNT</span><span class="link-arrow">→</span>
+        </a>
+      </div>
+    </div>
+
+    <div class="section">
+      <span class="section-label">04 — Digital Collectibles</span>
+      <span class="section-title">Collect</span>
+      <div class="links-list">
+        <a class="link-row" href="https://superrare.com/noeasy" target="_blank" rel="noopener">
+          <span class="link-name">SuperRare</span><span class="link-arrow">→</span>
+        </a>
+        <a class="link-row" href="https://objkt.com/profile/noeasy" target="_blank" rel="noopener">
+          <span class="link-name">Objkt</span><span class="link-arrow">→</span>
+        </a>
+      </div>
+    </div>
+
+    <div class="section section-support">
+      <span class="section-label">05 — Support</span>
+      <a class="support-link" href="https://buymeacoffee.com/noeasyvision" target="_blank" rel="noopener">
+        <span class="support-text">Support the Work</span>
+        <span class="support-arrow">→</span>
       </a>
+    </div>
 
-      <div class="win" id="formWin">
-        <div class="tbar">
-          <div class="tbar-inner">
-            <div class="tbar-t">WRITE_ME.EXE</div>
-            <div class="tbbtns" id="rbtns"></div>
+    <div class="section form-section">
+      <span class="section-label">06 — Contact</span>
+      <div class="form-section-title">Write to Me</div>
+      <form id="contact-form" action="https://formspree.io/f/xqewvwkv" method="POST">
+        <div class="form-fields">
+          <div>
+            <label class="field-label">Name</label>
+            <input class="field-input" type="text" name="name" placeholder="Your name" required autocomplete="off">
+          </div>
+          <div>
+            <label class="field-label">Email</label>
+            <input class="field-input" type="email" name="email" placeholder="Your email" required autocomplete="off">
+          </div>
+          <div>
+            <label class="field-label">Message</label>
+            <textarea class="field-textarea" name="message" placeholder="Write something..." required></textarea>
           </div>
         </div>
-        <div class="form-body">
-          <form id="contact-form" action="https://formspree.io/f/xqewvwkv" method="POST" style="display:flex;flex-direction:column;gap:10px;">
-            <div class="form-field"><label class="form-label">Name</label><input type="text" name="name" placeholder="Your name" required autocomplete="off"></div>
-            <div class="form-field"><label class="form-label">Email</label><input type="email" name="email" placeholder="Your email" required autocomplete="off"></div>
-            <div class="form-field"><label class="form-label">Message</label><textarea name="message" placeholder="Write something..." required></textarea></div>
-            <div class="form-footer">
-              <button type="submit" class="form-submit">Send</button>
-              <div class="form-status" id="form-status"></div>
-            </div>
-          </form>
+        <div class="form-footer">
+          <button class="submit-btn" type="submit">
+            Send <span class="submit-arrow">→</span>
+          </button>
+          <div class="form-status" id="form-status"></div>
         </div>
-      </div>
-
+      </form>
     </div>
+
   </div>
 </main>
 
 <script>
-/* ── Grain ── */
+/* Grain */
 (function(){
   const g=document.getElementById('grain'),ctx=g.getContext('2d');
   let w,h;
@@ -308,12 +355,12 @@ main {
   resize(); window.addEventListener('resize',resize);
   (function tick(){
     const img=ctx.createImageData(w,h);
-    for(let i=0;i<img.data.length;i+=4){const v=Math.random()*255|0;img.data[i]=img.data[i+1]=img.data[i+2]=v;img.data[i+3]=Math.random()*20|0;}
+    for(let i=0;i<img.data.length;i+=4){const v=Math.random()*255|0;img.data[i]=img.data[i+1]=img.data[i+2]=v;img.data[i+3]=Math.random()*18|0;}
     ctx.putImageData(img,0,0);requestAnimationFrame(tick);
   })();
 })();
 
-/* ── Burger ── */
+/* Burger */
 (function(){
   const btn=document.getElementById('swordBtn'),nav=document.getElementById('navOverlay');
   btn.addEventListener('click',e=>{e.stopPropagation();btn.classList.toggle('open');nav.classList.toggle('open');});
@@ -321,62 +368,23 @@ main {
   document.addEventListener('keydown',e=>{if(e.key==='Escape'){btn.classList.remove('open');nav.classList.remove('open');}});
 })();
 
-/* ── Tbar кресты ── */
-const CROSS=`<svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg" style="display:block;image-rendering:pixelated;shape-rendering:crispEdges"><rect x="4" y="0" width="2" height="10" fill="#1a1612"/><rect x="3" y="1" width="4" height="1" fill="#1a1612"/><rect x="3" y="8" width="4" height="1" fill="#1a1612"/><rect x="2" y="0" width="6" height="1" fill="#1a1612"/><rect x="2" y="9" width="6" height="1" fill="#1a1612"/><rect x="0" y="4" width="10" height="2" fill="#1a1612"/><rect x="1" y="3" width="1" height="4" fill="#1a1612"/><rect x="8" y="3" width="1" height="4" fill="#1a1612"/><rect x="0" y="2" width="1" height="6" fill="#1a1612"/><rect x="9" y="2" width="1" height="6" fill="#1a1612"/></svg>`;
-function makeBtns(id){
-  const c=document.getElementById(id);
-  ['_','□','✕'].forEach(()=>{const b=document.createElement('div');b.className='tbbtn';b.innerHTML=CROSS;c.appendChild(b);});
-}
-makeBtns('lbtns'); makeBtns('rbtns');
+/* Header reveal */
+setTimeout(()=>document.getElementById('siteHeader').classList.add('visible'),80);
 
-/* ── Ссылки ── */
-const groups=[
-  {label:'Social', items:[
-    {name:'Instagram', url:'https://instagram.com/noeasyvision'},
-    {name:'X',         url:'https://x.com/noeasyvision'},
-    {name:'Telegram',  url:'https://t.me/noeasyeye'},
-  ]},
-  {label:'Portfolio', items:[
-    {name:'Behance', url:'https://www.behance.net/noeasyvision'},
-  ]},
-  {label:'Prints', items:[
-    {name:'INPRNT', url:'https://www.inprnt.com/profile/noeasy'},
-  ]},
-  {label:'Digital Collectibles', items:[
-    {name:'SuperRare', url:'https://superrare.com/noeasy'},
-    {name:'Objkt',     url:'https://objkt.com/profile/noeasy'},
-  ]},
-  {label:'Contact', items:[
-    {name:'Email', url:'mailto:noeasyvision@proton.me'},
-  ]},
-];
-
-const scroll=document.getElementById('linksScroll');
-groups.forEach((group,gi)=>{
-  if(gi>0){const sep=document.createElement('div');sep.className='section-sep';scroll.appendChild(sep);}
-  const sec=document.createElement('div');sec.className='links-section';
-  const hd=document.createElement('span');hd.className='section-title';hd.textContent=group.label;sec.appendChild(hd);
-  const rule=document.createElement('div');rule.className='section-rule';sec.appendChild(rule);
-  group.items.forEach(link=>{
-    const a=document.createElement('a');
-    a.className='link-item'; a.href=link.url; a.textContent=link.name;
-    if(!link.url.startsWith('mailto')){a.target='_blank';a.rel='noopener noreferrer';}
-    sec.appendChild(a);
-  });
-  scroll.appendChild(sec);
+/* Section reveal on scroll */
+const sections = document.querySelectorAll('.section');
+const obs = new IntersectionObserver(entries=>{
+  entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');obs.unobserve(e.target);}});
+},{threshold:0.08,rootMargin:'0px 0px -40px 0px'});
+sections.forEach((s,i)=>{
+  s.style.transitionDelay = (i*0.06)+'s';
+  obs.observe(s);
 });
 
-/* ── Reveal ── */
-setTimeout(()=>{
-  document.getElementById('siteHeader').classList.add('visible');
-  document.getElementById('linksWin').classList.add('visible');
-},80);
-setTimeout(()=>document.getElementById('formWin').classList.add('visible'),200);
-
-/* ── Форма ── */
+/* Form */
 document.getElementById('contact-form').addEventListener('submit',async e=>{
   e.preventDefault();
-  const form=e.target,btn=form.querySelector('.form-submit'),st=document.getElementById('form-status');
+  const form=e.target,btn=form.querySelector('.submit-btn'),st=document.getElementById('form-status');
   btn.style.opacity='.3'; btn.style.pointerEvents='none';
   try{
     const r=await fetch(form.action,{method:'POST',body:new FormData(form),headers:{Accept:'application/json'}});
