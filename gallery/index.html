@@ -12,7 +12,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>Gallery | NOEASY</title>
 <style>
-  @font-face { font-family: 'Alkhemikal'; src: url('../fonts/MEKZANTINE-Regular.otf') format('truetype'); font-weight: normal; font-style: normal; }
+  @font-face { font-family: 'MEKZANTINE'; src: url('../fonts/MEKZANTINE-Regular.otf') format('truetype'); font-weight: normal; font-style: normal; }
   @font-face { font-family: 'DotGothic16'; src: url('../fonts/DotGothic16-Regular.ttf') format('truetype'); font-weight: normal; font-style: normal; }
   *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
   :root { --bg: #e8e0c4; --text: #353535; color-scheme: light; }
@@ -92,7 +92,7 @@
   .img-placeholder { position: relative; }
   .work-left { display: flex; flex-direction: column; gap: 6px; }
   .work-title-row { display: flex; align-items: baseline; gap: 0; flex-wrap: wrap; }
-  .work-title { font-family: 'Alkhemikal', serif; font-size: 25px; font-weight: 400; letter-spacing: 0.04em; opacity: 0.80; line-height: 1.2; }
+  .work-title { font-family: 'MEKZANTINE', serif; font-size: 25px; font-weight: 400; letter-spacing: 0.04em; opacity: 0.80; line-height: 1.2; }
   .work-meta-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
   .work-year { font-family: 'DotGothic16', monospace; font-size: 8px; font-weight: 400; letter-spacing: 0.22em; opacity: calc(0.38 * var(--secondary-fade, 1)); white-space: nowrap; }
   .work-year-sep { width: 1px; height: 9px; background: currentColor; opacity: calc(0.15 * var(--secondary-fade, 1)); flex-shrink: 0; }
@@ -101,7 +101,7 @@
   .work-tag-sep { font-family: 'DotGothic16', monospace; font-size: 7px; opacity: calc(0.15 * var(--secondary-fade, 1)); margin: 0 5px; line-height: 1; user-select: none; }
   .work-right { display: flex; flex-direction: column; align-items: flex-end; gap: 6px; flex-shrink: 0; }
   .purchase-wrap { position: relative; }
-  .purchase-btn { height: 28px; display: flex; align-items: center; padding: 0 12px; gap: 5px; font-family: 'Alkhemikal', serif; font-size: 15px; font-weight: 400; letter-spacing: 0.04em; color: #000000; background: #AFA191; border-top: 2px solid #d4cdc4; border-left: 2px solid #d4cdc4; border-right: 2px solid #3d3830; border-bottom: 2px solid #3d3830; box-shadow: inset 1px 1px 0 #d4cdc4, inset -1px -1px 0 #7a7068; border-radius: 0; cursor: pointer; transition: none; -webkit-tap-highlight-color: transparent; white-space: nowrap; user-select: none; }
+  .purchase-btn { height: 28px; display: flex; align-items: center; padding: 0 12px; gap: 5px; font-family: 'DotGothic16', serif; font-size: 15px; font-weight: 400; letter-spacing: 0.04em; color: #000000; background: #AFA191; border-top: 2px solid #d4cdc4; border-left: 2px solid #d4cdc4; border-right: 2px solid #3d3830; border-bottom: 2px solid #3d3830; box-shadow: inset 1px 1px 0 #d4cdc4, inset -1px -1px 0 #7a7068; border-radius: 0; cursor: pointer; transition: none; -webkit-tap-highlight-color: transparent; white-space: nowrap; user-select: none; }
   .purchase-btn:active, .purchase-btn.open { border-top: 2px solid #3d3830; border-left: 2px solid #3d3830; border-right: 2px solid #d4cdc4; border-bottom: 2px solid #d4cdc4; box-shadow: inset 1px 1px 0 #7a7068; padding-left: 12px; padding-top: 2px; }
   .purchase-dropdown { position: absolute; bottom: calc(100% + 4px); left: 0; min-width: 140px; border-radius: 0; padding: 2px; background: #AFA191; border-top: 2px solid #d4cdc4; border-left: 2px solid #d4cdc4; border-right: 2px solid #3d3830; border-bottom: 2px solid #3d3830; box-shadow: 2px 2px 0 #2a2520; opacity: 0; pointer-events: none; transform: translateY(5px); transform-origin: bottom left; transition: opacity 0.15s ease, transform 0.15s ease; z-index: 100; }
   .purchase-dropdown.open { opacity: 1; pointer-events: auto; transform: translateY(0); }
@@ -116,7 +116,7 @@
   #lightbox.open #lb-img { transform: none; }
   #lb-close { position: absolute; top: 30px; right: 40px; font-family: 'DotGothic16', monospace; font-size: 9px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; cursor: pointer; user-select: none; background: #AFA191; color: #000000; border-top: 2px solid #d4cdc4; border-left: 2px solid #d4cdc4; border-right: 2px solid #3d3830; border-bottom: 2px solid #3d3830; box-shadow: inset 1px 1px 0 #d4cdc4, inset -1px -1px 0 #7a7068; padding: 4px 12px; }
   #lb-close:active { border-top: 2px solid #3d3830; border-left: 2px solid #3d3830; border-right: 2px solid #d4cdc4; border-bottom: 2px solid #d4cdc4; box-shadow: inset 1px 1px 0 #7a7068; }
-  #lb-title { font-family: 'Alkhemikal', serif; font-size: 20px; font-weight: 400; letter-spacing: 0.06em; color: #f6f1da; opacity: 0.75; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; pointer-events: none; text-align: center; flex: 1; }
+  #lb-title { font-family: 'MEKZANTINE', serif; font-size: 20px; font-weight: 400; letter-spacing: 0.06em; color: #f6f1da; opacity: 0.75; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; pointer-events: none; text-align: center; flex: 1; }
   @keyframes fadeIn { to { opacity: 1; } }
   .img-placeholder.loading { background: #3a312a !important; }
   .img-placeholder.loading::after { content: 'Loading'; font-family: 'DotGothic16', monospace; font-size: 9px; font-weight: 700; letter-spacing: 0.22em; text-transform: uppercase; color: #f6f1da; opacity: 0.38; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); pointer-events: none; }
@@ -152,7 +152,7 @@
   .filter-panel { flex-direction: column; gap: 0; padding: 4px 8px 6px; }
   .filter-group { display: flex; align-items: flex-start; gap: 0; padding: 7px 10px; }
   .filter-group + .filter-group { border-top: 1px solid #7a7068; }
-  .filter-group-label { font-family: 'Alkhemikal', serif; font-size: 14px; font-weight: 400; letter-spacing: 0.04em; color: #000000; opacity: 0.65; width: 100px; min-width: 100px; flex-shrink: 0; padding-top: 3px; }
+  .filter-group-label { font-family: 'MEKZANTINE', serif; font-size: 14px; font-weight: 400; letter-spacing: 0.04em; color: #000000; opacity: 0.65; width: 100px; min-width: 100px; flex-shrink: 0; padding-top: 3px; }
   .filter-group-tags { display: flex; flex-wrap: wrap; align-items: center; gap: 2px 16px; flex: 1; }
   .tag-btn { font-family: 'DotGothic16', monospace; font-size: 10px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: #000000; background: none; border: none; cursor: pointer; padding: 5px 0; position: relative; opacity: 0.45; transition: opacity 0.15s; user-select: none; white-space: nowrap; }
   .tag-btn::after { content: ''; position: absolute; bottom: 2px; left: 0; width: 0; height: 1px; background: #000000; opacity: 0.7; transition: width 0.35s cubic-bezier(0.4,0,0.2,1); }
