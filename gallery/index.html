@@ -129,14 +129,6 @@
   .skel-line { display: none; }
   .img-error { display: flex; align-items: center; justify-content: center; background: rgba(53,53,53,0.04) !important; }
   .img-error-label { font-size: 8px; letter-spacing: 0.28em; text-transform: uppercase; color: var(--text); opacity: 0.2; user-select: none; }
-  #cursor { display: none; position: fixed; top: 0; left: 0; width: 18px; height: 18px; pointer-events: none; z-index: 99999; transform: translate(-2px, -2px); image-rendering: pixelated; }
-  html.has-fine-pointer #cursor { display: block; }
-  html.has-fine-pointer, html.has-fine-pointer body { cursor: none; }
-  html.has-fine-pointer a, html.has-fine-pointer button, html.has-fine-pointer .img-wrap, html.has-fine-pointer .tag-btn { cursor: none; }
-  #cursor .cur-arrow { position: absolute; top: 0; left: 0; width: 18px; height: 18px; }
-  #cursor.active .cur-arrow { transform: scale(1.25); transition: transform 0.15s cubic-bezier(0.16,1,0.3,1); }
-  #cursor .cur-arrow { transition: transform 0.15s cubic-bezier(0.16,1,0.3,1); }
-  #cursor.pressed .cur-arrow { transform: scale(0.85); }
   #scroll-progress { display: none; }
   #scanlines { display: none; }
   .work-item:hover .work-title { opacity: 0.92; }
@@ -182,33 +174,17 @@
   main.grid-mode .work-meta-row { flex-direction: column; align-items: flex-start; gap: 3px; }
   main.grid-mode .work-year-sep { display: none; }
   @media (max-width: 680px) { .filter-panel { top: calc(var(--header-total-h)); } #lb-close { top: 18px; right: 18px; } main { padding-top: calc(var(--header-total-h) + 16px); padding-bottom: 160px; } main:not(.grid-mode) .work-footer { flex-direction: column; align-items: flex-start; gap: 8px; } main:not(.grid-mode) .work-right { align-items: flex-start; width: 100%; } }
+  /* motion permission prompt (iOS) */
+  #motion-prompt { position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%) translateY(0); z-index: 600; background: #AFA191; border-top: 2px solid #d4cdc4; border-left: 2px solid #d4cdc4; border-right: 2px solid #3d3830; border-bottom: 2px solid #3d3830; box-shadow: 2px 2px 0 #2a2520; padding: 8px 14px; font-family: 'DotGothic16', monospace; font-size: 9px; font-weight: 700; letter-spacing: 0.10em; text-transform: uppercase; color: #000; cursor: pointer; opacity: 0; pointer-events: none; transition: opacity 0.4s ease; }
+  #motion-prompt.visible { opacity: 0.92; pointer-events: auto; }
 </style>
 </head>
 <body>
 
 <canvas id="grain"></canvas>
 <div id="scanlines"></div>
-<div id="cursor"><svg class="cur-arrow" viewBox="0 0 18 18" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges">
-  <rect x="1" y="1" width="1" height="1" fill="#1a1612"/><rect x="1" y="2" width="1" height="1" fill="#1a1612"/><rect x="1" y="3" width="1" height="1" fill="#1a1612"/><rect x="1" y="4" width="1" height="1" fill="#1a1612"/><rect x="1" y="5" width="1" height="1" fill="#1a1612"/><rect x="1" y="6" width="1" height="1" fill="#1a1612"/><rect x="1" y="7" width="1" height="1" fill="#1a1612"/><rect x="1" y="8" width="1" height="1" fill="#1a1612"/><rect x="1" y="9" width="1" height="1" fill="#1a1612"/><rect x="1" y="10" width="1" height="1" fill="#1a1612"/><rect x="1" y="11" width="1" height="1" fill="#1a1612"/>
-  <rect x="2" y="2" width="1" height="1" fill="#f6f1da"/><rect x="2" y="3" width="1" height="1" fill="#f6f1da"/><rect x="2" y="4" width="1" height="1" fill="#f6f1da"/><rect x="2" y="5" width="1" height="1" fill="#f6f1da"/><rect x="2" y="6" width="1" height="1" fill="#f6f1da"/><rect x="2" y="7" width="1" height="1" fill="#f6f1da"/><rect x="2" y="8" width="1" height="1" fill="#f6f1da"/><rect x="2" y="9" width="1" height="1" fill="#f6f1da"/><rect x="2" y="10" width="1" height="1" fill="#f6f1da"/>
-  <rect x="2" y="11" width="1" height="1" fill="#1a1612"/><rect x="3" y="11" width="1" height="1" fill="#1a1612"/><rect x="3" y="12" width="1" height="1" fill="#1a1612"/><rect x="4" y="12" width="1" height="1" fill="#1a1612"/><rect x="4" y="13" width="1" height="1" fill="#1a1612"/><rect x="5" y="13" width="1" height="1" fill="#1a1612"/><rect x="5" y="14" width="1" height="1" fill="#1a1612"/>
-  <rect x="3" y="2" width="1" height="1" fill="#1a1612"/><rect x="4" y="3" width="1" height="1" fill="#1a1612"/><rect x="5" y="4" width="1" height="1" fill="#1a1612"/><rect x="6" y="5" width="1" height="1" fill="#1a1612"/><rect x="7" y="6" width="1" height="1" fill="#1a1612"/><rect x="8" y="7" width="1" height="1" fill="#1a1612"/><rect x="9" y="8" width="1" height="1" fill="#1a1612"/>
-  <rect x="3" y="3" width="1" height="1" fill="#f6f1da"/><rect x="4" y="4" width="1" height="1" fill="#f6f1da"/><rect x="5" y="5" width="1" height="1" fill="#f6f1da"/><rect x="6" y="6" width="1" height="1" fill="#f6f1da"/><rect x="7" y="7" width="1" height="1" fill="#f6f1da"/><rect x="8" y="8" width="1" height="1" fill="#f6f1da"/>
-  <rect x="6" y="9" width="2" height="1" fill="#1a1612"/><rect x="6" y="10" width="1" height="1" fill="#f6f1da"/><rect x="7" y="10" width="1" height="1" fill="#1a1612"/>
-  <rect x="5" y="15" width="1" height="1" fill="#1a1612"/>
-</svg></div>
 <div id="scroll-progress"></div>
-
-<script>(function(){
-  document.addEventListener('DOMContentLoaded', function() {
-    const btn = document.getElementById('swordBtn');
-    const overlay = document.getElementById('navOverlay');
-    btn.addEventListener('click', function(e){ e.stopPropagation(); btn.classList.toggle('open'); overlay.classList.toggle('open'); if (navigator.vibrate) navigator.vibrate(6); });
-    overlay.querySelectorAll('a').forEach(a => { a.addEventListener('click', function(){ btn.classList.remove('open'); overlay.classList.remove('open'); }); });
-    document.addEventListener('click', function(e){ if (!overlay.contains(e.target) && e.target !== btn) { btn.classList.remove('open'); overlay.classList.remove('open'); } });
-    document.addEventListener('keydown', function(e){ if(e.key === 'Escape'){ btn.classList.remove('open'); overlay.classList.remove('open'); } });
-  });
-})();</script>
+<div id="motion-prompt">Tilt to enable</div>
 
 <header>
   <div class="header-safe-top"></div>
@@ -253,17 +229,10 @@
 
 <script>
 document.addEventListener('contextmenu', e => e.preventDefault());
-if (window.matchMedia && window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
-  document.documentElement.classList.add('has-fine-pointer');
-}
-const cursor = document.getElementById('cursor');
-document.addEventListener('mousemove', e => { cursor.style.left = e.clientX + 'px'; cursor.style.top = e.clientY + 'px'; });
-function setCursorActive(on) { cursor.classList.toggle('active', on); }
-document.addEventListener('mousedown', () => cursor.classList.add('pressed'));
-document.addEventListener('mouseup',   () => cursor.classList.remove('pressed'));
+
 const progressEl = document.getElementById('scroll-progress');
-let lastScrollY = window.scrollY, scrollSpeed = 0;
-window.addEventListener('scroll', () => { const max = document.documentElement.scrollHeight - window.innerHeight; const pct = max > 0 ? Math.round(window.scrollY / max * 100) : 0; progressEl.style.setProperty('--progress', pct + '%'); const dy = Math.abs(window.scrollY - lastScrollY); lastScrollY = window.scrollY; scrollSpeed = Math.min(1, dy / 60); }, { passive: true });
+window.addEventListener('scroll', () => { const max = document.documentElement.scrollHeight - window.innerHeight; const pct = max > 0 ? Math.round(window.scrollY / max * 100) : 0; progressEl.style.setProperty('--progress', pct + '%'); }, { passive: true });
+
 const grain = document.getElementById('grain');
 const gc = grain.getContext('2d');
 let gw, gh;
@@ -271,12 +240,8 @@ function resizeGrain() { gw = grain.width = window.innerWidth + 20; gh = grain.h
 resizeGrain();
 let _grainResizeTimer;
 window.addEventListener('resize', () => { clearTimeout(_grainResizeTimer); _grainResizeTimer = setTimeout(resizeGrain, 150); });
-let grainDecayedSpeed = 0;
 (function tick() {
-  grainDecayedSpeed += (scrollSpeed - grainDecayedSpeed) * 0.15;
-  scrollSpeed *= 0.9;
-  const baseAlpha = 26, extraAlpha = 46 * grainDecayedSpeed;
-  const alphaMax = baseAlpha + extraAlpha;
+  const alphaMax = 26;
   const img = gc.createImageData(gw, gh);
   for (let i = 0; i < img.data.length; i += 4) { const v = Math.random() * 255 | 0; img.data[i] = img.data[i+1] = img.data[i+2] = v; img.data[i+3] = Math.random() * alphaMax | 0; }
   gc.putImageData(img, 0, 0);
@@ -305,26 +270,16 @@ function buildTitleChars(title) {
 
 const wcEl = document.getElementById('work-count');
 function animateCount(text) { if (wcEl.textContent === text) return; wcEl.style.cssText = 'opacity:0;transform:translateY(-6px) scale(0.9);transition:none'; requestAnimationFrame(() => { wcEl.textContent = text; requestAnimationFrame(() => { wcEl.style.cssText = 'opacity:0.26;transform:none;transition:opacity 0.4s cubic-bezier(0.16,1,0.3,1),transform 0.4s cubic-bezier(0.16,1,0.3,1)'; }); }); }
-function haptic(style = 'light') { if (window.navigator && window.navigator.vibrate) { const pat = style === 'light' ? 6 : style === 'medium' ? 12 : [8, 40, 8]; window.navigator.vibrate(pat); } playClick(); }
+function haptic(style = 'light') { if (window.navigator && window.navigator.vibrate) { const pat = style === 'light' ? 6 : style === 'medium' ? 12 : [8, 40, 8]; window.navigator.vibrate(pat); } }
 
-let audioCtx = null;
-function getAudioCtx() { if (!audioCtx) { try { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); } catch(_) {} } return audioCtx; }
-function playClick() {
-  const ctx = getAudioCtx();
-  if (!ctx) return;
-  if (ctx.state === 'suspended') ctx.resume();
-  const now = ctx.currentTime;
-  const osc = ctx.createOscillator();
-  const gain = ctx.createGain();
-  osc.type = 'square';
-  osc.frequency.setValueAtTime(1400, now);
-  osc.frequency.exponentialRampToValueAtTime(700, now + 0.03);
-  gain.gain.setValueAtTime(0.045, now);
-  gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.045);
-  osc.connect(gain); gain.connect(ctx.destination);
-  osc.start(now); osc.stop(now + 0.05);
-}
-document.addEventListener('pointerdown', () => { getAudioCtx(); }, { once: true });
+document.addEventListener('DOMContentLoaded', function() {
+  const btn = document.getElementById('swordBtn');
+  const overlay = document.getElementById('navOverlay');
+  btn.addEventListener('click', function(e){ e.stopPropagation(); btn.classList.toggle('open'); overlay.classList.toggle('open'); if (navigator.vibrate) navigator.vibrate(6); });
+  overlay.querySelectorAll('a').forEach(a => { a.addEventListener('click', function(){ btn.classList.remove('open'); overlay.classList.remove('open'); }); });
+  document.addEventListener('click', function(e){ if (!overlay.contains(e.target) && e.target !== btn) { btn.classList.remove('open'); overlay.classList.remove('open'); } });
+  document.addEventListener('keydown', function(e){ if(e.key === 'Escape'){ btn.classList.remove('open'); overlay.classList.remove('open'); } });
+});
 
 const feed = document.getElementById('feed'), empty = document.getElementById('empty-state');
 let observer;
@@ -352,8 +307,6 @@ function render(scrollTop = false) {
       img.src = work.src;
       wrap.appendChild(img);
       wrap.addEventListener('click', () => { lbIndex = i; openLb(); });
-      wrap.addEventListener('mouseenter', () => setCursorActive(true));
-      wrap.addEventListener('mouseleave', () => setCursorActive(false));
     } else {
       const ph = document.createElement('div'); ph.className = 'img-placeholder loading'; ph.style.background = work.ph.color; ph.style.paddingTop = work.ph.ratio;
       setTimeout(() => ph.classList.remove('loading'), 2500);
@@ -402,22 +355,60 @@ function blendWithBg(hex, amount) { const m = hex.match(/\d+/g); if (!m || m.len
 let ambientTimer;
 function updateAmbient(item) { const ph = item.querySelector('.img-placeholder'); const img = item.querySelector('img'); let color = null; if (ph) { color = ph.style.background; } else if (img && img.complete) { try { const c = document.createElement('canvas'); c.width = c.height = 1; const ctx = c.getContext('2d'); ctx.drawImage(img, 0, 0, 1, 1); const [r,g,b] = ctx.getImageData(0,0,1,1).data; color = `${r},${g},${b}`; } catch(_) {} } if (!color) return; clearTimeout(ambientTimer); ambientTimer = setTimeout(() => { const blended = blendWithBg(color, 0.055); if (blended) { document.body.style.transition = 'background-color 3s ease'; document.body.style.backgroundColor = blended; } }, 400); }
 
+/* ---------- Tilt: mouse (desktop) + device orientation (mobile) ---------- */
 const hasHover = window.matchMedia && window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+const hasMotionSupport = 'DeviceOrientationEvent' in window;
 const tiltState = new WeakMap();
+const MAX_DEG = 2.2;
+const MOTION_MAX_DEG = 4;   // "лайтовенько" — небольшой наклон карточек от гироскопа
+let motionBeta = 0, motionGamma = 0, motionActive = false;
+let baseBeta = null, baseGamma = null;
+
 function setupTilt(win95) {
-  if (!hasHover) return;
   tiltState.set(win95, { rx: 0, ry: 0, curRx: 0, curRy: 0 });
-  const MAX_DEG = 2.2;
-  win95.addEventListener('mousemove', e => {
-    const rect = win95.getBoundingClientRect();
-    const px = (e.clientX - rect.left) / rect.width;
-    const py = (e.clientY - rect.top) / rect.height;
-    const s = tiltState.get(win95);
-    s.ry = (px - 0.5) * 2 * MAX_DEG;
-    s.rx = (0.5 - py) * 2 * MAX_DEG;
-  });
-  win95.addEventListener('mouseleave', () => { const s = tiltState.get(win95); s.rx = 0; s.ry = 0; });
+  if (hasHover) {
+    win95.addEventListener('mousemove', e => {
+      const rect = win95.getBoundingClientRect();
+      const px = (e.clientX - rect.left) / rect.width;
+      const py = (e.clientY - rect.top) / rect.height;
+      const s = tiltState.get(win95);
+      s.ry = (px - 0.5) * 2 * MAX_DEG;
+      s.rx = (0.5 - py) * 2 * MAX_DEG;
+    });
+    win95.addEventListener('mouseleave', () => { const s = tiltState.get(win95); s.rx = 0; s.ry = 0; });
+  }
 }
+
+function handleOrientation(e) {
+  if (e.beta === null || e.gamma === null) return;
+  if (baseBeta === null) { baseBeta = e.beta; baseGamma = e.gamma; }
+  let beta = e.beta - baseBeta;
+  let gamma = e.gamma - baseGamma;
+  beta = Math.max(-30, Math.min(30, beta));
+  gamma = Math.max(-30, Math.min(30, gamma));
+  motionBeta = (beta / 30) * MOTION_MAX_DEG;
+  motionGamma = (gamma / 30) * MOTION_MAX_DEG;
+  motionActive = true;
+}
+
+function enableMotion() {
+  if (!hasMotionSupport || hasHover) return;
+  if (typeof DeviceOrientationEvent.requestPermission === 'function') {
+    const prompt = document.getElementById('motion-prompt');
+    prompt.classList.add('visible');
+    prompt.addEventListener('click', function onClick() {
+      DeviceOrientationEvent.requestPermission().then(state => {
+        if (state === 'granted') { window.addEventListener('deviceorientation', handleOrientation); }
+        prompt.classList.remove('visible');
+        prompt.removeEventListener('click', onClick);
+      }).catch(() => { prompt.classList.remove('visible'); prompt.removeEventListener('click', onClick); });
+    }, { once: true });
+    setTimeout(() => prompt.classList.remove('visible'), 6000);
+  } else {
+    window.addEventListener('deviceorientation', handleOrientation);
+  }
+}
+enableMotion();
 
 const COL_FACTORS = [0.030, 0.062, 0.096], FEED_FACTOR = 0.088;
 let rafId = null;
@@ -435,12 +426,16 @@ function initParallax() {
       const rect = win95.getBoundingClientRect();
       const parallax = ((rect.top + rect.height / 2) - vh / 2) * factor;
       let tiltStr = '';
-      if (hasHover) {
-        const s = tiltState.get(win95);
-        if (s) {
+      const s = tiltState.get(win95);
+      if (s) {
+        if (hasHover) {
           s.curRx += (s.rx - s.curRx) * 0.12;
           s.curRy += (s.ry - s.curRy) * 0.12;
           tiltStr = ` rotateX(${s.curRx.toFixed(2)}deg) rotateY(${s.curRy.toFixed(2)}deg)`;
+        } else if (motionActive) {
+          s.curRx += (motionBeta - s.curRx) * 0.08;
+          s.curRy += (motionGamma - s.curRy) * 0.08;
+          tiltStr = ` rotateX(${(-s.curRx).toFixed(2)}deg) rotateY(${s.curRy.toFixed(2)}deg)`;
         }
       }
       if (!item.classList.contains('visible')) { win95.style.transform = `translateY(${OFFSET}px)${tiltStr}`; inner.style.transform = `scale(1.08)`; revealStart.delete(item); return; }
@@ -508,7 +503,6 @@ function setLbZoom(newZoom, originClientX, originClientY, smooth) {
   const cy = originClientY !== undefined ? originClientY : rect.top + rect.height / 2;
   const offsetX = cx - (rect.left + rect.width / 2);
   const offsetY = cy - (rect.top + rect.height / 2);
-  const ratio = newZoom / lbZoom;
   newZoom = Math.min(MAX_ZOOM, Math.max(1, newZoom));
   if (newZoom === lbZoom) return;
   lbPanX = (lbPanX - offsetX) * (newZoom / lbZoom) + offsetX;
