@@ -74,10 +74,10 @@
   .nav-overlay a.current { font-weight: 700; background: #c8c2ba; }
   @media (orientation: landscape) { .img-wrap img, .img-placeholder { height: auto; } }
   main { padding: calc(var(--header-total-h) + 20px) 0 100px; display: flex; flex-direction: column; align-items: center; overflow-x: hidden; }
-  .work-item { width: min(820px, 88vw, 68vh); padding: 40px 0 36px; display: flex; flex-direction: column; align-items: center; position: relative; z-index: 20; }
+  .work-item { width: min(820px, 88vw, 68vh); padding: 40px 0 36px; display: flex; flex-direction: column; align-items: center; position: relative; z-index: 20; perspective: 900px; }
   .work-footer { width: 100%; margin-top: 10px; display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; position: relative; z-index: 20; opacity: 0; transition: opacity 0.5s ease; transition-delay: 0.3s; will-change: transform; }
   .work-item.visible .work-footer { opacity: 1; }
-  .img-win95 { width: 100%; background: #AFA191; border-top: 2px solid #d4cdc4; border-left: 2px solid #d4cdc4; border-right: 2px solid #3d3830; border-bottom: 2px solid #3d3830; box-shadow: 1px 1px 0 #2a2520; padding: 1px; overflow: hidden; will-change: transform; position: relative; z-index: 20; transform-style: preserve-3d; perspective: 1000px; }
+  .img-win95 { width: 100%; background: #AFA191; border-top: 2px solid #d4cdc4; border-left: 2px solid #d4cdc4; border-right: 2px solid #3d3830; border-bottom: 2px solid #3d3830; box-shadow: 1px 1px 0 #2a2520; padding: 1px; overflow: hidden; will-change: transform; position: relative; z-index: 20; transform-style: preserve-3d; }
   .img-win95-titlebar { display: flex; align-items: stretch; height: 20px; background: #AFA191; padding: 1px 1px 1px 1px; margin-bottom: 1px; user-select: none; flex-shrink: 0; gap: 0; }
   .img-win95-titlebar-inner { flex: 1; height: 100%; background: #5D5143; display: flex; align-items: center; padding: 0 1px 0 6px; overflow: hidden; min-width: 0; box-shadow: none; gap: 2px; }
   .img-win95-titlebar-text { font-family: 'DotGothic16', monospace; font-size: 8px; font-weight: 700; color: #f6f1da; letter-spacing: 0.12em; text-transform: uppercase; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; line-height: 1; flex: 1; }
@@ -90,6 +90,8 @@
   .img-wrap img, .img-placeholder { width: 100%; display: block; height: auto; object-fit: fill; will-change: transform, filter; filter: blur(5px); transition: filter 0.7s cubic-bezier(0.4, 0, 0.2, 1); user-select: none; -webkit-user-drag: none; transform-origin: center center; }
   .work-item.visible .img-wrap img, .work-item.visible .img-wrap .img-placeholder { filter: blur(0px); }
   .img-placeholder { position: relative; }
+  .img-wrap::after { content: ''; position: absolute; inset: 0; z-index: 6; pointer-events: none; opacity: 0; transition: opacity 0.5s ease; background: radial-gradient(circle at var(--shine-x, 50%) var(--shine-y, 50%), rgba(255,255,255,0.55), rgba(255,255,255,0) 55%); mix-blend-mode: soft-light; }
+  .img-win95.tilt-active .img-wrap::after { opacity: 0.65; }
   .work-left { display: flex; flex-direction: column; gap: 14px; }
   .work-title-row { display: flex; align-items: baseline; gap: 0; flex-wrap: wrap; }
   .work-title { font-family: 'MEKZANTINE', serif; font-size: clamp(19px, 4.6vw, 25px); font-weight: 400; letter-spacing: 0.04em; opacity: 0.80; line-height: 1.2; }
@@ -360,7 +362,7 @@ const hasHover = window.matchMedia && window.matchMedia('(hover: hover) and (poi
 const hasMotionSupport = 'DeviceOrientationEvent' in window;
 const tiltState = new WeakMap();
 const MAX_DEG = 2.2;
-const MOTION_MAX_DEG = 4;   // "лайтовенько" — небольшой наклон карточек от гироскопа
+const MOTION_MAX_DEG = 6;   // "лайтовенько" — небольшой наклон карточек от гироскопа
 let motionBeta = 0, motionGamma = 0, motionActive = false;
 let baseBeta = null, baseGamma = null;
 
@@ -426,17 +428,25 @@ function initParallax() {
       const rect = win95.getBoundingClientRect();
       const parallax = ((rect.top + rect.height / 2) - vh / 2) * factor;
       let tiltStr = '';
+      let normX = 0, normY = 0, tilting = false;
       const s = tiltState.get(win95);
       if (s) {
         if (hasHover) {
           s.curRx += (s.rx - s.curRx) * 0.12;
           s.curRy += (s.ry - s.curRy) * 0.12;
           tiltStr = ` rotateX(${s.curRx.toFixed(2)}deg) rotateY(${s.curRy.toFixed(2)}deg)`;
+          normX = s.curRy / MAX_DEG; normY = s.curRx / MAX_DEG;
+          tilting = Math.abs(s.rx) > 0.01 || Math.abs(s.ry) > 0.01;
         } else if (motionActive) {
-          s.curRx += (motionBeta - s.curRx) * 0.08;
-          s.curRy += (motionGamma - s.curRy) * 0.08;
+          s.curRx += (motionBeta - s.curRx) * 0.1;
+          s.curRy += (motionGamma - s.curRy) * 0.1;
           tiltStr = ` rotateX(${(-s.curRx).toFixed(2)}deg) rotateY(${s.curRy.toFixed(2)}deg)`;
+          normX = s.curRy / MOTION_MAX_DEG; normY = -s.curRx / MOTION_MAX_DEG;
+          tilting = true;
         }
+        win95.style.setProperty('--shine-x', (50 + normX * 35).toFixed(1) + '%');
+        win95.style.setProperty('--shine-y', (50 - normY * 35).toFixed(1) + '%');
+        win95.classList.toggle('tilt-active', tilting && (Math.abs(normX) > 0.04 || Math.abs(normY) > 0.04));
       }
       if (!item.classList.contains('visible')) { win95.style.transform = `translateY(${OFFSET}px)${tiltStr}`; inner.style.transform = `scale(1.08)`; revealStart.delete(item); return; }
       if (!revealStart.has(item)) revealStart.set(item, now);
@@ -444,7 +454,11 @@ function initParallax() {
       const ease = 1 - Math.pow(1 - t, 3);
       const rise = OFFSET * (1 - ease);
       win95.style.transform = `translateY(${(rise + parallax).toFixed(2)}px)${tiltStr}`;
-      inner.style.transform = `scale(${(1.08 - 0.06 * ease).toFixed(4)})`;
+      const revealScale = 1.08 - 0.06 * ease;
+      const panScale = 1.035;
+      const panX = (-normX * 9).toFixed(2);
+      const panY = (-normY * 9).toFixed(2);
+      inner.style.transform = `scale(${(revealScale * panScale).toFixed(4)}) translate(${panX}px, ${panY}px)`;
       const footer = item.querySelector('.work-footer');
       if (!footer) return;
       const itemRect = item.getBoundingClientRect();
