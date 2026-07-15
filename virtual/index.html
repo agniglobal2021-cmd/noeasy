@@ -129,12 +129,12 @@ function scaledFloorGeo(w,d){const g=new THREE.PlaneGeometry(w,d);const u=g.attr
 function floorPatch(w,d,cx,cz){const f=new THREE.Mesh(scaledFloorGeo(w,d),floorMat);
   f.rotation.x=-Math.PI/2; f.position.set(cx,0,cz); scene.add(f);}
 floorPatch(P.W,LEN,0,-LEN/2);
-// пол зала — с вырезом под утопленный центр (яма 6×8 @ 0,-74, п.9)
-floorPatch(24,10,0,-65);
-floorPatch(24,10,0,-83);
-floorPatch(9,8,-7.5,-74);
-floorPatch(9,8,7.5,-74);
-{ const pf=new THREE.Mesh(scaledFloorGeo(5.4,7.4), floorMat); pf.rotation.x=-Math.PI/2; pf.position.set(0,-0.392,-74); scene.add(pf); }
+// пол зала — с вырезом под утопленный центр (яма 7.2×9.6 @ 0,-74 — расширена на 20%, п.2)
+floorPatch(24,9.2,0,-64.6);
+floorPatch(24,9.2,0,-83.4);
+floorPatch(8.4,9.6,-7.8,-74);
+floorPatch(8.4,9.6,7.8,-74);
+{ const pf=new THREE.Mesh(scaledFloorGeo(6.6,9.0), floorMat); pf.rotation.x=-Math.PI/2; pf.position.set(0,-0.392,-74); scene.add(pf); }
 
 // ---------- стены ----------
 const winBays=[]; for(let i=0;i<P.NB;i+=2) winBays.push(i);
@@ -277,13 +277,7 @@ const HH=32, Y2=6.5;
      addStone(roll, -3, 3.5, pz);     // дуга перетекает в вертикаль до пола
      addStone(roll,  3, 3.5, pz);
    }
-   // грань зала = как в нефе: архивольты замыкают дугу. Фланкируют две колонны, уходящие во тьму (верх невидим)
-   const colP=new THREE.CylinderGeometry(0.22,0.27,24.5,8,24);
-   { const u=colP.attributes.uv; for(let i=0;i<u.count;i++) u.setY(i,u.getY(i)*1.9); }   // плотность камня как у стволов нефа
-   addPart(shaftParts, colP, -3.72, 12.25, -60.16);
-   addPart(shaftParts, colP,  3.72, 12.25, -60.16);
-   addPart(ownParts, baseOwn, -3.72, 0.35, -60.16, 0,0,0, 0.42,1,0.42);
-   addPart(ownParts, baseOwn,  3.72, 0.35, -60.16, 0,0,0, 0.42,1,0.42);
+   // грань зала = как в нефе: архивольты замыкают дугу, стена чистая (фланкирующие колонны сняты — п.3)
    addStone(new THREE.BoxGeometry(0.42,0.55,3.3), -3, 0.275, -58.7);   // плинт под тройкой валиков
    addStone(new THREE.BoxGeometry(0.42,0.55,3.3),  3, 0.275, -58.7);
  }
@@ -338,10 +332,12 @@ const HH=32, Y2=6.5;
  // --- АРКАДА, несущая балкон (z=-85), между колоннами проходишь ---
  { const shaftA=new THREE.CylinderGeometry(0.20,0.24,2.3,8,6);   // ствол аркады: 1:5.75 — клуатрная стройность к дугам 0.13
    { const u=shaftA.attributes.uv; for(let i=0;i<u.count;i++) u.setY(i, u.getY(i)*0.18); }   // плотность текстуры как у нефа (не сжимать 13м в 2.3)
+   const shaftT=new THREE.CylinderGeometry(0.20,0.24,29.3,8,26);   // пара у арки терминуса: без капители, ввысь до тьмы (п.7)
+   { const u=shaftT.attributes.uv; for(let i=0;i<u.count;i++) u.setY(i, u.getY(i)*2.29); }
    for(const cxp of [-10,-6,-2,2,6,10]){
      addPart(ownParts, baseOwn, cxp, 0.35, -85, 0,0,0, 0.38,1,0.38);
-     addPart(shaftParts, shaftA, cxp, 1.85, -85);
-     addPart(capParts, cap, cxp, 3.25, -85, 0,0,0, 0.42,0.5,0.42);
+     if(Math.abs(cxp)===2){ addPart(shaftParts, shaftT, cxp, 15.35, -85); }
+     else { addPart(shaftParts, shaftA, cxp, 1.85, -85); addPart(capParts, cap, cxp, 3.25, -85, 0,0,0, 0.42,0.5,0.42); }
    }
    // пологая стрельчатая арка: центры дуг +/-0.6 от оси пролёта, R=2.6, спринг 3.5 (верх капители), апекс 6.03 (несёт плиту 6.06)
    const arcT=new THREE.TorusGeometry(2.6,0.13,8,22,1.338);
@@ -366,14 +362,7 @@ const HH=32, Y2=6.5;
 
  // (пилястры и карнизы снесены: реф держит стены чистыми — ритм дают окна и свет)
  // (западные ниши снесены: картины висят на чистой стене напротив окон, в их пятнах света)
- // дверь-тайна на балконе (юг, ось): цель подъёма
- { const dp=new THREE.Mesh(new THREE.PlaneGeometry(1.9,3.2), new THREE.MeshStandardMaterial({color:0x241a10,roughness:1})); dp.position.set(0,8.1,-87.96); scene.add(dp);
-   addStone(new THREE.BoxGeometry(0.24,3.3,0.22), -1.05, 8.05, -87.9);
-   addStone(new THREE.BoxGeometry(0.24,3.3,0.22),  1.05, 8.05, -87.9);
-   const dArc=new THREE.TorusGeometry(0.98,0.11,7,14,Math.PI/3);
-   addStone(dArc, 0.49, 9.55, -87.9, 0, 0, Math.PI/3);
-   addStone(dArc, -0.49, 9.55, -87.9, 0, 0, Math.PI/3+Math.PI/6);
- }
+ // (дверь-тайна снята — над балконом окно-розетка, п.5; см. блок «РОЗЕТКА» ниже)
  // рёбра свода: намёк в полумраке (апекс ~23 растворяется, спринг 10 едва ловит свет окон)
  { const rib=new THREE.TorusGeometry(13.5,0.3,6,24,1.459);
    for(const rz of [-69,-75,-81]){
@@ -384,13 +373,13 @@ const HH=32, Y2=6.5;
    }
  }
 }
-// ===== УТОПЛЕННЫЙ ЦЕНТР: яма 6×8 (x±3, z -78..-70), две ступени вниз, саркофаг (п.9) =====
+// ===== УТОПЛЕННЫЙ ЦЕНТР: яма 7.2×9.6 (x±3.6, z -78.8..-69.2), две ступени вниз, саркофаг (п.9; +20% п.2) =====
 const pitParts=[];
 { const rim=(w,h,d,px,py,pz)=>addPart(pitParts, scaleUV(new THREE.BoxGeometry(w,h,d),0.45), px,py,pz);
-  rim(6.0,0.24,0.12, 0,-0.10,-70.06); rim(6.0,0.24,0.12, 0,-0.10,-77.94);      // верхние подступёнки N/S
-  rim(0.12,0.24,7.76, -2.94,-0.10,-74); rim(0.12,0.24,7.76, 2.94,-0.10,-74);   // W/E
-  rim(5.76,0.2,0.35, 0,-0.30,-70.295); rim(5.76,0.2,0.35, 0,-0.30,-77.705);    // ступень-кольцо N/S
-  rim(0.35,0.2,7.06, -2.705,-0.30,-74); rim(0.35,0.2,7.06, 2.705,-0.30,-74);   // W/E
+  rim(7.2,0.24,0.12, 0,-0.10,-69.26); rim(7.2,0.24,0.12, 0,-0.10,-78.74);      // верхние подступёнки N/S
+  rim(0.12,0.24,9.36, -3.54,-0.10,-74); rim(0.12,0.24,9.36, 3.54,-0.10,-74);   // W/E
+  rim(6.96,0.2,0.35, 0,-0.30,-69.495); rim(6.96,0.2,0.35, 0,-0.30,-78.505);    // ступень-кольцо N/S
+  rim(0.35,0.2,8.66, -3.305,-0.30,-74); rim(0.35,0.2,8.66, 3.305,-0.30,-74);   // W/E
 }
 const wallMat=new THREE.MeshStandardMaterial({color:0xffffff,roughness:0.95,vertexColors:true,flatShading:true,side:THREE.DoubleSide,map:T(TEXSRC.wall,1,1)});
 const shaftMat=new THREE.MeshStandardMaterial({color:0xffffff,roughness:0.95,vertexColors:true,flatShading:true,side:THREE.DoubleSide,map:T(TEXSRC.shaft,2,5)});
@@ -412,6 +401,31 @@ buildGroup(runicParts, runicMat, false);
   mk(1.7,0.95,3.1,0.295);            // ларец
   mk(1.86,0.14,3.26,0.84,sMatLid);   // крышка-плита
   mk(1.5,0.16,2.9,0.99,sMatLid);     // гребень крышки
+}
+// четыре колонны ПРИЖАТЫ к внутренним углам ямы вместе со ступенями (п.1): ступени проходят между ними
+{ const pc=new THREE.CylinderGeometry(0.34,0.42,30.6,8,26);
+  { const u=pc.attributes.uv; for(let i=0;i<u.count;i++) u.setY(i,u.getY(i)*2.37); }   // плотность камня как у стволов нефа
+  const pcS=[], pcB=[];
+  for(const [px,pz] of [[3.15,-69.65],[-3.15,-69.65],[-3.15,-78.35]]){
+    addPart(pcS, pc, px, 14.9, pz);
+    addPart(pcB, scaleUV(base,0.45), px, -0.21, pz, 0,0,0, 0.62,0.55,0.62);
+  }
+  // юго-восточная ОБЛОМАНА (п.3): пень ~6 м, рваный скол, глыбы у подножия — время побывало здесь
+  { const bx=3.15, bz=-78.35;
+    const stub=new THREE.CylinderGeometry(0.365,0.42,6.2,8,6);
+    { const u=stub.attributes.uv; for(let i=0;i<u.count;i++) u.setY(i,u.getY(i)*0.48); }
+    addPart(pcS, stub, bx, 2.7, bz);
+    addPart(pcB, scaleUV(base,0.45), bx, -0.21, bz, 0,0,0, 0.62,0.55,0.62);
+    const shard=(w,h,d,px,py,pz,rx,ry,rz)=>addPart(pcB, scaleUV(new THREE.BoxGeometry(w,h,d),0.5), px,py,pz, rx,ry,rz);
+    shard(0.42,0.9,0.40, bx-0.06,6.02,bz+0.08, 0.14,0.5,-0.10);
+    shard(0.34,0.7,0.36, bx+0.12,5.92,bz-0.10, -0.10,1.1,0.16);
+    shard(0.30,0.5,0.28, bx+0.02,5.78,bz+0.14, 0.2,0.3,0.2);
+    shard(0.60,0.42,0.50, bx-0.7,-0.19,bz+0.65, 0.1,0.7,0.05);
+    shard(0.45,0.34,0.50, bx-1.25,-0.23,bz+0.30, -0.06,1.9,0.12);
+    shard(0.36,0.26,0.30, bx-0.35,-0.27,bz+1.15, 0.2,2.6,-0.08);
+  }
+  buildGroup(pcS, shaftMat, false);
+  buildGroup(pcB, ownMat, false);
 }
 
 // ---------- стекло из кусочков янтаря + свет ----------
@@ -526,41 +540,69 @@ for(const sp of [[-9.36,3.4,-79.5,3.2,2.6,0.5],[-9.36,5.2,-82.8,3.0,2.4,0.42],[-
   p.position.set(sp[0],sp[1],sp[2]); p.rotation.y=Math.PI/2; scene.add(p);
 }
 // фейк-отражение терминуса: тёплая дорожка от проёма к залу
-{ const rf=new THREE.Mesh(new THREE.PlaneGeometry(2.4,9.5), new THREE.MeshBasicMaterial({map:poolTex,color:0xffc070,transparent:true,opacity:0.5,blending:THREE.AdditiveBlending,depthWrite:false}));
+{ const rf=new THREE.Mesh(new THREE.PlaneGeometry(2.2,7), new THREE.MeshBasicMaterial({map:poolTex,color:0xffc070,transparent:true,opacity:0.14,blending:THREE.AdditiveBlending,depthWrite:false}));
   rf.rotation.x=-Math.PI/2; rf.position.set(0,0.018,-83.2); scene.add(rf); }
 // земляная дымка в яме: два слоя ниже уровня пола (за краем ямы скрыты плитой), медленное вращение в лупе
 const mistTex=gradTex((g,w,h)=>{const gr=g.createRadialGradient(w/2,h/2,6,w/2,h/2,w/2);
   gr.addColorStop(0,'rgba(196,186,164,0.38)');gr.addColorStop(0.55,'rgba(186,176,156,0.20)');gr.addColorStop(1,'rgba(180,170,150,0)');
   g.fillStyle=gr;g.fillRect(0,0,w,h);},128,128);
-const mistA=new THREE.Mesh(new THREE.PlaneGeometry(7.6,7.6), new THREE.MeshBasicMaterial({map:mistTex,transparent:true,opacity:0.85,depthWrite:false}));
+const mistA=new THREE.Mesh(new THREE.PlaneGeometry(9.0,9.0), new THREE.MeshBasicMaterial({map:mistTex,transparent:true,opacity:0.85,depthWrite:false}));
 mistA.rotation.x=-Math.PI/2; mistA.position.set(0,-0.24,-74); scene.add(mistA);
-const mistB=new THREE.Mesh(new THREE.PlaneGeometry(7.6,7.6), new THREE.MeshBasicMaterial({map:mistTex,transparent:true,opacity:0.6,depthWrite:false}));
+const mistB=new THREE.Mesh(new THREE.PlaneGeometry(9.0,9.0), new THREE.MeshBasicMaterial({map:mistTex,transparent:true,opacity:0.6,depthWrite:false}));
 mistB.rotation.x=-Math.PI/2; mistB.rotation.z=1.3; mistB.position.set(0.4,-0.12,-73.6); scene.add(mistB);
-// свечение у порога двери-тайны на балконе
-{ const dg=new THREE.Mesh(new THREE.PlaneGeometry(1.7,0.2), new THREE.MeshBasicMaterial({map:haloTex,color:0xffd080,transparent:true,blending:THREE.AdditiveBlending,depthWrite:false}));
-  dg.position.set(0,6.6,-87.88); scene.add(dg); }
-// ===== ТОННЕЛЬ ЗА ТЕРМИНУСОМ (юг, ~7 м вглубь до z=-95): слепящий свет + туман вдали, снаружи решётка =====
-{ const tW=5, tH=5, tZ0=-88, tZ1=-95.2, tMat=new THREE.MeshStandardMaterial({map:T(TEXSRC.wall,1.4,2),roughness:0.96,side:THREE.DoubleSide});
-  // стены/пол/потолок тоннеля
-  const wallL=new THREE.Mesh(new THREE.PlaneGeometry(tZ1-tZ0,tH,1,8), tMat); wallL.rotation.y=Math.PI/2; wallL.position.set(-tW/2,tH/2,(tZ0+tZ1)/2); scene.add(wallL);
-  const wallR=new THREE.Mesh(new THREE.PlaneGeometry(tZ1-tZ0,tH,1,8), tMat); wallR.rotation.y=-Math.PI/2; wallR.position.set(tW/2,tH/2,(tZ0+tZ1)/2); scene.add(wallR);
-  const flr=new THREE.Mesh(scaledFloorGeo(tW,tZ1-tZ0), floorMat); flr.rotation.x=-Math.PI/2; flr.position.set(0,0.01,(tZ0+tZ1)/2); scene.add(flr);
-  const ceil=new THREE.Mesh(new THREE.PlaneGeometry(tW,tZ1-tZ0), tMat); ceil.rotation.x=Math.PI/2; ceil.position.set(0,tH,(tZ0+tZ1)/2); scene.add(ceil);
-  // дальняя стена — СОЛНЕЧНЫЙ градиент (не белая дыра): бело-золотое ядро → золото → тёплая амбра к краям
-  const sunTex=gradTex((g,w,h)=>{const gr=g.createRadialGradient(w/2,h*0.52,10,w/2,h*0.52,w*0.72);
-    gr.addColorStop(0,'#fff3d2');gr.addColorStop(0.30,'#ffd98e');gr.addColorStop(0.62,'#e8a44c');gr.addColorStop(1,'#7a4c18');
+// ===== РОЗЕТКА над балконом (юг, ось) — вместо двери-тайны (п.5) =====
+{ const rr=1.7;
+  const ring=new THREE.Mesh(new THREE.TorusGeometry(rr+0.13,0.17,8,30), new THREE.MeshStandardMaterial({map:T(TEXSRC.wall,1,1),roughness:0.95,color:0x6e6250}));
+  ring.position.set(0,12,-87.9); scene.add(ring);
+  const rose=new THREE.Mesh(new THREE.CircleGeometry(rr,26), new THREE.MeshBasicMaterial({map:T(TEXSRC.rose,1,1),fog:false}));
+  rose.position.set(0,12,-87.93); scene.add(rose);
+  const sheen=new THREE.Mesh(new THREE.PlaneGeometry(rr*2.3,rr*2.3), new THREE.MeshBasicMaterial({map:haloTex,color:0xffd27e,transparent:true,opacity:0.8,blending:THREE.AdditiveBlending,depthWrite:false,fog:false}));
+  sheen.position.set(0,12,-87.82); scene.add(sheen);
+  const halo=new THREE.Mesh(new THREE.PlaneGeometry(rr*5.4,rr*4.6), new THREE.MeshBasicMaterial({map:haloTex,color:0xffc36a,transparent:true,opacity:0.5,blending:THREE.AdditiveBlending,depthWrite:false,fog:false}));
+  halo.position.set(0,12,-87.7); scene.add(halo);
+  for(const cfg of [[0.42,0.8,0.5],[0.58,0.5,0.9]]){
+    const ray=new THREE.Mesh(shearRay(2.6*cfg[2],14,cfg[0]), new THREE.MeshBasicMaterial({map:rayTex,transparent:true,opacity:cfg[1],blending:THREE.AdditiveBlending,depthWrite:false,side:THREE.DoubleSide}));
+    ray.position.set(0.3,12.6,-87.5); scene.add(ray);
+  }
+  const rl=new THREE.PointLight(0xffc36a,1.5,18,2); rl.position.set(0,10.8,-86.4); scene.add(rl);
+}
+// ===== ТОННЕЛЬ ЗА ТЕРМИНУСОМ (юг, ~39 м вглубь до z=-127, п.6): сперва тьма, в глубине бьёт размытое солнце =====
+{ const tW=5, tH=5, tZ0=-88, tZ1=-127, tD=tZ0-tZ1, tMat=new THREE.MeshStandardMaterial({map:T(TEXSRC.wall,7.8,2),roughness:0.96,side:THREE.DoubleSide});
+  // стены/пол/потолок тоннеля (13 м вглубь: уходит во мрак, в конце — улица)
+  const wallL=new THREE.Mesh(new THREE.PlaneGeometry(tD,tH,1,8), tMat); wallL.rotation.y=Math.PI/2; wallL.position.set(-tW/2,tH/2,(tZ0+tZ1)/2); scene.add(wallL);
+  const wallR=new THREE.Mesh(new THREE.PlaneGeometry(tD,tH,1,8), tMat); wallR.rotation.y=-Math.PI/2; wallR.position.set(tW/2,tH/2,(tZ0+tZ1)/2); scene.add(wallR);
+  const flr=new THREE.Mesh(scaledFloorGeo(tW,tD), floorMat); flr.rotation.x=-Math.PI/2; flr.position.set(0,0.01,(tZ0+tZ1)/2); scene.add(flr);
+  const ceil=new THREE.Mesh(new THREE.PlaneGeometry(tW,tD), tMat); ceil.rotation.x=Math.PI/2; ceil.position.set(0,tH,(tZ0+tZ1)/2); scene.add(ceil);
+  // торец — СОЛНЕЧНЫЙ градиент, fog:false: слепит даже сквозь дымку, деталей «улицы» не разглядеть
+  const sunTex=gradTex((g,w,h)=>{const gr=g.createRadialGradient(w/2,h*0.52,8,w/2,h*0.52,w*0.62);
+    gr.addColorStop(0,'#fffdf4');gr.addColorStop(0.22,'#ffefc2');gr.addColorStop(0.5,'rgba(247,192,105,0.95)');gr.addColorStop(0.8,'rgba(150,95,32,0.45)');gr.addColorStop(1,'rgba(60,36,10,0)');
     g.fillStyle=gr;g.fillRect(0,0,w,h);},256,256);
-  const glow=new THREE.Mesh(new THREE.PlaneGeometry(tW+0.8,tH+0.8), new THREE.MeshBasicMaterial({map:sunTex}));
+  const glow=new THREE.Mesh(new THREE.PlaneGeometry(tW+3,tH+3), new THREE.MeshBasicMaterial({map:sunTex,transparent:true,depthWrite:false,fog:false}));
   glow.position.set(0,tH/2,tZ1-0.05); scene.add(glow);
-  // слои золотого марева перед торцом: слепит из сумрака вблизи; туман сцены гасит на дистанции (из нефа — не «дыра», а ничто)
-  for(const hz of [[tZ1+0.6,0.95,tW+2.4,tH+2.4],[tZ1+1.8,0.75,tW+1.6,tH+1.6],[tZ1+3.4,0.55,tW+0.8,tH+0.8]]){
+  // блум-ядро: белое «солнце» + нарастающие ореолы (fog:false — бьёт из тьмы, глаз «не адаптирован»)
+  for(const cz of [[tZ1+0.4,1.0,3.4,3.4,0xfff8e4],[tZ1+1.2,0.9,6.2,5.6,0xffedbe],[tZ1+2.8,0.7,9.5,7.6,0xffd488],[tZ1+5.5,0.42,13,9,0xffc26a]]){
+    const cm=new THREE.Mesh(new THREE.PlaneGeometry(cz[2],cz[3]), new THREE.MeshBasicMaterial({map:haloTex,color:cz[4],transparent:true,opacity:cz[1],blending:THREE.AdditiveBlending,depthWrite:false,fog:false}));
+    cm.position.set(0,tH/2,cz[0]); scene.add(cm);
+  }
+  // пелена засветки в средней глубине (fog:false): свечение «пробивается» сквозь мрак, края тоннеля тёмные
+  for(const vz of [[tZ1+8,0.30,6.5,6.0],[tZ1+11.5,0.20,6.8,6.2]]){
+    const vm=new THREE.Mesh(new THREE.PlaneGeometry(vz[2],vz[3]), new THREE.MeshBasicMaterial({map:haloTex,color:0xffcf80,transparent:true,opacity:vz[1],blending:THREE.AdditiveBlending,depthWrite:false,fog:false}));
+    vm.position.set(0,tH/2,vz[0]); scene.add(vm);
+  }
+  // золотое марево дальше по тоннелю: объём света, тонет во тьме задолго до решётки (эти — с туманом)
+  for(const hz of [[tZ1+8.5,0.4,tW+2,tH+2],[tZ1+12,0.26,tW+1,tH+1],[tZ1+16,0.16,tW,tH]]){
     const hm=new THREE.Mesh(new THREE.PlaneGeometry(hz[2],hz[3]), new THREE.MeshBasicMaterial({map:haloTex,color:0xffc463,transparent:true,opacity:hz[1],blending:THREE.AdditiveBlending,depthWrite:false}));
     hm.position.set(0,tH/2,hz[0]); scene.add(hm);
   }
-  // разлив света по полу тоннеля к зрителю
-  const spill=new THREE.Mesh(new THREE.PlaneGeometry(tW-0.4,5.5), new THREE.MeshBasicMaterial({map:poolTex,color:0xffcf7a,transparent:true,opacity:0.7,blending:THREE.AdditiveBlending,depthWrite:false}));
-  spill.rotation.x=-Math.PI/2; spill.position.set(0,0.025,tZ1+3.1); scene.add(spill);
-  const tglow=new THREE.PointLight(0xffd27a,3.6,15,2); tglow.position.set(0,2.6,tZ1+2.5); scene.add(tglow);
+  // отсветы на стенах у выхода (солнце лижет откосы)
+  for(const s of [-1,1]){
+    const ws=new THREE.Mesh(new THREE.PlaneGeometry(5.5,4.2), new THREE.MeshBasicMaterial({map:poolTex,color:0xffd890,transparent:true,opacity:0.55,blending:THREE.AdditiveBlending,depthWrite:false}));
+    ws.position.set(s*(tW/2-0.02),tH/2-0.3,tZ1+2.6); ws.rotation.y=s*-Math.PI/2; scene.add(ws);
+  }
+  // разлив света по полу: яркая лужа у выхода + длинная дорожка к решётке
+  const spill=new THREE.Mesh(new THREE.PlaneGeometry(tW-0.3,7), new THREE.MeshBasicMaterial({map:poolTex,color:0xffe3a0,transparent:true,opacity:0.85,blending:THREE.AdditiveBlending,depthWrite:false,fog:false}));
+  spill.rotation.x=-Math.PI/2; spill.position.set(0,0.03,tZ1+3.6); scene.add(spill);
+  const tglow=new THREE.PointLight(0xffe3a0,4.6,20,2); tglow.position.set(0,2.7,tZ1+2.2); scene.add(tglow);
   // РЕШЁТКА — кованая (по промту Grate из брифа: прутья, готические скрещения, кресты-навершия, медальон)
   // transparent БЕЗ alphaTest: мип-фейд гасит прутья плавно, а не «звеньями» (alphaTest на мипах мерцал издалека)
   const gcv=document.createElement('canvas'); gcv.width=gcv.height=1024;
@@ -590,9 +632,9 @@ mistB.rotation.x=-Math.PI/2; mistB.rotation.z=1.3; mistB.position.set(0.4,-0.12,
   grate.position.set(0,2.5,-88.02); scene.add(grate);
 }
 // терминус-проём (юг, под балконом) — свечение переносится в глубину тоннеля (см. выше), тут мягкий ореол в плоскости решётки
-const pg=new THREE.Mesh(new THREE.PlaneGeometry(5.2,5.8), new THREE.MeshBasicMaterial({map:haloTex,color:0xffd98a,transparent:true,opacity:0.55,blending:THREE.AdditiveBlending,depthWrite:false,side:THREE.DoubleSide,fog:false}));
+const pg=new THREE.Mesh(new THREE.PlaneGeometry(4.6,5.2), new THREE.MeshBasicMaterial({map:haloTex,color:0xffd98a,transparent:true,opacity:0.14,blending:THREE.AdditiveBlending,depthWrite:false,side:THREE.DoubleSide,fog:false}));
 pg.position.set(0,3.0,-87.9); scene.add(pg);
-const pgl=new THREE.PointLight(0xffb457,1.6,16,2); pgl.position.set(0,2.8,-87); scene.add(pgl);
+const pgl=new THREE.PointLight(0xffb457,0.5,10,2); pgl.position.set(0,2.8,-87); scene.add(pgl);
 // заливка зала (без теней) — светлее крипты, но логика прежняя
 const hL3=new THREE.PointLight(0xffc878,0.75,18,2); hL3.position.set(0,7.7,-85.5); scene.add(hL3);
 const bnc=new THREE.PointLight(0xcf9a55,0.65,26,2); bnc.position.set(0,1.8,-73); scene.add(bnc);
@@ -611,15 +653,19 @@ function titleOf(src){ const n=src.split('/').pop().replace(/\.(jpe?g|png)$/i,''
   const meta=(window.__ARTS_META__||{})[n]; if(meta && meta.title) return meta.title;
   return n.replace(/[-_]/g,' ').toUpperCase(); }
 function makeTitleSprite(text){
+  // чистый текст без плашек-«квадратов», византийский шрифт (п.8)
   const c=document.createElement('canvas'); c.width=512; c.height=96;
-  const g=c.getContext('2d'); g.font='700 38px monospace'; g.textAlign='center'; g.textBaseline='middle';
-  const tw=Math.min(470,g.measureText(text).width);
-  g.fillStyle='rgba(10,7,3,0.6)'; g.fillRect(256-tw/2-16,16,tw+32,64);
-  g.strokeStyle='rgba(214,213,169,0.9)'; g.lineWidth=2; g.strokeRect(256-tw/2-16,16,tw+32,64);
-  g.fillStyle='#f6f1da'; g.fillText(text,256,49);
   const t=new THREE.CanvasTexture(c);
   const s=new THREE.Sprite(new THREE.SpriteMaterial({map:t,transparent:true,opacity:0,depthWrite:false}));
-  s.scale.set(2.3,0.43,1); return s;
+  s.scale.set(2.3,0.43,1);
+  const draw=()=>{ const g=c.getContext('2d'); g.clearRect(0,0,512,96);
+    g.font='44px Mekzantine, Georgia, serif'; g.textAlign='center'; g.textBaseline='middle';
+    try{ g.letterSpacing='3px'; }catch(e){}
+    g.shadowColor='rgba(0,0,0,0.9)'; g.shadowBlur=10; g.shadowOffsetY=2;
+    g.fillStyle='#efe6c8'; g.fillText(text,256,50); t.needsUpdate=true; };
+  draw();
+  if(document.fonts && document.fonts.ready) document.fonts.ready.then(draw);
+  return s;
 }
 // --- ИНФО-ДОСКА у входа (спавн смотрит на неё; текст-заглушка — автор заменит) ---
 const INFO_TEXT='Это виртуальная галерея NOEASY — дворец памяти.\n\nЗдесь будет описание галереи: кто автор, что это за место и как оно устроено. Текст добавит автор.\n\nПодойдите к картине — над ней проявится название. Нажмите на картину — откроется полный размер с названием и кнопкой покупки.';
@@ -665,13 +711,13 @@ for(const i of leftBays){ hangCanvas(-P.W/2, -(i+0.5)*P.BAY, Math.PI/2); }
 // холсты зала — оба этажа
 hangCanvas(-9,-60,Math.PI); hangCanvas(9,-60,Math.PI);
 hangCanvas(12,-69,-Math.PI/2); hangCanvas(12,-75,-Math.PI/2); hangCanvas(12,-81,-Math.PI/2);
-hangCanvas(-12,-66,Math.PI/2,2.8,3.0,2.6); hangCanvas(-12,-72,Math.PI/2,2.8,3.0,2.6);
+hangCanvas(-12,-63.5,Math.PI/2,2.8,3.0,2.6); hangCanvas(-12,-68,Math.PI/2,2.8,3.0,2.6);   // запад: 3 холста равномерно (п.6)
 hangCanvas(-4.4,-88,0,2.8,3.0,2.6); hangCanvas(4.4,-88,0,2.8,3.0,2.6);      // под балконом, по бокам терминуса
 hangCanvas(-8.0,-88,0,2.8,3.0,2.6); hangCanvas(8.0,-88,0,2.8,3.0,2.6);      // +2 под балконом (зазор ≥1.0 гарантирован капом ширины)
 hangCanvas(-4.4,-88,0,8.2,3.0,2.6); hangCanvas(4.4,-88,0,8.2,3.0,2.6);      // балкон, одна ось с нижними
 hangCanvas(-8.0,-88,0,8.2,3.0,2.6); hangCanvas(8.0,-88,0,8.2,3.0,2.6);      // +2 на балконе
 hangCanvas(-9.45,-83,Math.PI/2,2.8,2.4,2.4);            // на стенке-парапете лестницы, внизу у колонн (слева от саркофага)
-hangCanvas(-12,-62,Math.PI/2,2.8,3.0,2.6); hangCanvas(-12,-69,Math.PI/2,2.8,2.4,2.2);   // +2 запад-стена
+hangCanvas(-12,-72.5,Math.PI/2,2.8,3.0,2.6);   // запад: третий (итого 3 — п.6)
 // у арки портала со стороны нефа (грань z=-57.4, боковины x=±4.5): маленькие
 hangCanvas(-4.4,-57.4,0,2.8,2.2,2.3); hangCanvas(4.4,-57.4,0,2.8,2.2,2.3);
 
@@ -693,13 +739,16 @@ const blockers=[
 function inside(x,z){
  const g=camera.position.y-P.EYE;                                   // фактическая высота ног
  if(onStairPlan(x,z)) return Math.abs(g-stairY(z))<1.3;             // марш: пускает только на своей высоте (иначе это стена-основание)
- if(g>Y2H-1.2) return (z<=-85 && z>=-87.6 && x>=-11.6 && x<=11.6);  // на балконной высоте — только полоса балкона
+ if(g>Y2H-1.2) return (z<=-85.42 && z>=-87.6 && x>=-11.6 && x<=11.6)  // балкон: упор в балюстраду (центр z=-85), не сквозь неё (п.5)
+   || (z<=-85 && z>-85.42 && x>=-11.6 && x<=-9.35);                    // проём балюстрады у лестницы (до ньюэла)
  if(x>-9.85 && x<-9.15 && z<=-74.6 && z>=-85) return false;         // каменный парапет марша (восточный бок)
+ if(x>-4 && x<4 && z<-69 && z>-79)                                   // колонны ямы (пп.1-3)
+   for(const c of [[3.15,-69.65],[-3.15,-69.65],[3.15,-78.35],[-3.15,-78.35]]) if(Math.hypot(x-c[0],z-c[1])<0.74) return false;
  for(const b of blockers) if(x>=b.x0&&x<=b.x1&&z>=b.z0&&z<=b.z1) return false;
  for(const r of rooms) if(x>=r.x0&&x<=r.x1&&z>=r.z0&&z<=r.z1) return true; return false;}
 const zoneDefs=[
- {n:'НЕФ',x0:-6,x1:6,z0:-60,z1:0},
- {n:'ВЕЛИКИЙ ЗАЛ',x0:-12,x1:12,z0:-88,z1:-60},
+ {n:'NEF',x0:-6,x1:6,z0:-60,z1:0},
+ {n:'BIG HALL',x0:-12,x1:12,z0:-88,z1:-60},
 ];
 const locEl=document.getElementById('loc');
 let curZone='', locT=null, grateCd=0;
@@ -774,6 +823,14 @@ if(view==='windows'){camera.position.set(-5,P.EYE,-74);yaw=-1.3;pitch=0.32;}
 if(view==='jamb'){camera.position.set(-1.4,P.EYE,-56.0);yaw=0.30;pitch=0.52;}
 if(view==='pit'){camera.position.set(0,P.EYE,-65.2);yaw=0.0;pitch=-0.10;}
 if(view==='pitin'){camera.position.set(0.9,1.5,-71.4);yaw=-0.12;pitch=0.03;}
+if(view==='tunnel'){camera.position.set(0,P.EYE,-80);yaw=0;pitch=0.03;}
+if(view==='tunnelclose'){camera.position.set(0,P.EYE,-87.4);yaw=0;pitch=0.05;}
+if(view==='westwall'){camera.position.set(-4,P.EYE,-67.5);yaw=1.45;pitch=0.08;}
+if(view==='pitcols'){camera.position.set(0,P.EYE,-63.5);yaw=0;pitch=0.28;}
+if(view==='pittop'){camera.position.set(0,6.5+P.EYE,-85.8);yaw=Math.PI;pitch=-0.3;}
+if(view==='balcrail'){camera.position.set(2.5,6.5+P.EYE,-86.3);yaw=Math.PI+0.4;pitch=-0.12;}
+if(view==='rose'){camera.position.set(0,P.EYE,-71);yaw=0;pitch=0.5;}
+if(view==='broken'){camera.position.set(0.4,P.EYE,-72.6);yaw=-0.4;pitch=0.3;}
 
 const clock=new THREE.Clock();
 let frames=0;
@@ -822,7 +879,7 @@ addEventListener('pointerup',e=>{
   if(Math.hypot(e.clientX-_px,e.clientY-_py)>10 || performance.now()-_pt>450) return;
   rc.setFromCamera(new THREE.Vector2(e.clientX/innerWidth*2-1, -(e.clientY/innerHeight)*2+1), camera);
   const hits=rc.intersectObjects(artItems.map(a=>a.slab));
-  if(hits.length && hits[0].distance<14){ const a=artItems.find(x=>x.slab===hits[0].object); if(a) openArt(a); }
+  if(hits.length && hits[0].distance<4.5){ const a=artItems.find(x=>x.slab===hits[0].object); if(a) openArt(a); }   // клик только вблизи (п.4)
 });
 function artTick(){ const cp=camera.position;
   for(const a of artItems){
@@ -848,7 +905,7 @@ function artTick(){ const cp=camera.position;
   if(inside(camera.position.x,nz)) camera.position.z=nz;
   { const cx=camera.position.x, cz=camera.position.z, g=camera.position.y-P.EYE;
     let gy=0;
-    if(cx>-3&&cx<3&&cz>-78&&cz<-70){const dd=Math.min(cx+3,3-cx,cz+78,-70-cz);gy=dd>0.47?-0.4:-0.2;}
+    if(cx>-3.6&&cx<3.6&&cz>-78.8&&cz<-69.2){const dd=Math.min(cx+3.6,3.6-cx,cz+78.8,-69.2-cz);gy=dd>0.47?-0.4:-0.2;}
     if(onStairPlan(cx,cz) && Math.abs(g-stairY(cz))<1.3) gy=stairY(cz);
     else if(g>Y2H-1.2 && cz<=-85 && cz>=-87.6 && cx>=-11.6 && cx<=11.6) gy=Y2H;
     camera.position.y += ((gy+P.EYE)-camera.position.y)*0.25; }
