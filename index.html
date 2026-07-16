@@ -20,7 +20,7 @@
 
 html, body {
   width:100%; height:100%;
-  background: #f6f1da;
+  background: #e8e0c4;
   color: #353535;
   font-family: 'DotGothic16', monospace;
   overflow: hidden;
@@ -57,11 +57,6 @@ html, body {
 @media (orientation: portrait) {
   .layout {
     flex-direction: column;
-  }
-  .desktop {
-    flex-direction: row !important;
-    display: flex !important;
-    grid-template-columns: none !important;
   }
 }
 
@@ -132,12 +127,20 @@ html, body {
   line-height: 0;
 }
 
+/* ---- HERO WINDOW ---------------------------------------------------
+   The window reserves its full box straight away (via the img width/height
+   attributes below), so it never collapses to a thin strip while the gif
+   is still downloading. The paper background fills the full-size frame,
+   then the animation fades in and starts playing on its first frame.
+   >>> Set width/height on <img id="hero-gif"> to hero.gif's REAL pixel
+   size (currently 480x480) so there is zero layout shift on load. <<<
+-------------------------------------------------------------------- */
 .win95-body {
   width: 100%;
   display: block;
   overflow: hidden;
   line-height: 0;
-  background: #f6f1da;
+  background: #e8e0c4;
 }
 
 .win95-body img {
@@ -145,20 +148,37 @@ html, body {
   height: auto;
   display: block;
   image-rendering: pixelated;
+  opacity: 0;
+  transition: opacity 0.55s ease;
+}
+.win95-body img.loaded { opacity: 1; }
+
+/* the main shortcuts stay together in a tidy cluster,
+   with The Halls held apart below by the column gap */
+.icons-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(28px, 6.5vh, 56px);
 }
 
 .desktop {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: clamp(16px, 3vw, 36px);
+  grid-template-columns: repeat(2, 1fr);   /* landscape: 2 columns x 3 rows */
+  gap: clamp(14px, 2.6vw, 32px);
 }
 
 @media (orientation: portrait) {
   .desktop {
-    display: flex;
-    flex-direction: row;
-    gap: clamp(12px, 4vw, 28px);
+    grid-template-columns: repeat(3, 1fr); /* portrait: 3 columns x 2 rows */
+    gap: clamp(12px, 3.6vw, 22px);
   }
+}
+
+/* The Halls sits off to the side, apart from the cluster */
+.halls-solo { align-self: flex-end; }
+@media (orientation: portrait) {
+  .halls-solo { align-self: center; }
 }
 
 .shortcut {
@@ -176,21 +196,21 @@ html, body {
 
 @media (orientation: portrait) {
   .shortcut {
-    width: clamp(44px, 16vw, 64px);
+    width: clamp(42px, 15vw, 62px);
   }
 }
 
 .shortcut-icon {
-  width: clamp(32px, 7vw, 48px);
-  height: clamp(32px, 7vw, 48px);
+  width: clamp(32px, 7vw, 46px);
+  height: clamp(32px, 7vw, 46px);
   image-rendering: pixelated;
   flex-shrink: 0;
 }
 
 @media (orientation: portrait) {
   .shortcut-icon {
-    width: clamp(30px, 11vw, 44px);
-    height: clamp(30px, 11vw, 44px);
+    width: clamp(30px, 10vw, 42px);
+    height: clamp(30px, 10vw, 42px);
   }
 }
 
@@ -226,6 +246,51 @@ html, body {
   background: #5D5143;
   color: #f6f1da;
   pointer-events: none;
+}
+
+/* ---- THE HALLS POPUP (same Win95 chrome as the gallery windows) ---- */
+.modal-overlay {
+  position: fixed; inset: 0; z-index: 9999;
+  display: flex; align-items: center; justify-content: center;
+  padding: 24px;
+  background: rgba(14,12,10,0.72);
+  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(4px);
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.35s ease;
+}
+.modal-overlay.open { opacity: 1; pointer-events: auto; }
+
+.modal-win95 {
+  width: clamp(258px, 82vw, 356px);
+  transform: scale(0.94) translateY(10px);
+  transition: transform 0.4s cubic-bezier(0.16,1,0.3,1);
+}
+.modal-overlay.open .modal-win95 { transform: none; }
+
+.modal-close-btn { cursor: pointer; }
+
+.modal-body {
+  background: #e8e0c4;
+  padding: 32px 22px 34px;
+  display: flex; flex-direction: column; align-items: center;
+  gap: 15px; text-align: center;
+}
+.modal-icon {
+  width: 44px; height: 44px;
+  image-rendering: pixelated;
+  opacity: 0.9;
+}
+.modal-heading {
+  font-family: 'DotGothic16', monospace;
+  font-size: 13px; font-weight: 700;
+  letter-spacing: 0.24em; text-transform: uppercase;
+  color: #353535; opacity: 0.85;
+}
+.modal-sub {
+  font-family: 'DotGothic16', monospace;
+  font-size: 9px; letter-spacing: 0.20em; text-transform: uppercase;
+  color: #353535; opacity: 0.42; line-height: 1.7;
 }
 
 footer {
@@ -264,42 +329,74 @@ footer a:hover { opacity:0.65; }
         </div>
       </div>
       <div class="win95-body">
-        <img id="hero-gif" src="assets/hero.gif" alt="noeasy">
+        <img id="hero-gif" src="assets/hero.gif" alt="noeasy" width="480" height="480">
       </div>
     </div>
 
-    <div class="desktop">
+    <div class="icons-col">
 
-      <a href="/" class="shortcut cur">
-        <div class="shortcut-icon">
-          <img src="data:image/png;base64,/9j/4AAQSkZJRgABAQAASABIAAD/4QBMRXhpZgAATU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAA6ABAAMAAAABAAEAAKACAAQAAAABAAAAIKADAAQAAAABAAAAIAAAAAD/7QA4UGhvdG9zaG9wIDMuMAA4QklNBAQAAAAAAAA4QklNBCUAAAAAABDUHYzZjwCyBOmACZjs+EJ+/8AAEQgAIAAgAwEiAAIRAQMRAf/EAB8AAAEFAQEBAQEBAAAAAAAAAAABAgMEBQYHCAkKC//EALUQAAIBAwMCBAMFBQQEAAABfQECAwAEEQUSITFBBhNRYQcicRQygZGhCCNCscEVUtHwJDNicoIJChYXGBkaJSYnKCkqNDU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6g4SFhoeIiYqSk5SVlpeYmZqio6Slpqeoqaqys7S1tre4ubrCw8TFxsfIycrS09TV1tfY2drh4uPk5ebn6Onq8fLz9PX29/j5+v/EAB8BAAMBAQEBAQEBAQEAAAAAAAABAgMEBQYHCAkKC//EALURAAIBAgQEAwQHBQQEAAECdwABAgMRBAUhMQYSQVEHYXETIjKBCBRCkaGxwQkjM1LwFWJy0QoWJDThJfEXGBkaJicoKSo1Njc4OTpDREVGR0hJSlNUVVZXWFlaY2RlZmdoaWpzdHV2d3h5eoKDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uLj5OXm5+jp6vLz9PX29/j5+v/bAEMAAQEBAQEBAgEBAgMCAgIDBAMDAwMEBgQEBAQEBgcGBgYGBgYHBwcHBwcHBwgICAgICAkJCQkJCwsLCwsLCwsLC//bAEMBAgICAwMDBQMDBQsIBggLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLC//dAAQAAv/aAAwDAQACEQMRAD8A/ti1/X9C8KaFe+KfFN7BpumabBJdXd5dSLDBbwQqXkkkkchURFBZmYgKASTiv5a/2k/2/G+NOsR+PfG3jfXvhppLhl8O+HtL1uXQZ/sroj+dqEtvLGZbpyVEsW90tOIo1ZhLNP8ArN/wVo/aj+HfwI/ZP8X/AA08S21/qGt/ELwr4j0/TbawjRvLjWzMU11M8skSLDC9zAHCs8zeYDHE4Vyv8R/7TvhDxp8VPjH471+3u9PS08E6ZaXUkdzc29m/2eUwjZBGxQyt5twzbVBwDtHJjQ8GSYenGnPE1YX1SV9tb3/Kx4+eSr4jEUsBh63s+ZTlJr4rR5EktdLuafoj671jTvh/4ehm+JnwTt/D81vpjgW1/YwrBdafeq2YrsXdo++EQM0ckmwpJCgaVJcoqn+i7/gmB+058b5/jJq/7G/xoGq3s2naPPr9vL4hmll1nTsGwk+zXEk7STTJPDqUNxGs7C4tTvhk/hhtv5CPh18P/Fnwk1Txz4K8RXtpP9t8BzaoV069ivLcrcwxSw7mhdk8xElIweRuJXKMGb++D9kfxv8Asx/tMarr37W/wm8Lvo/i67ceHddl1C3ji1KJ7VIplikaGSaBjJA9q7SQyOZI1gjlYm3SOLuz3ERnh4ydPSV9ezT017NX0PL4byueExdSg8Q5cjTWvxRcequ03F297fvuf//Q9+/bN8Wv+038fPinrnjKV7SOO8vvBNjbRbWkh07Rbi4siBIEVT5k/wBqu9zqzobgQ5dI1Yfgx+2P4Ul0/wAfW/jOedJLjVkNveRgqCl3ZJGjERq0nlxyxNDLGrSM4D/NjgV+hvwm+PPgmLwVo+t+JPF9gddubdbu/uLu+ia6kvbkeZPNK0jlzO8rs7u3zmQlid3NfOfxl+InwS+Knxu8GfDXxFrI/wCEae4e21nULZY5ooEvjEEkikeWJA8JXe0m/ZGCdwkHmRH2KtKjTwUIQaukvv8A6v8AefmGS1sxnxFVlWhLkcqmrWij0V/lDRfyrq3fyv8AZB+GsPiTRte1Ke52NrkM2hqkbIXS1KpJdylGKngNFHG6F9kkgLoVr+gH9jL4wX37OX7UPhTXA8xsvF2oQ+D9d09VYErqE0cVhPsLxo0tvfSKoZ93k20t1sQvIBX4y/sg/H34b+FJNV0a61CDSxZ6q+oacL1Vs7drQCNY0AMsm1xsy6GV3O7dvkO96+v9V/ag+D2kfETRfi3ea7p1zb+H/Euj+Iri0sbq3kuZbfS7+C8kihTegeZo4WVASoeQjcwyWpTp0p4GUHZ3i/W//DhiJ49cRwmlJQU1d2duVqz12eltPNv0/9k=" alt="Home">
-        </div>
-        <span class="shortcut-label">Home</span>
-      </a>
+      <div class="desktop">
 
-      <a href="/about/" class="shortcut">
-        <div class="shortcut-icon">
-          <img src="data:image/png;base64,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" alt="About">
-        </div>
-        <span class="shortcut-label">About</span>
-      </a>
+        <a href="/" class="shortcut cur">
+          <div class="shortcut-icon"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAACc0lEQVR42r1XP2/iMBx9ibKUheXSAXSJxB+Vj3DD6YRuuAzXkQmpQxakfoMMjAyMqEulLGxMGXtDOpyiE0M/AqjAgESXTCzt1tyA7BrHThyCailyAs/v9/L888+xhhKt0Wwl5H6zXmmncOg4U2s0Wwkr6FMaH5CI+DQhWYFKCVEdWCSADKuXffuylusi4rsbO9feyaUNcqngZRhdBHx9e8Xky1fhABKcEjjAewhMLm0pnnIKMLoIWLmoALouJeWD687hygpeuagASAs12AEE+B6KA97+MJPfP+2UCNLubmz8+btP7v/FmiqnlpepfIXLSzgVPIsx+D/HPZPee0EsDMJi2KaC5zEpAd9+XaM7mCLyXSCYCgmtzhVqVvvot5ftMwCxgCxOnbfpQPTRZ9neHUzRHUxzC08W59EqiHwX/dEcbF+04LC4PE6ahI1mK5kNv6dsJar7ozmc+h4AEO6qdE7JfLLPLC6Pc7NeaZpqdke+S+cxq3fqe4S7Kn3OWy1GXnZ7QYxxz1QKzvdZnKk6IJoGYtW4Z8LqXNHfRbbySbZdLOEFMWScxAHl3bBmtdEfzaXBVTFK27Fo7kRLqQhGlg9GEQdmQ+Q6QDDbxfK8H6Uv22fUrDZ9u6fHB1qInh4fhJizCuCDkzXv1PfwgjglopSAyHelDpDsJgUHABWxXSylDog4T3ZAZapOciArcVSJi+aAQYrQuGceCkfnYzApQodqeCww3FWFhCQXSAXtj+aYDSHgRLJZrzSD3eMj//povUa+S/d5tnzKzoFegIT/bsjiFNYBWbKoHD5ZDLu5yThTe4Fs4zj15KvCWfij9BzHPJbzP8hQ0qf+KLdvAAAAAElFTkSuQmCC" alt="Home"></div>
+          <span class="shortcut-label">Home</span>
+        </a>
 
-      <a href="/gallery/" class="shortcut">
-        <div class="shortcut-icon">
-          <img src="data:image/png;base64,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" alt="Gallery">
-        </div>
-        <span class="shortcut-label">Gallery</span>
-      </a>
+        <a href="/about/" class="shortcut">
+          <div class="shortcut-icon"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAACwklEQVR42r1XP2hTQRj/3ashFTRDTQPNqEIdBB2lizi+e3Z6gk5F0ClDnaUZG+KaDAGhLk516NT2ZQxdgqMFwRTUsYFgMjRC8gjhOYQ77t27u3evBL/lveQd9/tz3333HUGGuHvvfmQz7vevn8R2TpIFmHoUlR0frc9HxvHBaWBNhNgAn3z5BADYfvU2MSaKkqZQj1oTISZwG+CT/W18//YV826IQThDYzhZTEwIXOpyIjoSxARuAwwA826Ivcsr1MoFDMIZmqMpoigCIYvpXepqSZBlgLPYu7zCuzs3AQCN4YQTMJEgywJnMQhn/L05msa+qUg4WbahCA4AK1t5rGzlY2Maw0kC2GoXpKln4O+P/iS+72/cji0Ds353bTXVBWsHdOAAUO2PuRO1coEvl40TDlNPPZpQv/lgk78/fPzEOJEqH1TRDtqgHuU1hjtQ2fETgy96FzEHTCHnghyimIQDAFLLK3Og8/E1/098T3NAFBNLQmZ/O2hrmfd+9FArF1Dtj7UAdb/ISYiJqAuWjE6aXYz5o8rTpeSAdglMdhFCcN46y5QDqkNKlQtW2zCKokwO1MoFfHixriQhi3NswFkR2l1btXZg3g1RKxdQ94vZl0AGP2+dYd4NUcrnlCTEBFQ5oyLBtj0RC5G4E0RwWem8GyaeugrJSrW4M8Ry7KQp1621/FSB1/0id0zMCbHo3dDZn5b1pmBHcr/zF6V8bvG7MwMhJJGYDuvZgtMALnW5etnGLOClfA4AsPHsVqw/YP3l85dvzKehqF48am2CKxYcsNoFzAXq0ZhqWwcYqM6B5miK48ODmPrMHZGN8ms7IOdCtT9GtT9OXQJZubjmzAGdemNbLtYFGxIieHM0Rd0v8g5KB556MWE3HBUREVRWzlqx48MDANCCW1/NZCJpIQJf+2pmIqILdnFd2uX0f1zP/wE41Q8mP/8t/QAAAABJRU5ErkJggg==" alt="About"></div>
+          <span class="shortcut-label">About</span>
+        </a>
 
-      <a href="/links/" class="shortcut">
-        <div class="shortcut-icon">
-          <img src="data:image/png;base64,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" alt="Links">
-        </div>
-        <span class="shortcut-label">Links</span>
+        <a href="/gallery/" class="shortcut">
+          <div class="shortcut-icon"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAHnElEQVR42rWXa2xUxxXHf3Pv3Ze9a2PAD3AIYB6iAhGICqVRIJQmgSpppLZSFKlAQJXIhwrSD1aVVo0QRGq/ULWBSJWoIiigKkpoWhGk8iiPyC2PhIJlICUGDAHbi+31Y73evc+Z6Qezi9drTKjU82XuzNyZ/5kz55z/HMH/IA2zZuuxxttu3hCPu5cYa9PxNmqYNVuf3r1xzLmVm/Y8cu1oDCs/sXPddBYuX0VL00m27EeDHkvPguzf9pei/rqtPxrXOgCjMdpu3hBWfnLh8lWs3LSH07s3wv49/Gb9YkSuo2STtw72FL5/8usXAXj/l8cKY5tXT6E+ERSt6chY7DqaLMEoWACgpekkp3dvpKXpJAC/2HfpoafPy0jgvOw6mnzo/6MxHuoDz82dzKetKRobatnR1sVrL0zhg+NJ3nzlad49dJHxfODV79bx4Yl7vLZ6Gh8cvcva78/kwCe32PDKDPYeul3isEUKbF49pXCCP25ZwYL58/CiHQitMENxhBXid384xkenU2MqsPZ70/jp60sZTLtEIhahiEU4EkGLMEt/sKdwRbuOJoudcLQ0NtSSKK/AznlEYwItIggdYBkGP3/jO8ApYrEoSivsnI9haEIhkzd+/BRB4BKNakAS+ALl5wikYM2iSo40p0uwihQY6TyeJ8lkckRqolg6wLQMlC9BS7as/RZm2EIHPmnHIxKNEQpbIDSGEFimwlQaDDCFxvG8AvhoBzVGdpa9+PIDzUIWgVYYWqC0QLk+IvBQvo9j+yADMr39aMfBz6QJHIdE3RJC0iXkORjKw3SzSNcDz+eF+eUlGCUWOHfscOE7FAljZ27g2A1ETQfDNFDaIAg0pgoQWmNZJtFIGMO3qZj5LOHJ3x5e3NmE72s8s4LLV5Pk0v0cv5otwSixQEfmgT52zgXgxpUkQmmU72FhIH2XUMjAVBpLWMjsABULXr4PLobbqcuRAv598Ta2E+D5moVTjRKMEgXy4i+oJ5cbAKAnOUjgumhh0drWhWEYmAgIJDKwUWaIzPVjeKmzgMZLnSXz5THwFOl0gO0GxMvLaOlUhf2VVnpMBfIh+O6hi1ROiBMrf5LEpAifX3CR3iCVE8KoQGMg6esZxDI0ltYoX3Ov+e94qbNkr39KJqVpbc1huwIn6+EFxRiGMESRAnkuOL17IzvXTQfgyq0+Wu8OMGd+PXMWhDnxj0HKyyrIegqpQJgGgZJ09w5h5xwcJ+DO+aN03s0y4GaZNbucrBNgGBE+PnW9wAV5jHziM0ZzwcLlqwDQ2sSKhMgNDGHnFFnf48jh60R0FG1IzJCJK8P4XphwKMSQLcmmXdAwdepk7nXbSGmBoXE8f0yMIgVG5+lUTz8EisCR6KyiakKMl16qZ+++Cxw5nkJKQao7h5SKrmQOEViETAvHlUjfw/E1vqdRykLrx+QCgO2vfpOGJwOazt5l9ar5KNslUS358K/tVCYMerp9VqyYxYSET+D7+CpMWVmMnO1SMzXKzVsO57/I0PBEJcrPsP3PV8d8vBQ54ebVUwqpWAXD+jy/ZjHZrM9g1iM95DB5coxly2qYP38aV690c+ZMB/EYhIVAeBKUxPEFvp9lIONi53IEEuZVx9FaFTDGDcMdbV0MNbcDkOxMMTAY0Jf2iZcnEAgMK4QWgqXLqulPe5z+Z4pAajzfAyXQVhihLYZsB8PUhKMW13qGxg3D8Mg83dhQiz9zIgDV1XEsy6BrQHLnrkd/JqAjHZCVPjfaB0gkQAuJa4C0IuhQmECb9AVVoBW5rI3UBvOq4whhUJ8ISsMQ8Ebm6R1tXSxZHAFA5obIOpLu3j5EKAJo6uoTVMTLqZ0xkdoZk6isiyPicXwzhh9EOHG2n9bbKb5REcMSJsqnYIHRXDDyCvRIOv6sedga2/70JZ+1pCiPlXPhSpJIPEo0Gqcz2U0gfapqq6mqmY4Uk/jijuD8DUlvr6JClFMzcSJm6yBd/2pjXnV8zDdECRkJMWyBRqC5DUxMLt9JsWRmFVdv3uP5udP423ufEyCZMX0qdy53EqmsRpUb+I6krrKCOdVx7HSWU0fPEUajhcG1jDMmGVmlZCRobKjhSpnFglzAr16fzSeH2zF6XZ6rrcNNSyIZyQTLoP1IKxnXxTZ66cp6VJSF6FUGN/uydPkBiyYlsLTm1pDNvOo413qGvh4Z7Wjrot3WLPrhFJo/TjLNM4kDWnpkBvtJxEKYKE6kBohZBufSNnOnTaTCNIk4Dk8lwqypiVETNml1XbQKiqJgTAuYphA7j3QgxLDHXrnZSbhqFTvammlsqOW9tm4ADjQu4re7/8OlwWG6zrdcb+dSDp5OGFzsU8MnTvYNt4MuM5wMt6OJklezuJ8F1c5100W+aHjzwB20fkCfWmuEEEXJM19k5FPslv1fPbIMKy5MvmLcwuRna+qpi/tFoZN3oLcO9vDEwmWs3DT80s2vyRclo///OoWJ29J0MponCg3e7490hAuZ66P3H2Su+0mkveVcoT7Ik0vBvAf3PF5hsv+d9Xrr3jOO1ioKsH3js48059a9Z4r62zY881hrtm14hnVv7ytcLPvfWT+6qMwBZfyfZN3b+wTAfwGqvw3tiJfewwAAAABJRU5ErkJggg==" alt="Gallery"></div>
+          <span class="shortcut-label">Gallery</span>
+        </a>
+
+        <a href="/commissions/" class="shortcut">
+          <div class="shortcut-icon"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAADpklEQVR42r2XT2gbRxTGfzOSW0EL6clpZMkG6989UCxfrBxaSNKeBO2tBx8SiEMgFHzIwS2pDg4UiqGQQBxIqW8t5NjmUrDcg9aXHJpTYkkQO7FLTvGporH29eAddbSeXW0dkwdiNLvLvO9973tvZhQOmy4UhWjzAV8phYgIIEopLSIKEEAH35l5H1DdTnvMtZgKPygUS/Lb7UuctJ2/cvefbqf9bvh52vXx3vbTEwdw/8a5d+aXOeh22umRAAAePXrC2zAdftBpb6n55XXOnq0w/p460TERANs++uSzEx1tzRWKJZkuFH0V5Xy6UPQf3rnsfJ9JvabXHzuOEKXbaetCsSRz1RmaLS9aA7Z99+33Q/Olm9eOPIuyxa+/OlLic9UZJvN5aHmxDPQf3rmsw1HbI5CYiYsLq/gi1GarTObzbO/s0Gx5kogBl3PjOJyO8FxEuLCwKrXZqgJotjxqVlNLRzQnMYLJpF7T+OaHWIpd3yzdvMbfB+kjzr/84nO2d3bY8DbpdtppFQXAFmESBsKjiHDx6j3mqjOEnQfzg26nPeZiQJLQb2vABSzOuV2SzhQEAlRx9Bt1R1XDXPXjyLQ1W17ftGQ1iv7/m4JAdH5ttqpd0W94m3TaW2rkXnCcFAB8evUeUc6Dqugn2YwEUKOajakAu+z8wzOCiqDeH7UbyigHw0wwpJHf997v12arqQjVH3Fua8CMicrPtReICLfWHkeVnA8QABDXbijhF1ElZo9GB8Y2vM3DHg+m1fabLa/fqGe1a/0oDQx1wSQMmOhFRNZ+/gVA/vA2daOeTQHkKmVgdzSAMP3HNAkiDhxHa4zQCXYQjYkwaQpurT2m2fLM4nrpwS5LD3ZHOneeiJRSQw7iQISEKIBaLJ1mZXyKxdJp5pfXAfgwXyKqNHVc/x/FAMDyT38aleuV8Skm9jODdVbGpwYgfPFjATBdKIrJf1IGLOcK4PkHPQBenOoxsZ8ZzAG00slSYJegodgeXT2gUc8qgNyrQ6cT+xlenOqRe5WJvQQNAATRc9hF4804D6LvN+pZnauUadSzXH/5bOB0Yj/D9ZfPaNSzscFq+zaklBrcisKjs4a1Tpn/Ngjza9Sz5CplLiysSrfT1rF3Q+tCKo7Skfs3zqXOTJbZ237Kj+s9mi3PN9EHKuevnS2eP/kPcK5S5sxkmfNX7vquNhyZl6hTstWytesc8evtS1oFpey4D6TeCECE2ZuZb4EcSnNAv3IB+BfUX6GBiRSOJAAAAABJRU5ErkJggg==" alt="Commissions"></div>
+          <span class="shortcut-label">Commissions</span>
+        </a>
+
+        <a href="/shop/" class="shortcut">
+          <div class="shortcut-icon"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAC+0lEQVR42qVXPWjbQBT+TphCDC0eQjEuhIIj4yFrA03AUxEhawod0iFZCiWGdEzJEDqEdKzBUOgSD8lgSNdSRKZCO2TO4FgJpC4xpnQwDjhQSq5LT333dDrL8oGRdCe/73vf+9GdQMpRnHUln7s4D8S4dkRa8NrzmfB586CTmohIC05B+fM4JJxJwS/OA7F50AFVRI1bKaXN3q2U0hkHvOrlI+DqPvj5O/K+I4RVBUcIMZYC7v07I9dM0nMl6HNmnGw3eRm3xj29lVLS60gCyrhX6AMA/G4u9FLNqUHXKCl677olcPBECvjdHLiXdI6vcXLq/SBoG0lYCRxuL4b3q7tfQy/pPF8zkgvaqG1UIuFIpECndRbxks7xNU666uVR26igfdoCkAtJJO4D2aksslNZ7K1Mo+73sLcyHc6bqqDTOsOv7z9Cz+t+D+3TFkpz5XR9YHgzDAEVOCVnqgL1H9ctwSv0UZor/1PA0Ad4jQ4um7I468rD7cVQ6uWdY00NCgLAqo7fzcUqAAAOL4t7D58J7uGnN08ioGqNhogroKoiTgEtB5QSg8tmqMjyznHE4+HNUJtTP0WE5wZVwCv0I59xh3crpcD82j6Otha0HFA/CmrKFzqoAqYwOMrjwWUzbJVB0MZJYx3ZqSyWXr4CAFTWXmhkTMlqmqcKGBNReUxjT41+aXzA8GaIz+/faQAcjIaFrnmFvjURnUhdCiFct4T5tX3NoJLelg+mUPjdnL0UObgKyUljHU/fftOSzeShiUQqBVQ50lAcbS1YY27qmjYF6n4PVS+vVYKxEXHDtBxtKsRVgVKg6uUjYbA2IqoEN25qSnGfc6oAD0PGtBGhbTjJ4ORMOQC0UPXK2ldx7F1xGkJKgbhEtBK4us5Yr0mGAv+vRMJzwdV1Bg/u/om9JiVEwb1CH3W/Z8+Bi/NArO5CjvKs6uVHEoxTgG7djdSTHKvq0EnurUxrJGbYptbv5ox2M2kTjRt7/VEn9PhRcaJT88SjOOtK0xGej79d+S/jBiD0xQAAAABJRU5ErkJggg==" alt="Shop"></div>
+          <span class="shortcut-label">Shop</span>
+        </a>
+
+        <a href="/links/" class="shortcut">
+          <div class="shortcut-icon"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAABpklEQVR42t1XO26DQBCdQTkE1AbJvkQU5RI0rm25gobKlnwAGpCQQlK74Q4QRbmELQE1vsWmWkTWLOyHTZHpEGvem8++N0YwGCvXI8PntqmRPYMmgaMwgK67g+PY0HV3uBTFAxE0Ab71fXh+fYHvz68e3HFs8DZrqK83iJO0J4EmwWnGNKIwGCWxGPj5eCJVVZLz8UTY/tMzeZaRqir792gqc152K9cjdDYuRQHWX4LToDMBAHoEVMABoB9MLQK0h7LgbAW0ss+zjDtwc4NKf6PVAjaTletxybDtoqFFYNhLCvDx/vYgwVOzslgFxrITGVRcQvPH1K9tahS5JSgDxLranPSKXFHUcTUWgD0nckWfVFyNV/YhuOPYsNsfuHvAZAVUSzt2BefECWXklUdMx1YtWW1ne771fRBVwskZEAFvmxp3+wNZUtMtWVdrmxrpu6ESKhP4N66m1QKZTHiupkVAtJeqG9AiFTAB/uvjVVWSPMu46/Tcyq2tA/X1Bt5mDVEYQJykRNbVVAPZfZ3+c5F1NW0C7IIxdLU4SbU1X9oNZV1NNX4ASGn9b3WIrmAAAAAASUVORK5CYII=" alt="Links"></div>
+          <span class="shortcut-label">Links</span>
+        </a>
+
+      </div>
+
+      <a href="#" class="shortcut halls-solo" id="hallsBtn">
+        <div class="shortcut-icon"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAC6ElEQVR42qVXMWjbQBR9Z7QGTwkEQYfYpB6yltSQxUsVSEdPHhK6GDJk6FDoYFIaNBgyZMhgyBLiwVPGBKwuXgyK6erBNUqHggg4k8gacAf5y3enk3RyPpgT9vf//95797+OIadtlcrztN//PnosTzwjb+Jeay/Vr2FjnqcQQzc5Jb65vketWlb6DVwPvdZBVIhOEUw3+b/JHwDAu8p73FzfY3unIvhNxxMcfTkQ/Br2MBMJlpXcMgNhx/6LgeqHEhr2UPDttfbg/n6EufYqIOL4xdQimC7stONL5wkAYJkBHL8Yez6xNgVEQjqSkWB5YHf8YiwxgFghlhlo08GykhPstHMA6HeauLDPEwshJHg6kopgSbyTbe9UcOk8CbujRP1OE/vHV5Gv7HNibWI6nkS/q/TAknhfnuuhsHM+ocpkH1U8vohYH+Ch53cGIDE5n3T/+EqgRBWPt4L8hf9ixJ6TGo9lBrDMQFkY0aSKl9oJp+MJplwQywwwcANBYJQ8Kmxx3iH9Lzy2SwRDK6oLUPHv2EMhmCr5x0+fAdwBrodatYzvt88xFKgfAMCR1KYNXf7b9fUoOJ98Y/cQ+HUXS86fijQdFLL4p13wwQeuBwDY2D3EbNQVviNR6urASOKf+JLh52026kYI8BaehCUCqrjKAniueA30O004nNKJAh6BWrUMR6JApQGKqywgSQMX9rlQ9WAhuNmoi4fF7geuh3Zd1IGOBgxZA9S/eQ3INDh+EXC9UP3c2E1CQBV3JQ3wHW9ZBGI9goaVjgaYzhzgB5BO/5f/kzYPCrIG+A8F+tr6FiGhWvn+z88BelbFzdUHaPbL4zZtzYqrpEAlNnrFMtdeIzHlWeldQo5LFOTSwKprmgYy+0C7vg5gHTVgpdW5fX5bH6DGonolUzUtlU9aH2A6970QhfwmT0fVPZJtlcrz0x+niU5nP8/wFku7Szbsof7lNO+tl1CVb0vycWRZ8K+SXPcqDwD/AYntasX6j8rDAAAAAElFTkSuQmCC" alt="The Halls"></div>
+        <span class="shortcut-label">The Halls</span>
       </a>
 
     </div>
 
+  </div>
+</div>
+
+<!-- The Halls popup -->
+<div class="modal-overlay" id="hallsModal">
+  <div class="win95 modal-win95" role="dialog" aria-modal="true" aria-label="The Halls">
+    <div class="win95-titlebar">
+      <div class="win95-titlebar-inner">
+        <span class="win95-titlebar-text">THE HALLS</span>
+        <div class="win95-titlebar-btns">
+          <span class="win95-btn modal-close-btn" role="button" aria-label="Close"><svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg" style="display:block;image-rendering:pixelated;shape-rendering:crispEdges"><rect x="4" y="0" width="2" height="10" fill="#1a1612"/><rect x="3" y="1" width="4" height="1" fill="#1a1612"/><rect x="3" y="8" width="4" height="1" fill="#1a1612"/><rect x="2" y="0" width="6" height="1" fill="#1a1612"/><rect x="2" y="9" width="6" height="1" fill="#1a1612"/><rect x="0" y="4" width="10" height="2" fill="#1a1612"/><rect x="1" y="3" width="1" height="4" fill="#1a1612"/><rect x="8" y="3" width="1" height="4" fill="#1a1612"/><rect x="0" y="2" width="1" height="6" fill="#1a1612"/><rect x="9" y="2" width="1" height="6" fill="#1a1612"/></svg></span>
+          <span class="win95-btn modal-close-btn" role="button" aria-label="Close"><svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg" style="display:block;image-rendering:pixelated;shape-rendering:crispEdges"><rect x="4" y="0" width="2" height="10" fill="#1a1612"/><rect x="3" y="1" width="4" height="1" fill="#1a1612"/><rect x="3" y="8" width="4" height="1" fill="#1a1612"/><rect x="2" y="0" width="6" height="1" fill="#1a1612"/><rect x="2" y="9" width="6" height="1" fill="#1a1612"/><rect x="0" y="4" width="10" height="2" fill="#1a1612"/><rect x="1" y="3" width="1" height="4" fill="#1a1612"/><rect x="8" y="3" width="1" height="4" fill="#1a1612"/><rect x="0" y="2" width="1" height="6" fill="#1a1612"/><rect x="9" y="2" width="1" height="6" fill="#1a1612"/></svg></span>
+          <span class="win95-btn modal-close-btn" role="button" aria-label="Close"><svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg" style="display:block;image-rendering:pixelated;shape-rendering:crispEdges"><rect x="4" y="0" width="2" height="10" fill="#1a1612"/><rect x="3" y="1" width="4" height="1" fill="#1a1612"/><rect x="3" y="8" width="4" height="1" fill="#1a1612"/><rect x="2" y="0" width="6" height="1" fill="#1a1612"/><rect x="2" y="9" width="6" height="1" fill="#1a1612"/><rect x="0" y="4" width="10" height="2" fill="#1a1612"/><rect x="1" y="3" width="1" height="4" fill="#1a1612"/><rect x="8" y="3" width="1" height="4" fill="#1a1612"/><rect x="0" y="2" width="1" height="6" fill="#1a1612"/><rect x="9" y="2" width="1" height="6" fill="#1a1612"/></svg></span>
+        </div>
+      </div>
+    </div>
+    <div class="modal-body">
+      <img class="modal-icon" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAC6ElEQVR42qVXMWjbQBR9Z7QGTwkEQYfYpB6yltSQxUsVSEdPHhK6GDJk6FDoYFIaNBgyZMhgyBLiwVPGBKwuXgyK6erBNUqHggg4k8gacAf5y3enk3RyPpgT9vf//95797+OIadtlcrztN//PnosTzwjb+Jeay/Vr2FjnqcQQzc5Jb65vketWlb6DVwPvdZBVIhOEUw3+b/JHwDAu8p73FzfY3unIvhNxxMcfTkQ/Br2MBMJlpXcMgNhx/6LgeqHEhr2UPDttfbg/n6EufYqIOL4xdQimC7stONL5wkAYJkBHL8Yez6xNgVEQjqSkWB5YHf8YiwxgFghlhlo08GykhPstHMA6HeauLDPEwshJHg6kopgSbyTbe9UcOk8CbujRP1OE/vHV5Gv7HNibWI6nkS/q/TAknhfnuuhsHM+ocpkH1U8vohYH+Ch53cGIDE5n3T/+EqgRBWPt4L8hf9ixJ6TGo9lBrDMQFkY0aSKl9oJp+MJplwQywwwcANBYJQ8Kmxx3iH9Lzy2SwRDK6oLUPHv2EMhmCr5x0+fAdwBrodatYzvt88xFKgfAMCR1KYNXf7b9fUoOJ98Y/cQ+HUXS86fijQdFLL4p13wwQeuBwDY2D3EbNQVviNR6urASOKf+JLh52026kYI8BaehCUCqrjKAniueA30O004nNKJAh6BWrUMR6JApQGKqywgSQMX9rlQ9WAhuNmoi4fF7geuh3Zd1IGOBgxZA9S/eQ3INDh+EXC9UP3c2E1CQBV3JQ3wHW9ZBGI9goaVjgaYzhzgB5BO/5f/kzYPCrIG+A8F+tr6FiGhWvn+z88BelbFzdUHaPbL4zZtzYqrpEAlNnrFMtdeIzHlWeldQo5LFOTSwKprmgYy+0C7vg5gHTVgpdW5fX5bH6DGonolUzUtlU9aH2A6970QhfwmT0fVPZJtlcrz0x+niU5nP8/wFku7Szbsof7lNO+tl1CVb0vycWRZ8K+SXPcqDwD/AYntasX6j8rDAAAAAElFTkSuQmCC" alt="">
+      <div class="modal-heading">The Halls</div>
+      <div class="modal-sub">Will be available later</div>
+    </div>
   </div>
 </div>
 
@@ -309,13 +406,26 @@ footer a:hover { opacity:0.65; }
 </footer>
 
 <script>
+/* ---- hero gif: fade in once it paints; keep the .GIF fallback ---- */
 const heroImg = document.getElementById('hero-gif');
-heroImg.onerror = function() {
-  if (this.src.endsWith('.gif')) {
-    this.src = 'assets/hero.GIF';
-  }
-};
+function heroLoaded(){ heroImg.classList.add('loaded'); }
+if (heroImg.complete && heroImg.naturalWidth) heroLoaded();
+heroImg.addEventListener('load', heroLoaded);
+heroImg.addEventListener('error', function() {
+  if (this.src.endsWith('.gif')) { this.classList.remove('loaded'); this.src = 'assets/hero.GIF'; }
+});
 
+/* ---- The Halls popup ---- */
+const hallsBtn = document.getElementById('hallsBtn');
+const hallsModal = document.getElementById('hallsModal');
+function openHalls(e){ if (e) e.preventDefault(); hallsModal.classList.add('open'); }
+function closeHalls(){ hallsModal.classList.remove('open'); }
+hallsBtn.addEventListener('click', openHalls);
+document.querySelectorAll('.modal-close-btn').forEach(b => b.addEventListener('click', closeHalls));
+hallsModal.addEventListener('click', e => { if (e.target === hallsModal) closeHalls(); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeHalls(); });
+
+/* ---- grain ---- */
 const g = document.getElementById('grain');
 const gc = g.getContext('2d');
 let gw, gh;
