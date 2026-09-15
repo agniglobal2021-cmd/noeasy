@@ -115,7 +115,9 @@
     "year": 2026,
     "style": "Graphic",
     "workType": "Personal",
-    "avail": [],
+    "avail": [
+      "Print"
+    ],
     "links": [],
     "src": "images/arcanum-magnum.jpg",
     "ph": {
