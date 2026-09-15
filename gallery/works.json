@@ -118,7 +118,12 @@
     "avail": [
       "Print"
     ],
-    "links": [],
+    "links": [
+      {
+        "label": "Print",
+        "url": "https://www.inprnt.com/gallery/noeasy/arcanum-magnum/?srsltid=AfmBOopiR-Z6l7ylrhmT0XZ-wPS08_SKvstQYBuveonuSD2CTGqEGJMU"
+      }
+    ],
     "src": "images/arcanum-magnum.jpg",
     "ph": {
       "color": "#9b9b9b",
