@@ -15,6 +15,21 @@
     }
   },
   {
+    "title": "Morgenstern",
+    "meta": "Digital Painting",
+    "date": "2026-09-05",
+    "year": 2026,
+    "style": "Digital Painting",
+    "workType": "Commission",
+    "avail": [],
+    "links": [],
+    "src": "images/morgenstern.jpg",
+    "ph": {
+      "color": "#9b9b9b",
+      "ratio": "100%"
+    }
+  },
+  {
     "title": "Pleroma’s Frontier",
     "meta": "Digital Painting",
     "date": "2026-05-31",
