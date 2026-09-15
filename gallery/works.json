@@ -161,6 +161,21 @@
     }
   },
   {
+    "title": "Belmo",
+    "meta": "Graphic",
+    "date": "2025-09-12",
+    "year": 2025,
+    "style": "Graphic",
+    "workType": "Commission",
+    "avail": [],
+    "links": [],
+    "src": "images/belmo.jpg",
+    "ph": {
+      "color": "#9b9b9b",
+      "ratio": "100%"
+    }
+  },
+  {
     "title": "Pure Thoughts",
     "meta": "Digital Painting",
     "date": "2024-10-31",
