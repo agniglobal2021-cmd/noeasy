@@ -45,6 +45,21 @@
     }
   },
   {
+    "title": "Another bite of the forbidden fruit",
+    "meta": "Graphic",
+    "date": "2026-08-12",
+    "year": 2026,
+    "style": "Graphic",
+    "workType": "Commission",
+    "avail": [],
+    "links": [],
+    "src": "images/another-bite-of-the-forbidden-fruit.jpg",
+    "ph": {
+      "color": "#9b9b9b",
+      "ratio": "100%"
+    }
+  },
+  {
     "title": "Pleroma’s Frontier",
     "meta": "Digital Painting",
     "date": "2026-05-31",
