@@ -1,5 +1,20 @@
 [
   {
+    "title": "Nameless King",
+    "meta": "Digital Painting",
+    "date": "2026-09-14",
+    "year": 2026,
+    "style": "Digital Painting",
+    "workType": "Personal",
+    "avail": [],
+    "links": [],
+    "src": "images/nameless-king.jpg",
+    "ph": {
+      "color": "#9b9b9b",
+      "ratio": "100%"
+    }
+  },
+  {
     "title": "Pleroma’s Frontier",
     "meta": "Digital Painting",
     "date": "2026-05-31",
