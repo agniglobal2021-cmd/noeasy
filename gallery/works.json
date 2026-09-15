@@ -146,6 +146,21 @@
     }
   },
   {
+    "title": "Volga Music",
+    "meta": "Digital Painting",
+    "date": "2025-12-23",
+    "year": 2025,
+    "style": "Digital Painting",
+    "workType": "Commission",
+    "avail": [],
+    "links": [],
+    "src": "images/volga-music.jpg",
+    "ph": {
+      "color": "#9b9b9b",
+      "ratio": "100%"
+    }
+  },
+  {
     "title": "Pure Thoughts",
     "meta": "Digital Painting",
     "date": "2024-10-31",
