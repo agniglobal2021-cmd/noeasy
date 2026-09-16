@@ -1,0 +1,8 @@
+{
+  "ambient": {
+    "src": "ambient.mp3",
+    "gainDb": -10,
+    "fadeIn": 4,
+    "xfade": 6
+  }
+}
