@@ -226,7 +226,8 @@
     "ph": {
       "color": "#9b9b9b",
       "ratio": "100%"
-    }
+    },
+    "slot": "HE-01"
   },
   {
     "title": "Untitled I",
