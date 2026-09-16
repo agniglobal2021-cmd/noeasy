@@ -42,7 +42,8 @@
     "ph": {
       "color": "#9b9b9b",
       "ratio": "100%"
-    }
+    },
+    "slot": "A-02"
   },
   {
     "title": "Another bite of the forbidden fruit",
@@ -128,8 +129,7 @@
     "ph": {
       "color": "#9b9b9b",
       "ratio": "100%"
-    },
-    "slot": "A-02"
+    }
   },
   {
     "title": "6 Secrets of the Guild",
