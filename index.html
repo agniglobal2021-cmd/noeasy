@@ -2,7 +2,12 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<link rel="icon" type="image/png" href="assets/icon.png">
+<!-- Favicon. GitHub Pages is case-sensitive: the name here must match the
+     file letter for letter (favicon.ICO and favicon.ico are two different
+     files for it). ?v=2 makes browsers drop the old cached "no icon". -->
+<link rel="icon" href="favicon.ICO?v=2">
+<!-- iPhone/iPad home screen + Safari favourites: needs a real PNG
+     (180x180). An .ICO file does not work here. -->
 <link rel="apple-touch-icon" href="assets/icon.png">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>NOEASY</title>
@@ -69,10 +74,17 @@ html, body {
   padding: 1px;
   flex-shrink: 0;
   width: clamp(120px, 36vw, 300px);
+  /* landscape: the window is also never taller than the screen
+     (phones held sideways). Browsers that don't know svh keep the line above. */
+  width: clamp(120px, min(36vw, 100svh - 64px), 300px);
 }
 
 @media (orientation: portrait) {
-  .win95 { width: clamp(220px, 80vw, 400px); }
+  .win95 {
+    width: clamp(220px, 80vw, 400px);
+    /* portrait: on short phones the window gives way so both icon rows fit below */
+    width: clamp(160px, min(80vw, 100svh - 300px), 400px);
+  }
 }
 
 .win95-titlebar {
@@ -149,30 +161,37 @@ html, body {
 }
 .win95-body img.loaded { opacity: 1; }
 
-/* ---- DESKTOP ICON GRID — authentic Windows 95 layout --------------
-   Icons fill TOP-TO-BOTTOM down a column, then start the next column to
-   the right (grid-auto-flow: column). Fixed-size cells, so every icon
-   snaps to the same grid — exactly like the Win95 desktop.
+/* ---- DESKTOP ICONS -------------------------------------------------
+   Fixed 84x104 cells, so every icon still snaps to one grid. Icons fill
+   rows left to right, and an unfinished last row is CENTERED, so the
+   block stays symmetric whatever the number of icons:
+     landscape, 2 per row:  2-2-1  -> 174 x 312 px
+     portrait,  3 per row:  3-2    -> 264 x 208 px
+   Both boxes are exactly the size of the old 6-icon grid, so the balance
+   with the hero window is unchanged. Adding or removing an icon later
+   needs no CSS edits; to change the row length, change --cols.
 -------------------------------------------------------------------- */
 .desktop {
-  display: grid;
-  grid-auto-flow: column;
-  grid-template-rows: repeat(3, 104px);   /* landscape: 3 per column -> 2 columns */
-  grid-auto-columns: 84px;
-  column-gap: 6px;
+  --cols: 2;
+  --cell-w: 84px;
+  --cell-h: 104px;
+  --gap: 6px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  column-gap: var(--gap);
   row-gap: 0;
-  justify-items: center;
-  align-items: start;
+  width: calc(var(--cols) * var(--cell-w) + (var(--cols) - 1) * var(--gap));
+  flex-shrink: 0;
 }
 
 @media (orientation: portrait) {
-  .desktop {
-    grid-template-rows: repeat(2, 104px);  /* mobile: 2 per column -> 3 columns */
-  }
+  .desktop { --cols: 3; }
 }
 
 .shortcut {
-  width: 84px;
+  width: var(--cell-w);
+  min-height: var(--cell-h);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -224,6 +243,15 @@ html, body {
 }
 
 .shortcut:active .shortcut-icon { transform: translate(1px, 1px); }
+
+/* Phones held sideways: the screen is short, so the cells get tighter
+   (3 rows = 252px instead of 312px). Icons stay at their native 48px,
+   pixel art is never rescaled. */
+@media (orientation: landscape) and (max-height: 420px) {
+  .desktop { --cell-h: 84px; }
+  .shortcut { padding: 5px 4px; gap: 5px; }
+  .shortcut-icon { width: 48px; height: 48px; }
+}
 
 /* ---- WIN95 DIALOG POPUP -------------------------------------------
    Looks like a real Windows 95 message box: gray client area, brown
@@ -366,11 +394,6 @@ footer a:hover { opacity:0.65; }
       <a href="/gallery/" class="shortcut">
         <div class="shortcut-icon"><img src="data:image/png;base64,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" alt="Gallery"></div>
         <span class="shortcut-label">Gallery</span>
-      </a>
-
-      <a href="/commissions/" class="shortcut">
-        <div class="shortcut-icon"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAxCAYAAACcXioiAAAD4ElEQVR42tVaz0vbUBz/VGIRdpjgj1JUesvVjeFAGIww2MGbHXjZ1QrehCDYQzw0BwdSKLvk4l9Q3IbdEHYqokyGMPG43tSKpLWuOwxED93F17285CV5SZq6L3h4fcnz8/3m83nf7/clwH9uCd7ExORUJ+iiF/XzRJh16Pu9TOKBr1WLgaMiK2oXtOg6sqIKXT/Am2g124HHtWoRh2XNAt7v/bVqUeipcR0YGRu2LB7n+LCs+XZCcptsNdvYOziOTZAvXzzFyNiwxZlQIg6jg7AmK6ovMQ/wwB+Wtcg0EWTsFljy50oh8hg/fqpGRg2vtbLzCtcZAlhb/xdYvaB3PDVAFo1CnMQRr+tZDUxMTnUI8KvmlbcG+s1/Nh9o65oNuGEYuKifJyS36Is8dqfr3Obc1qKBO0Vd+AnEnQdkRbVF3TAMLC8vW6LvmshoMZHF4xjzwNPidU1kdPRpCmXnFV+UoungdL0brdbef4G2rkEv6JZoO2mASyHiwEOhjdNvdIKT3AT8kMAbhuFYag+4JbF+c54GTyjlm0Jx7fVO/B4dG+Xu+7H0A37GvMiLgOc60G/OE757ge+bBmhwtOkF3ZXvwg0NW1RFMfa7XfqJfuwaiBq8zYG4khhbsDnxPlRT3wsNsNFnRUuXDquLc+GPVXqhAZ4FBR+bBtyiT9OGgM+9fRVuF+oF5/WCzu2wWPB+G3yuAzSH6R41yHh2QUduKQcAqOxUYJqmrUAj4LOvnwlRL9Y8UNmpAABSqZQNuCht+pIHWGPBi9AmtlpIVlTklnLd6AOAaZqW/0XAs/cLO0CfxkWVB1ijwW9u7WJzaxeyomJ2Qfd1v6cGouQ8G30afGl6xrE3CNKH9EwDPCtNz8BsNLBfP8N+/QwrJ0cwGw2UpmeEX270TAO86BPwtdsbyMkhyMkh5NMZ1G5vLE4E0kAv6v27u1ubaAl4C32SQ9i4PBUuQboOkCo0COfp8x125xkcTNq2zA8tM9K+esCN0zQ43ph3JE6iv7o4Z0lSb0ZSkTogOUWXPo1jT9DoMQ2ejv6H7W1cX//qgrcUdvd0yacz3d82Lk+7+hDNAxIb9b2DY+7xH+98n6UWAU/XNrVqEbKiIp/OIJ/OWDhfevIcpmli4/JUeCu15QH6iJt2hD369tr3vWobOhcEBQ8Akp82Mjuv+G4TTdMEbz3aVk6OLGP2nZzQE4ii9iEU8dNTs9EOUwtJUdb/TrUUq5HU+Dhwz/9Ws41vP35259q//2D48SOxJ3BRP0/Iitopri0gTvv89TsAQH1Xdpz3+8FHqK9KghjZPskuJPJlyoMw+iV1FPYXsaRo/FWDbbcAAAAASUVORK5CYII=" alt="Commissions"></div>
-        <span class="shortcut-label">Commissions</span>
       </a>
 
       <a href="#" class="shortcut" id="shopBtn">
