@@ -195,7 +195,8 @@
     "ph": {
       "color": "#9b9b9b",
       "ratio": "100%"
-    }
+    },
+    "slot": "HW-04"
   },
   {
     "title": "Mythical Pack",
