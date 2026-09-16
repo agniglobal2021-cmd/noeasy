@@ -255,7 +255,8 @@
     "ph": {
       "color": "#9b9b9b",
       "ratio": "100%"
-    }
+    },
+    "slot": "BAL-01"
   },
   {
     "title": "Jade Gardens",
