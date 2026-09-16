@@ -81,7 +81,8 @@
     "ph": {
       "color": "#9b9b9b",
       "ratio": "100%"
-    }
+    },
+    "slot": "E-01"
   },
   {
     "title": "Rubedo.exe",
