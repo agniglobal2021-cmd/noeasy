@@ -6,8 +6,15 @@
     "year": 2026,
     "style": "Digital Painting",
     "workType": "Personal",
-    "avail": [],
-    "links": [],
+    "avail": [
+      "Print"
+    ],
+    "links": [
+      {
+        "label": "Print",
+        "url": "https://www.inprnt.com/gallery/noeasy/nameless-knight/"
+      }
+    ],
     "src": "images/nameless-king.jpg",
     "ph": {
       "color": "#9b9b9b",
