@@ -2366,6 +2366,8 @@ AW.addEventListener('click',e=>{ if(e.target===AW||e.target===IW) closeArt(); })
      ambient     фон на всю прогулку, по кругу
      ui          щелчок интерфейса: выбор локации, выход на сайт, бургер,
                  кнопка звука, Purchase
+     step        шаг: сам подстраивается под ход, ноги по очереди
+                 (src может быть списком файлов — тогда они чередуются)
      artOpen     открыли картину          artClose  закрыли картину
      enterClick  нажали ENTER — «дверь», звучит сразу
      enter       «телепорт» в зал, через delay секунд после нажатия
@@ -2399,10 +2401,11 @@ const SND=(()=>{
     artClose:  { src:'art-close.mp3',   gainDb:-13 },
     enterClick:{ src:'enter-click.mp3', gainDb:-9 },
     enter:     { src:'enter.mp3',       gainDb:-10, delay:0.45 },
+    step:      { src:'step.mp3',        gainDb:-14, pitch:0.05, pan:0.28, dyn:0.35 },
   };
-  const SFX=['ui','artOpen','artClose','enterClick','enter'];
-  const QS={ambient:'amb', ui:'ui', artOpen:'open', artClose:'close', enterClick:'door', enter:'enter'};
-  const NUM=['gainDb','fadeIn','fadeOut','xfade','headSec','delay'];
+  const SFX=['ui','artOpen','artClose','enterClick','enter','step'];
+  const QS={ambient:'amb', ui:'ui', artOpen:'open', artClose:'close', enterClick:'door', enter:'enter', step:'step'};
+  const NUM=['gainDb','fadeIn','fadeOut','xfade','headSec','delay','pitch','pan','dyn'];
   let on=true; try{ on=localStorage.getItem(LS)!=='off'; }catch(e){}
   let ctx=null, lim=null, master=null, ambBus=null, ambFade=null, sfxBus=null;
   let voices=null, cur=0, entered=false, loopTimer=0, stopSeq=0, hideT=0, testSrc='', upgrading=false, cfgLoaded=false;
@@ -2423,15 +2426,24 @@ const SND=(()=>{
     const oc=new OAC(2,1,44100);
     return new Promise((res,rej)=>{ const p=oc.decodeAudioData(ab,res,rej); if(p&&p.then) p.then(res,rej); });
   }
+  function loadOne(k, src, i){      // i — номер варианта или null, если файл один
+    return fetch(new URL(src, AUDIO_DIR).href)
+      .then(r=>{ if(!r.ok) throw new Error('HTTP '+r.status); return r.arrayBuffer(); })
+      .then(ab=>{ if(i===null) raw[k]=ab.slice(0); return decodeOffline(ab); })
+      .then(b=>{ if(i===null) bufs[k]=b; else { if(!Array.isArray(bufs[k])) bufs[k]=[]; bufs[k][i]=b; } })
+      .catch(e=>{ if(i===null && raw[k]){ if(ctx) decodeLive(k); throw e; } throw e; });
+  }
   function loadSfx(k){
     status[k]='грузится';
-    return fetch(url(k)).then(r=>{ if(!r.ok) throw new Error('HTTP '+r.status); return r.arrayBuffer(); })
-      .then(ab=>{ raw[k]=ab.slice(0); return decodeOffline(ab); })
-      .then(b=>{ bufs[k]=b; status[k]='ok'; })
-      .catch(e=>{
-        if(raw[k]){ status[k]='декод после касания'; if(ctx) decodeLive(k); }
-        else { status[k]='нет файла'; console.warn('[snd] '+k+':', e.message); } })
-      .then(()=>{ sfxDone[k]=true; });
+    const src=cfg[k].src, many=Array.isArray(src);
+    const all=many ? src.map((s,i)=>loadOne(k,s,i).catch(e=>{ console.warn('[snd] '+k+'['+i+']:', e.message); }))
+                   : [loadOne(k,src,null).catch(e=>{ status[k]=raw[k]?'декод после касания':'нет файла';
+                       if(!raw[k]) console.warn('[snd] '+k+':', e.message); })];
+    return Promise.all(all).then(()=>{
+      const ok=Array.isArray(bufs[k]) ? bufs[k].filter(Boolean).length : (bufs[k]?1:0);
+      if(ok) status[k]=many ? ('ok, вариантов '+ok) : 'ok';
+      else if(many) status[k]='нет файлов';
+      sfxDone[k]=true; });
   }
   function decodeLive(k){          // запасной путь: декодировать уже живым контекстом
     if(!raw[k] || bufs[k]) return;
@@ -2585,14 +2597,41 @@ const SND=(()=>{
     SFX.forEach(decodeLive);
     return ctx;
   }
-  function play(k, bypass, delay){  // bypass — мимо выключателя (щелчок самой кнопки звука)
-    if(!bufs[k] || (!on && !bypass)) return;
+  const lastVar={};
+  function pickBuf(k){              // список вариантов: не повторять тот же дважды подряд
+    const b=bufs[k];
+    if(!Array.isArray(b)) return b;
+    const av=b.map((x,i)=>x?i:-1).filter(i=>i>=0);
+    if(!av.length) return null;
+    let i=av[Math.random()*av.length|0];
+    if(av.length>1 && i===lastVar[k]) i=av[(av.indexOf(i)+1)%av.length];
+    lastVar[k]=i; return b[i];
+  }
+  // o: {bypass — мимо выключателя (щелчок самой кнопки звука), delay, gain, pitch, pan}
+  function play(k, o){
+    o=o||{};
+    if(!on && !o.bypass) return;
     if(!ensureCtx()) return;
+    const buf=pickBuf(k); if(!buf) return;
     if(ctx.state!=='running') ctx.resume().catch(()=>{});
-    const s=ctx.createBufferSource(); s.buffer=bufs[k];
-    const g=ctx.createGain(); g.gain.value=dB(cfg[k].gainDb);
-    s.connect(g); g.connect(bypass?lim:sfxBus);
-    try{ s.start(delay>0 ? ctx.currentTime+delay : 0); }catch(e){}
+    const s=ctx.createBufferSource(); s.buffer=buf;
+    if(o.pitch) s.playbackRate.value=o.pitch;
+    const g=ctx.createGain(); g.gain.value=dB(cfg[k].gainDb)*(o.gain===undefined?1:o.gain);
+    s.connect(g);
+    let out=g;
+    if(o.pan && ctx.createStereoPanner){ const pn=ctx.createStereoPanner(); pn.pan.value=Math.max(-1,Math.min(1,o.pan)); g.connect(pn); out=pn; }
+    out.connect(o.bypass?lim:sfxBus);
+    try{ s.start(o.delay>0 ? ctx.currentTime+o.delay : 0); }catch(e){}
+  }
+  // шаг: громкость и разлёт по сторонам — от хода; высота чуть пляшет, иначе слышно повтор одного файла
+  let stepAt=0;
+  function step(side, power){
+    if(!on || !bufs.step) return;
+    const now=performance.now(); if(now-stepAt<110) return; stepAt=now;   // провал кадра не должен давать сдвоенный шаг
+    const c=cfg.step, p=Math.max(0,Math.min(1,power||0));
+    const o={ gain:(1-c.dyn)+c.dyn*p, pitch:1+(Math.random()*2-1)*c.pitch, pan:(side||1)*c.pan*(0.7+0.3*p) };
+    window.__lastStep={ side:side||1, power:+p.toFixed(2), pitch:+o.pitch.toFixed(3), pan:+o.pan.toFixed(3), t:Math.round(now) };
+    play('step', o);
   }
 
   function makeVoices(){
@@ -2664,7 +2703,7 @@ const SND=(()=>{
     if(!on || !ensureCtx()) return;
     if(ctx.state!=='running') ctx.resume().catch(()=>{});
     play('enterClick');                               // дверь — сразу
-    play('enter', false, cfg.enter.delay||0);         // телепорт — когда зал начинает проступать
+    play('enter', {delay:cfg.enter.delay||0});         // телепорт — когда зал начинает проступать
     startAmbient(cfg.ambient.fadeIn); unlock();
   }
   const BTN=document.getElementById('hudsound');
@@ -2674,8 +2713,8 @@ const SND=(()=>{
   function toggle(){
     on=!on; try{ localStorage.setItem(LS, on?'on':'off'); }catch(e){}
     paint();
-    if(on){ if(!ensureCtx()) return; loadAmbient(); wake(0.8); play('ui',true); unlock(); }
-    else { play('ui',true); hush(cfg.ambient.fadeOut); }
+    if(on){ if(!ensureCtx()) return; loadAmbient(); wake(0.8); play('ui',{bypass:true}); unlock(); }
+    else { play('ui',{bypass:true}); hush(cfg.ambient.fadeOut); }
   }
   if(BTN){ const stopE=e=>e.stopPropagation();
     BTN.addEventListener('pointerdown',stopE); BTN.addEventListener('touchstart',stopE,{passive:true});
@@ -2737,7 +2776,7 @@ const SND=(()=>{
       bus:ambBus?+ambBus.gain.value.toFixed(4):null,
       voices:voices&&voices.map(v=>({t:+v.el.currentTime.toFixed(2), paused:v.el.paused, g:+v.g.gain.value.toFixed(3),
         kind:!v.el.getAttribute('src')?'нет':(isHead(v)?'голова':(v.el.src===AMB.full||v.el.src===testSrc?'полный':'?'))})) }) };
-  return { enter, toggle, ui:()=>play('ui'), sfx:k=>play(k), loadState };
+  return { enter, toggle, ui:()=>play('ui'), sfx:k=>play(k), step, loadState };
 })();
 const rc=new THREE.Raycaster(); let _px=0,_py=0,_pt=0;
 const ART_REACH=4.5;   // картина открывается только ближе этого расстояния (м)
@@ -2796,9 +2835,21 @@ renderer.compile(scene,camera);
   for(const yv of [0,1.5708,3.1416,-1.5708]){ camera.rotation.set(0,yv,0); renderer.render(scene,camera); }
   camera.quaternion.copy(q); }
 const vel={x:0,y:0}; let roll=0, tRoll=0;
-const STEP_LEN=1.10, BOB_AMP=0.028, BOB_ROLL=0.0065;   // длина шага в метрах, провал головы, боковой крен
-// при скорости 3.2 м/с шаг 0.78 давал 4.1 шага в секунду — темп бега; 1.10 даёт 2.9, спокойный ход
-let bobPh=0, camY=null;
+/* ХОД, КАЧАНИЕ И ШАГИ — от одного и того же: от реально пройденного пути.
+   Фаза качания растёт на π за шаг, поэтому чем быстрее идёшь, тем чаще шаг, и
+   звук со качанием не расходятся никогда. Путь берётся уже после проверки
+   столкновений: упёрся в стену — ни качания, ни шагов, хотя клавиша нажата.
+   Звук шага — в нижней точке провала головы: там крен максимален, то есть это
+   и есть опорная нога, а ноги чередуются сами (знак крена).
+   Проба без коммитов: ?stride=1.25 (длина шага, м), ?bob=0.035 (провал головы),
+   ?roll=0.008 (боковой крен), ?step=-11 (громкость шага, дБ). */
+const WALK={ STEP_LEN:1.10, BOB_AMP:0.028, BOB_ROLL:0.0065 };
+// при 3.2 м/с шаг 0.78 давал 4.1 шага в секунду — темп бега; 1.10 даёт 2.9, спокойный ход
+{ const q=new URLSearchParams(location.search), f=(k,d)=>{ const v=parseFloat(q.get(k)); return isFinite(v)?v:d; };
+  WALK.STEP_LEN=Math.max(0.3,f('stride',WALK.STEP_LEN));
+  WALK.BOB_AMP=f('bob',WALK.BOB_AMP); WALK.BOB_ROLL=f('roll',WALK.BOB_ROLL); }
+window.__WALK=WALK;
+let bobPh=0, camY=null, aSpd=0;
 (function loop(){
   const dt=Math.min(clock.getDelta(),0.05),sp=3.2;
   let tx=move.x,ty=move.y;
@@ -2808,17 +2859,28 @@ let bobPh=0, camY=null;
     vel.x += (tx-vel.x)*k; vel.y += (ty-vel.y)*k; }
   const fx=vel.x, fy=vel.y;
   pitch=Math.max(-1.25,Math.min(1.25,pitch));
-  const spd=Math.min(1,Math.hypot(vel.x,vel.y));
-  bobPh += (spd*sp*dt/STEP_LEN)*Math.PI;                      // фаза по пути: шаг = полпериода
-  const bobY=-Math.abs(Math.sin(bobPh))*BOB_AMP*spd;
-  { tRoll = -vel.x*0.015 + Math.sin(bobPh)*BOB_ROLL*spd;      // крен на повороте плюс раскачка шага
-    roll += (tRoll-roll)*Math.min(1,dt*3.2);
-    camera.rotation.set(pitch, yaw, roll); }
   const sin=Math.sin(yaw),cos=Math.cos(yaw);
+  const wasX=camera.position.x, wasZ=camera.position.z;
   const nx=camera.position.x+(fx*cos + fy*sin)*sp*dt;
   const nz=camera.position.z+(fy*cos - fx*sin)*sp*dt;
   if(insideP(nx,camera.position.z)) camera.position.x=nx; else shutBump(nx,camera.position.z);
   if(insideP(camera.position.x,nz)) camera.position.z=nz; else shutBump(camera.position.x,nz);
+  // сколько прошли на самом деле; скачок камеры (перенос в другое место) шагом не считаем
+  let dist=Math.hypot(camera.position.x-wasX, camera.position.z-wasZ);
+  if(dist > sp*dt*3) dist=0;
+  aSpd += (Math.min(1, dist/(sp*dt+1e-6)) - aSpd)*Math.min(1, dt*8);
+  const ph0=bobPh;
+  bobPh += (dist/WALK.STEP_LEN)*Math.PI;                      // шаг = полпериода фазы
+  { const H=Math.PI/2;                                        // нижняя точка провала: sin = ±1
+    const n0=Math.floor((ph0-H)/Math.PI), n1=Math.floor((bobPh-H)/Math.PI);
+    if(n1>n0 && window.__started && !window.__uiOpen && aSpd>0.12)   // еле ползём (упёрлись в стену) — шага нет
+      SND.step(((n1%2)+2)%2 ? 1 : -1, aSpd); }
+  const bobY=-Math.abs(Math.sin(bobPh))*WALK.BOB_AMP*aSpd;
+  { tRoll = -vel.x*0.015;                                        // крен на повороте — со сглаживанием
+    roll += (tRoll-roll)*Math.min(1,dt*3.2);
+    // раскачка шага идёт напрямую: сглаживание на трёх шагах в секунду срезало её
+    // до трети и сдвигало по фазе — тело качалось позже, чем встаёт нога
+    camera.rotation.set(pitch, yaw, roll + Math.sin(bobPh)*WALK.BOB_ROLL*aSpd); }
   { const cx=camera.position.x, cz=camera.position.z, g=camera.position.y-P.EYE;
     let gy=0;
     if(cx>-3.6&&cx<3.6&&cz>-84.8&&cz<-75.2){const dd=Math.min(cx+3.6,3.6-cx,cz+84.8,-75.2-cz);gy=dd>0.47?-0.4:-0.2;}
