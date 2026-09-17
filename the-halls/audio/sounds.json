@@ -1,7 +1,7 @@
 {
   "ambient":  { "src": "ambient.mp3",   "gainDb": -15, "fadeIn": 4, "xfade": 6 },
   "ui":       { "src": "ui.mp3",        "gainDb": -9 },
-  "artOpen":  { "src": "art-open.mp3",  "gainDb": -8 },
+  "artOpen":  { "src": "art-open.mp3",  "gainDb": -7 },
   "artClose": { "src": "art-close.mp3", "gainDb": -13 },
   "enter":    { "src": "enter.mp3",     "gainDb": -10 }
 }
