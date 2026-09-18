@@ -773,22 +773,31 @@ const HH=32, Y2=6.5;
 
  // --- ЛЕСТНИЦА (запад, прямой марш, поднимается на юг) ---
  const RISER=0.197, TREAD=0.3125, N=33, xC=-10.90, WST=2.80;   // западный торец уходит за стену на 30 см вместо 4: 4 см — на грани точности буфера глубины и спорят с плоскостью стены на дистанции   // западный торец уходит за стену на 4 см: было ровно -12.0, в одной плоскости со стеной — грани мерцали и бока ступеней лезли сквозь кладку
- // polygonOffsetFactor масштабируется наклоном грани в глубину. Накладка горизонтальная, и на
- // пологом взгляде издалека этот наклон уходит в бесконечность: смещение разносило её вперёд
- // на произвольную величину, и она пробивала зашивку марша тонкими горизонтальными штрихами.
- // Оставляем только постоянную составляющую, наклон больше не участвует.
- const topMat=new THREE.MeshStandardMaterial({map:T(STEP_SRC,0.62,0.08),roughness:0.95, polygonOffset:true,polygonOffsetFactor:0,polygonOffsetUnits:-6});
+ // Накладка протектора и верх коробки ступени — две горизонтальные плоскости почти на одной
+ // высоте. Вблизи один шаг буфера глубины стоит доли миллиметра, а в 25 метрах — сантиметры
+ // (на 16-битном буфере до четырёх), и плоскости начинают спорить: отсюда мерцающие полосы
+ // у боковины, которых вблизи не видно. Полигональное смещение лечило это ценой другого:
+ // оно разносило накладку вперёд, и та пробивала зашивку марша.
+ // Теперь горизонтальная поверхность ровно одна: у коробки ступени снята верхняя грань,
+ // накладка встаёт на её место, спорить не с чем и смещение не нужно.
+ const topMat=new THREE.MeshStandardMaterial({map:T(STEP_SRC,0.62,0.08),roughness:0.95});
  const topGeo=new THREE.PlaneGeometry(WST,TREAD+0.02);
  const stepGeo=scaleUV(new THREE.BoxGeometry(WST, RISER+0.03, TREAD+0.02),0.62,0.1);
+ const stepGeoOpen=(()=>{               // та же коробка без верхней грани (у BoxGeometry это группа 2)
+   const g=stepGeo.clone(), gr=g.groups.find(q=>q.materialIndex===2);
+   if(gr){ const idx=Array.from(g.index.array); idx.splice(gr.start, gr.count); g.setIndex(idx); }
+   g.clearGroups(); return g; })();
+ const STEP_TOP=RISER/2+(RISER+0.03)/2;   // верх коробки над её основанием
  for(let i=0;i<N;i++){
-   addPart(stepParts, stepGeo, xC, i*RISER+RISER/2 - (i===N-1?0.012:0), -87 - i*TREAD - TREAD/2);   // последняя ступень опущена: её верх 6.516 стоял в 4 мм от настила 6.520
+   const plated=(-87 - i*TREAD >= -96.8);   // у последней ступени накладки нет — её закрывает настил
+   addPart(stepParts, plated?stepGeoOpen:stepGeo, xC, i*RISER+RISER/2 - (i===N-1?0.012:0), -87 - i*TREAD - TREAD/2);   // последняя ступень опущена: её верх 6.516 стоял в 4 мм от настила 6.520
    // Последняя ступень заходит под настил балкона (z -97.0..-97.31 против -100..-96.8),
    // а её накладка встаёт на 6.521 при настиле 6.520 — миллиметр между двумя горизонтальными
    // плоскостями, отсюда дёрганье на стыке при движении. Накладку там не кладём: её всё равно
    // закрывает настил.
-   if(-87 - i*TREAD >= -96.8){
+   if(plated){
      const tp=new THREE.Mesh(topGeo, topMat); tp.rotation.x=-Math.PI/2;
-     tp.position.set(xC, i*RISER+RISER+0.020, -87 - i*TREAD - TREAD/2); scene.add(tp); }   // 5 мм над верхом коробки ступени вместо 1: постоянного смещения хватает, наклонного больше нет
+     tp.position.set(xC, i*RISER+STEP_TOP, -87 - i*TREAD - TREAD/2); scene.add(tp); }   // 5 мм над верхом коробки ступени вместо 1: постоянного смещения хватает, наклонного больше нет
  }
  // каменный парапет марша (трапеция от пола до поручня, закрывает основание — как на рефе)
  { // ОГРАЖДЕНИЕ МАРША: балюстрада точь-в-точь как на балконе (v63)
@@ -965,12 +974,15 @@ litParts(railParts, 0.25);
   addPart(stoneParts, ceilGeo(P.W+0.6, LEN+1.2), 0, 25.5, -LEN/2);   // неф
   addPart(stoneParts, ceilGeo(24.6, 40.6), 0, 25.5, -80.0); }        // зал
 buildGroup(stoneParts, wallMat, true);
+// перила, балясины и ньюэлы — закрытые коробки: изнанка не нужна. С DoubleSide рисовалась
+// нижняя грань поручня, а торцы балясин входят в него всего на 2 см — издалека это меньше
+// одного шага буфера глубины, и они спорили мерцающими чёрточками вдоль марша.
 const railMat=new THREE.MeshStandardMaterial({color:0xffffff,roughness:0.95,vertexColors:true,
-  flatShading:true,side:THREE.DoubleSide,map:T(TEXSRC.shaft,1,1)});
+  flatShading:true,side:THREE.FrontSide,map:T(TEXSRC.shaft,1,1)});
 buildGroup(railParts, railMat, false);
 // шар — тот же камень, но нормали сглажены, иначе видно грани
 buildGroup(ballParts, new THREE.MeshStandardMaterial({color:0xffffff,roughness:0.95,vertexColors:true,
-  flatShading:false,side:THREE.DoubleSide,map:T(TEXSRC.shaft,1,1)}), false);
+  flatShading:false,side:THREE.FrontSide,map:T(TEXSRC.shaft,1,1)}), false);
 buildGroup(shaftParts, shaftMat, false); window.__shaftMesh=scene.children[scene.children.length-1];
 buildGroup(capParts, capMat, false);
 const ownMat=new THREE.MeshStandardMaterial({color:0xffffff,roughness:0.95,vertexColors:true,flatShading:true,side:THREE.DoubleSide,map:T(TEXSRC.wall,1,1)});
@@ -1057,8 +1069,11 @@ buildGroup(runicParts, runicMat, false);
   buildGroup(plinthParts, plinthMat, false);
 const baseMat=new THREE.MeshStandardMaterial({map:T(TEXSRC.shaft,1,1),color:0xffffff,roughness:0.95,vertexColors:true,flatShading:true,side:THREE.DoubleSide});   // тон сведён со стволом; освещение делает остальное
 buildGroup(baseParts, baseMat, false); window.__baseMat=baseMat;
-  const stepMat=new THREE.MeshStandardMaterial({map:T(STEP_SRC,1,1),roughness:0.48,metalness:0.08,color:0xa89c88,vertexColors:true,flatShading:true,side:THREE.DoubleSide,
-  polygonOffset:true,polygonOffsetFactor:-1,polygonOffsetUnits:-4});   // сведено с floorMat: тот же блик, тон приглушён
+  // side:FrontSide — марш и кольцо ямы это закрытые коробки, изнанка не нужна: с DoubleSide
+  // рисовались внутренние грани соседних коробок (они перекрываются на 3 см) и спорили за глубину.
+  // polygonOffset снят: его наклонная составляющая на пологом взгляде издалека растёт без предела
+  // и выносила ступени сквозь боковину марша.
+  const stepMat=new THREE.MeshStandardMaterial({map:T(STEP_SRC,1,1),roughness:0.48,metalness:0.08,color:0xa89c88,vertexColors:true,flatShading:true,side:THREE.FrontSide});   // сведено с floorMat: тот же блик, тон приглушён
   buildGroup(stepParts, stepMat, false);
 }
 
