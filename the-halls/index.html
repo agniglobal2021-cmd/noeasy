@@ -697,11 +697,19 @@ const HH=32, Y2=6.5;
  addStone(new THREE.PlaneGeometry(9.5,HH,1,32), -7.25, HH/2, -100);
  addStone(new THREE.PlaneGeometry(9.5,HH,1,32),  7.25, HH/2, -100);
  { const R=2.5, SP=2.5, AP=SP+R;                              // полуциркульная арка: пяты 2.5, радиус 2.5, апекс 5.0
-   { const av=new THREE.TorusGeometry(R+0.06,0.13,8,26,Math.PI);   // архивольт: валик по дуге
-     addStone(av, 0, SP, -99.86);
-     const leg=new THREE.CylinderGeometry(0.13,0.13,SP,8,1);        // и вниз до пола — обрамление замкнуто
-     addStone(leg, -(R+0.06), SP/2, -99.86);
-     addStone(leg,  (R+0.06), SP/2, -99.86); }
+   // Архивольт — валик по дуге и стойки до пола. Своя развёртка, а не планарная: на макушке
+   // дуги поверхность валика смотрит вверх, планарная там переключалась на (x,z), а валик
+   // толщиной 26 см — текстура сплющивалась в полосы и закручивалась в зоне перехода.
+   // Здесь камень идёт вдоль дуги с той же плотностью, что у кладки (UVS на метр).
+   { const uvW=(geo,su,sv)=>{ const g=geo.clone(), u=g.attributes.uv;
+       for(let i=0;i<u.count;i++) u.setXY(i, u.getX(i)*su*UVS, u.getY(i)*sv*UVS); return g; };
+     const RA=R+0.06, TUBE=2*Math.PI*0.13;
+     const av=uvW(new THREE.TorusGeometry(RA,0.13,8,26,Math.PI), Math.PI*RA, TUBE);   // u — вдоль дуги, v — вокруг валика
+     addPart(ownParts, av, 0, SP, -99.86);
+     const leg=uvW(new THREE.CylinderGeometry(0.13,0.13,SP,8,1), TUBE, SP);         // и вниз до пола — обрамление замкнуто
+     addPart(ownParts, leg, -RA, SP/2, -99.86);
+     addPart(ownParts, leg,  RA, SP/2, -99.86);
+     window.__arcParts=ownParts.slice(-3); }
    // импосты сняты — вокруг арки чистая кладка
    const sh=new THREE.Shape();
    sh.moveTo(-R, SP);
@@ -986,6 +994,7 @@ buildGroup(ballParts, new THREE.MeshStandardMaterial({color:0xffffff,roughness:0
 buildGroup(shaftParts, shaftMat, false); window.__shaftMesh=scene.children[scene.children.length-1];
 buildGroup(capParts, capMat, false);
 const ownMat=new THREE.MeshStandardMaterial({color:0xffffff,roughness:0.95,vertexColors:true,flatShading:true,side:THREE.DoubleSide,map:T(TEXSRC.wall,1,1)});
+if(window.__arcParts) litParts(window.__arcParts, 0.25);   // валик арки терминуса — тот же тон, что у стены
 buildGroup(ownParts, ownMat, false); window.__ownMat=ownMat;
 const runicMat=new THREE.MeshStandardMaterial({color:0xffffff,roughness:0.95,vertexColors:true,flatShading:true,side:THREE.DoubleSide,map:T(TEXSRC.runic,1,1)});
 buildGroup(runicParts, runicMat, false);
@@ -1159,6 +1168,7 @@ for(const spot of glassSpots){
     const ax=new THREE.Object3D();                       // ось луча закреплена: от окна вниз под углом
     ax.position.set(spot.glassX-0.05, P.SILL+P.WIN_H-1.25, spot.zc);
     ax.rotation.z=ANG; scene.add(ax); rayList.push(ax);
+    ax.userData.beam={w:P.WIN_W*0.94, len:RAYL};          // ядро столба: по нему живёт пыль
     for(const cfg of [[0.94,0.80],[1.85,0.22]]){         // оболочка: ядро и широкое рассеяние
       const g=new THREE.PlaneGeometry(P.WIN_W*cfg[0],RAYL,1,1).translate(0,-RAYL/2,0);
       const m=new THREE.Mesh(g, new THREE.MeshBasicMaterial({map:rayTex,transparent:true,opacity:cfg[1],
@@ -1203,6 +1213,7 @@ for(const wz of [-66,-72,-78,-84,-90,-96]){
     const ax=new THREE.Object3D();
     ax.position.set(12.55, 13.55, wz); ax.rotation.z=-ANG;    // ниже верха окна — начало прячется за камнем, как в нефе
     scene.add(ax); rayList.push(ax);
+    ax.userData.beam={w:2.24, len:RAYH};
     for(const cfg of [[2.24,0.66],[3.3,0.10]]){   // широкий слой уже и слабее: его край задевал стены прямоугольной засветкой
       const g=new THREE.PlaneGeometry(cfg[0],RAYH,1,1).translate(0,-RAYH/2,0);
       const m=new THREE.Mesh(g, new THREE.MeshBasicMaterial({map:rayTex,transparent:true,opacity:cfg[1],
@@ -1493,41 +1504,66 @@ const censer=(()=>{
   return {G, puffs, base:new THREE.Vector3(0,4.40,-80)};
 })();
 
-// ===== ПЫЛЬ В ЛУЧАХ (fx п.2): один Points, ~150 точек =====
+// ===== ПЫЛЬ В ЛУЧАХ =====
+// Крупинки живут в осях самого луча: местная ось Y идёт вдоль столба, поэтому пыль
+// сыплется по наклону света и за пределы столба не выходит. Раньше она насыпалась в
+// прямоугольные коробки у окон — те были шире и толще лучей, и часть крупинок висела
+// в темноте, а падали они строго вниз, хотя лучи наклонены на 0.72 рад.
+// К краям столба и к его концам крупинка гаснет, иначе граница читается обрывом.
 const dust=(()=>{
   const dotTex=gradTex((g,w,h)=>{const gr=g.createRadialGradient(w/2,h/2,1,w/2,h/2,w/2);
     gr.addColorStop(0,'rgba(255,235,200,1)');gr.addColorStop(0.4,'rgba(255,220,170,0.5)');gr.addColorStop(1,'rgba(255,210,150,0)');
     g.fillStyle=gr;g.fillRect(0,0,w,h);},64,64);
-  const boxes=[];
-  for(const wz of [-66,-72,-78,-84,-90,-96]) boxes.push([9.0,8.0,wz, 5,8,2.2, 25]);
-  boxes.push([0,7.5,-94.5, 2.4,9,7, 30]);
-  for(const nz of [-2.5,-12.5,-22.5,-32.5,-42.5,-52.5]) boxes.push([-3.2,6.4,nz, 4.4,7,2.6, 16]);   // лучи окон нефа
-  boxes.push([-2.5,7,-30, 5,6,8, 20]);
-  let total=0; for(const b of boxes) total+=b[6];
-  const pos=new Float32Array(total*3), bas=new Float32Array(total*3), ph=new Float32Array(total), bi=new Uint8Array(total);
+  const PER=14;                                   // крупинок на луч
+  const THICK=0.7;                                // толщина «шторы»: с ребра луч не виден, пыль тоже
+  const beams=rayList.filter(a=>a.userData.beam).map(a=>{ a.updateMatrixWorld(true);
+    return {m:a.matrixWorld.clone(), w:a.userData.beam.w, len:a.userData.beam.len}; });
+  const total=beams.length*PER;
+  const pos=new Float32Array(total*3), col=new Float32Array(total*3), loc=new Float32Array(total*3);
+  const ph=new Float32Array(total), sp=new Float32Array(total), bi=new Uint8Array(total);
   let k=0;
-  boxes.forEach((b,idx)=>{ for(let i=0;i<b[6];i++){
-    bas[k*3]=b[0]+(Math.random()-0.5)*b[3]; bas[k*3+1]=b[1]+(Math.random()-0.5)*b[4]; bas[k*3+2]=b[2]+(Math.random()-0.5)*b[5];
-    pos[k*3]=bas[k*3]; pos[k*3+1]=bas[k*3+1]; pos[k*3+2]=bas[k*3+2];
-    ph[k]=Math.random()*6.283; bi[k]=idx; k++; } });
-  const g=new THREE.BufferGeometry(); g.setAttribute('position',new THREE.BufferAttribute(pos,3));
-  const pts=new THREE.Points(g,new THREE.PointsMaterial({map:dotTex,size:0.05,sizeAttenuation:true,transparent:true,opacity:0.55,color:0xffd9a0,blending:THREE.AdditiveBlending,depthWrite:false}));
+  beams.forEach((b,idx)=>{ for(let i=0;i<PER;i++){
+    loc[k*3]  =(Math.random()-0.5)*b.w*0.86;
+    loc[k*3+1]=-b.len*(0.10+Math.random()*0.62);
+    loc[k*3+2]=(Math.random()-0.5)*THICK;
+    ph[k]=Math.random()*6.283; sp[k]=0.6+Math.random()*0.8; bi[k]=idx; k++; } });
+  const g=new THREE.BufferGeometry();
+  g.setAttribute('position',new THREE.BufferAttribute(pos,3));
+  g.setAttribute('color',new THREE.BufferAttribute(col,3));
+  const pts=new THREE.Points(g,new THREE.PointsMaterial({map:dotTex,size:0.05,sizeAttenuation:true,
+    transparent:true,opacity:0.55,vertexColors:true,blending:THREE.AdditiveBlending,depthWrite:false}));
   pts.frustumCulled=false; scene.add(pts);
-  return {g,pos,bas,ph,boxes,bi};
+  return {g,pos,col,loc,ph,sp,bi,beams,v:new THREE.Vector3()};
 })();
 
-// ===== ТОННЕЛЬ ЗА ТЕРМИНУСОМ (юг, 39 м вглубь до z=-127): тупо тьма (msg1 п.3) =====
-{ const tW=5.24, tH=5, tZ0=-100, tZ1=-139, tD=tZ0-tZ1, tMat=new THREE.MeshStandardMaterial({map:T(TEXSRC.wall,7.8,2),roughness:0.96,side:THREE.DoubleSide});
-  // стены/пол/потолок тоннеля (13 м вглубь: уходит во мрак, в конце — улица)
-  const wallL=new THREE.Mesh(new THREE.PlaneGeometry(tD,tH,1,8), tMat); wallL.rotation.y=Math.PI/2; wallL.position.set(-tW/2,tH/2,(tZ0+tZ1)/2); scene.add(wallL);
-  const wallR=new THREE.Mesh(new THREE.PlaneGeometry(tD,tH,1,8), tMat); wallR.rotation.y=-Math.PI/2; wallR.position.set(tW/2,tH/2,(tZ0+tZ1)/2); scene.add(wallR);
-  const flr=new THREE.Mesh(scaledFloorGeo(tW,tD), floorMat); flr.rotation.x=-Math.PI/2; flr.position.set(0,0.01,(tZ0+tZ1)/2); scene.add(flr);
-  const ceilG=new THREE.PlaneGeometry(tW,tD);
-  { const u=ceilG.attributes.uv;                              // repeat материала (7.8 x 2) считался под стены 39x5;
-    for(let i=0;i<u.count;i++)                                // на потолке 5.24x39 он давал тайл 0.67 x 19.5 м — камень размазывало в полосы
-      u.setXY(i, u.getX(i)*(tW/2.5)/7.8, u.getY(i)*(tD/5)/2); u.needsUpdate=true; }
-  const ceil=new THREE.Mesh(ceilG, tMat); ceil.rotation.x=Math.PI/2; ceil.position.set(0,tH,(tZ0+tZ1)/2); scene.add(ceil);
-  // (свет удалён: за решёткой — только мрак и туман)
+// ===== ТОННЕЛЬ ЗА ТЕРМИНУСОМ: уходит во мрак =====
+// Раньше здесь стояли два тоннеля друг в друге — этот и короткий «тёмный короб» на 8,5 м.
+// Потолки совпадали по высоте и мерцали, пол короба лежал на сантиметр выше и был из
+// стенового камня, на его стенах одна плитка текстуры растягивалась на 17 м, а торец
+// короба виднелся в глубине. Теперь тоннель один: камень и пол как в зале (развёртка по
+// миру, та же плотность), а тьма заложена в сами вершины — у решётки камень как в зале,
+// к DARK метрам глубины он чёрный. Конца не видно: там тьма, а не стена.
+{ const tW=5.24, tH=5, tZ0=-100, tZ1=-139, tD=tZ0-tZ1, DARK=9.0, SEG=40;
+  const fade=z=>{ const t=Math.min(1,Math.max(0,(tZ0-z-0.4)/(DARK-0.4))); return 1-t*t*(3-2*t); };
+  const plane=(w,h,sw,sh,su,sv)=>{ const g=new THREE.PlaneGeometry(w,h,sw,sh), u=g.attributes.uv;
+    for(let i=0;i<u.count;i++) u.setXY(i, u.getX(i)*w*su, u.getY(i)*h*sv); return g; };
+  const shade=g=>{ const p=g.attributes.position, c=new Float32Array(p.count*3);
+    for(let i=0;i<p.count;i++){ const k=fade(p.getZ(i)); c[i*3]=c[i*3+1]=c[i*3+2]=k; }
+    g.setAttribute('color', new THREE.BufferAttribute(c,3)); return g; };
+  // fog:false — туман сцены подмешивает к далёким поверхностям свой тёмно-коричневый цвет:
+  // чёрная глубина тоннеля от этого светлела, и в конце проступал бледный прямоугольник.
+  // Внутри тоннеля тьма должна быть абсолютной, поэтому туман здесь не участвует.
+  const stoneM=new THREE.MeshStandardMaterial({map:T(TEXSRC.wall,1,1),roughness:0.96,vertexColors:true,fog:false});
+  const floorM=new THREE.MeshStandardMaterial({map:T(TEXSRC.floor,1,1),roughness:0.48,metalness:0.08,vertexColors:true,fog:false});   // как floorMat зала
+  const zc=(tZ0+tZ1)/2;
+  const parts=[
+    [plane(tD,tH,SEG,2,UVS,UVS).rotateY( Math.PI/2).translate(-tW/2,tH/2,zc), stoneM],   // левая стена, лицом внутрь
+    [plane(tD,tH,SEG,2,UVS,UVS).rotateY(-Math.PI/2).translate( tW/2,tH/2,zc), stoneM],   // правая
+    [plane(tW,tD,2,SEG,UVS,UVS).rotateX( Math.PI/2).translate(0,tH,zc),       stoneM],   // потолок, лицом вниз
+    [plane(tW,tD,2,SEG,0.25,0.25).rotateX(-Math.PI/2).translate(0,0.01,zc),   floorM] ]; // пол: 4 м на плитку, как в зале
+  for(const [g,m] of parts) scene.add(new THREE.Mesh(shade(g),m));
+  const cap=new THREE.Mesh(new THREE.PlaneGeometry(tW,tH), new THREE.MeshBasicMaterial({color:0x000000,fog:false}));
+  cap.position.set(0,tH/2,tZ1+0.02); scene.add(cap);                                  // дальний конец: только чернота
   // РЕШЁТКА — авторская текстура (ковка с лилиями), альфа в самом файле
   const grateTex=new THREE.TextureLoader().load(GRATE_SRC);
   grateTex.wrapS=grateTex.wrapT=THREE.RepeatWrapping; grateTex.repeat.set(2,1);
@@ -1542,19 +1578,6 @@ const dust=(()=>{
       for(let i=0;i<p.count;i++) uv.setXY(i, (p.getX(i)+R)/(2*R)*2, (p.getY(i))/(SP+R)); uv.needsUpdate=true; }
     const grate=new THREE.Mesh(gg, new THREE.MeshBasicMaterial({map:grateTex,transparent:true,depthWrite:false,side:THREE.DoubleSide}));
     grate.position.set(0,0,-100.03); scene.add(grate); }
-  // ТОННЕЛЬ ЗА РЕШЁТКОЙ. Раньше там не было ничего — расчёт был на то, что чёрный фон
-  // сойдёт за темноту. Пока туман тоже был чёрным, это работало. После потепления дали
-  // проём стал читаться чёрным квадратом с жёсткой кромкой: стена вокруг цветная, дыра нет.
-  // Короткий тёмный короб возвращает уходящую вглубь темноту — туман копится по длине,
-  // и снова видно, где тоннель кончается.
-  { const tm=new THREE.MeshStandardMaterial({map:T(TEXSRC.wall,0.5,0.5),color:0x4a4036,roughness:1});
-    const R=2.45, H=5.0, Z0=-100.0, Z1=-108.5, D=Z0-Z1, ZC=(Z0+Z1)/2;
-    const put=(g,x,y,z)=>{ const m=new THREE.Mesh(g,tm); m.position.set(x,y,z); scene.add(m); };
-    put(new THREE.PlaneGeometry(R*2,H), 0, H/2, Z1+0.05);                        // торец
-    put(new THREE.PlaneGeometry(D,H).rotateY(Math.PI/2),  -R, H/2, ZC);          // левая стена
-    put(new THREE.PlaneGeometry(D,H).rotateY(-Math.PI/2),  R, H/2, ZC);          // правая
-    put(new THREE.PlaneGeometry(R*2,D).rotateX(-Math.PI/2), 0, 0.02, ZC);        // пол
-    put(new THREE.PlaneGeometry(R*2,D).rotateX(Math.PI/2),  0, H,    ZC); }      // верх
 }
 // (ореол и свет у решётки удалены — за ней тьма, msg1 п.3)
 // заливка зала (без теней) — светлее крипты, но логика прежняя
@@ -2927,15 +2950,23 @@ let bobPh=0, camY=null, aSpd=0;
       p.m.material.opacity=Math.min(1,t*5)*(1-t)*0.5;
       p.m.quaternion.copy(camera.quaternion);
     } }
-  { const a=dust.pos;
-    for(let i=0;i<dust.ph.length;i++){
-      const bx=dust.boxes[dust.bi[i]];
-      let y=a[i*3+1]-0.05*dt; if(y<bx[1]-bx[4]/2) y=bx[1]+bx[4]/2;
-      a[i*3+1]=y;
-      a[i*3]=dust.bas[i*3]+Math.sin(tb*0.3+dust.ph[i])*0.35;
-      a[i*3+2]=dust.bas[i*3+2]+Math.cos(tb*0.23+dust.ph[i]*1.7)*0.3;
+  { const D=dust, v=D.v;
+    for(let i=0;i<D.ph.length;i++){
+      const b=D.beams[D.bi[i]];
+      let y=D.loc[i*3+1]-0.055*D.sp[i]*dt;                    // падает вдоль столба
+      if(y<-b.len*0.80) y=-b.len*0.10;                        // дошла до низа — возвращается к окну
+      D.loc[i*3+1]=y;
+      const x=D.loc[i*3]+Math.sin(tb*0.30+D.ph[i])*0.22;      // качание поперёк столба
+      const z=D.loc[i*3+2]+Math.cos(tb*0.23+D.ph[i]*1.7)*0.18;
+      v.set(x,y,z).applyMatrix4(b.m);
+      D.pos[i*3]=v.x; D.pos[i*3+1]=v.y; D.pos[i*3+2]=v.z;
+      const t=-y/b.len;
+      const edge=Math.min(1, 2.2*(1-Math.min(1,Math.abs(x)/(b.w*0.5))));   // у края столба гаснет
+      const ends=Math.min(1, t/0.12)*Math.min(1,(0.86-t)/0.14);            // и у обоих концов
+      const c=Math.max(0, edge*ends)*0.9;
+      D.col[i*3]=c; D.col[i*3+1]=c*0.88; D.col[i*3+2]=c*0.68;              // тёплый тон луча
     }
-    dust.g.attributes.position.needsUpdate=true; }
+    D.g.attributes.position.needsUpdate=true; D.g.attributes.color.needsUpdate=true; }
 
   if(frames%15===0) zoneTick();
   renderer.render(scene,camera);
