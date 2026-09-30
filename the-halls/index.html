@@ -1233,13 +1233,9 @@ for(const wz of [-66,-72,-78,-84,-90,-96]){
   { const WIN_I={'-66':5.20,'-72':3.68,'-78':4.08,'-84':4.08,'-90':3.68,'-96':5.20};
     const k=parseFloat(new URLSearchParams(location.search).get('winlight'))||1;
     const wL=new THREE.PointLight(0xffa54e, WIN_I[wz]*k, 13.5, 2); wL.position.set(12.5,9.5,wz); scene.add(wL); }
-  // у окна z=-84 лампа приглушена (она заливала бок обломанной колонны) — яркость пола
-  // возвращаем рисованным пятном: оно светит полу и на колонну не действует
-  const pool=new THREE.Mesh(new THREE.PlaneGeometry(wz===-84?9.8:9, wz===-84?6.5:6),
-    new THREE.MeshBasicMaterial({map:poolTex,transparent:true,opacity:wz===-84?2.7:1,blending:THREE.AdditiveBlending,depthWrite:false}));
-  pool.rotation.x=-Math.PI/2; pool.position.set(0.5,(wz===-78||wz===-84)?-0.38:0.02,wz); scene.add(pool);
-  const wrf=new THREE.Mesh(new THREE.PlaneGeometry(7,2.0), new THREE.MeshBasicMaterial({map:poolTex,color:0xffcf8a,transparent:true,opacity:0.34,blending:THREE.AdditiveBlending,depthWrite:false}));
-  wrf.rotation.x=-Math.PI/2; wrf.position.set(7.6,0.016,wz); scene.add(wrf);
+  // Нарисованные пятна света на полу под окнами (место падения луча в центре зала и полоса
+  // у восточной стороны) убраны: пол освещается живыми лампами с глянцем, и статичные
+  // пятна поверх него лишние. Пятно на западной стене, куда упирается луч, осталось.
   const splash=new THREE.Mesh(new THREE.PlaneGeometry(5.5,5), new THREE.MeshBasicMaterial({map:poolTex,transparent:true,blending:THREE.AdditiveBlending,depthWrite:false}));
   splash.position.set(-11.985,3.6,wz); splash.rotation.y=Math.PI/2; scene.add(splash);
 }
@@ -1724,19 +1720,19 @@ const BAKE={ on:!new URLSearchParams(location.search).has('live'), tol:0.04, min
 window.__BAKE=BAKE; window.__bakeDone=!BAKE.on; window.__bakeP=BAKE.on?0:1;
 
 // Чистая функция над массивами: работает и в потоке, и в основном потоке.
-// P — мировые позиции (по 9 на треугольник), UV, C (тон, по 9) или null; minv — матрица в местные.
-// L — лампы плоско по 8 чисел: x,y,z, r,g,b, радиус, спад; amb — рассеянный [r,g,b].
-// Написана без мелких выделений памяти (плоские массивы, свой стек): иначе первый,
-// «холодный» прогон тонул в сборке мусора — 4.4 с против 0.7 с после прогрева.
-function bakeTris(P, UV, C, rough, metal, dbl, minv, L, amb, cfg){
-  const r0=Math.max(rough,0.0525), al=r0*r0, a2=al*al, f0=0.04, km=1-metal;
-  // Свет кэшируется только внутри одного исходного треугольника и его дроблений: общий
-  // кэш на Map с большими числовыми ключами в свежем потоке тонул в сборке мусора.
-  // Точки середин считаются из тех же родителей одинаково — сравнение точное.
+// P — мировые позиции (по 9 на треугольник), UV, C (тон, по 9) или null,
+// N — мировые нормали вершин (только у сглаженных материалов, иначе null);
+// minv — матрица в местные. L — лампы плоско по 8 чисел: x,y,z, r,g,b, радиус, спад.
+// Нормаль у каждой вершины своя: у гранёных (flatShading) — нормаль грани, у сглаженных
+// (капители, шары перил, купель) — нормаль самой вершины, при дроблении она плавно
+// интерполируется. В v163 сглаженные считались по граням и выходили рублеными.
+// Написана без мелких выделений памяти (плоские массивы, свой стек).
+function bakeTris(P, UV, C, N, rough, metal, dbl, minv, L, amb, cfg){
+  const r0=Math.max(rough,0.0525), al=r0*r0, a2=al*al, f0=0.04, km=1-metal, VS=11, TS=33;
   let pool=new Float32Array(6*256), pn=0;                      // результаты света: 3 рассеянных + 3 блеска
   let lcX=new Float64Array(256), lcY=new Float64Array(256), lcZ=new Float64Array(256), lc=0;
-  let nx=0, ny=0, nz=0;                                        // нормаль текущей грани
-  function point(px,py,pz){
+  function point(px,py,pz, nx,ny,nz){
+    const nl=Math.sqrt(nx*nx+ny*ny+nz*nz)||1; nx/=nl; ny/=nl; nz/=nl;
     const vz0 = pz>-59.5 ? Math.min(-1,Math.max(-58.5,pz)) : Math.min(-61,Math.max(-99,pz));
     let vx=-px, vy=1.7-py, vz=vz0-pz; const vl=Math.sqrt(vx*vx+vy*vy+vz*vz)||1; vx/=vl; vy/=vl; vz/=vl;
     if(vx*nx+vy*ny+vz*nz<0.05){ vx=nx; vy=ny; vz=nz; }        // зритель за гранью — смотрим в лоб
@@ -1764,64 +1760,72 @@ function bakeTris(P, UV, C, rough, metal, dbl, minv, L, amb, cfg){
     const o=pn*6; pool[o]=dr*km; pool[o+1]=dg*km; pool[o+2]=db*km; pool[o+3]=sr; pool[o+4]=sg; pool[o+5]=sb;
     return pn++;
   }
-  function lit(x,y,z){
+  // свет в вершине: кэш — только внутри одного исходного треугольника (точки середин
+  // считаются из тех же родителей одинаково, сравнение точное)
+  function lit(A,ia){
+    const x=A[ia], y=A[ia+1], z=A[ia+2];
     for(let i=0;i<lc;i++) if(lcX[i]===x && lcY[i]===y && lcZ[i]===z) return i;
     if(lc>=lcX.length){ const g=a=>{ const q=new Float64Array(a.length*2); q.set(a); return q; }; lcX=g(lcX); lcY=g(lcY); lcZ=g(lcZ); }
-    lcX[lc]=x; lcY[lc]=y; lcZ[lc]=z; lc++; return point(x,y,z); }
+    lcX[lc]=x; lcY[lc]=y; lcZ[lc]=z; lc++; return point(x,y,z, A[ia+8],A[ia+9],A[ia+10]); }
   function Y(i){ const o=i*6; return 0.035*(0.2126*pool[o]+0.7152*pool[o+1]+0.0722*pool[o+2])+(0.2126*pool[o+3]+0.7152*pool[o+4]+0.0722*pool[o+5]); }
-  // вершина — 8 чисел: x,y,z, u,v, r,g,b; треугольник в стеке — 24 числа + глубина
-  let st=new Float64Array(25*256), sp=0;
-  const T=new Float64Array(24), M=new Float64Array(24);
+  // вершина — 11 чисел: x,y,z, u,v, r,g,b, nx,ny,nz; треугольник в стеке — 33 числа + глубина
+  let st=new Float64Array((TS+1)*256), sp=0;
+  const T=new Float64Array(TS), M=new Float64Array(TS), Q=new Float64Array(VS);
   function needs(A,ia,B,ib){
     const dx=A[ia]-B[ib], dy=A[ia+1]-B[ib+1], dz=A[ia+2]-B[ib+2], len=Math.sqrt(dx*dx+dy*dy+dz*dz);
     if(len>cfg.maxEdge) return true; if(len<cfg.minEdge) return false;
-    const ya=Y(lit(A[ia],A[ia+1],A[ia+2])), yb=Y(lit(B[ib],B[ib+1],B[ib+2])),
-          ym=Y(lit((A[ia]+B[ib])*0.5,(A[ia+1]+B[ib+1])*0.5,(A[ia+2]+B[ib+2])*0.5)), avg=(ya+yb)/2;
+    for(let j=0;j<VS;j++) Q[j]=(A[ia+j]+B[ib+j])*0.5;
+    const ya=Y(lit(A,ia)), yb=Y(lit(B,ib)), ym=Y(lit(Q,0)), avg=(ya+yb)/2;
     return Math.abs(ym-avg)/(avg+0.0015) > cfg.tol; }
-  function midInto(A,ia,B,ib,o){ for(let j=0;j<8;j++) M[o+j]=(A[ia+j]+B[ib+j])*0.5; }
+  function midInto(A,ia,B,ib,o){ for(let j=0;j<VS;j++) M[o+j]=(A[ia+j]+B[ib+j])*0.5; }
   function push(A,ia,B,ib,Cc,ic,d){
-    if((sp+1)*25>st.length){ const q=new Float64Array(st.length*2); q.set(st); st=q; }
-    const o=sp*25; for(let j=0;j<8;j++){ st[o+j]=A[ia+j]; st[o+8+j]=B[ib+j]; st[o+16+j]=Cc[ic+j]; } st[o+24]=d; sp++; }
+    if((sp+1)*(TS+1)>st.length){ const q=new Float64Array(st.length*2); q.set(st); st=q; }
+    const o=sp*(TS+1); for(let j=0;j<VS;j++){ st[o+j]=A[ia+j]; st[o+VS+j]=B[ib+j]; st[o+2*VS+j]=Cc[ic+j]; } st[o+TS]=d; sp++; }
   let cap=Math.max(1024,P.length/3*2), on=0;
   let oP=new Float32Array(cap*3), oUV=new Float32Array(cap*2), oC=new Float32Array(cap*3), oS=new Float32Array(cap*3);
   const e=minv;
   function emitV(o){
     if(on>=cap){ cap*=2; const g=(a,n)=>{ const q=new Float32Array(cap*n); q.set(a); return q; };
       oP=g(oP,3); oUV=g(oUV,2); oC=g(oC,3); oS=g(oS,3); }
-    const x=T[o], y=T[o+1], z=T[o+2], i=lit(x,y,z)*6;
+    const x=T[o], y=T[o+1], z=T[o+2], i=lit(T,o)*6;
     oP[on*3]=e[0]*x+e[4]*y+e[8]*z+e[12]; oP[on*3+1]=e[1]*x+e[5]*y+e[9]*z+e[13]; oP[on*3+2]=e[2]*x+e[6]*y+e[10]*z+e[14];
     oUV[on*2]=T[o+3]; oUV[on*2+1]=T[o+4];
     oC[on*3]=T[o+5]*pool[i]; oC[on*3+1]=T[o+6]*pool[i+1]; oC[on*3+2]=T[o+7]*pool[i+2];
     oS[on*3]=pool[i+3]; oS[on*3+1]=pool[i+4]; oS[on*3+2]=pool[i+5]; on++; }
-  const nT=P.length/9, one=[1,1,1];
+  const nT=P.length/9;
   for(let t=0;t<nT;t++){
-    for(let j=0;j<3;j++){ const q=t*3+j, o=j*8;
+    for(let j=0;j<3;j++){ const q=t*3+j, o=j*VS;
       T[o]=P[q*3]; T[o+1]=P[q*3+1]; T[o+2]=P[q*3+2];
       T[o+3]=UV?UV[q*2]:0; T[o+4]=UV?UV[q*2+1]:0;
       T[o+5]=C?C[q*3]:1; T[o+6]=C?C[q*3+1]:1; T[o+7]=C?C[q*3+2]:1; }
-    const ax=T[8]-T[0], ay=T[9]-T[1], az=T[10]-T[2], bx=T[16]-T[0], by=T[17]-T[1], bz=T[18]-T[2];
+    const ax=T[VS]-T[0], ay=T[VS+1]-T[1], az=T[VS+2]-T[2], bx=T[2*VS]-T[0], by=T[2*VS+1]-T[1], bz=T[2*VS+2]-T[2];
     let x=ay*bz-az*by, y=az*bx-ax*bz, z=ax*by-ay*bx; const nl=Math.sqrt(x*x+y*y+z*z); if(nl<1e-9) continue;
     x/=nl; y/=nl; z/=nl;
+    let flip=false;
     if(dbl){ // двусторонней грани свет даём с той стороны, откуда на неё смотрят
-      const cx=(T[0]+T[8]+T[16])/3, cy=(T[1]+T[9]+T[17])/3, cz=(T[2]+T[10]+T[18])/3;
+      const cx=(T[0]+T[VS]+T[2*VS])/3, cy=(T[1]+T[VS+1]+T[2*VS+1])/3, cz=(T[2]+T[VS+2]+T[2*VS+2])/3;
       const vz0 = cz>-59.5 ? Math.min(-1,Math.max(-58.5,cz)) : Math.min(-61,Math.max(-99,cz));
-      if((-cx)*x+(1.7-cy)*y+(vz0-cz)*z<0){ x=-x; y=-y; z=-z; } }
-    nx=x; ny=y; nz=z; lc=0; pn=0;                              // новый исходный треугольник — кэш заново
-    sp=0; push(T,0,T,8,T,16,0);
+      if((-cx)*x+(1.7-cy)*y+(vz0-cz)*z<0){ x=-x; y=-y; z=-z; flip=true; } }
+    for(let j=0;j<3;j++){ const q=t*3+j, o=j*VS;
+      if(N){ const s=flip?-1:1; T[o+8]=N[q*3]*s; T[o+9]=N[q*3+1]*s; T[o+10]=N[q*3+2]*s; }   // сглаженный: нормаль вершины
+      else { T[o+8]=x; T[o+9]=y; T[o+10]=z; } }                                          // гранёный: нормаль грани
+    lc=0; pn=0;                                                                          // новый исходный треугольник — кэш заново
+    sp=0; push(T,0,T,VS,T,2*VS,0);
     while(sp>0){
-      sp--; const o=sp*25; for(let j=0;j<24;j++) T[j]=st[o+j]; const dep=st[o+24], deep=dep<cfg.maxDepth, d=dep+1;
-      const s01=deep && needs(T,0,T,8), s12=deep && needs(T,8,T,16), s20=deep && needs(T,16,T,0);
+      sp--; const o=sp*(TS+1); for(let j=0;j<TS;j++) T[j]=st[o+j]; const dep=st[o+TS], deep=dep<cfg.maxDepth, d=dep+1;
+      const A=0, B=VS, Cc=2*VS;
+      const s01=deep && needs(T,A,T,B), s12=deep && needs(T,B,T,Cc), s20=deep && needs(T,Cc,T,A);
       const k=(s01?1:0)+(s12?1:0)+(s20?1:0);
-      if(!k){ emitV(0); emitV(8); emitV(16); continue; }
-      if(s01) midInto(T,0,T,8,0); if(s12) midInto(T,8,T,16,8); if(s20) midInto(T,16,T,0,16);
-      // a=T0 b=T8 c=T16; m01=M0 m12=M8 m20=M16
-      if(k===3){ push(T,0,M,0,M,16,d); push(M,0,T,8,M,8,d); push(M,16,M,8,T,16,d); push(M,0,M,8,M,16,d); }
-      else if(k===1){ if(s01){ push(T,0,M,0,T,16,d); push(M,0,T,8,T,16,d); }
-                      else if(s12){ push(T,0,T,8,M,8,d); push(T,0,M,8,T,16,d); }
-                      else { push(T,0,T,8,M,16,d); push(M,16,T,8,T,16,d); } }
-      else { if(!s20){ push(T,0,M,0,M,8,d); push(M,0,T,8,M,8,d); push(T,0,M,8,T,16,d); }
-             else if(!s01){ push(T,0,T,8,M,8,d); push(M,8,T,16,M,16,d); push(T,0,M,8,M,16,d); }
-             else { push(T,0,M,0,M,16,d); push(M,0,T,8,T,16,d); push(M,0,T,16,M,16,d); } }
+      if(!k){ emitV(A); emitV(B); emitV(Cc); continue; }
+      if(s01) midInto(T,A,T,B,0); if(s12) midInto(T,B,T,Cc,VS); if(s20) midInto(T,Cc,T,A,2*VS);
+      const m01=0, m12=VS, m20=2*VS;
+      if(k===3){ push(T,A,M,m01,M,m20,d); push(M,m01,T,B,M,m12,d); push(M,m20,M,m12,T,Cc,d); push(M,m01,M,m12,M,m20,d); }
+      else if(k===1){ if(s01){ push(T,A,M,m01,T,Cc,d); push(M,m01,T,B,T,Cc,d); }
+                      else if(s12){ push(T,A,T,B,M,m12,d); push(T,A,M,m12,T,Cc,d); }
+                      else { push(T,A,T,B,M,m20,d); push(M,m20,T,B,T,Cc,d); } }
+      else { if(!s20){ push(T,A,M,m01,M,m12,d); push(M,m01,T,B,M,m12,d); push(T,A,M,m12,T,Cc,d); }
+             else if(!s01){ push(T,A,T,B,M,m12,d); push(M,m12,T,Cc,M,m20,d); push(T,A,M,m12,M,m20,d); }
+             else { push(T,A,M,m01,M,m20,d); push(M,m01,T,B,T,Cc,d); push(M,m01,T,Cc,M,m20,d); } }
     }
   }
   return {pos:oP.slice(0,on*3), uv:oUV.slice(0,on*2), col:oC.slice(0,on*3), spec:oS.slice(0,on*3), inTri:nT, outTri:on/3};
@@ -1860,7 +1864,9 @@ function bakeAll(){
     const g=mesh.geometry.index ? mesh.geometry.toNonIndexed() : mesh.geometry.clone();
     g.applyMatrix4(mesh.matrixWorld);
     const C=(mat.vertexColors && g.attributes.color) ? new Float32Array(g.attributes.color.array) : null;
+    const smooth=!mat.flatShading && !!g.attributes.normal;              // сглаженный — нужны нормали вершин
     const job={id, pos:new Float32Array(g.attributes.position.array), uv:g.attributes.uv?new Float32Array(g.attributes.uv.array):null, col:C,
+      nor:smooth?new Float32Array(g.attributes.normal.array):null,
       rough:mat.roughness, metal:mat.metalness||0, dbl:mat.side===THREE.DoubleSide,
       minv:new THREE.Matrix4().copy(mesh.matrixWorld).invert().elements.slice()};
     g.dispose(); return job; });
@@ -1877,13 +1883,13 @@ function bakeAll(){
   // фоновый поток: исходник — эта же функция расчёта
   let worker=null;
   try{ const src='const bakeTris='+bakeTris.toString()+';\nonmessage=e=>{ const d=e.data;'+
-      ' const r=bakeTris(d.pos,d.uv,d.col,d.rough,d.metal,d.dbl,d.minv,d.L,d.amb,d.cfg); r.id=d.id;'+
+      ' const r=bakeTris(d.pos,d.uv,d.col,d.nor,d.rough,d.metal,d.dbl,d.minv,d.L,d.amb,d.cfg); r.id=d.id;'+
       ' postMessage(r,[r.pos.buffer,r.uv.buffer,r.col.buffer,r.spec.buffer]); };';
     worker=new Worker(URL.createObjectURL(new Blob([src],{type:'text/javascript'}))); }catch(e){ worker=null; }
   const mainThread=(from)=>{ let i=from;                                  // запасной путь: кусками по 40 мс
     const step=()=>{ const t=performance.now();
       while(i<jobs.length && performance.now()-t<40){ const j=jobs[i++];
-        const r=bakeTris(j.pos,j.uv,j.col,j.rough,j.metal,j.dbl,j.minv,L,amb,cfg); r.id=j.id; apply(r); }
+        const r=bakeTris(j.pos,j.uv,j.col,j.nor,j.rough,j.metal,j.dbl,j.minv,L,amb,cfg); r.id=j.id; apply(r); }
       if(i<jobs.length) setTimeout(step,0); };
     step(); };
   if(!worker){ mainThread(0); return; }
@@ -1892,11 +1898,11 @@ function bakeAll(){
   worker.onerror=ev=>{ ev.preventDefault&&ev.preventDefault(); st.worker=false; worker.terminate();
     const left=jobs.filter(j=>!list[j.id].material.customProgramCacheKey || list[j.id].material.customProgramCacheKey()!=='noeasy-baked');
     let k=0; const step=()=>{ const t=performance.now();
-      while(k<left.length && performance.now()-t<40){ const j=left[k++]; const r=bakeTris(j.pos,j.uv,j.col,j.rough,j.metal,j.dbl,j.minv,L,amb,cfg); r.id=j.id; apply(r); }
+      while(k<left.length && performance.now()-t<40){ const j=left[k++]; const r=bakeTris(j.pos,j.uv,j.col,j.nor,j.rough,j.metal,j.dbl,j.minv,L,amb,cfg); r.id=j.id; apply(r); }
       if(k<left.length) setTimeout(step,0); };
     step(); };
   // копией, без передачи владения: если поток упадёт, запасной путь прочтёт те же массивы
-  for(const j of jobs) worker.postMessage({id:j.id,pos:j.pos,uv:j.uv,col:j.col,rough:j.rough,metal:j.metal,dbl:j.dbl,minv:j.minv,L,amb,cfg});
+  for(const j of jobs) worker.postMessage({id:j.id,pos:j.pos,uv:j.uv,col:j.col,nor:j.nor,rough:j.rough,metal:j.metal,dbl:j.dbl,minv:j.minv,L,amb,cfg});
 }
 
 // Запекание стартует, когда экран загрузки уже показал кнопки: пока человек выбирает зал
