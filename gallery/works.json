@@ -362,7 +362,8 @@
     "ph": {
       "color": "#9b9b9b",
       "ratio": "100%"
-    }
+    },
+    "slot": "HW-05"
   },
   {
     "title": "Heartbreak Land",
