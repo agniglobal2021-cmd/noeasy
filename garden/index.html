@@ -47,9 +47,8 @@
 --thl:   #e8d0a0;
 --tbar:  #181410;
 --tsel:  #6a5535;
---header-titlebar-h: 22px;
 --header-pill-h: 44px;
---header-total-h: calc(env(safe-area-inset-top, 0px) + var(--header-titlebar-h) + var(--header-pill-h));
+--header-total-h: calc(env(safe-area-inset-top, 0px) + var(--header-pill-h));
 --r-fsize: 11px;
 }
 
@@ -97,19 +96,6 @@ background: var(--desk); flex-shrink: 0;
 }
 .header-inner { display: flex; flex-direction: column; align-items: stretch; width: 100%; }
 
-.header-titlebar-strip {
-width: 100%; height: var(--header-titlebar-h);
-background: #5D5143;
-display: flex; align-items: center; justify-content: space-between;
-padding: 0 0 0 8px; flex-shrink: 0;
-border-bottom: 1px solid #3e352d;
-}
-.header-titlebar-strip-text {
-font-family: 'DotGothic16', monospace;
-font-size: 9px; font-weight: 700; letter-spacing: 0.14em;
-color: #f6f1da; line-height: 1;
-white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex: 1;
-}
 
 .header-pill {
 display: flex; align-items: center;
@@ -904,9 +890,6 @@ overflow: hidden;
 <header id="siteHeader">
   <div class="header-safe-top"></div>
   <div class="header-inner">
-    <div class="header-titlebar-strip">
-      <span class="header-titlebar-strip-text">noeasy.xyz/garden</span>
-    </div>
     <div class="header-pill">
       <span class="pill-center">
         <span class="pill-section">Digital Garden</span>

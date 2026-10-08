@@ -20,8 +20,8 @@
   --bg:#e8e0c4; --desk:#5D5143; --tb:#5D5143;
   --ttxt:#f6f1da; --btn:#AFA191; --blt:#d4cdc4; --bdk:#3d3830; --bsh:#2a2520;
   --ink:#1e1a12; --tdim:#7a6a52; --field:#c8c2b8; --red:#8b2020;
-  --header-titlebar-h:22px; --header-pill-h:44px;
-  --header-total-h:calc(env(safe-area-inset-top,0px) + var(--header-titlebar-h) + var(--header-pill-h));
+  --header-pill-h:44px;
+  --header-total-h:calc(env(safe-area-inset-top,0px) + var(--header-pill-h));
   --page-gap:14px;
 }
 
@@ -39,10 +39,6 @@ header{position:fixed;top:0;left:0;right:0;z-index:500;display:flex;flex-directi
 header.visible{opacity:1;}
 header>*{pointer-events:auto;}
 .header-safe-top{height:env(safe-area-inset-top,0px);background:var(--desk);}
-.header-titlebar-strip{height:var(--header-titlebar-h);background:#5D5143;display:flex;align-items:center;padding:0 8px;border-bottom:1px solid #3e352d;}
-.header-titlebar-strip-text{font-size:9px;font-weight:700;letter-spacing:.14em;color:var(--ttxt);line-height:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:1;}
-.strip-cursor{display:inline-block;width:5px;height:9px;background:var(--ttxt);margin-left:5px;vertical-align:baseline;animation:blink 1.15s steps(2,start) infinite;}
-@keyframes blink{to{visibility:hidden;}}
 .header-pill{display:flex;align-items:center;position:relative;height:var(--header-pill-h);background:var(--btn);border-top:1px solid var(--blt);border-bottom:2px solid #7a7068;box-shadow:0 1px 0 #404040;padding:0 4px;}
 .pill-divider{width:2px;height:26px;background:#808080;border-right:1px solid var(--blt);margin:0 2px;flex-shrink:0;}
 .pill-center{position:absolute;left:50%;transform:translateX(-50%);pointer-events:none;user-select:none;white-space:nowrap;}
@@ -196,9 +192,6 @@ main{position:fixed;top:calc(var(--header-total-h) + var(--page-gap));left:12px;
 
 <header id="siteHeader">
   <div class="header-safe-top"></div>
-  <div class="header-titlebar-strip">
-    <span class="header-titlebar-strip-text">noeasy.xyz/commissions</span><span class="strip-cursor" aria-hidden="true"></span>
-  </div>
   <div class="header-pill">
     <span class="pill-center"><span class="pill-section">Commissions</span></span>
     <div style="flex:1"></div>

@@ -22,8 +22,8 @@
   #grain { position: fixed; top: -60px; bottom: -60px; left: 0; right: 0; z-index: 15; pointer-events: none; }
   :root {
     --win95-titlebar: #5D5143; --win95-titlebar-brown: #5D5143; --win95-title-text: #f6f1da;
-    --header-titlebar-h: 22px; --header-pill-h: 44px;
-    --header-total-h: calc(env(safe-area-inset-top, 0px) + var(--header-titlebar-h) + var(--header-pill-h));
+    --header-pill-h: 44px;
+    --header-total-h: calc(env(safe-area-inset-top, 0px) + var(--header-pill-h));
   }
   html { background: #5D5143; }
   body::before { content: ''; position: fixed; top: -100vh; left: 0; right: 0; height: 100vh; background: #5D5143; z-index: 9001; pointer-events: none; }
@@ -33,9 +33,6 @@
   header > * { pointer-events: auto; }
   .header-safe-top { height: env(safe-area-inset-top, 0px); background: var(--win95-titlebar-brown); flex-shrink: 0; }
   .header-inner { display: flex; flex-direction: column; align-items: stretch; width: 100%; }
-  .header-titlebar-strip { width: 100%; height: var(--header-titlebar-h); background: #5D5143; display: flex; align-items: center; justify-content: space-between; padding: 0 0 0 8px; flex-shrink: 0; border-bottom: 1px solid #3e352d; }
-  .header-titlebar-strip-text { font-family: 'DotGothic16', monospace; font-size: 9px; font-weight: 700; letter-spacing: 0.14em; color: var(--win95-title-text); line-height: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex: 1; }
-  .header-win95-btns { display: none; }
   .header-pill { display: flex; align-items: center; position: relative; width: 100%; height: var(--header-pill-h); border-radius: 0; background: #AFA191; border: none; border-top: 1px solid #d4cdc4; border-bottom: 2px solid #7a7068; box-shadow: 0 1px 0 #404040; overflow: visible; padding: 0 4px; }
   .header-pill::before { display: none; }
   .header-pill::after  { display: none; }
@@ -188,10 +185,6 @@
 <header>
   <div class="header-safe-top"></div>
   <div class="header-inner">
-    <div class="header-titlebar-strip">
-      <span class="header-titlebar-strip-text">noeasy.xyz/gallery</span>
-      <div class="header-win95-btns"><div class="header-win95-btn">_</div><div class="header-win95-btn">□</div><div class="header-win95-btn btn-close">✕</div></div>
-    </div>
     <div class="header-pill">
       <button class="pill-btn filter-toggle" id="filter-toggle">Filter <span class="filter-dot" id="filter-dot"></span></button>
       <div class="pill-divider"></div>
