@@ -60,7 +60,7 @@ header>*{pointer-events:auto;}
 .nav-overlay a + a{border-top:1px solid #7a7068;}
 .nav-overlay a.current{background:#c8c2ba;}
 
-/* ══ WINDOW (as Commissions, without the address bar) ══ */
+/* ══ WINDOW (as Commissions, without the address bar and status bar) ══ */
 main{min-height:100vh;min-height:100dvh;padding:calc(var(--header-total-h) + 22px) 12px calc(env(safe-area-inset-bottom,0px) + 28px);display:flex;align-items:center;justify-content:center;}
 .win{width:100%;max-width:460px;display:flex;flex-direction:column;border-top:2px solid var(--blt);border-left:2px solid var(--blt);border-right:2px solid var(--bdk);border-bottom:2px solid var(--bdk);opacity:0;transform:translateY(14px);transition:opacity .6s cubic-bezier(.16,1,.3,1),transform .6s cubic-bezier(.16,1,.3,1);background:var(--btn);}
 .win.visible{opacity:1;transform:none;}
@@ -70,36 +70,35 @@ main{min-height:100vh;min-height:100dvh;padding:calc(var(--header-total-h) + 22p
 .tbbtns{display:flex;gap:1px;flex-shrink:0;align-items:center;}
 .tbbtn{width:16px;height:16px;background:var(--btn);border-top:1px solid var(--blt);border-left:1px solid var(--blt);border-right:1px solid var(--bdk);border-bottom:1px solid var(--bdk);display:flex;align-items:center;justify-content:center;cursor:default;flex-shrink:0;padding:0;line-height:0;}
 .con-body{padding:16px 16px 18px;border-top:2px solid #7a7068;}
-.status{display:flex;gap:4px;padding:4px;background:var(--btn);border-top:1px solid var(--blt);flex-shrink:0;}
-.status-cell{height:20px;display:flex;align-items:center;padding:0 8px;font-size:8px;letter-spacing:.1em;color:#3d3020;background:var(--btn);border-top:1px solid var(--bdk);border-left:1px solid var(--bdk);border-right:1px solid var(--blt);border-bottom:1px solid var(--blt);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.status-cell.grow{flex:1;min-width:0;}
 
 /* ══ Flat link buttons ══ */
 .links{display:flex;flex-direction:column;gap:6px;}
-.lnk,.send{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:48px;padding:0 14px;background:#bcb1a1;border:1px solid var(--desk);color:var(--ink);text-decoration:none;cursor:pointer;-webkit-tap-highlight-color:transparent;-webkit-touch-callout:none;user-select:none;}
-.lnk .t,.send{font-family:'Mekzantine',serif;font-size:20px;letter-spacing:.03em;line-height:1.1;}
+.lnk{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:48px;padding:0 14px;background:#bcb1a1;border:1px solid var(--desk);color:var(--ink);text-decoration:none;cursor:pointer;-webkit-tap-highlight-color:transparent;-webkit-touch-callout:none;user-select:none;}
+.lnk .t{font-family:'Mekzantine',serif;font-size:20px;letter-spacing:.03em;line-height:1.1;}
 .lnk .s{font-size:8px;letter-spacing:.14em;text-transform:uppercase;color:var(--tdim);white-space:nowrap;}
-.lnk:active,.send:active{background:var(--desk);color:var(--ttxt);}
+.lnk:active{background:var(--desk);color:var(--ttxt);}
 .lnk:active .s{color:#cfc4a8;}
-@media (hover:hover){.lnk:hover,.send:hover{background:var(--desk);color:var(--ttxt);}.lnk:hover .s{color:#cfc4a8;}}
+@media (hover:hover){.lnk:hover{background:var(--desk);color:var(--ttxt);}.lnk:hover .s{color:#cfc4a8;}}
 
 /* ══ Write to me — right under the buttons ══ */
-.write{margin:26px 0 0;padding:18px 14px 16px;border:1px solid #8a7e6f;box-shadow:inset 1px 1px 0 var(--blt),1px 1px 0 var(--blt);scroll-margin-top:calc(var(--header-total-h) + 12px);}
-.write legend{padding:0 6px;margin-left:-4px;font-family:'Mekzantine',serif;font-size:21px;letter-spacing:.03em;color:#2a2118;}
+.write{margin:26px 0 0;padding:22px 0 0;border-top:1px solid #8a7e6f;box-shadow:inset 0 1px 0 var(--blt);scroll-margin-top:calc(var(--header-total-h) + 12px);}
+.write-t{margin:0 0 16px;font-family:'Mekzantine',serif;font-weight:400;font-size:24px;letter-spacing:.03em;line-height:1.2;color:#2a2118;}
 .f-label{display:block;font-size:8px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--tdim);margin:0 0 4px;}
-.f-input,.f-area{width:100%;display:block;background:var(--field);color:var(--ink);border-top:2px solid var(--bdk);border-left:2px solid var(--bdk);border-right:2px solid var(--blt);border-bottom:2px solid var(--blt);box-shadow:inset 1px 1px 0 #7a7068;padding:9px 10px;font-family:'DotGothic16',monospace;font-size:16px;letter-spacing:.03em;outline:none;border-radius:0;-webkit-appearance:none;appearance:none;margin-bottom:12px;}
+.f-input,.f-area{width:100%;display:block;background:var(--field);color:var(--ink);border-top:2px solid var(--bdk);border-left:2px solid var(--bdk);border-right:2px solid var(--blt);border-bottom:2px solid var(--blt);box-shadow:inset 1px 1px 0 #7a7068;padding:9px 10px;font-family:'DotGothic16',monospace;font-size:16px;letter-spacing:.03em;outline:none;border-radius:0;-webkit-appearance:none;appearance:none;margin:0 0 12px;}
 .f-input:focus,.f-area:focus{background:#d4cec8;}
 .f-area{min-height:110px;resize:vertical;}
-.f-foot{display:flex;align-items:center;gap:14px;margin-top:2px;}
-.send{display:inline-flex;justify-content:center;min-height:42px;padding:0 22px;font-size:19px;}
-.send[disabled]{opacity:.45;pointer-events:none;}
-.f-status{font-size:8px;letter-spacing:.12em;text-transform:uppercase;color:var(--tdim);}
-.f-status.err{color:var(--red);}
-.sent{display:none;flex-direction:column;align-items:flex-start;gap:8px;padding:6px 0 4px;}
+/* Send — точно такая же кнопка, как ссылки; в правой подписи — «отправляю…» и ошибки */
+button.lnk{width:100%;margin:4px 0 0;font:inherit;text-align:left;-webkit-appearance:none;appearance:none;border-radius:0;}
+button.lnk[disabled]{opacity:.55;pointer-events:none;}
+.lnk .s.err{color:var(--red);}
+.lnk:active .s.err{color:#f0a08a;}
+@media (hover:hover){.lnk:hover .s.err{color:#f0a08a;}}
+.sr{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0;}
+.sent{display:none;flex-direction:column;align-items:flex-start;gap:8px;padding:2px 0 4px;}
 .sent .big{font-family:'Mekzantine',serif;font-size:24px;color:#2a2118;}
 .sent .small{font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--tdim);line-height:1.8;}
 
-@media (max-width:400px){main{padding-left:6px;padding-right:6px;}.con-body{padding:12px 10px 14px;}.lnk{padding:0 12px;}.write{padding:16px 10px 14px;}}
+@media (max-width:400px){main{padding-left:6px;padding-right:6px;}.con-body{padding:12px 10px 14px;}.lnk{padding:0 12px;}}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{transition-duration:.001ms!important;animation-duration:.001ms!important;}}
 </style>
 <!-- NOEASY visit counter (no cookies) + newsletter helper; the Mindgate bot publishes assets/door.js -->
@@ -146,8 +145,8 @@ main{min-height:100vh;min-height:100dvh;padding:calc(var(--header-total-h) + 22p
         <a class="lnk" href="https://buymeacoffee.com/noeasyvision" target="_blank" rel="noopener"><span class="t">Support the Work</span><span class="s">buy me a coffee</span></a>
       </nav>
 
-      <fieldset class="write" id="write">
-        <legend>Write to me</legend>
+      <section class="write" id="write" aria-labelledby="writeT">
+        <h2 class="write-t" id="writeT">Write to me</h2>
         <form id="msgForm" action="https://formspree.io/f/xqewvwkv" method="POST" novalidate>
           <input type="hidden" name="_subject" value="Message from noeasy.xyz/links">
           <label class="f-label" for="mName">Name</label>
@@ -156,21 +155,14 @@ main{min-height:100vh;min-height:100dvh;padding:calc(var(--header-total-h) + 22p
           <input class="f-input" id="mMail" type="email" name="email" required autocomplete="email">
           <label class="f-label" for="mMsg">Message</label>
           <textarea class="f-area" id="mMsg" name="message" required></textarea>
-          <div class="f-foot">
-            <button class="send" type="submit">Send</button>
-            <div class="f-status" id="msgStatus" role="status"></div>
-          </div>
+          <button class="lnk" type="submit" id="sendBtn"><span class="t">Send</span><span class="s" id="sendHint" aria-hidden="true"></span></button>
+          <span class="sr" id="msgStatus" role="status"></span>
         </form>
         <div class="sent" id="msgSent">
           <div class="big">Message sent ☩</div>
           <div class="small">Thank you. Talk soon.</div>
         </div>
-      </fieldset>
-    </div>
-    <div class="status">
-      <div class="status-cell grow">8 links</div>
-      <div class="status-cell">@noeasyvision</div>
-      <div class="status-cell" id="stClock">--:--</div>
+      </section>
     </div>
   </div>
 </main>
@@ -181,19 +173,19 @@ var CROSS='<svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="ht
 ['Minimize','Maximize','Close'].forEach(function(t){var b=document.createElement('div');b.className='tbbtn';b.title=t;b.innerHTML=CROSS;$('tbtns').appendChild(b);});
 
 /* Write to me */
-var form=$('msgForm'), sent=$('msgSent'), st=$('msgStatus');
+var form=$('msgForm'), sent=$('msgSent'), st=$('msgStatus'), hint=$('sendHint'), btn=$('sendBtn');
+function say(t,err){hint.textContent=t;st.textContent=t;hint.classList.toggle('err',!!err);}
 form.addEventListener('submit',function(e){
   e.preventDefault();
   if(!form.reportValidity())return;
-  var btn=form.querySelector('.send');
-  btn.disabled=true; st.textContent='SENDING…'; st.classList.remove('err');
+  btn.disabled=true; say('sending…');
   fetch(form.action,{method:'POST',body:new FormData(form),headers:{Accept:'application/json'}})
-  .then(function(r){ if(r.ok){form.style.display='none';sent.style.display='flex';form.reset();} else {st.textContent='ERROR — TRY AGAIN';st.classList.add('err');} })
-  .catch(function(){st.textContent='NO CONNECTION';st.classList.add('err');})
+  .then(function(r){ if(r.ok){form.style.display='none';sent.style.display='flex';form.reset();say('');st.textContent='Message sent';} else say('error — try again',true); })
+  .catch(function(){say('no connection',true);})
   .finally(function(){btn.disabled=false;});
 });
 
-/* Chrome: grain, burger, clock */
+/* Chrome: grain, burger */
 (function(){
   var g=$('grain'),ctx=g.getContext('2d'),w,h;
   function rs(){w=g.width=window.innerWidth+20;h=g.height=window.innerHeight+120;}
@@ -204,11 +196,6 @@ form.addEventListener('submit',function(e){
   var btn=$('swordBtn'),nav=$('navOverlay');
   btn.addEventListener('click',function(e){e.stopPropagation();btn.classList.toggle('open');nav.classList.toggle('open');});
   document.addEventListener('click',function(e){if(!nav.contains(e.target)&&e.target!==btn){btn.classList.remove('open');nav.classList.remove('open');}});
-})();
-(function(){
-  var c=$('stClock');
-  function tick(){var d=new Date();c.textContent=('0'+d.getHours()).slice(-2)+':'+('0'+d.getMinutes()).slice(-2);}
-  tick();setInterval(tick,20000);
 })();
 setTimeout(function(){$('siteHeader').classList.add('visible');$('exWin').classList.add('visible');},100);
 </script>
