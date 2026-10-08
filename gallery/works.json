@@ -321,6 +321,22 @@
     "slot": "A-01"
   },
   {
+    "title": "Fusion",
+    "meta": "Digital Painting",
+    "date": "2023-09-21",
+    "year": 2023,
+    "style": "Digital Painting",
+    "workType": "Personal",
+    "avail": [],
+    "links": [],
+    "src": "images/fusion.jpg",
+    "ph": {
+      "color": "#7c5e6d",
+      "ratio": "124.10%"
+    },
+    "srcHi": "hi/fusion.jpg"
+  },
+  {
     "title": "No Dreams",
     "meta": "Mixed",
     "date": "2023-04-28",
