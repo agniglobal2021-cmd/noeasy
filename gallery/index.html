@@ -175,6 +175,8 @@
   main.grid-mode .work-year-sep { display: none; }
   @media (max-width: 680px) { .filter-panel { top: calc(var(--header-total-h)); } #lb-close { top: 18px; right: 18px; } main { padding-top: calc(var(--header-total-h) + 16px); padding-bottom: 160px; } main:not(.grid-mode) .work-footer { flex-direction: column; align-items: flex-start; gap: 8px; } main:not(.grid-mode) .work-right { align-items: flex-start; width: 100%; } }
 </style>
+<!-- NOEASY visit counter (no cookies) + newsletter helper; the Mindgate bot publishes assets/door.js -->
+<script src="/assets/door.js" defer></script>
 </head>
 <body>
 
@@ -441,7 +443,7 @@ function setLbZoom(newZoom, originClientX, originClientY, smooth) {
   if (!smooth) requestAnimationFrame(() => {});
 }
 
-function openLb(idx) { if (idx !== undefined) lbIndex = idx; const work = currentList[lbIndex]; if (!work || !work.src) return; resetLbZoom(); lbImg.style.opacity = '0'; lbImg.src = work.src; lbImg.alt = work.title; lbTitle.textContent = work.title; lbImg.onload = () => { lbImg.style.opacity = '1'; }; const scrollbarW = window.innerWidth - document.documentElement.clientWidth; document.body.style.paddingRight = scrollbarW + 'px'; lb.classList.add('open'); document.body.style.overflow = 'hidden'; const hasPrev = currentList.slice(0, lbIndex).some(w => w.src); const hasNext = currentList.slice(lbIndex + 1).some(w => w.src); lbPrev.classList.toggle('hidden', !hasPrev); lbNext.classList.toggle('hidden', !hasNext); }
+function openLb(idx) { if (idx !== undefined) lbIndex = idx; const work = currentList[lbIndex]; if (!work || !work.src) return; if (window.noeasy) noeasy.track('view', {t: work.title}); resetLbZoom(); lbImg.style.opacity = '0'; lbImg.src = work.src; lbImg.alt = work.title; lbTitle.textContent = work.title; lbImg.onload = () => { lbImg.style.opacity = '1'; }; const scrollbarW = window.innerWidth - document.documentElement.clientWidth; document.body.style.paddingRight = scrollbarW + 'px'; lb.classList.add('open'); document.body.style.overflow = 'hidden'; const hasPrev = currentList.slice(0, lbIndex).some(w => w.src); const hasNext = currentList.slice(lbIndex + 1).some(w => w.src); lbPrev.classList.toggle('hidden', !hasPrev); lbNext.classList.toggle('hidden', !hasNext); }
 function lbStep(dir) { let idx = lbIndex + dir; while (idx >= 0 && idx < currentList.length) { if (currentList[idx].src) { lbIndex = idx; openLb(); return; } idx += dir; } }
 function closeLb() { lb.classList.remove('open'); document.body.style.overflow = ''; document.body.style.paddingRight = ''; resetLbZoom(); setTimeout(() => { lbImg.src = ''; lbTitle.textContent = ''; }, 420); }
 lb.addEventListener('click', e => { if (e.target === lb && !lbSuppressClick) closeLb(); });

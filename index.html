@@ -75,15 +75,18 @@ html, body {
   flex-shrink: 0;
   width: clamp(120px, 36vw, 300px);
   /* landscape: the window is also never taller than the screen
-     (phones held sideways). Browsers that don't know svh keep the line above. */
-  width: clamp(120px, min(36vw, 100svh - 64px), 300px);
+     (phones held sideways). The picture is 350x484, so its height is
+     width / 0.723: the free height is converted back to a width.
+     Browsers that don't know svh keep the line above. */
+  width: clamp(120px, min(36vw, (100svh - 64px) * 0.723), 300px);
 }
 
 @media (orientation: portrait) {
   .win95 {
     width: clamp(220px, 80vw, 400px);
-    /* portrait: on short phones the window gives way so both icon rows fit below */
-    width: clamp(160px, min(80vw, 100svh - 300px), 400px);
+    /* portrait: on short phones the window gives way so both icon rows fit below
+       (300px = icon rows + gap + title bar + page padding; 0.723 = picture width/height) */
+    width: clamp(160px, min(80vw, (100svh - 300px) * 0.723), 400px);
   }
 }
 
@@ -141,7 +144,7 @@ html, body {
    attributes), so it never collapses to a thin strip while the gif
    downloads. Paper fills the frame, then the animation fades in.
    >>> Set width/height on <img id="hero-gif"> to hero.gif's REAL pixel
-   size (currently 480x480) for zero layout shift on load. <<<
+   size (currently 350x484) for zero layout shift on load. <<<
 -------------------------------------------------------------------- */
 .win95-body {
   width: 100%;
@@ -344,6 +347,74 @@ html, body {
   padding-top: 2px; padding-left: 18px;
 }
 
+/* ---- NEWSLETTER: a status bar under the hero picture -----------------
+   Hidden until assets/door.js (published by the Mindgate bot) says the list
+   is open, i.e. the bot has permanent storage for addresses. The bar makes
+   the window ~60px taller, so .mail-on gives that height back on short
+   screens (same 0.723 picture ratio as above). The field is 16px: smaller
+   text makes iPhone zoom into it.
+-------------------------------------------------------------------- */
+.mail {
+  background: #AFA191;
+  border-top: 1px solid #d4cdc4;
+  margin-top: 1px;
+  padding: 7px 4px 5px;
+  display: flex; flex-direction: column; gap: 6px;
+  container-type: inline-size;
+}
+/* a narrow window (small phones, phones held sideways) leaves the field room:
+   the button says OK, screen readers still hear "Subscribe" */
+@container (max-width: 230px) {
+  .mail-btn { font-size: 0; padding: 0 10px; }
+  .mail-btn:active { padding-left: 12px; }
+  .mail-btn::after { content: 'OK'; font-size: 11px; }
+}
+.mail[hidden], .mail [hidden] { display: none; }
+.mail-l {
+  font-family: 'DotGothic16', monospace;
+  font-size: 8px; font-weight: 700;
+  letter-spacing: 0.10em; text-transform: uppercase;
+  color: #1a1612;
+  padding: 0 2px;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.mail-row { display: flex; align-items: stretch; gap: 4px; }
+.mail-in {
+  flex: 1; min-width: 0;
+  height: 28px; padding: 0 7px;
+  font-family: 'DotGothic16', monospace; font-size: 16px; line-height: 1;
+  color: #1a1612; background: #f6f1da;
+  border-top: 2px solid #3d3830; border-left: 2px solid #3d3830;
+  border-right: 2px solid #d4cdc4; border-bottom: 2px solid #d4cdc4;
+  border-radius: 0; -webkit-appearance: none; appearance: none;
+}
+.mail-in::placeholder { color: #1a1612; opacity: 0.38; }
+.mail-in:focus { outline: 1px dotted #1a1612; outline-offset: -5px; }
+.mail-hp { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; }
+.mail-btn { height: 28px; min-width: 0; padding: 0 12px; flex-shrink: 0; text-transform: uppercase; }
+.mail-btn:active { padding-left: 14px; }
+.mail-btn:disabled { opacity: 0.55; cursor: default; }
+.mail-msg {
+  font-family: 'DotGothic16', monospace;
+  font-size: 10px; letter-spacing: 0.05em; line-height: 1.5;
+  color: #1a1612;
+  padding: 0 2px;
+}
+.mail.done .mail-msg { min-height: 28px; display: flex; align-items: center; }
+.layout.mail-on > .win95 {
+  width: clamp(120px, 36vw, 300px);
+  width: clamp(120px, min(36vw, (100svh - 124px) * 0.723), 300px);
+}
+@media (orientation: portrait) {
+  .layout.mail-on > .win95 {
+    width: clamp(220px, 80vw, 400px);
+    width: clamp(160px, min(80vw, (100svh - 360px) * 0.723), 400px);
+  }
+}
+/* phones held sideways: no room for the caption line, the field says it all */
+@media (orientation: landscape) and (max-height: 420px) {
+  .mail-l { display: none; }
+}
 footer {
   position:fixed; bottom:0; left:0; right:0; z-index:2;
   display:flex; align-items:center; justify-content:space-between;
@@ -354,12 +425,16 @@ footer {
   font-size: 8px; letter-spacing: 0.18em; text-transform:uppercase;
 }
 footer span { opacity:0.32; }
+footer { pointer-events: none; }       /* the bar spans the screen: only its links take taps */
 footer a {
+  pointer-events: auto;
   opacity:0.32; color:#353535; text-decoration:none;
   transition: opacity 0.2s;
 }
 footer a:hover { opacity:0.65; }
 </style>
+<!-- NOEASY visit counter (no cookies) + newsletter helper; the Mindgate bot publishes assets/door.js -->
+<script src="/assets/door.js" defer></script>
 </head>
 <body>
 
@@ -380,8 +455,18 @@ footer a:hover { opacity:0.65; }
         </div>
       </div>
       <div class="win95-body">
-        <img id="hero-gif" src="assets/hero.gif" alt="noeasy" width="480" height="480">
+        <img id="hero-gif" src="assets/hero.gif" alt="noeasy" width="350" height="484">
       </div>
+      <form class="mail" id="mail" hidden novalidate>
+        <label class="mail-l" for="mailIn">Newsletter · new works, drops, The Halls</label>
+        <div class="mail-row">
+          <input class="mail-in" id="mailIn" name="email" type="email" inputmode="email" autocomplete="email"
+                 autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="254" placeholder="your@email.com" required>
+          <input class="mail-hp" name="website" type="text" tabindex="-1" autocomplete="off" aria-hidden="true">
+          <button class="modal-ok-btn mail-btn" type="submit">Subscribe</button>
+        </div>
+        <p class="mail-msg" id="mailMsg" role="status" aria-live="polite" hidden></p>
+      </form>
     </div>
 
     <div class="desktop">
@@ -396,7 +481,7 @@ footer a:hover { opacity:0.65; }
         <span class="shortcut-label">Gallery</span>
       </a>
 
-      <a href="#" class="shortcut" id="shopBtn">
+      <a href="#" class="shortcut" id="shopBtn" data-track="Shop">
         <div class="shortcut-icon"><img src="data:image/png;base64,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" alt="Shop"></div>
         <span class="shortcut-label">Shop</span>
       </a>
@@ -406,7 +491,7 @@ footer a:hover { opacity:0.65; }
         <span class="shortcut-label">Links</span>
       </a>
 
-      <a href="#" class="shortcut" id="hallsBtn">
+      <a href="#" class="shortcut" id="hallsBtn" data-track="The Halls">
         <div class="shortcut-icon"><img src="data:image/png;base64,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" alt="The Halls"></div>
         <span class="shortcut-label">The Halls</span>
       </a>
@@ -483,6 +568,35 @@ shopBtn.addEventListener('click', e => { e.preventDefault(); openModal(shopBtn, 
 document.querySelectorAll('.modal-close-btn').forEach(b => b.addEventListener('click', closeModal));
 modal.addEventListener('click', e => { if (e.target === modal) closeModal(); });
 document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+/* ---- newsletter: shown only when door.js says the list is open ---- */
+document.addEventListener('DOMContentLoaded', () => {
+  const n = window.noeasy, form = document.getElementById('mail');
+  if (!n || !n.mail || !form) return;
+  try { if (localStorage.getItem('noeasy-subscribed') === '1') return; } catch (_) {}
+  const inp = document.getElementById('mailIn'), msg = document.getElementById('mailMsg');
+  const btn = form.querySelector('.mail-btn'), row = form.querySelector('.mail-row');
+  const shownAt = Date.now();
+  const say = t => { msg.textContent = t; msg.hidden = !t; };
+  document.querySelector('.layout').classList.add('mail-on');
+  form.hidden = false;
+  form.addEventListener('submit', async e => {
+    e.preventDefault();
+    const email = inp.value.trim();
+    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) { say('Check the address.'); inp.focus(); return; }
+    btn.disabled = true; say('');
+    try {
+      await n.subscribe(email, { hp: form.elements.website.value, ms: Date.now() - shownAt, src: 'home' });
+      row.hidden = true; form.classList.add('done'); say("Thank you. You're on the list.");
+      try { localStorage.setItem('noeasy-subscribed', '1'); } catch (_) {}
+    } catch (err) {
+      const c = err && err.code;
+      say(c === 'invalid' ? 'Check the address.' : c === 'limit' ? 'Too many tries. Please try again later.'
+        : c === 'closed' ? 'The list opens soon.' : 'No connection. Please try again.');
+      btn.disabled = false;
+    }
+  });
+});
 
 /* ---- grain ---- */
 const g = document.getElementById('grain');
