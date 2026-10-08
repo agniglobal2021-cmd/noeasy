@@ -266,8 +266,7 @@
     "ph": {
       "color": "#9b9b9b",
       "ratio": "100%"
-    },
-    "slot": "HE-05"
+    }
   },
   {
     "title": "Jade Gardens",
@@ -334,7 +333,8 @@
       "color": "#7c5e6d",
       "ratio": "124.10%"
     },
-    "srcHi": "hi/fusion.jpg"
+    "srcHi": "hi/fusion.jpg",
+    "slot": "HE-05"
   },
   {
     "title": "No Dreams",
