@@ -140,29 +140,34 @@ html, body {
 }
 
 /* ---- HERO WINDOW ---------------------------------------------------
-   The window reserves its full box straight away (img width/height
-   attributes), so it never collapses to a thin strip while the gif
-   downloads. Paper fills the frame, then the animation fades in.
-   >>> Set width/height on <img id="hero-gif"> to hero.gif's REAL pixel
-   size (currently 350x484) for zero layout shift on load. <<<
+   The animation is a 1.8 MB video (assets/hero.mp4, made from the 20 MB
+   hero.gif: same 357 frames, 25 fps). Its first frame, 32 KB
+   (assets/hero-poster.webp), shows at once, so the window is never empty
+   while the video loads. width/height attributes = the REAL size
+   (350x484): the box is reserved before anything arrives.
+   iPhone in Low Power Mode doesn't autoplay: the first frame stays and
+   the first tap anywhere starts it. Reduced motion: the first frame only.
+   A browser that can't play the video gets the old hero.gif.
 -------------------------------------------------------------------- */
 .win95-body {
   width: 100%;
   display: block;
   overflow: hidden;
   line-height: 0;
-  background: #e8e0c4;
+  background: #e8e0c4 url('assets/hero-poster.webp') center / cover no-repeat;
 }
 
+.win95-body video,
 .win95-body img {
   width: 100%;
   height: auto;
   display: block;
   image-rendering: pixelated;
-  opacity: 0;
-  transition: opacity 0.55s ease;
+  background: transparent;
 }
-.win95-body img.loaded { opacity: 1; }
+/* no system play button drawn over the picture (iPhone) */
+.win95-body video::-webkit-media-controls-start-playback-button { display: none !important; -webkit-appearance: none; }
+.win95-body video::-webkit-media-controls { display: none !important; }
 
 /* ---- DESKTOP ICONS -------------------------------------------------
    Fixed 84x104 cells, so every icon still snaps to one grid. Icons fill
@@ -455,7 +460,10 @@ footer a:hover { opacity:0.65; }
         </div>
       </div>
       <div class="win95-body">
-        <img id="hero-gif" src="assets/hero.gif" alt="noeasy" width="350" height="484">
+        <video id="hero" width="350" height="484" autoplay muted loop playsinline preload="auto"
+               poster="assets/hero-poster.webp" disablepictureinpicture disableremoteplayback aria-label="noeasy">
+          <source src="assets/hero.mp4" type='video/mp4; codecs="avc1.64001F"'>
+        </video>
       </div>
       <form class="mail" id="mail" hidden novalidate>
         <label class="mail-l" for="mailIn">Newsletter · new works, drops, The Halls</label>
@@ -535,14 +543,27 @@ footer a:hover { opacity:0.65; }
 </footer>
 
 <script>
-/* ---- hero gif: fade in once it paints; keep the .GIF fallback ---- */
-const heroImg = document.getElementById('hero-gif');
-function heroLoaded(){ heroImg.classList.add('loaded'); }
-if (heroImg.complete && heroImg.naturalWidth) heroLoaded();
-heroImg.addEventListener('load', heroLoaded);
-heroImg.addEventListener('error', function() {
-  if (this.src.endsWith('.gif')) { this.classList.remove('loaded'); this.src = 'assets/hero.GIF'; }
-});
+/* ---- hero video ----
+   reduced motion: stays on the first frame; autoplay refused (iPhone Low
+   Power Mode): the first tap starts it; no video support: the old gif */
+const hero = document.getElementById('hero');
+if (hero && typeof hero.play === 'function') {
+  const go = () => { const p = hero.play(); if (p && p.catch) p.catch(() => {}); };
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    hero.removeAttribute('autoplay'); hero.pause();
+  } else {
+    go();
+    const kick = () => { if (hero.paused) go(); };
+    addEventListener('pointerdown', kick, { once: true, passive: true });
+    addEventListener('touchstart', kick, { once: true, passive: true });
+  }
+  const src = hero.querySelector('source');
+  if (src) src.addEventListener('error', () => {
+    const img = new Image(350, 484);
+    img.alt = 'noeasy'; img.src = 'assets/hero.gif';
+    hero.replaceWith(img);
+  });
+}
 
 /* ---- Win95 "coming soon" dialog ---- */
 const modal = document.getElementById('modal');
