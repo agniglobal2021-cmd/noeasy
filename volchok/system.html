@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#190A27">
+<title>VOLCHOK — прототип · Основа визуала</title>
+<link rel="icon" type="image/png" href="assets/img/spiral-lavender.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&amp;family=IBM+Plex+Mono:wght@400;500&amp;display=swap">
+<link rel="stylesheet" href="assets/volchok.css">
+</head>
+<body>
+
+<svg class="sprite" aria-hidden="true" focusable="false">
+<defs>
+<radialGradient id="vitrine" cx="50%" cy="50%" r="62%"><stop offset="0" stop-color="#2D1E41"/><stop offset="0.65" stop-color="#221333"/><stop offset="1" stop-color="#1D0E2D"/></radialGradient>
+<g id="f-bronze"><path d="M14 4H186L196 14V236L186 246H14L4 236V14Z" fill="url(#vitrine)" stroke="#966B27" stroke-width="1.4" vector-effect="non-scaling-stroke"/></g>
+<g id="f-silver"><path d="M14 4H186L196 14V236L186 246H14L4 236V14Z" fill="url(#vitrine)" stroke="#BDBBD0" stroke-width="1.3" vector-effect="non-scaling-stroke"/><path d="M17 10H183L190 17V233L183 240H17L10 233V17Z" fill="none" stroke="#BDBBD0" stroke-width="0.8" opacity="0.5" vector-effect="non-scaling-stroke"/><path d="M100 -0.5L105 4L100 8.5L95 4Z" fill="#190A27" stroke="#BDBBD0" stroke-width="1" vector-effect="non-scaling-stroke"/><path d="M100 241.5L105 246L100 250.5L95 246Z" fill="#190A27" stroke="#BDBBD0" stroke-width="1" vector-effect="non-scaling-stroke"/></g>
+<g id="f-gold"><path d="M4 236V80C4 44 40 14 100 4C160 14 196 44 196 80V236L186 246H14Z" fill="url(#vitrine)" stroke="#C0B387" stroke-width="1.4" vector-effect="non-scaling-stroke"/><path d="M10 232V82C10 50 43 22 100 12C157 22 190 50 190 82V232L182 240H18Z" fill="none" stroke="#C0B387" stroke-width="0.8" opacity="0.6" vector-effect="non-scaling-stroke"/><path d="M100 -3L104 2L100 7L96 2Z" fill="#C0B387"/></g>
+<g id="f-relic"><path d="M4 236V80C4 44 40 14 100 4C160 14 196 44 196 80V236L186 246H14Z" fill="url(#vitrine)" stroke="#9D94F1" stroke-width="1.4" vector-effect="non-scaling-stroke"/><path d="M10 232V82C10 50 43 22 100 12C157 22 190 50 190 82V232L182 240H18Z" fill="none" stroke="#9D94F1" stroke-width="0.8" opacity="0.6" vector-effect="non-scaling-stroke"/><circle cx="100" cy="3" r="5.5" fill="#190A27" stroke="#9D94F1" stroke-width="1" vector-effect="non-scaling-stroke"/><circle cx="100" cy="3" r="1.8" fill="#9D94F1"/></g>
+</defs>
+</svg>
+
+<div class="page page--wide">
+<p class="proto">ПРОТОТИП РЕДИЗАЙНА · ЧЕРНОВИК 1</p>
+
+<header class="topbar">
+<button class="tb-btn tb-left" type="button" data-menu-open aria-controls="menu" aria-expanded="false"><svg width="18" height="10" viewBox="0 0 18 10" aria-hidden="true"><path d="M0 1H18M0 9H12" stroke="#C0B387" stroke-width="1.2" fill="none"/></svg>МЕНЮ</button>
+<a class="tb-logo" href="./" aria-label="Волчок — на главную"><img src="assets/img/spiral-lavender.png" alt=""></a>
+<button class="tb-btn tb-right" type="button" data-larets>ЛАРЕЦ · 0</button>
+</header>
+
+<main class="board">
+<header>
+<p class="label">ОСНОВА · ЧЕРНОВИК 1</p>
+<h1>Пурпур и&nbsp;золото</h1>
+<p class="board__intro">Тёмный пурпур&nbsp;— фон всего сайта. Соломенное золото&nbsp;— светлые элементы. Лаванда&nbsp;— только знак и&nbsp;реликвии.</p>
+</header>
+
+<section aria-labelledby="colors-title">
+<h2 class="label" id="colors-title">ЦВЕТА</h2>
+<div class="swatches">
+<div class="swatch"><div class="swatch__chip" style="background: #190A27"></div><span class="swatch__name">Ночь</span><span class="swatch__hex">#190A27</span><span class="swatch__role">ФОН САЙТА</span></div>
+<div class="swatch"><div class="swatch__chip" style="background: #221333"></div><span class="swatch__name">Бархат</span><span class="swatch__hex">#221333</span><span class="swatch__role">ВИТРИНЫ, ПОДЛОЖКИ</span></div>
+<div class="swatch"><div class="swatch__chip" style="background: #3A2F4D"></div><span class="swatch__name">Шов</span><span class="swatch__hex">#3A2F4D</span><span class="swatch__role">ЛИНИИ, РАЗДЕЛИТЕЛИ</span></div>
+<div class="swatch"><div class="swatch__chip" style="background: #9894B0; border-color: #9894B0"></div><span class="swatch__name">Пепел</span><span class="swatch__hex">#9894B0</span><span class="swatch__role">ВТОРОСТЕПЕННЫЙ ТЕКСТ</span></div>
+<div class="swatch"><div class="swatch__chip" style="background: #ECE5CB; border-color: #ECE5CB"></div><span class="swatch__name">Пергамент</span><span class="swatch__hex">#ECE5CB</span><span class="swatch__role">ОСНОВНОЙ ТЕКСТ</span></div>
+<div class="swatch"><div class="swatch__chip" style="background: #C0B387; border-color: #C0B387"></div><span class="swatch__name">Солома</span><span class="swatch__hex">#C0B387</span><span class="swatch__role">КНОПКИ, ЦЕНЫ, ЗОЛОТО · ИЗ ОБРАЗЦА ТКАНИ</span></div>
+<div class="swatch"><div class="swatch__chip" style="background: #9D94F1; border-color: #9D94F1"></div><span class="swatch__name">Лаванда</span><span class="swatch__hex">#9D94F1</span><span class="swatch__role">ЗНАК И РЕЛИКВИИ · ИЗ ЛОГО</span></div>
+<div class="swatch"><div class="swatch__chip" style="background: #966B27; border-color: #966B27"></div><span class="swatch__name">Бронза</span><span class="swatch__hex">#966B27</span><span class="swatch__role">РАМКИ · ИЗ ЖАККАРДА</span></div>
+<div class="swatch"><div class="swatch__chip" style="background: #85936A; border-color: #85936A"></div><span class="swatch__name">Олива</span><span class="swatch__hex">#85936A</span><span class="swatch__role">СЛУЖЕБНОЕ · ИЗ ЖАККАРДА</span></div>
+<div class="swatch"><div class="swatch__chip" style="background: #BDBBD0; border-color: #BDBBD0"></div><span class="swatch__name">Серебро</span><span class="swatch__hex">#BDBBD0</span><span class="swatch__role">РАМКИ ДРОПОВ</span></div>
+</div>
+</section>
+
+<section aria-labelledby="type-title">
+<h2 class="label" id="type-title">ШРИФТЫ</h2>
+<div class="specimens">
+<div class="specimen">
+<span class="label label--straw label--small" style="letter-spacing: 0.16em">CORMORANT GARAMOND</span>
+<span style="font-size: 27px; line-height: 1.1; letter-spacing: 0.06em">ДЖЕМПЕР МЕЧИ</span>
+<span class="lore">Три клинка уходят в&nbsp;водоворот, но&nbsp;не&nbsp;тонут</span>
+<span class="swatch__role">ИМЕНА ПРЕДМЕТОВ, ЛОР, ЗАГОЛОВКИ</span>
+</div>
+<div class="specimen">
+<span class="label label--straw label--small" style="letter-spacing: 0.16em">IBM PLEX MONO</span>
+<span class="mono" style="font-size: 13px; letter-spacing: 0.1em">№ 70547 · БРОНЯ</span>
+<span class="mono" style="font-size: 22px; color: #C0B387">8 900 ₽</span>
+<span class="swatch__role">ЭТИКЕТКИ, ЦЕНЫ, НАВИГАЦИЯ</span>
+</div>
+<div class="specimen">
+<span class="label label--straw label--small" style="letter-spacing: 0.16em">ЗНАК</span>
+<img src="assets/img/wordmark-lavender.png" alt="VOLCHOK" width="480" height="128" style="width: 200px; height: auto; margin: 6px 0">
+<span class="swatch__role">ТОЛЬКО ЛОГОТИП И&nbsp;ОБЛОЖКИ ГЛАВ, НЕ&nbsp;ДЛЯ ТЕКСТА</span>
+</div>
+</div>
+</section>
+
+<section aria-labelledby="tiers-title">
+<h2 class="label" id="tiers-title">РЕДКОСТЬ = МАТЕРИАЛ РАМКИ</h2>
+<div class="tiers">
+<div class="tier"><span class="vitrine"><svg viewBox="0 0 200 250" aria-hidden="true"><use href="#f-bronze"/></svg></span><span class="tier__name r-bronze">Бронза</span><span class="swatch__role">БАЗОВАЯ ЛИНЕЙКА</span></div>
+<div class="tier"><span class="vitrine"><svg viewBox="0 0 200 250" aria-hidden="true"><use href="#f-silver"/></svg></span><span class="tier__name r-silver">Серебро</span><span class="swatch__role">СЕЗОННЫЙ ДРОП</span></div>
+<div class="tier"><span class="vitrine"><svg viewBox="0 0 200 250" aria-hidden="true"><use href="#f-gold"/></svg></span><span class="tier__name r-gold">Золото</span><span class="swatch__role">КОЛЛАБ, ЛИМИТ</span></div>
+<div class="tier"><span class="vitrine vitrine--relic"><svg viewBox="0 0 200 250" aria-hidden="true"><use href="#f-relic"/></svg></span><span class="tier__name r-relic">Реликвия</span><span class="swatch__role">ПОСЛЕДНИЙ ЭКЗЕМПЛЯР, 1&nbsp;ИЗ&nbsp;N</span></div>
+</div>
+</section>
+</main>
+</div>
+
+<div class="menu" id="menu" hidden role="dialog" aria-modal="true" aria-label="Меню">
+<div class="menu__inner">
+<div class="topbar">
+<button class="tb-btn tb-left" type="button" data-menu-close><svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true"><path d="M1 1L11 11M11 1L1 11" stroke="#C0B387" stroke-width="1.2" fill="none"/></svg>ЗАКРЫТЬ</button>
+<a class="tb-logo" href="./" aria-label="Волчок — на главную"><img src="assets/img/spiral-lavender.png" alt=""></a>
+<button class="tb-btn tb-right" type="button" data-larets>ЛАРЕЦ · 0</button>
+</div>
+<nav class="menu__nav" aria-label="Разделы">
+<a href="./">Главная <small>ЛОГОВО</small></a>
+<a href="treasury.html">Сокровищница <small>ПРЕДМЕТЫ</small></a>
+<a href="./#chronicles">Хроники <small>XXII ГЛАВЫ</small></a>
+<a href="item.html">Предмет <small>ПРИМЕР</small></a>
+</nav>
+<div class="menu__aside">
+<p class="label label--small">ЧЕРНОВИК</p>
+<a class="link-mono" href="system.html">ОСНОВА: ЦВЕТА, ШРИФТЫ, РАМКИ →</a>
+</div>
+</div>
+</div>
+
+<script src="assets/volchok.js"></script>
+</body>
+</html>
