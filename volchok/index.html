@@ -4,131 +4,199 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow">
-<meta name="theme-color" content="#190A27">
-<title>VOLCHOK — прототип · Главная</title>
-<link rel="icon" type="image/png" href="assets/img/spiral-lavender.png">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&amp;family=IBM+Plex+Mono:wght@400;500&amp;display=swap">
+<meta name="theme-color" content="#170B21">
+<title>Волчок, одежда из Петербурга · прототип</title>
+<meta name="description" content="Прототип редизайна сайта Волчка: петербургская одежда с 2014 года, жаккард «Мечи», 22 главы-коллекции.">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+<link rel="preload" href="assets/fonts/libre-franklin-cyr.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" as="image" href="assets/img/hero-wide.webp" media="(min-aspect-ratio: 4/5)" fetchpriority="high">
 <link rel="stylesheet" href="assets/volchok.css">
+<script>document.documentElement.classList.add('js')</script>
 </head>
 <body>
-
-<svg class="sprite" aria-hidden="true" focusable="false">
-<defs>
-<radialGradient id="vitrine" cx="50%" cy="50%" r="62%"><stop offset="0" stop-color="#2D1E41"/><stop offset="0.65" stop-color="#221333"/><stop offset="1" stop-color="#1D0E2D"/></radialGradient>
-<g id="f-gold"><path d="M4 236V80C4 44 40 14 100 4C160 14 196 44 196 80V236L186 246H14Z" fill="url(#vitrine)" stroke="#C0B387" stroke-width="1.3" vector-effect="non-scaling-stroke"/><path d="M10 232V82C10 50 43 22 100 12C157 22 190 50 190 82V232L182 240H18Z" fill="none" stroke="#C0B387" stroke-width="0.8" opacity="0.6" vector-effect="non-scaling-stroke"/><path d="M100 -3L104 2L100 7L96 2Z" fill="#C0B387"/></g>
-</defs>
-</svg>
+<a class="skip" href="#main">К содержанию</a>
 
 <div class="page">
-<p class="proto">ПРОТОТИП РЕДИЗАЙНА · ЧЕРНОВИК 1</p>
+<header class="hero">
+  <figure class="hero__photo">
+    <picture>
+      <source media="(max-aspect-ratio: 4/5)" srcset="assets/img/hero-tall.webp" width="840" height="1209">
+      <img src="assets/img/hero-wide.webp" width="2880" height="907" fetchpriority="high"
+           alt="Жаккард «Мечи» крупным планом: рукояти и гарды трёх клинков, связанные охрой по чёрному">
+    </picture>
+  </figure>
 
-<header class="topbar">
-<button class="tb-btn tb-left" type="button" data-menu-open aria-controls="menu" aria-expanded="false"><svg width="18" height="10" viewBox="0 0 18 10" aria-hidden="true"><path d="M0 1H18M0 9H12" stroke="#C0B387" stroke-width="1.2" fill="none"/></svg>МЕНЮ</button>
-<a class="tb-logo" href="./" aria-label="Волчок — на главную"><img src="assets/img/spiral-lavender.png" alt=""></a>
-<button class="tb-btn tb-right" type="button" data-larets>ЛАРЕЦ · 0</button>
+  <div class="nav-wrap">
+    <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="nav">Меню</button>
+    <nav class="nav" id="nav" aria-label="Разделы">
+      <a href="catalog.html">Каталог</a>
+      <a href="#mechi">«Мечи»</a>
+      <a href="#glavy">22 главы</a>
+      <a href="#about">О бренде</a>
+    </nav>
+  </div>
+
+  <div class="hero__band grid">
+    <p class="hero__lede" data-load style="--d:420ms">Петербургская одежда с&nbsp;2014 года: жаккардовые джемперы, футболки, украшения и&nbsp;своя мифология в&nbsp;22&nbsp;главах.</p>
+    <a class="button" href="catalog.html" data-load style="--d:520ms">Открыть каталог</a>
+  </div>
+
+  <h1 class="hero__name">
+    <svg viewBox="-1 5 875 223" aria-hidden="true" focusable="false"><use href="assets/brand.svg#wordmark"/></svg>
+    <span class="sr-only">Волчок</span>
+  </h1>
 </header>
 
-<main>
-<section class="hero">
-<p class="label">С 2014 ГОДА</p>
-<img class="hero__logo" src="assets/img/logo-lavender.png" alt="VOLCHOK" width="600" height="554">
-<p class="hero__tagline">Мы создаём образы на&nbsp;почве любви к&nbsp;искусству и&nbsp;уличной культуре</p>
+<main id="main">
+
+<section class="section grid mechi" id="mechi" aria-labelledby="mechi-title">
+  <figure class="mechi__plate" data-open id="mechi-plate" role="tabpanel" aria-labelledby="tab-black">
+    <img src="assets/img/plate-black.webp" width="1200" height="1200" loading="lazy"
+         alt="Рисунок «Мечи» в вязке: три клинка уходят в водоворот, охра и олива по чёрному"
+         data-black="assets/img/plate-black.webp" data-grey="assets/img/plate-grey.webp"
+         data-alt-black="Рисунок «Мечи» в вязке: три клинка уходят в водоворот, охра и олива по чёрному"
+         data-alt-grey="Рисунок «Мечи» в вязке: три клинка уходят в водоворот, фиолетовый и горчица по серому">
+  </figure>
+  <div class="mechi__side">
+    <div class="tabs" role="tablist" aria-label="Расцветка" data-rise>
+      <button class="tab" type="button" role="tab" id="tab-black" aria-selected="true" aria-controls="mechi-plate" data-colour="black">Чёрный</button>
+      <button class="tab" type="button" role="tab" id="tab-grey" aria-selected="false" aria-controls="mechi-plate" data-colour="grey" tabindex="-1">Серый</button>
+    </div>
+    <div class="mechi__text">
+      <h2 class="h2" id="mechi-title" data-rise style="--i:1">Линия «Мечи»</h2>
+      <p class="mechi__desc" data-rise style="--i:2">Три клинка уходят в&nbsp;водоворот. На&nbsp;джемпере рисунок связан жаккардом: он часть полотна, а&nbsp;не&nbsp;принт поверх. В&nbsp;линии семь вещей, от&nbsp;шоппера за&nbsp;1&nbsp;600&nbsp;₽ до&nbsp;флиски за&nbsp;9&nbsp;800&nbsp;₽.</p>
+      <p class="mechi__colour" data-rise style="--i:3" aria-live="polite" data-colour-black="Чёрная расцветка: охра и олива по чёрному." data-colour-grey="Серая расцветка: фиолетовый и горчица по серому.">Чёрная расцветка: охра и&nbsp;олива по&nbsp;чёрному.</p>
+    </div>
+    <div class="mechi__cells" data-rise style="--i:4">
+      <a class="cell cell--lift" href="catalog.html?f=mechi"><span>Все семь вещей</span><span class="arrow" aria-hidden="true">→</span></a>
+      <a class="cell" href="item.html"><span>Джемпер, <span class="price">7&nbsp;100&nbsp;₽</span></span><span class="arrow" aria-hidden="true">→</span></a>
+    </div>
+  </div>
 </section>
 
-<div class="divider" aria-hidden="true"><span></span><svg width="10" height="10" viewBox="0 0 10 10"><path d="M5 0.5L9.5 5L5 9.5L0.5 5Z" fill="none" stroke="#C0B387" stroke-width="1"/></svg><span></span></div>
+<figure class="band">
+  <div class="band__frame" data-open><img src="assets/img/band-whirl.webp" width="2400" height="1031" loading="lazy" alt="Вязка крупно: остриё трёх клинков уходит в водоворот, охра и олива по чёрному"></div>
+  <figcaption class="band__note grid">
+    <span class="band__title" data-rise>Водоворот из&nbsp;«Мечей»</span>
+    <span class="band__text" data-rise style="--i:1">Закручен так&nbsp;же, как спираль в&nbsp;знаке Волчка: клинки уходят в&nbsp;ту&nbsp;же юлу, которую можно крутануть ниже.</span>
+  </figcaption>
+</figure>
 
-<section class="chapter" aria-labelledby="chapter-title">
-<p class="label label--straw">НОВАЯ ГЛАВА</p>
-<div class="vitrine">
-<svg viewBox="0 0 200 250" aria-hidden="true"><use href="#f-gold"/></svg>
-<img class="vitrine__art" src="assets/img/jacquard-swords.png" alt="Жаккард «Мечи»: три клинка в водовороте" width="720" height="693">
-</div>
-<h2 class="chapter__title" id="chapter-title">МЕЧИ</h2>
-<p class="lore">Три клинка уходят в&nbsp;водоворот, но&nbsp;не&nbsp;тонут. Тот, кто носит их на&nbsp;груди,&nbsp;—&nbsp;тоже.</p>
-<a class="btn btn--gold" href="treasury.html">ОТКРЫТЬ СОКРОВИЩНИЦУ</a>
+<section class="section grid spin" id="spin" aria-labelledby="spin-title">
+  <button class="spin__top" type="button" data-spin aria-label="Крутануть волчок" tabindex="-1">
+    <span class="spin__plane"><span class="spin__disc"><svg viewBox="7 6 934 603" preserveAspectRatio="none" aria-hidden="true" focusable="false"><use href="assets/brand.svg#spiral"/></svg></span></span>
+  </button>
+  <div class="spin__list">
+    <h2 class="h2" id="spin-title" data-rise>Крутани волчок</h2>
+    <ol class="drops" aria-label="Что выпало" data-rise style="--i:1">
+<!-- @drops -->
+      <li><button type="button" data-item="33" aria-pressed="true">Дождевик «Демон»</button></li>
+      <li><button type="button" data-item="1" aria-pressed="false">Футболка «Сатан банана»</button></li>
+      <li><button type="button" data-item="66" aria-pressed="false">Подставка «Замок» под спираль от комаров</button></li>
+      <li><button type="button" data-item="64" aria-pressed="false">Стринги «Потому что»</button></li>
+      <li><button type="button" data-item="65" aria-pressed="false">Флешка «Меч памяти»</button></li>
+<!-- /@drops -->
+    </ol>
+    <div class="spin__act">
+      <button class="button spin__go" type="button" data-spin hidden>Крутануть</button>
+      <p class="spin__how muted">Юла остановится на&nbsp;одной из&nbsp;76 вещей магазина: имя, цена и&nbsp;ссылка.</p>
+    </div>
+  </div>
+  <div class="spin__fact" aria-live="polite" data-rise style="--i:2">
+<!-- @fact -->
+    <span class="price">6 666 ₽</span>
+    <span class="meta">Верхняя одежда</span><br>
+    <a class="link" href="https://volchok.ru/shop/71385-dozhdevik_demon_dozhdevik_demon/">Смотреть на volchok.ru</a>
+<!-- /@fact -->
+  </div>
 </section>
 
-<section class="section" aria-labelledby="slots-title">
-<div class="row-between">
-<h3 class="label" id="slots-title">СНАРЯЖЕНИЕ</h3>
-<a class="link-mono" href="treasury.html">ВСЕ ПРЕДМЕТЫ →</a>
-</div>
-<nav class="slots" aria-label="Слоты снаряжения">
-<a class="slot" href="treasury.html?slot=head">
-<span class="slot__frame"><svg viewBox="0 0 60 60" aria-hidden="true"><path class="frame" d="M8 0.5H52L59.5 8V52L52 59.5H8L0.5 52V8Z"/></svg><svg class="slot__icon" viewBox="0 0 28 28" aria-hidden="true"><path d="M7 24V12C7 7 10 4 14 4C18 4 21 7 21 12V24Z M7 14H21 M14 14V20"/></svg></span>
-<span class="slot__name">ГОЛОВА</span>
-</a>
-<a class="slot" href="treasury.html?slot=torso">
-<span class="slot__frame"><svg viewBox="0 0 60 60" aria-hidden="true"><path class="frame" d="M8 0.5H52L59.5 8V52L52 59.5H8L0.5 52V8Z"/></svg><svg class="slot__icon" viewBox="0 0 28 28" aria-hidden="true"><path d="M10 5L6 7L3 12L6.5 13.5L8 11.5V24H20V11.5L21.5 13.5L25 12L22 7L18 5C17 7 15.6 8 14 8C12.4 8 11 7 10 5Z"/></svg></span>
-<span class="slot__name">ТОРС</span>
-</a>
-<a class="slot" href="treasury.html?slot=armor">
-<span class="slot__frame"><svg viewBox="0 0 60 60" aria-hidden="true"><path class="frame" d="M8 0.5H52L59.5 8V52L52 59.5H8L0.5 52V8Z"/></svg><svg class="slot__icon" viewBox="0 0 28 28" aria-hidden="true"><path d="M6 6C9 4.5 11.5 4 14 4C16.5 4 19 4.5 22 6V15C22 20 18.5 23 14 25C9.5 23 6 20 6 15Z M14 4V25 M6 11H22"/></svg></span>
-<span class="slot__name">БРОНЯ</span>
-</a>
-<a class="slot" href="treasury.html?slot=legs">
-<span class="slot__frame"><svg viewBox="0 0 60 60" aria-hidden="true"><path class="frame" d="M8 0.5H52L59.5 8V52L52 59.5H8L0.5 52V8Z"/></svg><svg class="slot__icon" viewBox="0 0 28 28" aria-hidden="true"><path d="M8 4H20L21 25H16L14 12L12 25H7Z M8 8H20"/></svg></span>
-<span class="slot__name">НОГИ</span>
-</a>
-<a class="slot" href="treasury.html?slot=artifact">
-<span class="slot__frame"><svg viewBox="0 0 60 60" aria-hidden="true"><path class="frame" d="M8 0.5H52L59.5 8V52L52 59.5H8L0.5 52V8Z"/></svg><svg class="slot__icon" viewBox="0 0 28 28" aria-hidden="true"><path d="M9 3L14 9L19 3 M14 9V12 M20 18.5A6 6 0 1 1 8 18.5A6 6 0 1 1 20 18.5Z M14 15.5L16 18.5L14 21.5L12 18.5Z"/></svg></span>
-<span class="slot__name">АРТЕФАКТЫ</span>
-</a>
-</nav>
+<section class="section" id="glavy" aria-labelledby="glavy-title">
+  <div class="shelf__head">
+    <h2 class="h2" id="glavy-title" data-rise>22 главы</h2>
+    <p data-rise style="--i:1">Каждая коллекция Волчка — глава со&nbsp;своим манифестом, с&nbsp;2016 года по&nbsp;сегодня. Корешок ведёт к&nbsp;главе на&nbsp;volchok.ru.</p>
+  </div>
+  <ol class="shelf" aria-label="Главы по порядку">
+<!-- @spines -->
+    <li class="spine" data-kind="col" style="--i:0"><a href="https://volchok.ru/collection/net-tsarey-net-bogov/"><span class="spine__name">Нет царей нет богов</span><span class="spine__kind">коллекция, 2016</span></a></li>
+    <li class="spine" data-kind="col" style="--i:1"><a href="https://volchok.ru/collection/les/"><span class="spine__name">Лес</span><span class="spine__kind">коллекция, 2016</span></a></li>
+    <li class="spine" data-kind="col" style="--i:2"><a href="https://volchok.ru/collection/smertelnaya-bitva/"><span class="spine__name">Смертельная битва</span><span class="spine__kind">коллекция, 2017</span></a></li>
+    <li class="spine" data-kind="col" style="--i:3"><a href="https://volchok.ru/collection/finalnaya-fantaziya/"><span class="spine__name">Финальная фантазия</span><span class="spine__kind">коллекция, 2017</span></a></li>
+    <li class="spine" data-kind="collab" style="--i:4"><a href="https://volchok.ru/collection/posthuman/"><span class="spine__name">Posthuman</span><span class="spine__kind">коллаборация, 2017</span></a></li>
+    <li class="spine" data-kind="col" style="--i:5"><a href="https://volchok.ru/collection/replika/"><span class="spine__name">Реплика</span><span class="spine__kind">коллекция, 2018</span></a></li>
+    <li class="spine" data-kind="col" style="--i:6"><a href="https://volchok.ru/collection/crash-test/"><span class="spine__name">Crash test</span><span class="spine__kind">коллекция, 2018</span></a></li>
+    <li class="spine" data-kind="collab" style="--i:7"><a href="https://volchok.ru/collection/edinstvo/"><span class="spine__name">Единство</span><span class="spine__kind">коллаборация, 2019</span></a></li>
+    <li class="spine" data-kind="col" style="--i:8"><a href="https://volchok.ru/collection/khishchnye-veshchi-veka/"><span class="spine__name">Хищные вещи века</span><span class="spine__kind">коллекция, 2019</span></a></li>
+    <li class="spine" data-kind="col" style="--i:9"><a href="https://volchok.ru/collection/sekta/"><span class="spine__name">Секта</span><span class="spine__kind">коллекция, 2020</span></a></li>
+    <li class="spine" data-kind="col" style="--i:10"><a href="https://volchok.ru/collection/tiran/"><span class="spine__name">Тиран</span><span class="spine__kind">коллекция, 2020</span></a></li>
+    <li class="spine" data-kind="drop" style="--i:11"><a href="https://volchok.ru/collection/volchok-x-bharata-danu/"><span class="spine__name">Дроп 7</span><span class="spine__kind">дроп, 2021</span></a></li>
+    <li class="spine" data-kind="col" style="--i:12"><a href="https://volchok.ru/collection/po-tu-storonu-steny/"><span class="spine__name">По ту сторону стены</span><span class="spine__kind">коллекция, 2021</span></a></li>
+    <li class="spine" data-kind="col" style="--i:13"><a href="https://volchok.ru/collection/epokha-vozrozhdeniya/"><span class="spine__name">Эпоха Возрождения</span><span class="spine__kind">коллекция, 2021</span></a></li>
+    <li class="spine" data-kind="collab" style="--i:14"><a href="https://volchok.ru/collection/volchok-kh-sila-vetra/"><span class="spine__name">Волчок × Сила ветра</span><span class="spine__kind">коллаборация, 2022</span></a></li>
+    <li class="spine" data-kind="collab" style="--i:15"><a href="https://volchok.ru/collection/volchok-kh-signal/"><span class="spine__name">Волчок × Signal</span><span class="spine__kind">коллаборация, 2022</span></a></li>
+    <li class="spine" data-kind="collab" style="--i:16"><a href="https://volchok.ru/collection/volchok-kh-sensor/"><span class="spine__name">Волчок × Sensor</span><span class="spine__kind">коллаборация, 2022</span></a></li>
+    <li class="spine" data-kind="col" style="--i:17"><a href="https://volchok.ru/collection/no-hope/"><span class="spine__name">No hope</span><span class="spine__kind">коллекция, 2022</span></a></li>
+    <li class="spine" data-kind="col" style="--i:18"><a href="https://volchok.ru/collection/aralez/"><span class="spine__name">Aralez</span><span class="spine__kind">коллекция, 2022</span></a></li>
+    <li class="spine" data-kind="collab" style="--i:19"><a href="https://volchok.ru/collection/internal-struggle/"><span class="spine__name">Internal struggle</span><span class="spine__kind">коллаборация, 2022</span></a></li>
+    <li class="spine" data-kind="col" style="--i:20"><a href="https://volchok.ru/collection/purgatory/"><span class="spine__name">Purgatory</span><span class="spine__kind">коллекция, 2023</span></a></li>
+    <li class="spine" data-kind="col" style="--i:21"><a href="https://volchok.ru/collection/logic-games/"><span class="spine__name">Logic Games</span><span class="spine__kind">коллекция, 2024</span></a></li>
+<!-- /@spines -->
+  </ol>
+  <p class="shelf__key" aria-hidden="true"><span>коллекция</span><span class="k-collab">коллаборация</span><span class="k-drop">дроп</span></p>
 </section>
 
-<section class="section" id="chronicles" aria-labelledby="chronicles-title">
-<div class="row-between">
-<h3 class="label" id="chronicles-title">ХРОНИКИ</h3>
-<span class="label" style="letter-spacing: 0.12em">2016 — 2024</span>
-</div>
-<p class="chronicle-intro">Каждая коллекция&nbsp;— глава одной истории</p>
-<ol class="chronicles">
-<li><span class="num">XXII</span><span class="name">LOGIC GAMES</span><span class="year">2024</span></li>
-<li><span class="num">XXI</span><span class="name">PURGATORY</span><span class="year">2023</span></li>
-<li><span class="num">XIX</span><span class="name">ARALEZ</span><span class="year">2022</span></li>
-<li><span class="num">XIV</span><span class="name">ЭПОХА ВОЗРОЖДЕНИЯ</span><span class="year">2021</span></li>
-<li><span class="num">XI</span><span class="name">ТИРАН</span><span class="year">2020</span></li>
-</ol>
-<p class="link-mono" style="margin: 10px 0 0">ВСЕ XXII ГЛАВЫ — СКОРО</p>
+<section class="section grid about" id="about" aria-labelledby="about-title">
+  <h2 class="h2 about__title" id="about-title" data-rise>О&nbsp;бренде</h2>
+  <dl class="about__facts" data-rise style="--i:1">
+    <div><dt>Где</dt><dd>Петербург и&nbsp;Армения</dd></div>
+    <div><dt>С&nbsp;какого года</dt><dd>С&nbsp;2014-го</dd></div>
+    <div><dt>Как связаться</dt><dd><a class="link" href="mailto:order@volchok.ru">order@volchok.ru</a></dd></div>
+  </dl>
+  <div class="about__text">
+    <p class="statement" data-rise style="--i:1"><img class="dropcap" src="assets/img/patch-spiral.webp" width="600" height="398" loading="lazy" alt="">Волчок — петербургский бренд одежды с&nbsp;2014 года: 22 главы-коллекции и&nbsp;футболки с&nbsp;именами вроде «Сатан банана».</p>
+    <p class="about__more" data-rise style="--i:2">Бренд основал Василий Волчок-Русакович. Название значит сразу две вещи: волчонка из&nbsp;колыбельной и&nbsp;юлу, отсюда спираль в&nbsp;знаке. В&nbsp;2018 году Волчок показывался на&nbsp;Pitti Uomo во&nbsp;Флоренции, в&nbsp;2021-м одел геймеров павильона России на&nbsp;Венецианской архитектурной биеннале. С&nbsp;2022 года часть команды работает в&nbsp;Армении, оттуда глава Aralez.</p>
+  </div>
 </section>
+
 </main>
+</div>
 
 <footer class="footer">
-<img class="footer__mark" src="assets/img/spiral-lavender.png" alt="">
-<nav aria-label="Покупателю">
-<a href="https://volchok.ru/client/">ПОМОЩЬ ПОКУПАТЕЛЮ</a>
-<a href="https://volchok.ru/nashi-magaziny-i-partnery/">МАГАЗИНЫ И ПАРТНЁРЫ</a>
-<a href="https://volchok.ru/contacts/">КОНТАКТЫ</a>
-<a href="system.html">ОСНОВА ВИЗУАЛА · ЧЕРНОВИК</a>
-</nav>
-<p>order@volchok.ru<br>VK · YOUTUBE</p>
-<p class="copy">© 2026 ВОЛЧОК</p>
+  <div class="grid footer__cols">
+    <div class="footer__col">
+      <h2>Магазин</h2>
+      <a href="catalog.html">Каталог</a>
+      <a href="https://volchok.ru/nashi-magaziny-i-partnery/">Магазины и&nbsp;партнёры</a>
+      <a href="https://volchok.ru/client/">Помощь покупателю</a>
+    </div>
+    <div class="footer__col">
+      <h2>Разделы</h2>
+      <a href="#mechi">Линия «Мечи»</a>
+      <a href="#spin">Крутани волчок</a>
+      <a href="#glavy">22 главы</a>
+      <a href="#about">О&nbsp;бренде</a>
+    </div>
+    <div class="footer__col">
+      <h2>Связь</h2>
+      <a href="mailto:order@volchok.ru">order@volchok.ru</a>
+      <a href="tel:+79684406757">+7 (968) 440-67-57</a>
+      <a href="https://volchok.ru/contacts/">Контакты</a>
+    </div>
+    <div class="footer__col">
+      <h2>Прототип</h2>
+      <a href="system.html">Основа визуала</a>
+      <span>Черновик 2, октябрь 2026</span>
+      <a href="https://noeasy.xyz/">noeasy.xyz</a>
+    </div>
+  </div>
+  <div class="footer__name" aria-hidden="true">
+    <svg viewBox="-1 5 875 223" focusable="false"><use href="assets/brand.svg#wordmark"/></svg>
+  </div>
+  <p class="footer__legal">© 2026 Волчок. Это прототип редизайна: вещи продаются на&nbsp;volchok.ru.</p>
 </footer>
-</div>
 
-<div class="menu" id="menu" hidden role="dialog" aria-modal="true" aria-label="Меню">
-<div class="menu__inner">
-<div class="topbar">
-<button class="tb-btn tb-left" type="button" data-menu-close><svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true"><path d="M1 1L11 11M11 1L1 11" stroke="#C0B387" stroke-width="1.2" fill="none"/></svg>ЗАКРЫТЬ</button>
-<a class="tb-logo" href="./" aria-label="Волчок — на главную"><img src="assets/img/spiral-lavender.png" alt=""></a>
-<button class="tb-btn tb-right" type="button" data-larets>ЛАРЕЦ · 0</button>
-</div>
-<nav class="menu__nav" aria-label="Разделы">
-<a href="./">Главная <small>ЛОГОВО</small></a>
-<a href="treasury.html">Сокровищница <small>ПРЕДМЕТЫ</small></a>
-<a href="./#chronicles" data-menu-close>Хроники <small>XXII ГЛАВЫ</small></a>
-<a href="item.html">Предмет <small>ПРИМЕР</small></a>
-</nav>
-<div class="menu__aside">
-<p class="label label--small">ЧЕРНОВИК</p>
-<a class="link-mono" href="system.html">ОСНОВА: ЦВЕТА, ШРИФТЫ, РАМКИ →</a>
-</div>
-</div>
-</div>
-
+<script src="assets/items.js"></script>
 <script src="assets/volchok.js"></script>
 </body>
 </html>

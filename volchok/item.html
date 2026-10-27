@@ -4,107 +4,105 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow">
-<meta name="theme-color" content="#190A27">
-<title>VOLCHOK — прототип · Джемпер МЕЧИ</title>
-<link rel="icon" type="image/png" href="assets/img/spiral-lavender.png">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&amp;family=IBM+Plex+Mono:wght@400;500&amp;display=swap">
+<meta name="theme-color" content="#170B21">
+<title>Джемпер «Мечи» · Волчок, прототип</title>
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+<link rel="preload" href="assets/fonts/libre-franklin-cyr.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="assets/volchok.css">
+<script>document.documentElement.classList.add('js')</script>
 </head>
 <body>
-
-<svg class="sprite" aria-hidden="true" focusable="false">
-<defs>
-<radialGradient id="vitrine" cx="50%" cy="50%" r="62%"><stop offset="0" stop-color="#2D1E41"/><stop offset="0.65" stop-color="#221333"/><stop offset="1" stop-color="#1D0E2D"/></radialGradient>
-<g id="f-bronze"><path d="M14 4H186L196 14V236L186 246H14L4 236V14Z" fill="url(#vitrine)" stroke="#966B27" stroke-width="1.3" vector-effect="non-scaling-stroke"/></g>
-<g id="f-silver"><path d="M14 4H186L196 14V236L186 246H14L4 236V14Z" fill="url(#vitrine)" stroke="#BDBBD0" stroke-width="1.2" vector-effect="non-scaling-stroke"/><path d="M17 10H183L190 17V233L183 240H17L10 233V17Z" fill="none" stroke="#BDBBD0" stroke-width="0.8" opacity="0.5" vector-effect="non-scaling-stroke"/><path d="M100 -0.5L105 4L100 8.5L95 4Z" fill="#190A27" stroke="#BDBBD0" stroke-width="1" vector-effect="non-scaling-stroke"/><path d="M100 241.5L105 246L100 250.5L95 246Z" fill="#190A27" stroke="#BDBBD0" stroke-width="1" vector-effect="non-scaling-stroke"/></g>
-<g id="f-gold"><path d="M4 236V80C4 44 40 14 100 4C160 14 196 44 196 80V236L186 246H14Z" fill="url(#vitrine)" stroke="#C0B387" stroke-width="1.4" vector-effect="non-scaling-stroke"/><path d="M10 232V82C10 50 43 22 100 12C157 22 190 50 190 82V232L182 240H18Z" fill="none" stroke="#C0B387" stroke-width="0.8" opacity="0.6" vector-effect="non-scaling-stroke"/><path d="M100 -3L104 2L100 7L96 2Z" fill="#C0B387"/></g>
-<g id="s-sweater"><path d="M76 62L90 58Q100 68 110 58L124 62L146 72Q154 76 156 86L170 192L150 196L138 110L138 210L62 210L62 110L50 196L30 192L44 86Q46 76 54 72Z" fill="#35294A"/><path d="M88 60Q100 76 112 60M62 200H138M31 184L50 187M150 187L169 184" fill="none" stroke="#4D4063" stroke-width="1.1" vector-effect="non-scaling-stroke"/></g>
-<g id="s-cap"><path d="M58 150C58 110 76 90 104 90C132 90 150 110 150 150Z" fill="#35294A"/><path d="M58 150H150C166 150 178 155 184 162C160 163 100 161 54 157C53 154 55 150 58 150Z" fill="#35294A"/><circle cx="104" cy="90" r="4" fill="#35294A"/></g>
-<g id="s-jeans"><path d="M70 50H130L137 214H107L100 100L93 214H63Z" fill="#35294A"/></g>
-</defs>
-</svg>
+<a class="skip" href="#main">К содержанию</a>
 
 <div class="page">
-<p class="proto">ПРОТОТИП РЕДИЗАЙНА · ЧЕРНОВИК 1</p>
-
-<header class="topbar">
-<a class="tb-btn tb-left" href="treasury.html">← СОКРОВИЩНИЦА</a>
-<a class="tb-logo" href="./" aria-label="Волчок — на главную"><img src="assets/img/spiral-lavender.png" alt=""></a>
-<button class="tb-btn tb-right" type="button" data-larets>ЛАРЕЦ · 0</button>
+<header class="bar">
+  <a class="bar__home" href="./" aria-label="Волчок, на главную"><svg viewBox="-1 5 875 223" aria-hidden="true" focusable="false"><use href="assets/brand.svg#wordmark"/></svg></a>
+  <div class="nav-wrap">
+    <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="nav">Меню</button>
+    <nav class="nav" id="nav" aria-label="Разделы">
+      <a href="catalog.html">Каталог</a>
+      <a href="./#mechi">«Мечи»</a>
+      <a href="./#glavy">22 главы</a>
+      <a href="./#about">О бренде</a>
+    </nav>
+  </div>
 </header>
 
-<main class="item">
-<div class="vitrine">
-<svg viewBox="0 0 200 250" aria-hidden="true"><use href="#f-gold"/><use href="#s-sweater"/></svg>
-<img class="vitrine__motif" src="assets/img/jacquard-swords.png" alt="Жаккард «Мечи» на груди джемпера" width="720" height="693">
+<main id="main">
+<div class="grid item">
+  <div class="item__gallery">
+    <figure>
+      <div class="frame" data-open-load><img src="assets/img/plate-black.webp" width="1200" height="1200" fetchpriority="high" alt="Рисунок «Мечи» в вязке: три клинка уходят в водоворот, охра и олива по чёрному"></div>
+      <figcaption>Рисунок целиком: три клинка и&nbsp;водоворот.</figcaption>
+    </figure>
+    <figure>
+      <div class="frame" data-open><img src="assets/img/knit-detail.webp" width="840" height="840" loading="lazy" alt="Вязка крупно: рукоять и гарда среднего клинка, каждая петля видна"></div>
+      <figcaption data-rise>Крупно: рукоять и&nbsp;гарда, связанные петля за&nbsp;петлёй.</figcaption>
+    </figure>
+  </div>
+
+  <div class="item__buy">
+    <h1 data-load style="--d:80ms">Джемпер «Мечи»</h1>
+    <p class="item__price price" data-load style="--d:160ms">7&nbsp;100&nbsp;₽<s>8&nbsp;900&nbsp;₽</s></p>
+    <ul class="sizes" aria-label="Размеры в наличии" data-load style="--d:240ms"><li>S</li><li>M</li><li>L</li><li>XL</li></ul>
+    <a class="button" href="https://volchok.ru/shop/70547-dzhemper_swords_dzhemper_swords/" data-load style="--d:320ms">Купить на&nbsp;volchok.ru</a>
+    <p class="item__desc" data-load style="--d:400ms">Три клинка уходят в&nbsp;водоворот и&nbsp;не&nbsp;тонут. Рисунок связан жаккардом: клинки вплетены в&nbsp;полотно, а&nbsp;не&nbsp;напечатаны поверх, поэтому не&nbsp;трескаются и&nbsp;не&nbsp;сходят после стирок.</p>
+    <dl class="facts" data-load style="--d:480ms">
+      <dt>Рисунок</dt><dd>Жаккард «Мечи»</dd>
+      <dt>Размеры</dt><dd>S, M, L, XL</dd>
+      <dt>Номер в&nbsp;каталоге</dt><dd>70547</dd>
+      <dt>Доставка</dt><dd><a class="link" href="https://volchok.ru/client/">Условия на&nbsp;volchok.ru</a></dd>
+    </dl>
+  </div>
 </div>
 
-<div class="item__meta row-between">
-<span>№ 70547</span>
-<span class="item__rarity r-gold"><svg width="8" height="8" viewBox="0 0 8 8" aria-hidden="true"><path d="M4 0L8 4L4 8L0 4Z" fill="#C0B387"/></svg>ЗОЛОТО</span>
-</div>
-
-<p class="label label--small item__slot">БРОНЯ · ГЛАВА «МЕЧИ»</p>
-<h1 class="item__name">ДЖЕМПЕР МЕЧИ</h1>
-<p class="lore">Три клинка уходят в&nbsp;водоворот, но&nbsp;не&nbsp;тонут. Тот, кто носит их на&nbsp;груди,&nbsp;—&nbsp;тоже.</p>
-<p class="item__price">8 900 ₽</p>
-
-<div class="sizes-head row-between">
-<span class="label label--small">РАЗМЕР</span>
-<a class="link-mono" href="https://volchok.ru/client/" style="font-size: 10px; letter-spacing: 0.14em">ТАБЛИЦА РАЗМЕРОВ</a>
-</div>
-<div class="sizes" role="group" aria-label="Размер">
-<button class="size" type="button" disabled aria-label="XS — нет в наличии"><svg viewBox="0 0 56 56" aria-hidden="true"><path class="frame" d="M7 0.5H49L55.5 7V49L49 55.5H7L0.5 49V7Z"/><path class="strike" d="M10 46L46 10"/></svg><span>XS</span></button>
-<button class="size" type="button" aria-pressed="false"><svg viewBox="0 0 56 56" aria-hidden="true"><path class="frame" d="M7 0.5H49L55.5 7V49L49 55.5H7L0.5 49V7Z"/></svg><span>S</span></button>
-<button class="size" type="button" aria-pressed="true"><svg viewBox="0 0 56 56" aria-hidden="true"><path class="frame" d="M7 0.75H49L55.25 7V49L49 55.25H7L0.75 49V7Z"/></svg><span>M</span></button>
-<button class="size size--last" type="button" aria-pressed="false" aria-label="L — последний"><svg viewBox="0 0 56 56" aria-hidden="true"><path class="frame" d="M7 0.5H49L55.5 7V49L49 55.5H7L0.5 49V7Z"/></svg><span>L</span></button>
-<button class="size" type="button" aria-pressed="false"><svg viewBox="0 0 56 56" aria-hidden="true"><path class="frame" d="M7 0.5H49L55.5 7V49L49 55.5H7L0.5 49V7Z"/></svg><span>XL</span></button>
-</div>
-<p class="sizes-note">L — ПОСЛЕДНИЙ В СОКРОВИЩНИЦЕ</p>
-
-<button class="btn btn--gold" type="button" data-add="1" data-toast="ДЖЕМПЕР МЕЧИ — В ЛАРЦЕ">ПОЛОЖИТЬ В ЛАРЕЦ</button>
-
-<section class="tag" aria-labelledby="tag-title">
-<h2 class="label label--small" id="tag-title">ЭТИКЕТКА</h2>
-<dl>
-<dt>МАТЕРИАЛ</dt><dd>Жаккардовая вязка</dd>
-<dt>СОСТАВ</dt><dd class="todo">[СОСТАВ]</dd>
-<dt>ПОСАДКА</dt><dd class="todo">[ПОСАДКА]</dd>
-<dt>ТИРАЖ</dt><dd class="todo">[ТИРАЖ]</dd>
-<dt>МАСТЕР</dt><dd class="todo">[АВТОР РИСУНКА]</dd>
-<dt>ГЛАВА</dt><dd style="letter-spacing: 0.06em">МЕЧИ</dd>
-</dl>
-</section>
-
-<section class="look" aria-labelledby="look-title">
-<div class="row-between">
-<h2 class="label label--small" id="look-title">ОБРАЗ</h2>
-<span class="label label--small" style="letter-spacing: 0.14em">4 ПРЕДМЕТА</span>
-</div>
-<p class="look__title">С этим носят</p>
-<div class="look-grid">
-<a class="card card--mini" href="treasury.html?slot=head">
-<span class="vitrine"><svg viewBox="0 0 200 250" aria-hidden="true"><use href="#f-bronze"/><use href="#s-cap"/></svg></span>
-<span class="card__name">КЕПКА ДЭТ МЕТАЛ</span>
-<span class="card__price">2 600 ₽</span>
-</a>
-<a class="card card--mini" href="treasury.html?slot=legs">
-<span class="vitrine"><svg viewBox="0 0 200 250" aria-hidden="true"><use href="#f-silver"/><use href="#s-jeans"/></svg></span>
-<span class="card__name">ДЖИНСЫ ЛЕТУЧАЯ МЫШЬ</span>
-<span class="card__price">10 600 ₽</span>
-</a>
-<a class="card card--mini" href="treasury.html?slot=artifact">
-<span class="vitrine"><svg viewBox="0 0 200 250" aria-hidden="true"><use href="#f-silver"/></svg><img class="vitrine__dagger" src="assets/img/dagger-shade.png" alt="" width="210" height="763"></span>
-<span class="card__name">ФЛЕШКА МЕЧ ПАМЯТИ</span>
-<span class="card__price">4 200 ₽</span>
-</a>
-</div>
-<button class="btn btn--line" type="button" data-add="4" data-toast="ОБРАЗ ИЗ 4 ПРЕДМЕТОВ — В ЛАРЦЕ">НАДЕТЬ ВЕСЬ ОБРАЗ · 26 300 ₽</button>
+<section class="section with" aria-labelledby="with-title">
+  <h2 class="h2" id="with-title" data-rise>С&nbsp;этим носят</h2>
+  <ul class="rows rows--rise">
+    <li style="--i:1"><a class="row" href="https://volchok.ru/shop/71233-kapyushon_swords_kapyushon_swords/"><span class="row__name">Капюшон «Мечи»</span><span class="row__note">та&nbsp;же линия</span><span class="row__price price">5&nbsp;200&nbsp;₽</span></a></li>
+    <li style="--i:2"><a class="row" href="https://volchok.ru/shop/71184-varezhki_swords_varezhki_swords/"><span class="row__name">Варежки «Мечи»</span><span class="row__note">та&nbsp;же линия</span><span class="row__price price">2&nbsp;000&nbsp;₽</span></a></li>
+    <li style="--i:3"><a class="row" href="https://volchok.ru/shop/71160-shopper_swords_shopper_swords/"><span class="row__name">Шоппер «Мечи»</span><span class="row__note">та&nbsp;же линия</span><span class="row__price price">1&nbsp;600&nbsp;₽</span></a></li>
+    <li style="--i:4"><a class="row" href="https://volchok.ru/shop/71173-lajner_swords_lajner_swords/"><span class="row__name">Лайнер «Мечи»</span><span class="row__note">та&nbsp;же линия</span><span class="row__price price"><s>10&nbsp;900&nbsp;₽</s>8&nbsp;700&nbsp;₽</span></a></li>
+  </ul>
+  <p class="link-line" data-rise style="--i:2"><a class="link" href="catalog.html?f=mechi">Вся линия «Мечи» в каталоге</a></p>
 </section>
 </main>
 </div>
+
+<footer class="footer">
+  <div class="grid footer__cols">
+    <div class="footer__col">
+      <h2>Магазин</h2>
+      <a href="catalog.html">Каталог</a>
+      <a href="https://volchok.ru/nashi-magaziny-i-partnery/">Магазины и&nbsp;партнёры</a>
+      <a href="https://volchok.ru/client/">Помощь покупателю</a>
+    </div>
+    <div class="footer__col">
+      <h2>Разделы</h2>
+      <a href="./#mechi">Линия «Мечи»</a>
+      <a href="./#spin">Крутани волчок</a>
+      <a href="./#glavy">22 главы</a>
+      <a href="./#about">О&nbsp;бренде</a>
+    </div>
+    <div class="footer__col">
+      <h2>Связь</h2>
+      <a href="mailto:order@volchok.ru">order@volchok.ru</a>
+      <a href="tel:+79684406757">+7 (968) 440-67-57</a>
+      <a href="https://volchok.ru/contacts/">Контакты</a>
+    </div>
+    <div class="footer__col">
+      <h2>Прототип</h2>
+      <a href="system.html">Основа визуала</a>
+      <span>Черновик 2, октябрь 2026</span>
+      <a href="https://noeasy.xyz/">noeasy.xyz</a>
+    </div>
+  </div>
+  <div class="footer__name" aria-hidden="true">
+    <svg viewBox="-1 5 875 223" focusable="false"><use href="assets/brand.svg#wordmark"/></svg>
+  </div>
+  <p class="footer__legal">© 2026 Волчок. Это прототип редизайна: вещи продаются на&nbsp;volchok.ru.</p>
+</footer>
 
 <script src="assets/volchok.js"></script>
 </body>

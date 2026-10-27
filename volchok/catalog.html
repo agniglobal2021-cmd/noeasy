@@ -1,0 +1,229 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#170B21">
+<title>Каталог · Волчок, прототип</title>
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+<link rel="preload" href="assets/fonts/libre-franklin-cyr.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="assets/volchok.css">
+<script>document.documentElement.classList.add('js')</script>
+</head>
+<body>
+<a class="skip" href="#main">К содержанию</a>
+
+<div class="page">
+<header class="bar">
+  <a class="bar__home" href="./" aria-label="Волчок, на главную"><svg viewBox="-1 5 875 223" aria-hidden="true" focusable="false"><use href="assets/brand.svg#wordmark"/></svg></a>
+  <div class="nav-wrap">
+    <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="nav">Меню</button>
+    <nav class="nav" id="nav" aria-label="Разделы">
+      <a href="catalog.html" aria-current="page">Каталог</a>
+      <a href="./#mechi">«Мечи»</a>
+      <a href="./#glavy">22 главы</a>
+      <a href="./#about">О бренде</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+<div class="grid cat-head">
+  <div class="cat-head__text">
+    <h1>Каталог</h1>
+<!-- @catlede -->
+    <p>76 вещей из&nbsp;магазина Волчка: от&nbsp;нашивки за&nbsp;300 ₽ до&nbsp;бомбера «Япония» за&nbsp;19 800 ₽.</p>
+<!-- /@catlede -->
+  </div>
+  <a class="promo" href="?f=mechi" data-filter-link="mechi">
+    <figure data-open><img src="assets/img/plate-black.webp" width="1200" height="1200" alt="Рисунок «Мечи» в вязке: три клинка уходят в водоворот"></figure>
+    <span><span>Линия «Мечи», семь вещей</span><span aria-hidden="true">→</span></span>
+  </a>
+</div>
+
+<div class="filters" role="group" aria-label="Показать">
+<!-- @filters -->
+  <button class="filter" type="button" data-f="all" aria-pressed="true">Все<span class="count muted">76</span></button>
+  <button class="filter" type="button" data-f="mechi" aria-pressed="false">Линия «Мечи»<span class="count muted">7</span></button>
+  <button class="filter" type="button" data-f="tees" aria-pressed="false">Футболки и майки<span class="count muted">18</span></button>
+  <button class="filter" type="button" data-f="knit" aria-pressed="false">Худи, джемперы, боди<span class="count muted">13</span></button>
+  <button class="filter" type="button" data-f="outer" aria-pressed="false">Верхняя одежда<span class="count muted">6</span></button>
+  <button class="filter" type="button" data-f="legs" aria-pressed="false">Брюки и шорты<span class="count muted">5</span></button>
+  <button class="filter" type="button" data-f="head" aria-pressed="false">Шапки, кепки, шарфы<span class="count muted">10</span></button>
+  <button class="filter" type="button" data-f="bags" aria-pressed="false">Сумки и шопперы<span class="count muted">7</span></button>
+  <button class="filter" type="button" data-f="jewel" aria-pressed="false">Украшения<span class="count muted">5</span></button>
+  <button class="filter" type="button" data-f="misc" aria-pressed="false">Мелочи<span class="count muted">12</span></button>
+<!-- /@filters -->
+</div>
+
+<!-- @groups -->
+<section class="group" data-group="tees" aria-labelledby="g-tees">
+  <h2 id="g-tees">Футболки и майки</h2>
+  <ul class="rows">
+    <li style="--i:0"><a class="row" href="https://volchok.ru/shop/71524-futbolka_efimb_futbolka_efimb/"><span class="row__name">Футболка «ЕФИМБ»</span><span class="row__note"></span><span class="row__price price">3 900 ₽</span></a></li>
+    <li style="--i:1"><a class="row" href="https://volchok.ru/shop/71518-futbolka_satan_banana_futbolka_satan_banana/"><span class="row__name">Футболка «Сатан банана»</span><span class="row__note"></span><span class="row__price price">3 900 ₽</span></a></li>
+    <li style="--i:2"><a class="row" href="https://volchok.ru/shop/71500-futbolka_mech_futbolka_mech/"><span class="row__name">Футболка «Меч»</span><span class="row__note"></span><span class="row__price price">3 900 ₽</span></a></li>
+    <li style="--i:3"><a class="row" href="https://volchok.ru/shop/71506-futbolka_kloun_futbolka_kloun/"><span class="row__name">Футболка «Клоун»</span><span class="row__note"></span><span class="row__price price">3 900 ₽</span></a></li>
+    <li style="--i:4"><a class="row" href="https://volchok.ru/shop/71494-futbolka_shiza_futbolka_shiza/"><span class="row__name">Футболка «Шиза»</span><span class="row__note"></span><span class="row__price price">3 900 ₽</span></a></li>
+    <li style="--i:5"><a class="row" href="https://volchok.ru/shop/71512-futbolka_tamagochi_futbolka_tamagochi/"><span class="row__name">Футболка «Тамагочи»</span><span class="row__note"></span><span class="row__price price">3 900 ₽</span></a></li>
+    <li style="--i:6"><a class="row" href="https://volchok.ru/shop/71486-futbolka_ryczar_volk_futbolka_ryczar_volk/"><span class="row__name">Футболка «Рыцарь волк»</span><span class="row__note"></span><span class="row__price price">4 900 ₽</span></a></li>
+    <li style="--i:7"><a class="row" href="https://volchok.ru/shop/71415-futbolka_ryczar_futbolka_ryczar/"><span class="row__name">Футболка «Чучело»</span><span class="row__note">остались S и M</span><span class="row__price price">4 900 ₽</span></a></li>
+    <li style="--i:8"><a class="row" href="https://volchok.ru/shop/71440-futbolka_lyubov_i_smert_futbolka_lyubov_i_smert/"><span class="row__name">Футболка «Любовь и смерть»</span><span class="row__note"></span><span class="row__price price">4 700 ₽</span></a></li>
+    <li style="--i:9"><a class="row" href="https://volchok.ru/shop/71423-futbolka_eto_tebe_futbolka_eto_tebe/"><span class="row__name">Футболка «Это тебе»</span><span class="row__note"></span><span class="row__price price">4 500 ₽</span></a></li>
+    <li style="--i:10"><a class="row" href="https://volchok.ru/shop/71364-futbolka_gabbagedon_futbolka_gabbagedon/"><span class="row__name">Футболка «Габбагедон»</span><span class="row__note">остался один S</span><span class="row__price price">4 800 ₽</span></a></li>
+    <li style="--i:11"><a class="row" href="https://volchok.ru/shop/71281-futbolka_russkaya_gotika_futbolka_russkaya_gotika/"><span class="row__name">Футболка «Русская готика»</span><span class="row__note"></span><span class="row__price price">4 400 ₽</span></a></li>
+    <li style="--i:12"><a class="row" href="https://volchok.ru/shop/71236-futbolka_romantic_futbolka_romantic/"><span class="row__name">Футболка «Романтик»</span><span class="row__note">остался один XXL</span><span class="row__price price">4 800 ₽</span></a></li>
+    <li style="--i:13"><a class="row" href="https://volchok.ru/shop/71429-krop-top_angel_i_demon_krop-top_angel_i_demon/"><span class="row__name">Кроп-топ «Ангел»</span><span class="row__note"></span><span class="row__price price">3 500 ₽</span></a></li>
+    <li style="--i:14"><a class="row" href="https://volchok.ru/shop/70960-majka_vertebra_majka_vertebra/"><span class="row__name">Майка «Вертебра»</span><span class="row__note"></span><span class="row__price price">3 200 ₽</span></a></li>
+    <li style="--i:15"><a class="row" href="https://volchok.ru/shop/19326-majka_flame_skull_majka_flame_skull-chernyj/"><span class="row__name">Майка «Пламя»</span><span class="row__note"></span><span class="row__price price">3 400 ₽</span></a></li>
+    <li style="--i:16"><a class="row" href="https://volchok.ru/shop/71435-longsliv_angel_i_demon_longsliv_angel_i_demon/"><span class="row__name">Лонгслив «Ангел и демон»</span><span class="row__note"></span><span class="row__price price">6 900 ₽</span></a></li>
+    <li style="--i:17"><a class="row" href="https://volchok.ru/shop/71395-dzhersi_molnii_dzhersi_molnii/"><span class="row__name">Джерси «Молнии»</span><span class="row__note"></span><span class="row__price price">7 900 ₽</span></a></li>
+  </ul>
+</section>
+
+<section class="group" data-group="knit" aria-labelledby="g-knit">
+  <h2 id="g-knit">Худи, джемперы, боди</h2>
+  <ul class="rows">
+    <li style="--i:0"><a class="row" href="https://volchok.ru/shop/71466-khudi_bitva_khudi_bitva/"><span class="row__name">Худи «Битва»</span><span class="row__note"></span><span class="row__price price">9 800 ₽</span></a></li>
+    <li style="--i:1"><a class="row" href="https://volchok.ru/shop/71452-khudi_proczvetanie_khudi_proczvetanie/"><span class="row__name">Худи «Процветание»</span><span class="row__note"></span><span class="row__price price">9 400 ₽</span></a></li>
+    <li style="--i:2"><a class="row" href="https://volchok.ru/shop/71042-khudi_izluchenie_lyubvi_khudi_izluchenie_lyubvi/"><span class="row__name">Худи «Излучение любви»</span><span class="row__note">остался один XXL</span><span class="row__price price">8 600 ₽</span></a></li>
+    <li style="--i:3"><a class="row" href="https://volchok.ru/shop/70691-khudi_picnic_khudi_picnic/"><span class="row__name">Худи «Пикник»</span><span class="row__note"></span><span class="row__price price">10 400 ₽</span></a></li>
+    <li style="--i:4"><a class="row" href="https://volchok.ru/shop/70703-khudi_kaplya_khudi_kaplya/"><span class="row__name">Худи «Капля»</span><span class="row__note">скидка 20%</span><span class="row__price price"><s>8 500 ₽</s>6 800 ₽</span></a></li>
+    <li style="--i:5" data-mechi><a class="row" href="item.html"><span class="row__name">Джемпер «Мечи»</span><span class="row__note">скидка 20%</span><span class="row__price price"><s>8 900 ₽</s>7 100 ₽</span></a></li>
+    <li style="--i:6"><a class="row" href="https://volchok.ru/shop/71359-dzhemper_mechi_2_dzhemper_mechi_2/"><span class="row__name">Джемпер «Демон»</span><span class="row__note"></span><span class="row__price price">9 200 ₽</span></a></li>
+    <li style="--i:7"><a class="row" href="https://volchok.ru/shop/71211-dzhemper_emo_dzhemper_emo/"><span class="row__name">Джемпер «Эмо»</span><span class="row__note">остался один XL</span><span class="row__price price">11 900 ₽</span></a></li>
+    <li style="--i:8"><a class="row" href="https://volchok.ru/shop/15615-dzhemper_acid_dzhemper_acid/"><span class="row__name">Джемпер «Эйсид»</span><span class="row__note"></span><span class="row__price price">12 800 ₽</span></a></li>
+    <li style="--i:9"><a class="row" href="https://volchok.ru/shop/71048-dzhemper_ranim_dzhemper_ranim/"><span class="row__name">Джемпер «Раним»</span><span class="row__note">скидка 20%</span><span class="row__price price"><s>11 500 ₽</s>9 200 ₽</span></a></li>
+    <li style="--i:10"><a class="row" href="https://volchok.ru/shop/71268-bodi_digitonica_bodi_digitonica/"><span class="row__name">Боди «Дигитоника»</span><span class="row__note"></span><span class="row__price price">6 500 ₽</span></a></li>
+    <li style="--i:11"><a class="row" href="https://volchok.ru/shop/16998-bodi_dospekhi_bodi_dospekhi/"><span class="row__name">Боди «Доспехи»</span><span class="row__note"></span><span class="row__price price">6 500 ₽</span></a></li>
+    <li style="--i:12"><a class="row" href="https://volchok.ru/shop/70480-bodi_armor_2_bodi_armor_2/"><span class="row__name">Водолазка «Эйсид»</span><span class="row__note">скидка 20%</span><span class="row__price price"><s>6 500 ₽</s>5 200 ₽</span></a></li>
+  </ul>
+</section>
+
+<section class="group" data-group="outer" aria-labelledby="g-outer">
+  <h2 id="g-outer">Верхняя одежда</h2>
+  <ul class="rows">
+    <li style="--i:0"><a class="row" href="https://volchok.ru/shop/71300-bomber_ornament_bomber_ornament/"><span class="row__name">Бомбер «Орнамент»</span><span class="row__note"></span><span class="row__price price">16 800 ₽</span></a></li>
+    <li style="--i:1"><a class="row" href="https://volchok.ru/shop/71294-bomber_serafim_2_bomber_serafim_2/"><span class="row__name">Бомбер «Япония»</span><span class="row__note"></span><span class="row__price price">19 800 ₽</span></a></li>
+    <li style="--i:2"><a class="row" href="https://volchok.ru/shop/71385-dozhdevik_demon_dozhdevik_demon/"><span class="row__name">Дождевик «Демон»</span><span class="row__note"></span><span class="row__price price">6 666 ₽</span></a></li>
+    <li style="--i:3" data-mechi><a class="row" href="https://volchok.ru/shop/71173-lajner_swords_lajner_swords/"><span class="row__name">Лайнер «Мечи»</span><span class="row__note">скидка 20%</span><span class="row__price price"><s>10 900 ₽</s>8 700 ₽</span></a></li>
+    <li style="--i:4" data-mechi><a class="row" href="https://volchok.ru/shop/71070-fliska_swords_fliska_swords/"><span class="row__name">Флиска «Мечи»</span><span class="row__note"></span><span class="row__price price">9 800 ₽</span></a></li>
+    <li style="--i:5" data-mechi><a class="row" href="https://volchok.ru/shop/71206-flisovyj_zhilet_swords_flisovyj_zhilet_swords/"><span class="row__name">Флисовый жилет «Мечи»</span><span class="row__note"></span><span class="row__price price">4 900 ₽</span></a></li>
+  </ul>
+</section>
+
+<section class="group" data-group="legs" aria-labelledby="g-legs">
+  <h2 id="g-legs">Брюки и шорты</h2>
+  <ul class="rows">
+    <li style="--i:0"><a class="row" href="https://volchok.ru/shop/70821-dzhinsy_batwings_dzhinsy_batwings/"><span class="row__name">Джинсы «Летучая мышь»</span><span class="row__note"></span><span class="row__price price">10 600 ₽</span></a></li>
+    <li style="--i:1"><a class="row" href="https://volchok.ru/shop/70575-bryuki_batwings_bryuki_batwings/"><span class="row__name">Брюки «Летучая мышь»</span><span class="row__note">остался один XL</span><span class="row__price price">7 500 ₽</span></a></li>
+    <li style="--i:2"><a class="row" href="https://volchok.ru/shop/70822-shorty_dzhinsovye_batwings_shorty_dzhinsovye_batwings/"><span class="row__name">Шорты «Летучая мышь»</span><span class="row__note"></span><span class="row__price price">7 400 ₽</span></a></li>
+    <li style="--i:3"><a class="row" href="https://volchok.ru/shop/70839-plyazhnye_shorty_volchok_2_plyazhnye_shorty_volchok_2/"><span class="row__name">Шорты пляжные «Лого»</span><span class="row__note"></span><span class="row__price price">5 600 ₽</span></a></li>
+    <li style="--i:4"><a class="row" href="https://volchok.ru/shop/70494-legginsy_tribal_suit_legginsy_tribal_suit/"><span class="row__name">Леггинсы «Эйсид»</span><span class="row__note"></span><span class="row__price price">5 700 ₽</span></a></li>
+  </ul>
+</section>
+
+<section class="group" data-group="head" aria-labelledby="g-head">
+  <h2 id="g-head">Шапки, кепки, шарфы</h2>
+  <ul class="rows">
+    <li style="--i:0"><a class="row" href="https://volchok.ru/shop/71464-kepka_babochka_kepka_babochka/"><span class="row__name">Кепка «Бабочка»</span><span class="row__note"></span><span class="row__price price">2 600 ₽</span></a></li>
+    <li style="--i:1"><a class="row" href="https://volchok.ru/shop/71353-kepka_det_metal_kepka_det_metal/"><span class="row__name">Кепка «Дэт метал»</span><span class="row__note"></span><span class="row__price price">2 600 ₽</span></a></li>
+    <li style="--i:2"><a class="row" href="https://volchok.ru/shop/71351-kepka_venom_kepka_venom/"><span class="row__name">Кепка «Веном»</span><span class="row__note"></span><span class="row__price price">2 600 ₽</span></a></li>
+    <li style="--i:3"><a class="row" href="https://volchok.ru/shop/71192-shapka_emo_shapka_emo/"><span class="row__name">Шапка «Эмо»</span><span class="row__note"></span><span class="row__price price">3 200 ₽</span></a></li>
+    <li style="--i:4"><a class="row" href="https://volchok.ru/shop/71273-shapka_emo_poloska_shapka_emo_poloska/"><span class="row__name">Шапка «Эмо», в полоску</span><span class="row__note"></span><span class="row__price price">2 700 ₽</span></a></li>
+    <li style="--i:5"><a class="row" href="https://volchok.ru/shop/70668-shapka_chain_-_bordovyj_shapka_chain_-_bordovyj/"><span class="row__name">Шапка «Цепи»</span><span class="row__note"></span><span class="row__price price">6 600 ₽</span></a></li>
+    <li style="--i:6"><a class="row" href="https://volchok.ru/shop/70536-balaklava_acid_balaklava_acid/"><span class="row__name">Балаклава «Эйсид»</span><span class="row__note"></span><span class="row__price price">3 000 ₽</span></a></li>
+    <li style="--i:7" data-mechi><a class="row" href="https://volchok.ru/shop/71233-kapyushon_swords_kapyushon_swords/"><span class="row__name">Капюшон «Мечи»</span><span class="row__note"></span><span class="row__price price">5 200 ₽</span></a></li>
+    <li style="--i:8" data-mechi><a class="row" href="https://volchok.ru/shop/71184-varezhki_swords_varezhki_swords/"><span class="row__name">Варежки «Мечи»</span><span class="row__note"></span><span class="row__price price">2 000 ₽</span></a></li>
+    <li style="--i:9"><a class="row" href="https://volchok.ru/shop/71127-sharf_dragon_eyes_sharf_dragon_eyes/"><span class="row__name">Шарф «Дракон»</span><span class="row__note"></span><span class="row__price price">3 900 ₽</span></a></li>
+  </ul>
+</section>
+
+<section class="group" data-group="bags" aria-labelledby="g-bags">
+  <h2 id="g-bags">Сумки и шопперы</h2>
+  <ul class="rows">
+    <li style="--i:0" data-mechi><a class="row" href="https://volchok.ru/shop/71160-shopper_swords_shopper_swords/"><span class="row__name">Шоппер «Мечи»</span><span class="row__note"></span><span class="row__price price">1 600 ₽</span></a></li>
+    <li style="--i:1"><a class="row" href="https://volchok.ru/shop/71332-shopper_shurale_shopper_shurale/"><span class="row__name">Шоппер «Волчок × Шурале»</span><span class="row__note"></span><span class="row__price price">4 800 ₽</span></a></li>
+    <li style="--i:2"><a class="row" href="https://volchok.ru/shop/71220-shopper_myshinyj_triumf_shopper_myshinyj_triumf/"><span class="row__name">Шоппер «Мышиный триумф»</span><span class="row__note"></span><span class="row__price price">3 800 ₽</span></a></li>
+    <li style="--i:3"><a class="row" href="https://volchok.ru/shop/70670-shopper_batwings_shopper_batwings/"><span class="row__name">Шоппер «Летучая мышь»</span><span class="row__note"></span><span class="row__price price">4 800 ₽</span></a></li>
+    <li style="--i:4"><a class="row" href="https://volchok.ru/shop/70787-sumka_dungeon_explorer_sumka_dungeon_explorer/"><span class="row__name">Сумка «Исследователь»</span><span class="row__note"></span><span class="row__price price">9 800 ₽</span></a></li>
+    <li style="--i:5"><a class="row" href="https://volchok.ru/shop/70789-ryukzak_dungeon_explorer_ryukzak_dungeon_explorer/"><span class="row__name">Рюкзак «Исследователь»</span><span class="row__note"></span><span class="row__price price">11 000 ₽</span></a></li>
+    <li style="--i:6"><a class="row" href="https://volchok.ru/shop/70664-sumka_sushhestvo_sumka_sushhestvo/"><span class="row__name">Сумка «Существо»</span><span class="row__note"></span><span class="row__price price">7 900 ₽</span></a></li>
+  </ul>
+</section>
+
+<section class="group" data-group="jewel" aria-labelledby="g-jewel">
+  <h2 id="g-jewel">Украшения</h2>
+  <ul class="rows">
+    <li style="--i:0"><a class="row" href="https://volchok.ru/shop/71194-podveska_cross_podveska_cross/"><span class="row__name">Подвеска «Крест»</span><span class="row__note"></span><span class="row__price price">9 500 ₽</span></a></li>
+    <li style="--i:1"><a class="row" href="https://volchok.ru/shop/71248-kolczo_heart_kolczo_heart/"><span class="row__name">Кольцо «Сердце»</span><span class="row__note"></span><span class="row__price price">8 500 ₽</span></a></li>
+    <li style="--i:2"><a class="row" href="https://volchok.ru/shop/71001-kolczo_moon_tear_kolczo_moon_tear/"><span class="row__name">Кольцо «Лунная слеза»</span><span class="row__note"></span><span class="row__price price">9 500 ₽</span></a></li>
+    <li style="--i:3"><a class="row" href="https://volchok.ru/shop/17094-serga_siyanie_serga_siyanie/"><span class="row__name">Серьга «Сияние»</span><span class="row__note"></span><span class="row__price price">3 200 ₽</span></a></li>
+    <li style="--i:4"><a class="row" href="https://volchok.ru/shop/70286-serga_claws_serga_claws/"><span class="row__name">Серьга «Клешни»</span><span class="row__note"></span><span class="row__price price">2 500 ₽</span></a></li>
+  </ul>
+</section>
+
+<section class="group" data-group="misc" aria-labelledby="g-misc">
+  <h2 id="g-misc">Мелочи</h2>
+  <ul class="rows">
+    <li style="--i:0"><a class="row" href="https://volchok.ru/shop/71458-stringi_potomu_chto_stringi_potomu_chto/"><span class="row__name">Стринги «Потому что»</span><span class="row__note"></span><span class="row__price price">1 500 ₽</span></a></li>
+    <li style="--i:1"><a class="row" href="https://volchok.ru/shop/71530-fleshka_mech_pamyati_fleshka_mech_pamyati/"><span class="row__name">Флешка «Меч памяти»</span><span class="row__note"></span><span class="row__price price">4 200 ₽</span></a></li>
+    <li style="--i:2"><a class="row" href="https://volchok.ru/shop/71484-dekorativnaya_podstavka_pod_spiral_ot_komarov_i_letayushhih_nasekomyh_zamok_dekorativnaya_podstavka_pod_spiral_ot_komarov_i_letayushhih_nasekomyh_zamok/"><span class="row__name">Подставка «Замок» под спираль от комаров</span><span class="row__note"></span><span class="row__price price">1 900 ₽</span></a></li>
+    <li style="--i:3"><a class="row" href="https://volchok.ru/shop/71421-flyaga_eto_tebe_flyaga_eto_tebe/"><span class="row__name">Фляга «Это тебе»</span><span class="row__note"></span><span class="row__price price">3 600 ₽</span></a></li>
+    <li style="--i:4"><a class="row" href="https://volchok.ru/shop/70543-karabin-otkryvalka_portal_karabin-otkryvalka_portal/"><span class="row__name">Карабин-открывалка «Портал»</span><span class="row__note"></span><span class="row__price price">1 800 ₽</span></a></li>
+    <li style="--i:5"><a class="row" href="https://volchok.ru/shop/71328-tabletnicza_emo_tabletnicza_emo/"><span class="row__name">Таблетница «Эмо»</span><span class="row__note"></span><span class="row__price price">700 ₽</span></a></li>
+    <li style="--i:6"><a class="row" href="https://volchok.ru/shop/71355-noski_czepi_noski_czepi/"><span class="row__name">Носки «Цепи»</span><span class="row__note"></span><span class="row__price price">600 ₽</span></a></li>
+    <li style="--i:7"><a class="row" href="https://volchok.ru/shop/71316-noski_za_pravdoj_noski_za_pravdoj/"><span class="row__name">Носки «За правдой»</span><span class="row__note"></span><span class="row__price price">600 ₽</span></a></li>
+    <li style="--i:8"><a class="row" href="https://volchok.ru/shop/71187-oblozhka_venom_oblozhka_venom/"><span class="row__name">Обложка «Веном»</span><span class="row__note"></span><span class="row__price price">600 ₽</span></a></li>
+    <li style="--i:9"><a class="row" href="https://volchok.ru/shop/71190-stikerpak_volchok_stikerpak_volchok/"><span class="row__name">Стикерпак «Волчок»</span><span class="row__note"></span><span class="row__price price">500 ₽</span></a></li>
+    <li style="--i:10"><a class="row" href="https://volchok.ru/shop/4421-brelok_unity/"><span class="row__name">Брелок «Волчок»</span><span class="row__note"></span><span class="row__price price">500 ₽</span></a></li>
+    <li style="--i:11"><a class="row" href="https://volchok.ru/shop/71349-nashivka_emo_nashivka_emo/"><span class="row__name">Нашивка «Эмо»</span><span class="row__note"></span><span class="row__price price">300 ₽</span></a></li>
+  </ul>
+</section>
+<!-- /@groups -->
+
+<div class="cat-foot">
+  <p class="muted">Цены и наличие взяты с volchok.ru в октябре 2026 года. Размеры и покупку смотрите на странице вещи в магазине Волчка; в этом прототипе своя страница есть только у <a class="link" href="item.html">джемпера «Мечи»</a>.</p>
+</div>
+</main>
+</div>
+
+<footer class="footer">
+  <div class="grid footer__cols">
+    <div class="footer__col">
+      <h2>Магазин</h2>
+      <a href="catalog.html">Каталог</a>
+      <a href="https://volchok.ru/nashi-magaziny-i-partnery/">Магазины и&nbsp;партнёры</a>
+      <a href="https://volchok.ru/client/">Помощь покупателю</a>
+    </div>
+    <div class="footer__col">
+      <h2>Разделы</h2>
+      <a href="./#mechi">Линия «Мечи»</a>
+      <a href="./#spin">Крутани волчок</a>
+      <a href="./#glavy">22 главы</a>
+      <a href="./#about">О&nbsp;бренде</a>
+    </div>
+    <div class="footer__col">
+      <h2>Связь</h2>
+      <a href="mailto:order@volchok.ru">order@volchok.ru</a>
+      <a href="tel:+79684406757">+7 (968) 440-67-57</a>
+      <a href="https://volchok.ru/contacts/">Контакты</a>
+    </div>
+    <div class="footer__col">
+      <h2>Прототип</h2>
+      <a href="system.html">Основа визуала</a>
+      <span>Черновик 2, октябрь 2026</span>
+      <a href="https://noeasy.xyz/">noeasy.xyz</a>
+    </div>
+  </div>
+  <div class="footer__name" aria-hidden="true">
+    <svg viewBox="-1 5 875 223" focusable="false"><use href="assets/brand.svg#wordmark"/></svg>
+  </div>
+  <p class="footer__legal">© 2026 Волчок. Это прототип редизайна: вещи продаются на&nbsp;volchok.ru.</p>
+</footer>
+
+<script src="assets/volchok.js"></script>
+</body>
+</html>
