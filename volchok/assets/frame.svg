@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg">
+<!-- Заглушка рамки «ковчег»: доска, поля, лузга, утопленное поле, клеймо сверху, ромбы в углах.
+     Нарисованная рамка ляжет на это место целиком; пропорция карточки 4:5. -->
+<symbol id="frame" viewBox="0 0 400 500">
+  <rect width="400" height="500" fill="#1B0E25"/>
+  <rect x="0.5" y="0.5" width="399" height="499" fill="none" stroke="currentColor" stroke-opacity=".26" vector-effect="non-scaling-stroke"/>
+  <rect x="24" y="24" width="352" height="452" fill="#0E0616"/>
+  <rect x="24.5" y="24.5" width="351" height="451" fill="none" stroke="currentColor" stroke-opacity=".44" vector-effect="non-scaling-stroke"/>
+  <rect x="31.5" y="31.5" width="337" height="437" fill="none" stroke="currentColor" stroke-opacity=".12" vector-effect="non-scaling-stroke"/>
+  <path d="M12 6.5l5.5 5.5-5.5 5.5-5.5-5.5zM388 6.5l5.5 5.5-5.5 5.5-5.5-5.5zM12 482.5l5.5 5.5-5.5 5.5-5.5-5.5zM388 482.5l5.5 5.5-5.5 5.5-5.5-5.5z" fill="#C0B387" fill-opacity=".72"/>
+  <path d="M200 13l11 11-11 11-11-11z" fill="#1B0E25" stroke="currentColor" stroke-opacity=".44" vector-effect="non-scaling-stroke"/>
+  <path d="M200 20.5l3.5 3.5-3.5 3.5-3.5-3.5z" fill="#C0B387" fill-opacity=".72"/>
+</symbol>
+</svg>

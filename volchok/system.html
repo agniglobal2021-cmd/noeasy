@@ -12,120 +12,163 @@
 <link rel="stylesheet" href="assets/volchok.css">
 <script>document.documentElement.classList.add('js')</script>
 </head>
-<body>
+<body class="inner">
 <a class="skip" href="#main">К содержанию</a>
+<div class="fx" aria-hidden="true"><canvas></canvas></div>
+<div class="grain" aria-hidden="true"></div>
 
-<div class="page">
-<header class="bar">
-  <a class="bar__home" href="./" aria-label="Волчок, на главную"><svg viewBox="-1 5 875 223" aria-hidden="true" focusable="false"><use href="assets/brand.svg#wordmark"/></svg></a>
+<header class="top">
+  <a class="top__logo" href="./" aria-label="Волчок, на главную"><svg viewBox="-1 5 875 223" aria-hidden="true" focusable="false"><use href="assets/brand.svg#wordmark"/></svg></a>
   <div class="nav-wrap">
     <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="nav">Меню</button>
     <nav class="nav" id="nav" aria-label="Разделы">
-      <a href="catalog.html">Каталог</a>
-      <a href="./#mechi">«Мечи»</a>
-      <a href="./#glavy">22 главы</a>
-      <a href="./#about">О бренде</a>
+      <a href="./#novoe">Новое</a>
+      <a href="https://volchok.ru/shop/volchok-x-fabula/">VOLCHOK X FABULA</a>
+      <a href="catalog.html#odezhda">Одежда</a>
+      <a href="catalog.html#aksessuary">Аксессуары</a>
+      <a href="./#kollekcii">Коллекции</a>
+      <a href="catalog.html?f=sale">SALE</a>
     </nav>
   </div>
 </header>
 
 <main id="main">
-<div class="sys-head">
-  <h1>Основа визуала</h1>
-  <p>Из чего собран черновик 2: цвета бренда, один шрифт, имя во&nbsp;всю ширину и&nbsp;вязка вместо фотографий.</p>
+<div class="page-head">
+  <h1 data-rise>Основа визуала</h1>
+  <p data-rise style="--i:1">Черновик 3. Всё, что здесь написано и&nbsp;продаётся, взято с&nbsp;volchok.ru: названия, цены, номера, разделы, коллекции, контакты. Оболочка добавляет только фон, ленту «Новое» и&nbsp;места под&nbsp;рисунки.</p>
 </div>
 
-<section class="section" aria-labelledby="colours-title">
-  <h2 class="h2" id="colours-title" data-rise>Цвета</h2>
-  <div class="swatches">
-    <div class="swatch swatch--wide" data-rise style="--i:1; background:#170B21; color:#ECE5CB"><svg viewBox="7 6 934 603" class="swatch__mark" aria-hidden="true" focusable="false"><use href="assets/brand.svg#spiral"/></svg><b>Ночь и&nbsp;лаванда</b><span>#170B21 · фон всего сайта. #9D94F1 · только знак и&nbsp;имя</span></div>
-    <div class="swatch" data-rise style="--i:2; background:#24152F; color:#ECE5CB"><b>Бархат</b><span>#24152F · ячейки и корешки</span></div>
-    <div class="swatch" data-rise style="--i:3; background:#ECE5CB; color:#170B21"><b>Пергамент</b><span>#ECE5CB · основной текст</span></div>
-    <div class="swatch" data-rise style="--i:4; background:#B8AFC8; color:#170B21"><b>Пепел</b><span>#B8AFC8 · второстепенный текст</span></div>
-    <div class="swatch" data-rise style="--i:5; background:#C0B387; color:#170B21"><b>Солома</b><span>#C0B387 · одно действие на экране и поле подвала, из образца ткани</span></div>
-    <div class="swatch" data-rise style="--i:6; background:#B08236; color:#170B21"><b>Охра</b><span>#B08236 · клинки «Мечей», метка дропа</span></div>
-    <div class="swatch" data-rise style="--i:7; background:#85936A; color:#170B21"><b>Олива</b><span>#85936A · водоворот «Мечей», метка коллаборации</span></div>
+<section class="sys" aria-labelledby="card-title">
+  <h2 class="h2" id="card-title" data-rise>Карточка вещи</h2>
+  <div class="anatomy">
+    <div class="anatomy__card" data-rise style="--i:1">
+<!-- @syscard -->
+      <span class="card" aria-hidden="true"><span class="strip" style="--j:0"><span class="face"><svg class="face__frame" viewBox="0 0 400 500" focusable="false"><use href="assets/frame.svg#frame"/></svg><span class="face__art"><svg class="spiral" viewBox="7 6 934 603" focusable="false" style="--turn:143deg"><use href="assets/brand.svg#spiral"/></svg></span><svg class="face__no" viewBox="0 0 400 24" focusable="false"><text x="200" y="16.2" text-anchor="middle">№&nbsp;71466</text></svg></span></span><span class="strip" style="--j:1"><span class="face"><svg class="face__frame" viewBox="0 0 400 500" focusable="false"><use href="assets/frame.svg#frame"/></svg><span class="face__art"><svg class="spiral" viewBox="7 6 934 603" focusable="false" style="--turn:143deg"><use href="assets/brand.svg#spiral"/></svg></span><svg class="face__no" viewBox="0 0 400 24" focusable="false"><text x="200" y="16.2" text-anchor="middle">№&nbsp;71466</text></svg></span></span><span class="strip" style="--j:2"><span class="face"><svg class="face__frame" viewBox="0 0 400 500" focusable="false"><use href="assets/frame.svg#frame"/></svg><span class="face__art"><svg class="spiral" viewBox="7 6 934 603" focusable="false" style="--turn:143deg"><use href="assets/brand.svg#spiral"/></svg></span><svg class="face__no" viewBox="0 0 400 24" focusable="false"><text x="200" y="16.2" text-anchor="middle">№&nbsp;71466</text></svg></span></span><span class="strip" style="--j:3"><span class="face"><svg class="face__frame" viewBox="0 0 400 500" focusable="false"><use href="assets/frame.svg#frame"/></svg><span class="face__art"><svg class="spiral" viewBox="7 6 934 603" focusable="false" style="--turn:143deg"><use href="assets/brand.svg#spiral"/></svg></span><svg class="face__no" viewBox="0 0 400 24" focusable="false"><text x="200" y="16.2" text-anchor="middle">№&nbsp;71466</text></svg></span></span><span class="strip" style="--j:4"><span class="face"><svg class="face__frame" viewBox="0 0 400 500" focusable="false"><use href="assets/frame.svg#frame"/></svg><span class="face__art"><svg class="spiral" viewBox="7 6 934 603" focusable="false" style="--turn:143deg"><use href="assets/brand.svg#spiral"/></svg></span><svg class="face__no" viewBox="0 0 400 24" focusable="false"><text x="200" y="16.2" text-anchor="middle">№&nbsp;71466</text></svg></span></span></span>
+<!-- /@syscard -->
+    </div>
+    <dl class="anatomy__parts" data-rise style="--i:2">
+      <div><dt>Доска</dt><dd>Вся карточка, пропорция 4:5. Сейчас ровная, тон #1B0E25.</dd></div>
+      <div><dt>Поля</dt><dd>Кайма шириной 6% ширины. В&nbsp;углах ромбы: орнамент живёт только там.</dd></div>
+      <div><dt>Лузга</dt><dd>Двойная линия по&nbsp;краю поля: внешняя ярче, внутренняя тише.</dd></div>
+      <div><dt>Ковчег</dt><dd>Утопленное тёмное поле #0E0616. В&nbsp;нём прячется вещь и&nbsp;проявляется, когда карточка встаёт на&nbsp;место.</dd></div>
+      <div><dt>Клеймо</dt><dd>Ромб сверху по&nbsp;центру, на&nbsp;границе полей и&nbsp;ковчега. Сюда встанет знак раздела.</dd></div>
+      <div><dt>Номер</dt><dd>Номер вещи с&nbsp;сайта, в&nbsp;нижнем поле.</dd></div>
+    </dl>
   </div>
 </section>
 
-<section class="section" aria-labelledby="type-title">
+<section class="sys" aria-labelledby="slots-title">
+  <h2 class="h2" id="slots-title" data-rise>Места под рисунки</h2>
+  <div class="slots">
+    <div class="slot" data-rise style="--i:1">
+      <h3>Иконки вещей</h3>
+      <p>Один файл на&nbsp;вещь, имя файла — номер с&nbsp;сайта: <code>assets/icons/71466.png</code>. Квадрат 1600&nbsp;px, прозрачный фон, вещь по&nbsp;центру, поля 12%. Пока иконки нет, в&nbsp;ковчеге стоит спираль из&nbsp;знака, у&nbsp;каждой вещи повёрнута по-своему. Файл с&nbsp;номером встаёт на&nbsp;её&nbsp;место в&nbsp;ленте, в&nbsp;каталоге и&nbsp;на&nbsp;странице вещи после пересборки (<code>tools/build.py</code>).</p>
+      <p class="slot__sub">Первыми нужны двенадцать вещей ленты «Новое»:</p>
+      <ol class="slot__list">
+<!-- @iconlist -->
+      <li><span class="price">71458</span> Стринги ПОТОМУ ЧТО</li>
+      <li><span class="price">71300</span> Бомбер ОРНАМЕНТ</li>
+      <li><span class="price">71530</span> Флешка МЕЧ ПАМЯТИ</li>
+      <li><span class="price">71524</span> Футболка ЕФИМБ</li>
+      <li><span class="price">71518</span> Футболка САТАН БАНАНА</li>
+      <li><span class="price">71500</span> Футболка МЕЧ</li>
+      <li><span class="price">71506</span> Футболка КЛОУН</li>
+      <li><span class="price">71494</span> Футболка ШИЗА</li>
+      <li><span class="price">71512</span> Футболка ТАМАГОЧИ</li>
+      <li><span class="price">71294</span> Бомбер ЯПОНИЯ</li>
+      <li><span class="price">71486</span> Футболка РЫЦАРЬ ВОЛК</li>
+      <li><span class="price">71466</span> Худи БИТВА</li>
+<!-- /@iconlist -->
+      </ol>
+    </div>
+    <div class="slot" data-rise style="--i:2">
+      <h3>Рамки</h3>
+      <p>Нарисуй один угол, кусок края и&nbsp;клейма одной краской, PNG 2048&nbsp;px. Угол и&nbsp;край режутся на&nbsp;девять частей (CSS border-image), и&nbsp;рамка ложится на&nbsp;карточку любого размера: в&nbsp;ленте, в&nbsp;каталоге, на&nbsp;странице вещи. Цвет задаётся кодом, поэтому одна рамка даёт все оттенки.</p>
+      <h3>Клейма</h3>
+      <p>Четыре знака по&nbsp;разделам сайта: базовая линейка, капсулы VOLCHOK&nbsp;X, коллекции, SALE. Клеймо ставится на&nbsp;ромб сверху.</p>
+    </div>
+    <div class="slot" data-rise style="--i:3">
+      <h3>Знак и&nbsp;шапка</h3>
+      <p>Сейчас стоит трассировка знака VOLCHOK с&nbsp;сайта. Вектор ляжет в&nbsp;<code>assets/brand.svg</code>, символ <code>wordmark</code>, и&nbsp;сменится сразу на&nbsp;всех страницах: в&nbsp;шапке, на&nbsp;первом экране, в&nbsp;подвале.</p>
+      <p>Шапка: 76&nbsp;px на&nbsp;компьютере и&nbsp;64 на&nbsp;телефоне, слева знак, справа меню сайта: Новое, VOLCHOK&nbsp;X&nbsp;FABULA, Одежда, Аксессуары, Коллекции, SALE. При прокрутке вниз прячется, при прокрутке вверх возвращается.</p>
+    </div>
+  </div>
+</section>
+
+<section class="sys" aria-labelledby="colours-title">
+  <h2 class="h2" id="colours-title" data-rise>Цвета</h2>
+  <div class="swatches" data-rise style="--i:1">
+    <div class="swatch swatch--wide" style="background:#170B21; color:#ECE5CB"><svg viewBox="7 6 934 603" class="swatch__mark" aria-hidden="true" focusable="false"><use href="assets/brand.svg#spiral"/></svg><b>Ночь и&nbsp;лаванда</b><span>#170B21 · фон и&nbsp;дым. #9D94F1 · только знак</span></div>
+    <div class="swatch" style="background:#1B0E25; color:#ECE5CB; outline:1px solid rgba(236,229,203,.26); outline-offset:-1px"><b>Доска</b><span>#1B0E25</span></div>
+    <div class="swatch" style="background:#0E0616; color:#ECE5CB"><b>Ковчег</b><span>#0E0616</span></div>
+    <div class="swatch" style="background:#ECE5CB; color:#170B21"><b>Пергамент</b><span>#ECE5CB · текст и&nbsp;линии рамки</span></div>
+    <div class="swatch" style="background:#B8AFC8; color:#170B21"><b>Пепел</b><span>#B8AFC8 · подписи</span></div>
+    <div class="swatch swatch--wide" style="background:#C0B387; color:#170B21"><b>Солома</b><span>#C0B387 · одна кнопка на&nbsp;экран, ромбы рамки, подвал</span></div>
+  </div>
+</section>
+
+<section class="sys" aria-labelledby="type-title">
   <h2 class="h2" id="type-title" data-rise>Шрифт</h2>
   <div class="specimen" data-rise style="--i:1">
-    <p style="font-size:var(--step-head); font-weight:600; line-height:1; letter-spacing:-0.035em">Линия «Мечи»</p>
-    <p style="font-size:var(--step-sub); line-height:1.15; letter-spacing:-0.02em">Крутани волчок</p>
-    <p style="font-size:var(--step-lead); line-height:1.3; max-width:40ch">Libre Franklin, 400–600, с&nbsp;кириллицей. Один гротеск на&nbsp;весь сайт: заголовки, цены, подписи.</p>
-    <p style="max-width:60ch">Готика осталась только в&nbsp;имени. Имя здесь знак, им&nbsp;не&nbsp;набирают текст: оно стоит во&nbsp;всю ширину в&nbsp;первом экране и&nbsp;в&nbsp;подвале.</p>
-    <p class="muted" style="font-size:var(--step-small)">Пять размеров: 64, 42, 26, 19 и&nbsp;14 пикселей на&nbsp;широком экране.</p>
+    <div class="specimen__set">
+      <p class="specimen__name"><span class="label">Футболка</span> САТАН БАНАНА</p>
+      <p class="specimen__price price">3&nbsp;900&nbsp;₽</p>
+    </div>
+    <p class="specimen__note">Libre Franklin, 400–600, с&nbsp;кириллицей. Название вещи пишется, как на&nbsp;сайте: тип строчными, имя заглавными, — и&nbsp;заголовок читается целиком, «Футболка САТАН БАНАНА». Цены цифрами одной ширины. Мелкий текст строчными, без разрядки. Готика только в&nbsp;знаке.</p>
   </div>
 </section>
 
-<section class="section" aria-labelledby="knit-title">
-  <h2 class="h2" id="knit-title" data-rise>Вязка вместо фото</h2>
-  <p class="muted" style="margin-top:20px; max-width:60ch; --i:1" data-rise>Пока у&nbsp;сайта нет снимков вещей, картинки собраны из&nbsp;рисунка самого бренда. Когда придут фото, они встанут на&nbsp;те&nbsp;же места.</p>
-  <div class="grid how">
-    <figure><div class="frame" data-open><img src="assets/img/jacquard-mechi.webp" width="866" height="833" loading="lazy" alt="Рисунок «Мечи»: три клинка над водоворотом, плоская заливка"></div><figcaption data-rise style="--i:1"><b>Рисунок</b>Исходник бренда: клинки и&nbsp;водоворот двумя цветами.</figcaption></figure>
-    <figure><div class="frame" data-open><img src="assets/img/chart-mechi.webp" width="1200" height="1200" loading="lazy" alt="Схема вязки «Мечи»: сетка 140 петель, каждая клетка охра, олива или фон"></div><figcaption data-rise style="--i:2"><b>Схема</b>140 петель в&nbsp;ширину: каждая клетка берёт цвет, которого в&nbsp;ней больше.</figcaption></figure>
-    <figure><div class="frame" data-open><img src="assets/img/knit-detail.webp" width="840" height="840" loading="lazy" alt="Вязка крупно: рукоять и гарда клинка петля за петлёй"></div><figcaption data-rise style="--i:3"><b>Вязка</b>Каждая петля нарисована как&nbsp;V из&nbsp;двух ниток со&nbsp;своим светом.</figcaption></figure>
-  </div>
-</section>
-
-<section class="section" aria-labelledby="rules-title">
-  <h2 class="h2" id="rules-title" data-rise>Правила</h2>
-  <ul class="rules" data-rise style="--i:1">
-    <li>Одна соломенная кнопка на&nbsp;экран, это главное действие. Остальное: текст и&nbsp;тёмные ячейки.</li>
-    <li>Без рамок, линий, теней и&nbsp;свечения: вещи держит темнота вокруг них.</li>
-    <li>Лаванда только у&nbsp;знака и&nbsp;имени, текст ею не&nbsp;набирают.</li>
-    <li>Цены стоят в&nbsp;тексте рядом с&nbsp;названием, скидка видна по&nbsp;зачёркнутой старой цене.</li>
-    <li>Рамки редкости рисует художник от&nbsp;руки; они лягут поверх вещи в&nbsp;каталоге и&nbsp;в&nbsp;«Крутани волчок».</li>
-  </ul>
-</section>
-
-<section class="section" aria-labelledby="need-title">
-  <h2 class="h2" id="need-title" data-rise>Что нужно от&nbsp;бренда</h2>
-  <ul class="rules" data-rise style="--i:1">
-    <li>Фото вещей и&nbsp;лукбуков на&nbsp;тёмном фоне, один источник света.</li>
-    <li>Логотип в&nbsp;векторе: сейчас стоит трассировка со&nbsp;скриншота.</li>
-    <li>Исходники жаккардов «Мечи» и&nbsp;«Демон» и&nbsp;настоящие цвета пряжи.</li>
-    <li>Манифесты всех 22 глав и&nbsp;проверка текстов на&nbsp;главной.</li>
-  </ul>
+<section class="sys" aria-labelledby="motion-title">
+  <h2 class="h2" id="motion-title" data-rise>Движение</h2>
+  <dl class="anatomy__parts motion" data-rise style="--i:1">
+    <div><dt>Фон</dt><dd>Дым из&nbsp;шума с&nbsp;искажением пространства, WebGL: половина разрешения, 30&nbsp;кадров в&nbsp;секунду, пауза в&nbsp;фоновой вкладке. При прокрутке дым уходит вверх вместе со&nbsp;страницей.</dd></div>
+    <div><dt>Зерно</dt><dd>Плитка шума поверх всего, 5% непрозрачности, перескакивает десять раз в&nbsp;секунду.</dd></div>
+    <div><dt>Лента</dt><dd>Экран стоит на&nbsp;месте, вещи сменяются прокруткой. Название, цена, ссылка и&nbsp;каждая из&nbsp;пяти полос карточки — отдельное окно: старое уходит из&nbsp;него вверх, новое поднимается снизу, окна срабатывают по&nbsp;очереди слева направо (на&nbsp;телефоне сверху вниз). Вещь в&nbsp;ковчеге проявляется последней. Короткий жест доводит до&nbsp;следующей вещи.</dd></div>
+    <div><dt>Без анимации</dt><dd>Если в&nbsp;системе включено «уменьшить движение», дым стоит, зерно не&nbsp;прыгает, а&nbsp;вещи идут лентой одна под&nbsp;другой.</dd></div>
+  </dl>
 </section>
 </main>
-</div>
 
 <footer class="footer">
-  <div class="grid footer__cols">
+  <div class="footer__cols">
     <div class="footer__col">
       <h2>Магазин</h2>
+      <a href="./#novoe">Новое</a>
       <a href="catalog.html">Каталог</a>
-      <a href="https://volchok.ru/nashi-magaziny-i-partnery/">Магазины и&nbsp;партнёры</a>
-      <a href="https://volchok.ru/client/">Помощь покупателю</a>
+      <a href="./#kollekcii">Коллекции</a>
+      <a href="catalog.html?f=sale">SALE</a>
     </div>
     <div class="footer__col">
-      <h2>Разделы</h2>
-      <a href="./#mechi">Линия «Мечи»</a>
-      <a href="./#spin">Крутани волчок</a>
-      <a href="./#glavy">22 главы</a>
-      <a href="./#about">О&nbsp;бренде</a>
+      <h2>Покупателю</h2>
+      <a href="https://volchok.ru/client/">Помощь покупателю</a>
+      <a href="https://volchok.ru/nashi-magaziny-i-partnery/">Наши магазины и&nbsp;партнеры</a>
+      <a href="https://volchok.ru/contacts/">Контакты</a>
+      <a href="https://volchok.ru/offer/">Оферта</a>
+      <a href="https://volchok.ru/privacy-policy/">О&nbsp;конфиденциальности</a>
     </div>
     <div class="footer__col">
       <h2>Связь</h2>
       <a href="mailto:order@volchok.ru">order@volchok.ru</a>
       <a href="tel:+79684406757">+7 (968) 440-67-57</a>
-      <a href="https://volchok.ru/contacts/">Контакты</a>
+      <a href="https://vk.com/volchok">ВКонтакте</a>
+      <a href="https://www.youtube.com/volchokclothing">YouTube</a>
+      <a href="https://www.instagram.com/volchokclothing/">Instagram</a>
+      <a href="https://www.facebook.com/volchokstore">Facebook</a>
     </div>
     <div class="footer__col">
       <h2>Прототип</h2>
       <a href="system.html" aria-current="page">Основа визуала</a>
-      <span>Черновик 2, октябрь 2026</span>
+      <span>Черновик 3, октябрь 2026</span>
       <a href="https://noeasy.xyz/">noeasy.xyz</a>
     </div>
   </div>
   <div class="footer__name" aria-hidden="true">
     <svg viewBox="-1 5 875 223" focusable="false"><use href="assets/brand.svg#wordmark"/></svg>
   </div>
-  <p class="footer__legal">© 2026 Волчок. Это прототип редизайна: вещи продаются на&nbsp;volchok.ru.</p>
+  <p class="footer__legal">© 2026 Волчок. Прототип оболочки: вещи, цены и&nbsp;разделы с&nbsp;volchok.ru, покупка там&nbsp;же.</p>
 </footer>
 
-<script src="assets/volchok.js"></script>
+<script src="assets/fx.js" defer></script>
+<script src="assets/volchok.js" defer></script>
 </body>
 </html>

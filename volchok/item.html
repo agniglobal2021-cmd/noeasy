@@ -5,105 +5,111 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow">
 <meta name="theme-color" content="#170B21">
-<title>Джемпер «Мечи» · Волчок, прототип</title>
+<title>Вещь · Волчок, прототип</title>
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
 <link rel="preload" href="assets/fonts/libre-franklin-cyr.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="assets/volchok.css">
-<script>document.documentElement.classList.add('js')</script>
+<script>
+  (function (r) {
+    r.classList.add('js');
+    if (/[?&]id=\d+/.test(location.search)) r.classList.add('item-wait');
+  })(document.documentElement);
+</script>
 </head>
-<body>
+<body class="inner item-page">
 <a class="skip" href="#main">К содержанию</a>
+<div class="fx" aria-hidden="true"><canvas></canvas></div>
+<div class="grain" aria-hidden="true"></div>
 
-<div class="page">
-<header class="bar">
-  <a class="bar__home" href="./" aria-label="Волчок, на главную"><svg viewBox="-1 5 875 223" aria-hidden="true" focusable="false"><use href="assets/brand.svg#wordmark"/></svg></a>
+<header class="top">
+  <a class="top__logo" href="./" aria-label="Волчок, на главную"><svg viewBox="-1 5 875 223" aria-hidden="true" focusable="false"><use href="assets/brand.svg#wordmark"/></svg></a>
   <div class="nav-wrap">
     <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="nav">Меню</button>
     <nav class="nav" id="nav" aria-label="Разделы">
-      <a href="catalog.html">Каталог</a>
-      <a href="./#mechi">«Мечи»</a>
-      <a href="./#glavy">22 главы</a>
-      <a href="./#about">О бренде</a>
+      <a href="./#novoe">Новое</a>
+      <a href="https://volchok.ru/shop/volchok-x-fabula/">VOLCHOK X FABULA</a>
+      <a href="catalog.html#odezhda">Одежда</a>
+      <a href="catalog.html#aksessuary">Аксессуары</a>
+      <a href="./#kollekcii">Коллекции</a>
+      <a href="catalog.html?f=sale">SALE</a>
     </nav>
   </div>
 </header>
 
 <main id="main">
-<div class="grid item">
-  <div class="item__gallery">
-    <figure>
-      <div class="frame" data-open-load><img src="assets/img/plate-black.webp" width="1200" height="1200" fetchpriority="high" alt="Рисунок «Мечи» в вязке: три клинка уходят в водоворот, охра и олива по чёрному"></div>
-      <figcaption>Рисунок целиком: три клинка и&nbsp;водоворот.</figcaption>
-    </figure>
-    <figure>
-      <div class="frame" data-open><img src="assets/img/knit-detail.webp" width="840" height="840" loading="lazy" alt="Вязка крупно: рукоять и гарда среднего клинка, каждая петля видна"></div>
-      <figcaption data-rise>Крупно: рукоять и&nbsp;гарда, связанные петля за&nbsp;петлёй.</figcaption>
-    </figure>
+<article class="item">
+  <div class="item__card">
+<!-- @itemcard -->
+    <span class="card" aria-hidden="true"><span class="strip" style="--j:0"><span class="face"><svg class="face__frame" viewBox="0 0 400 500" focusable="false"><use href="assets/frame.svg#frame"/></svg><span class="face__art"><svg class="spiral" viewBox="7 6 934 603" focusable="false" style="--turn:143deg"><use href="assets/brand.svg#spiral"/></svg></span><svg class="face__no" viewBox="0 0 400 24" focusable="false"><text x="200" y="16.2" text-anchor="middle">№&nbsp;71466</text></svg></span></span><span class="strip" style="--j:1"><span class="face"><svg class="face__frame" viewBox="0 0 400 500" focusable="false"><use href="assets/frame.svg#frame"/></svg><span class="face__art"><svg class="spiral" viewBox="7 6 934 603" focusable="false" style="--turn:143deg"><use href="assets/brand.svg#spiral"/></svg></span><svg class="face__no" viewBox="0 0 400 24" focusable="false"><text x="200" y="16.2" text-anchor="middle">№&nbsp;71466</text></svg></span></span><span class="strip" style="--j:2"><span class="face"><svg class="face__frame" viewBox="0 0 400 500" focusable="false"><use href="assets/frame.svg#frame"/></svg><span class="face__art"><svg class="spiral" viewBox="7 6 934 603" focusable="false" style="--turn:143deg"><use href="assets/brand.svg#spiral"/></svg></span><svg class="face__no" viewBox="0 0 400 24" focusable="false"><text x="200" y="16.2" text-anchor="middle">№&nbsp;71466</text></svg></span></span><span class="strip" style="--j:3"><span class="face"><svg class="face__frame" viewBox="0 0 400 500" focusable="false"><use href="assets/frame.svg#frame"/></svg><span class="face__art"><svg class="spiral" viewBox="7 6 934 603" focusable="false" style="--turn:143deg"><use href="assets/brand.svg#spiral"/></svg></span><svg class="face__no" viewBox="0 0 400 24" focusable="false"><text x="200" y="16.2" text-anchor="middle">№&nbsp;71466</text></svg></span></span><span class="strip" style="--j:4"><span class="face"><svg class="face__frame" viewBox="0 0 400 500" focusable="false"><use href="assets/frame.svg#frame"/></svg><span class="face__art"><svg class="spiral" viewBox="7 6 934 603" focusable="false" style="--turn:143deg"><use href="assets/brand.svg#spiral"/></svg></span><svg class="face__no" viewBox="0 0 400 24" focusable="false"><text x="200" y="16.2" text-anchor="middle">№&nbsp;71466</text></svg></span></span></span>
+<!-- /@itemcard -->
   </div>
-
-  <div class="item__buy">
-    <h1 data-load style="--d:80ms">Джемпер «Мечи»</h1>
-    <p class="item__price price" data-load style="--d:160ms">7&nbsp;100&nbsp;₽<s>8&nbsp;900&nbsp;₽</s></p>
-    <ul class="sizes" aria-label="Размеры в наличии" data-load style="--d:240ms"><li>S</li><li>M</li><li>L</li><li>XL</li></ul>
-    <a class="button" href="https://volchok.ru/shop/70547-dzhemper_swords_dzhemper_swords/" data-load style="--d:320ms">Купить на&nbsp;volchok.ru</a>
-    <p class="item__desc" data-load style="--d:400ms">Три клинка уходят в&nbsp;водоворот и&nbsp;не&nbsp;тонут. Рисунок связан жаккардом: клинки вплетены в&nbsp;полотно, а&nbsp;не&nbsp;напечатаны поверх, поэтому не&nbsp;трескаются и&nbsp;не&nbsp;сходят после стирок.</p>
-    <dl class="facts" data-load style="--d:480ms">
-      <dt>Рисунок</dt><dd>Жаккард «Мечи»</dd>
-      <dt>Размеры</dt><dd>S, M, L, XL</dd>
-      <dt>Номер в&nbsp;каталоге</dt><dd>70547</dd>
-      <dt>Доставка</dt><dd><a class="link" href="https://volchok.ru/client/">Условия на&nbsp;volchok.ru</a></dd>
-    </dl>
+  <div class="item__info">
+<!-- @itemhead -->
+    <h1 class="item__name"><span class="item__kind" data-f="kind">Худи</span> <span data-f="name">БИТВА</span></h1>
+    <p class="item__price price" data-f="price">9 800 ₽</p>
+    <p class="item__note">Номер <span class="price" data-f="no">71466</span> в&nbsp;разделе <a class="link" data-f="cat" href="https://volchok.ru/shop/khudi/">Худи</a>. Размеры и&nbsp;наличие — на&nbsp;странице вещи на&nbsp;volchok.ru.</p>
+    <a class="button item__buy" data-f="buy" href="https://volchok.ru/shop/71466-khudi_bitva_khudi_bitva/">Купить на&nbsp;volchok.ru</a>
+    <p class="item__help"><a class="link" href="https://volchok.ru/client/">Помощь покупателю</a></p>
+<!-- /@itemhead -->
   </div>
-</div>
+</article>
 
-<section class="section with" aria-labelledby="with-title">
-  <h2 class="h2" id="with-title" data-rise>С&nbsp;этим носят</h2>
-  <ul class="rows rows--rise">
-    <li style="--i:1"><a class="row" href="https://volchok.ru/shop/71233-kapyushon_swords_kapyushon_swords/"><span class="row__name">Капюшон «Мечи»</span><span class="row__note">та&nbsp;же линия</span><span class="row__price price">5&nbsp;200&nbsp;₽</span></a></li>
-    <li style="--i:2"><a class="row" href="https://volchok.ru/shop/71184-varezhki_swords_varezhki_swords/"><span class="row__name">Варежки «Мечи»</span><span class="row__note">та&nbsp;же линия</span><span class="row__price price">2&nbsp;000&nbsp;₽</span></a></li>
-    <li style="--i:3"><a class="row" href="https://volchok.ru/shop/71160-shopper_swords_shopper_swords/"><span class="row__name">Шоппер «Мечи»</span><span class="row__note">та&nbsp;же линия</span><span class="row__price price">1&nbsp;600&nbsp;₽</span></a></li>
-    <li style="--i:4"><a class="row" href="https://volchok.ru/shop/71173-lajner_swords_lajner_swords/"><span class="row__name">Лайнер «Мечи»</span><span class="row__note">та&nbsp;же линия</span><span class="row__price price"><s>10&nbsp;900&nbsp;₽</s>8&nbsp;700&nbsp;₽</span></a></li>
+<section class="more-items" aria-labelledby="more-title">
+<!-- @more -->
+  <h2 class="h2" id="more-title" data-f="more-title">Ещё в&nbsp;разделе «Худи»</h2>
+  <ul class="tiles tiles--more" data-f="more">
+      <li style="--i:0"><a class="tile" href="item.html?id=71452"><span class="card card--whole" aria-hidden="true"><span class="strip"><span class="face"><svg class="face__frame" viewBox="0 0 400 500" focusable="false"><use href="assets/frame.svg#frame"/></svg><span class="face__art"><svg class="spiral" viewBox="7 6 934 603" focusable="false" style="--turn:253deg"><use href="assets/brand.svg#spiral"/></svg></span><svg class="face__no" viewBox="0 0 400 24" focusable="false"><text x="200" y="16.2" text-anchor="middle">№&nbsp;71452</text></svg></span></span></span><span class="tile__name"><span class="tile__kind">Худи</span> ПРОЦВЕТАНИЕ</span><span class="tile__price price">9 400 ₽</span></a></li>
+      <li style="--i:1"><a class="tile" href="item.html?id=71042"><span class="card card--whole" aria-hidden="true"><span class="strip"><span class="face"><svg class="face__frame" viewBox="0 0 400 500" focusable="false"><use href="assets/frame.svg#frame"/></svg><span class="face__art"><svg class="spiral" viewBox="7 6 934 603" focusable="false" style="--turn:224deg"><use href="assets/brand.svg#spiral"/></svg></span><svg class="face__no" viewBox="0 0 400 24" focusable="false"><text x="200" y="16.2" text-anchor="middle">№&nbsp;71042</text></svg></span></span></span><span class="tile__name"><span class="tile__kind">Худи</span> ИЗЛУЧЕНИЕ ЛЮБВИ</span><span class="tile__price price">8 600 ₽</span></a></li>
+      <li style="--i:2"><a class="tile" href="item.html?id=70691"><span class="card card--whole" aria-hidden="true"><span class="strip"><span class="face"><svg class="face__frame" viewBox="0 0 400 500" focusable="false"><use href="assets/frame.svg#frame"/></svg><span class="face__art"><svg class="spiral" viewBox="7 6 934 603" focusable="false" style="--turn:248deg"><use href="assets/brand.svg#spiral"/></svg></span><svg class="face__no" viewBox="0 0 400 24" focusable="false"><text x="200" y="16.2" text-anchor="middle">№&nbsp;70691</text></svg></span></span></span><span class="tile__name"><span class="tile__kind">Худи</span> ПИКНИК</span><span class="tile__price price">10 400 ₽</span></a></li>
+      <li style="--i:3" data-sale><a class="tile" href="item.html?id=70703"><span class="card card--whole" aria-hidden="true"><span class="strip"><span class="face"><svg class="face__frame" viewBox="0 0 400 500" focusable="false"><use href="assets/frame.svg#frame"/></svg><span class="face__art"><svg class="spiral" viewBox="7 6 934 603" focusable="false" style="--turn:306deg"><use href="assets/brand.svg#spiral"/></svg></span><svg class="face__no" viewBox="0 0 400 24" focusable="false"><text x="200" y="16.2" text-anchor="middle">№&nbsp;70703</text></svg></span></span></span><span class="tile__name"><span class="tile__kind">Худи</span> КАПЛЯ</span><span class="tile__price price"><s>8 500 ₽</s> 6 800 ₽</span></a></li>
   </ul>
-  <p class="link-line" data-rise style="--i:2"><a class="link" href="catalog.html?f=mechi">Вся линия «Мечи» в каталоге</a></p>
+<!-- /@more -->
+  <p class="more-items__all"><a class="link" href="catalog.html">Весь каталог</a></p>
 </section>
 </main>
-</div>
 
 <footer class="footer">
-  <div class="grid footer__cols">
+  <div class="footer__cols">
     <div class="footer__col">
       <h2>Магазин</h2>
+      <a href="./#novoe">Новое</a>
       <a href="catalog.html">Каталог</a>
-      <a href="https://volchok.ru/nashi-magaziny-i-partnery/">Магазины и&nbsp;партнёры</a>
-      <a href="https://volchok.ru/client/">Помощь покупателю</a>
+      <a href="./#kollekcii">Коллекции</a>
+      <a href="catalog.html?f=sale">SALE</a>
     </div>
     <div class="footer__col">
-      <h2>Разделы</h2>
-      <a href="./#mechi">Линия «Мечи»</a>
-      <a href="./#spin">Крутани волчок</a>
-      <a href="./#glavy">22 главы</a>
-      <a href="./#about">О&nbsp;бренде</a>
+      <h2>Покупателю</h2>
+      <a href="https://volchok.ru/client/">Помощь покупателю</a>
+      <a href="https://volchok.ru/nashi-magaziny-i-partnery/">Наши магазины и&nbsp;партнеры</a>
+      <a href="https://volchok.ru/contacts/">Контакты</a>
+      <a href="https://volchok.ru/offer/">Оферта</a>
+      <a href="https://volchok.ru/privacy-policy/">О&nbsp;конфиденциальности</a>
     </div>
     <div class="footer__col">
       <h2>Связь</h2>
       <a href="mailto:order@volchok.ru">order@volchok.ru</a>
       <a href="tel:+79684406757">+7 (968) 440-67-57</a>
-      <a href="https://volchok.ru/contacts/">Контакты</a>
+      <a href="https://vk.com/volchok">ВКонтакте</a>
+      <a href="https://www.youtube.com/volchokclothing">YouTube</a>
+      <a href="https://www.instagram.com/volchokclothing/">Instagram</a>
+      <a href="https://www.facebook.com/volchokstore">Facebook</a>
     </div>
     <div class="footer__col">
       <h2>Прототип</h2>
       <a href="system.html">Основа визуала</a>
-      <span>Черновик 2, октябрь 2026</span>
+      <span>Черновик 3, октябрь 2026</span>
       <a href="https://noeasy.xyz/">noeasy.xyz</a>
     </div>
   </div>
   <div class="footer__name" aria-hidden="true">
     <svg viewBox="-1 5 875 223" focusable="false"><use href="assets/brand.svg#wordmark"/></svg>
   </div>
-  <p class="footer__legal">© 2026 Волчок. Это прототип редизайна: вещи продаются на&nbsp;volchok.ru.</p>
+  <p class="footer__legal">© 2026 Волчок. Прототип оболочки: вещи, цены и&nbsp;разделы с&nbsp;volchok.ru, покупка там&nbsp;же.</p>
 </footer>
 
-<script src="assets/volchok.js"></script>
+<script src="assets/items.js"></script>
+<script src="assets/fx.js" defer></script>
+<script src="assets/volchok.js" defer></script>
 </body>
 </html>

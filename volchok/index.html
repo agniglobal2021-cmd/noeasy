@@ -5,198 +5,263 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow">
 <meta name="theme-color" content="#170B21">
-<title>Волчок, одежда из Петербурга · прототип</title>
-<meta name="description" content="Прототип редизайна сайта Волчка: петербургская одежда с 2014 года, жаккард «Мечи», 22 главы-коллекции.">
+<title>Волчок · прототип оболочки</title>
+<meta name="description" content="Прототип новой оболочки сайта Волчка: лента «Новое», каталог и коллекции. Вещи, цены и разделы взяты с volchok.ru.">
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
 <link rel="preload" href="assets/fonts/libre-franklin-cyr.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="preload" as="image" href="assets/img/hero-wide.webp" media="(min-aspect-ratio: 4/5)" fetchpriority="high">
 <link rel="stylesheet" href="assets/volchok.css">
-<script>document.documentElement.classList.add('js')</script>
+<script>
+  (function (r) {
+    r.classList.add('js');
+    if (!matchMedia('(prefers-reduced-motion: reduce)').matches) r.classList.add('feed-on');
+  })(document.documentElement);
+</script>
 </head>
-<body>
+<body class="home">
 <a class="skip" href="#main">К содержанию</a>
+<div class="fx" aria-hidden="true"><canvas></canvas></div>
+<div class="grain" aria-hidden="true"></div>
 
-<div class="page">
-<header class="hero">
-  <figure class="hero__photo">
-    <picture>
-      <source media="(max-aspect-ratio: 4/5)" srcset="assets/img/hero-tall.webp" width="840" height="1209">
-      <img src="assets/img/hero-wide.webp" width="2880" height="907" fetchpriority="high"
-           alt="Жаккард «Мечи» крупным планом: рукояти и гарды трёх клинков, связанные охрой по чёрному">
-    </picture>
-  </figure>
-
+<header class="top">
+  <a class="top__logo" href="./" aria-label="Волчок, на главную"><svg viewBox="-1 5 875 223" aria-hidden="true" focusable="false"><use href="assets/brand.svg#wordmark"/></svg></a>
   <div class="nav-wrap">
     <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="nav">Меню</button>
     <nav class="nav" id="nav" aria-label="Разделы">
-      <a href="catalog.html">Каталог</a>
-      <a href="#mechi">«Мечи»</a>
-      <a href="#glavy">22 главы</a>
-      <a href="#about">О бренде</a>
+      <a href="#novoe">Новое</a>
+      <a href="https://volchok.ru/shop/volchok-x-fabula/">VOLCHOK X FABULA</a>
+      <a href="catalog.html#odezhda">Одежда</a>
+      <a href="catalog.html#aksessuary">Аксессуары</a>
+      <a href="#kollekcii">Коллекции</a>
+      <a href="catalog.html?f=sale">SALE</a>
     </nav>
   </div>
-
-  <div class="hero__band grid">
-    <p class="hero__lede" data-load style="--d:420ms">Петербургская одежда с&nbsp;2014 года: жаккардовые джемперы, футболки, украшения и&nbsp;своя мифология в&nbsp;22&nbsp;главах.</p>
-    <a class="button" href="catalog.html" data-load style="--d:520ms">Открыть каталог</a>
-  </div>
-
-  <h1 class="hero__name">
-    <svg viewBox="-1 5 875 223" aria-hidden="true" focusable="false"><use href="assets/brand.svg#wordmark"/></svg>
-    <span class="sr-only">Волчок</span>
-  </h1>
 </header>
 
 <main id="main">
 
-<section class="section grid mechi" id="mechi" aria-labelledby="mechi-title">
-  <figure class="mechi__plate" data-open id="mechi-plate" role="tabpanel" aria-labelledby="tab-black">
-    <img src="assets/img/plate-black.webp" width="1200" height="1200" loading="lazy"
-         alt="Рисунок «Мечи» в вязке: три клинка уходят в водоворот, охра и олива по чёрному"
-         data-black="assets/img/plate-black.webp" data-grey="assets/img/plate-grey.webp"
-         data-alt-black="Рисунок «Мечи» в вязке: три клинка уходят в водоворот, охра и олива по чёрному"
-         data-alt-grey="Рисунок «Мечи» в вязке: три клинка уходят в водоворот, фиолетовый и горчица по серому">
-  </figure>
-  <div class="mechi__side">
-    <div class="tabs" role="tablist" aria-label="Расцветка" data-rise>
-      <button class="tab" type="button" role="tab" id="tab-black" aria-selected="true" aria-controls="mechi-plate" data-colour="black">Чёрный</button>
-      <button class="tab" type="button" role="tab" id="tab-grey" aria-selected="false" aria-controls="mechi-plate" data-colour="grey" tabindex="-1">Серый</button>
-    </div>
-    <div class="mechi__text">
-      <h2 class="h2" id="mechi-title" data-rise style="--i:1">Линия «Мечи»</h2>
-      <p class="mechi__desc" data-rise style="--i:2">Три клинка уходят в&nbsp;водоворот. На&nbsp;джемпере рисунок связан жаккардом: он часть полотна, а&nbsp;не&nbsp;принт поверх. В&nbsp;линии семь вещей, от&nbsp;шоппера за&nbsp;1&nbsp;600&nbsp;₽ до&nbsp;флиски за&nbsp;9&nbsp;800&nbsp;₽.</p>
-      <p class="mechi__colour" data-rise style="--i:3" aria-live="polite" data-colour-black="Чёрная расцветка: охра и олива по чёрному." data-colour-grey="Серая расцветка: фиолетовый и горчица по серому.">Чёрная расцветка: охра и&nbsp;олива по&nbsp;чёрному.</p>
-    </div>
-    <div class="mechi__cells" data-rise style="--i:4">
-      <a class="cell cell--lift" href="catalog.html?f=mechi"><span>Все семь вещей</span><span class="arrow" aria-hidden="true">→</span></a>
-      <a class="cell" href="item.html"><span>Джемпер, <span class="price">7&nbsp;100&nbsp;₽</span></span><span class="arrow" aria-hidden="true">→</span></a>
-    </div>
-  </div>
+<section class="intro" aria-label="Волчок">
+  <h1 class="intro__name">
+    <svg viewBox="-1 5 875 223" aria-hidden="true" focusable="false"><use href="assets/brand.svg#wordmark"/></svg>
+    <span class="sr-only">Волчок</span>
+  </h1>
+  <p class="intro__line">Мы создаем образы на&nbsp;почве любви к&nbsp;искусству и&nbsp;уличной культуре.</p>
+  <a class="intro__cue" href="#novoe">Новое<svg viewBox="0 0 12 20" aria-hidden="true" focusable="false"><path d="M6 0v18M1 13l5 5 5-5" fill="none" stroke="currentColor" stroke-width="1.3"/></svg></a>
 </section>
 
-<figure class="band">
-  <div class="band__frame" data-open><img src="assets/img/band-whirl.webp" width="2400" height="1031" loading="lazy" alt="Вязка крупно: остриё трёх клинков уходит в водоворот, охра и олива по чёрному"></div>
-  <figcaption class="band__note grid">
-    <span class="band__title" data-rise>Водоворот из&nbsp;«Мечей»</span>
-    <span class="band__text" data-rise style="--i:1">Закручен так&nbsp;же, как спираль в&nbsp;знаке Волчка: клинки уходят в&nbsp;ту&nbsp;же юлу, которую можно крутануть ниже.</span>
-  </figcaption>
-</figure>
-
-<section class="section grid spin" id="spin" aria-labelledby="spin-title">
-  <button class="spin__top" type="button" data-spin aria-label="Крутануть волчок" tabindex="-1">
-    <span class="spin__plane"><span class="spin__disc"><svg viewBox="7 6 934 603" preserveAspectRatio="none" aria-hidden="true" focusable="false"><use href="assets/brand.svg#spiral"/></svg></span></span>
-  </button>
-  <div class="spin__list">
-    <h2 class="h2" id="spin-title" data-rise>Крутани волчок</h2>
-    <ol class="drops" aria-label="Что выпало" data-rise style="--i:1">
-<!-- @drops -->
-      <li><button type="button" data-item="33" aria-pressed="true">Дождевик «Демон»</button></li>
-      <li><button type="button" data-item="1" aria-pressed="false">Футболка «Сатан банана»</button></li>
-      <li><button type="button" data-item="66" aria-pressed="false">Подставка «Замок» под спираль от комаров</button></li>
-      <li><button type="button" data-item="64" aria-pressed="false">Стринги «Потому что»</button></li>
-      <li><button type="button" data-item="65" aria-pressed="false">Флешка «Меч памяти»</button></li>
-<!-- /@drops -->
+<section class="feed" id="novoe" aria-labelledby="novoe-title">
+  <div class="feed__stage">
+    <div class="feed__hud">
+      <h2 class="feed__title" id="novoe-title">Новое</h2>
+      <p class="feed__count" aria-hidden="true"><span class="feed__now">1</span><span class="feed__of">&nbsp;из 12</span></p>
+      <div class="feed__steps">
+        <button class="feed__step" type="button" data-step="-1" aria-label="Предыдущая вещь"><svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M10 17V3M4 9l6-6 6 6" fill="none" stroke="currentColor" stroke-width="1.3"/></svg></button>
+        <button class="feed__step" type="button" data-step="1" aria-label="Следующая вещь"><svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M10 3v14M4 11l6 6 6-6" fill="none" stroke="currentColor" stroke-width="1.3"/></svg></button>
+      </div>
+    </div>
+    <ol class="feed__list">
+<!-- @feed -->
+      <li class="slide" id="v71458">
+        <h3 class="s-name"><span class="roll"><span class="s-kind">Стринги</span> ПОТОМУ ЧТО</span></h3>
+        <a class="s-card" href="item.html?id=71458" tabindex="-1" aria-hidden="true"><span class="card" aria-hidden="true"><span class="strip" style="--j:0"><span class="face"><svg class="face__frame" viewBox="0 0 400 500" focusable="false"><use href="assets/frame.svg#frame"/></svg><span class="face__art"><svg class="spiral" viewBox="7 6 934 603" focusable="false" style="--turn:323deg"><use href="assets/brand.svg#spiral"/></svg></span><svg class="face__no" viewBox="0 0 400 24" focusable="false"><text x="200" y="16.2" text-anchor="middle">№&nbsp;71458</text></svg></span></span><span class="strip" style="--j:1"><span class="face"><svg class="face__frame" viewBox="0 0 400 500" focusable="false"><use href="assets/frame.svg#frame"/></svg><span class="face__art"><svg class="spiral" viewBox="7 6 934 603" focusable="false" style="--turn:323deg"><use href="assets/brand.svg#spiral"/></svg></span><svg class="face__no" viewBox="0 0 400 24" focusable="false"><text x="200" y="16.2" text-anchor="middle">№&nbsp;71458</text></svg></span></span><span class="strip" style="--j:2"><span class="face"><svg class="face__frame" viewBox="0 0 400 500" focusable="false"><use href="assets/frame.svg#frame"/></svg><span class="face__art"><svg class="spiral" viewBox="7 6 934 603" focusable="false" style="--turn:323deg"><use href="assets/brand.svg#spiral"/></svg></span><svg class="face__no" viewBox="0 0 400 24" focusable="false"><text x="200" y="16.2" text-anchor="middle">№&nbsp;71458</text></svg></span></span><span class="strip" style="--j:3"><span class="face"><svg class="face__frame" viewBox="0 0 400 500" focusable="false"><use href="assets/frame.svg#frame"/></svg><span class="face__art"><svg class="spiral" viewBox="7 6 934 603" focusable="false" style="--turn:323deg"><use href="assets/brand.svg#spiral"/></svg></span><svg class="face__no" viewBox="0 0 400 24" focusable="false"><text x="200" y="16.2" text-anchor="middle">№&nbsp;71458</text></svg></span></span><span class="strip" style="--j:4"><span class="face"><svg class="face__frame" viewBox="0 0 400 500" focusable="false"><use href="assets/frame.svg#frame"/></svg><span class="face__art"><svg class="spiral" viewBox="7 6 934 603" focusable="false" style="--turn:323deg"><use href="assets/brand.svg#spiral"/></svg></span><svg class="face__no" viewBox="0 0 400 24" focusable="false"><text x="200" y="16.2" text-anchor="middle">№&nbsp;71458</text></svg></span></span></span></a>
+        <div class="s-side">
+          <p class="s-price price"><span class="roll">1 500 ₽</span></p>
+          <p class="s-more"><span class="roll"><a class="more" href="item.html?id=71458">Смотреть<span class="sr-only"> стринги ПОТОМУ ЧТО</span><svg class="more__arrow" viewBox="0 0 20 12" aria-hidden="true" focusable="false"><path d="M0 6h18M13 1l5 5-5 5" fill="none" stroke="currentColor" stroke-width="1.3"/></svg></a></span></p>
+        </div>
+      </li>
+      <li class="slide" id="v71300">
+        <h3 class="s-name"><span class="roll"><span class="s-kind">Бомбер</span> ОРНАМЕНТ</span></h3>
+        <a class="s-card" href="item.html?id=71300" tabindex="-1" aria-hidden="true"><span class="card" aria-hidden="true"><span class="strip" style="--j:0"><span class="face"><svg class="face__frame" viewBox="0 0 400 500" focusable="false"><use href="assets/frame.svg#frame"/></svg><span class="face__art"><svg class="spiral" viewBox="7 6 934 603" focusable="false" style="--turn:145deg"><use href="assets/brand.svg#spiral"/></svg></span><svg class="face__no" viewBox="0 0 400 24" focusable="false"><text x="200" y="16.2" text-anchor="middle">№&nbsp;71300</text></svg></span></span><span class="strip" style="--j:1"><span class="face"><svg class="face__frame" viewBox="0 0 400 500" focusable="false"><use href="assets/frame.svg#frame"/></svg><span class="face__art"><svg class="spiral" viewBox="7 6 934 603" focusable="false" style="--turn:145deg"><use href="assets/brand.svg#spiral"/></svg></span><svg class="face__no" viewBox="0 0 400 24" focusable="false"><text x="200" y="16.2" text-anchor="middle">№&nbsp;71300</text></svg></span></span><span class="strip" style="--j:2"><span class="face"><svg class="face__frame" viewBox="0 0 400 500" focusable="false"><use href="assets/frame.svg#frame"/></svg><span class="face__art"><svg class="spiral" viewBox="7 6 934 603" focusable="false" style="--turn:145deg"><use href="assets/brand.svg#spiral"/></svg></span><svg class="face__no" viewBox="0 0 400 24" focusable="false"><text x="200" y="16.2" text-anchor="middle">№&nbsp;71300</text></svg></span></span><span class="strip" style="--j:3"><span class="face"><svg class="face__frame" viewBox="0 0 400 500" focusable="false"><use href="assets/frame.svg#frame"/></svg><span class="face__art"><svg class="spiral" viewBox="7 6 934 603" focusable="false" style="--turn:145deg"><use href="assets/brand.svg#spiral"/></svg></span><svg class="face__no" viewBox="0 0 400 24" focusable="false"><text x="200" y="16.2" text-anchor="middle">№&nbsp;71300</text></svg></span></span><span class="strip" style="--j:4"><span class="face"><svg class="face__frame" viewBox="0 0 400 500" focusable="false"><use href="assets/frame.svg#frame"/></svg><span class="face__art"><svg class="spiral" viewBox="7 6 934 603" focusable="false" style="--turn:145deg"><use href="assets/brand.svg#spiral"/></svg></span><svg class="face__no" viewBox="0 0 400 24" focusable="false"><text x="200" y="16.2" text-anchor="middle">№&nbsp;71300</text></svg></span></span></span></a>
+        <div class="s-side">
+          <p class="s-price price"><span class="roll">16 800 ₽</span></p>
+          <p class="s-more"><span class="roll"><a class="more" href="item.html?id=71300">Смотреть<span class="sr-only"> бомбер ОРНАМЕНТ</span><svg class="more__arrow" viewBox="0 0 20 12" aria-hidden="true" focusable="false"><path d="M0 6h18M13 1l5 5-5 5" fill="none" stroke="currentColor" stroke-width="1.3"/></svg></a></span></p>
+        </div>
+      </li>
+      <li class="slide" id="v71530">
+        <h3 class="s-name"><span class="roll"><span class="s-kind">Флешка</span> МЕЧ ПАМЯТИ</span></h3>
+        <a class="s-card" href="item.html?id=71530" tabindex="-1" aria-hidden="true"><span class="card" aria-hidden="true"><span class="strip" style="--j:0"><span class="face"><svg class="face__frame" viewBox="0 0 400 500" focusable="false"><use href="assets/frame.svg#frame"/></svg><span class="face__art"><svg class="spiral" viewBox="7 6 934 603" focusable="false" style="--turn:224deg"><use href="assets/brand.svg#spiral"/></svg></span><svg class="face__no" viewBox="0 0 400 24" focusable="false"><text x="200" y="16.2" text-anchor="middle">№&nbsp;71530</text></svg></span></span><span class="strip" style="--j:1"><span class="face"><svg class="face__frame" viewBox="0 0 400 500" focusable="false"><use href="assets/frame.svg#frame"/></svg><span class="face__art"><svg class="spiral" viewBox="7 6 934 603" focusable="false" style="--turn:224deg"><use href="assets/brand.svg#spiral"/></svg></span><svg class="face__no" viewBox="0 0 400 24" focusable="false"><text x="200" y="16.2" text-anchor="middle">№&nbsp;71530</text></svg></span></span><span class="strip" style="--j:2"><span class="face"><svg class="face__frame" viewBox="0 0 400 500" focusable="false"><use href="assets/frame.svg#frame"/></svg><span class="face__art"><svg class="spiral" viewBox="7 6 934 603" focusable="false" style="--turn:224deg"><use href="assets/brand.svg#spiral"/></svg></span><svg class="face__no" viewBox="0 0 400 24" focusable="false"><text x="200" y="16.2" text-anchor="middle">№&nbsp;71530</text></svg></span></span><span class="strip" style="--j:3"><span class="face"><svg class="face__frame" viewBox="0 0 400 500" focusable="false"><use href="assets/frame.svg#frame"/></svg><span class="face__art"><svg class="spiral" viewBox="7 6 934 603" focusable="false" style="--turn:224deg"><use href="assets/brand.svg#spiral"/></svg></span><svg class="face__no" viewBox="0 0 400 24" focusable="false"><text x="200" y="16.2" text-anchor="middle">№&nbsp;71530</text></svg></span></span><span class="strip" style="--j:4"><span class="face"><svg class="face__frame" viewBox="0 0 400 500" focusable="false"><use href="assets/frame.svg#frame"/></svg><span class="face__art"><svg class="spiral" viewBox="7 6 934 603" focusable="false" style="--turn:224deg"><use href="assets/brand.svg#spiral"/></svg></span><svg class="face__no" viewBox="0 0 400 24" focusable="false"><text x="200" y="16.2" text-anchor="middle">№&nbsp;71530</text></svg></span></span></span></a>
+        <div class="s-side">
+          <p class="s-price price"><span class="roll">4 200 ₽</span></p>
+          <p class="s-more"><span class="roll"><a class="more" href="item.html?id=71530">Смотреть<span class="sr-only"> флешка МЕЧ ПАМЯТИ</span><svg class="more__arrow" viewBox="0 0 20 12" aria-hidden="true" focusable="false"><path d="M0 6h18M13 1l5 5-5 5" fill="none" stroke="currentColor" stroke-width="1.3"/></svg></a></span></p>
+        </div>
+      </li>
+      <li class="slide" id="v71524">
+        <h3 class="s-name"><span class="roll"><span class="s-kind">Футболка</span> ЕФИМБ</span></h3>
+        <a class="s-card" href="item.html?id=71524" tabindex="-1" aria-hidden="true"><span class="card" aria-hidden="true"><span class="strip" style="--j:0"><span class="face"><svg class="face__frame" viewBox="0 0 400 500" focusable="false"><use href="assets/frame.svg#frame"/></svg><span class="face__art"><svg class="spiral" viewBox="7 6 934 603" focusable="false" style="--turn:72deg"><use href="assets/brand.svg#spiral"/></svg></span><svg class="face__no" viewBox="0 0 400 24" focusable="false"><text x="200" y="16.2" text-anchor="middle">№&nbsp;71524</text></svg></span></span><span class="strip" style="--j:1"><span class="face"><svg class="face__frame" viewBox="0 0 400 500" focusable="false"><use href="assets/frame.svg#frame"/></svg><span class="face__art"><svg class="spiral" viewBox="7 6 934 603" focusable="false" style="--turn:72deg"><use href="assets/brand.svg#spiral"/></svg></span><svg class="face__no" viewBox="0 0 400 24" focusable="false"><text x="200" y="16.2" text-anchor="middle">№&nbsp;71524</text></svg></span></span><span class="strip" style="--j:2"><span class="face"><svg class="face__frame" viewBox="0 0 400 500" focusable="false"><use href="assets/frame.svg#frame"/></svg><span class="face__art"><svg class="spiral" viewBox="7 6 934 603" focusable="false" style="--turn:72deg"><use href="assets/brand.svg#spiral"/></svg></span><svg class="face__no" viewBox="0 0 400 24" focusable="false"><text x="200" y="16.2" text-anchor="middle">№&nbsp;71524</text></svg></span></span><span class="strip" style="--j:3"><span class="face"><svg class="face__frame" viewBox="0 0 400 500" focusable="false"><use href="assets/frame.svg#frame"/></svg><span class="face__art"><svg class="spiral" viewBox="7 6 934 603" focusable="false" style="--turn:72deg"><use href="assets/brand.svg#spiral"/></svg></span><svg class="face__no" viewBox="0 0 400 24" focusable="false"><text x="200" y="16.2" text-anchor="middle">№&nbsp;71524</text></svg></span></span><span class="strip" style="--j:4"><span class="face"><svg class="face__frame" viewBox="0 0 400 500" focusable="false"><use href="assets/frame.svg#frame"/></svg><span class="face__art"><svg class="spiral" viewBox="7 6 934 603" focusable="false" style="--turn:72deg"><use href="assets/brand.svg#spiral"/></svg></span><svg class="face__no" viewBox="0 0 400 24" focusable="false"><text x="200" y="16.2" text-anchor="middle">№&nbsp;71524</text></svg></span></span></span></a>
+        <div class="s-side">
+          <p class="s-price price"><span class="roll">3 900 ₽</span></p>
+          <p class="s-more"><span class="roll"><a class="more" href="item.html?id=71524">Смотреть<span class="sr-only"> футболка ЕФИМБ</span><svg class="more__arrow" viewBox="0 0 20 12" aria-hidden="true" focusable="false"><path d="M0 6h18M13 1l5 5-5 5" fill="none" stroke="currentColor" stroke-width="1.3"/></svg></a></span></p>
+        </div>
+      </li>
+      <li class="slide" id="v71518">
+        <h3 class="s-name"><span class="roll"><span class="s-kind">Футболка</span> САТАН БАНАНА</span></h3>
+        <a class="s-card" href="item.html?id=71518" tabindex="-1" aria-hidden="true"><span class="card" aria-hidden="true"><span class="strip" style="--j:0"><span class="face"><svg class="face__frame" viewBox="0 0 400 500" focusable="false"><use href="assets/frame.svg#frame"/></svg><span class="face__art"><svg class="spiral" viewBox="7 6 934 603" focusable="false" style="--turn:88deg"><use href="assets/brand.svg#spiral"/></svg></span><svg class="face__no" viewBox="0 0 400 24" focusable="false"><text x="200" y="16.2" text-anchor="middle">№&nbsp;71518</text></svg></span></span><span class="strip" style="--j:1"><span class="face"><svg class="face__frame" viewBox="0 0 400 500" focusable="false"><use href="assets/frame.svg#frame"/></svg><span class="face__art"><svg class="spiral" viewBox="7 6 934 603" focusable="false" style="--turn:88deg"><use href="assets/brand.svg#spiral"/></svg></span><svg class="face__no" viewBox="0 0 400 24" focusable="false"><text x="200" y="16.2" text-anchor="middle">№&nbsp;71518</text></svg></span></span><span class="strip" style="--j:2"><span class="face"><svg class="face__frame" viewBox="0 0 400 500" focusable="false"><use href="assets/frame.svg#frame"/></svg><span class="face__art"><svg class="spiral" viewBox="7 6 934 603" focusable="false" style="--turn:88deg"><use href="assets/brand.svg#spiral"/></svg></span><svg class="face__no" viewBox="0 0 400 24" focusable="false"><text x="200" y="16.2" text-anchor="middle">№&nbsp;71518</text></svg></span></span><span class="strip" style="--j:3"><span class="face"><svg class="face__frame" viewBox="0 0 400 500" focusable="false"><use href="assets/frame.svg#frame"/></svg><span class="face__art"><svg class="spiral" viewBox="7 6 934 603" focusable="false" style="--turn:88deg"><use href="assets/brand.svg#spiral"/></svg></span><svg class="face__no" viewBox="0 0 400 24" focusable="false"><text x="200" y="16.2" text-anchor="middle">№&nbsp;71518</text></svg></span></span><span class="strip" style="--j:4"><span class="face"><svg class="face__frame" viewBox="0 0 400 500" focusable="false"><use href="assets/frame.svg#frame"/></svg><span class="face__art"><svg class="spiral" viewBox="7 6 934 603" focusable="false" style="--turn:88deg"><use href="assets/brand.svg#spiral"/></svg></span><svg class="face__no" viewBox="0 0 400 24" focusable="false"><text x="200" y="16.2" text-anchor="middle">№&nbsp;71518</text></svg></span></span></span></a>
+        <div class="s-side">
+          <p class="s-price price"><span class="roll">3 900 ₽</span></p>
+          <p class="s-more"><span class="roll"><a class="more" href="item.html?id=71518">Смотреть<span class="sr-only"> футболка САТАН БАНАНА</span><svg class="more__arrow" viewBox="0 0 20 12" aria-hidden="true" focusable="false"><path d="M0 6h18M13 1l5 5-5 5" fill="none" stroke="currentColor" stroke-width="1.3"/></svg></a></span></p>
+        </div>
+      </li>
+      <li class="slide" id="v71500">
+        <h3 class="s-name"><span class="roll"><span class="s-kind">Футболка</span> МЕЧ</span></h3>
+        <a class="s-card" href="item.html?id=71500" tabindex="-1" aria-hidden="true"><span class="card" aria-hidden="true"><span class="strip" style="--j:0"><span class="face"><svg class="face__frame" viewBox="0 0 400 500" focusable="false"><use href="assets/frame.svg#frame"/></svg><span class="face__art"><svg class="spiral" viewBox="7 6 934 603" focusable="false" style="--turn:331deg"><use href="assets/brand.svg#spiral"/></svg></span><svg class="face__no" viewBox="0 0 400 24" focusable="false"><text x="200" y="16.2" text-anchor="middle">№&nbsp;71500</text></svg></span></span><span class="strip" style="--j:1"><span class="face"><svg class="face__frame" viewBox="0 0 400 500" focusable="false"><use href="assets/frame.svg#frame"/></svg><span class="face__art"><svg class="spiral" viewBox="7 6 934 603" focusable="false" style="--turn:331deg"><use href="assets/brand.svg#spiral"/></svg></span><svg class="face__no" viewBox="0 0 400 24" focusable="false"><text x="200" y="16.2" text-anchor="middle">№&nbsp;71500</text></svg></span></span><span class="strip" style="--j:2"><span class="face"><svg class="face__frame" viewBox="0 0 400 500" focusable="false"><use href="assets/frame.svg#frame"/></svg><span class="face__art"><svg class="spiral" viewBox="7 6 934 603" focusable="false" style="--turn:331deg"><use href="assets/brand.svg#spiral"/></svg></span><svg class="face__no" viewBox="0 0 400 24" focusable="false"><text x="200" y="16.2" text-anchor="middle">№&nbsp;71500</text></svg></span></span><span class="strip" style="--j:3"><span class="face"><svg class="face__frame" viewBox="0 0 400 500" focusable="false"><use href="assets/frame.svg#frame"/></svg><span class="face__art"><svg class="spiral" viewBox="7 6 934 603" focusable="false" style="--turn:331deg"><use href="assets/brand.svg#spiral"/></svg></span><svg class="face__no" viewBox="0 0 400 24" focusable="false"><text x="200" y="16.2" text-anchor="middle">№&nbsp;71500</text></svg></span></span><span class="strip" style="--j:4"><span class="face"><svg class="face__frame" viewBox="0 0 400 500" focusable="false"><use href="assets/frame.svg#frame"/></svg><span class="face__art"><svg class="spiral" viewBox="7 6 934 603" focusable="false" style="--turn:331deg"><use href="assets/brand.svg#spiral"/></svg></span><svg class="face__no" viewBox="0 0 400 24" focusable="false"><text x="200" y="16.2" text-anchor="middle">№&nbsp;71500</text></svg></span></span></span></a>
+        <div class="s-side">
+          <p class="s-price price"><span class="roll">3 900 ₽</span></p>
+          <p class="s-more"><span class="roll"><a class="more" href="item.html?id=71500">Смотреть<span class="sr-only"> футболка МЕЧ</span><svg class="more__arrow" viewBox="0 0 20 12" aria-hidden="true" focusable="false"><path d="M0 6h18M13 1l5 5-5 5" fill="none" stroke="currentColor" stroke-width="1.3"/></svg></a></span></p>
+        </div>
+      </li>
+      <li class="slide" id="v71506">
+        <h3 class="s-name"><span class="roll"><span class="s-kind">Футболка</span> КЛОУН</span></h3>
+        <a class="s-card" href="item.html?id=71506" tabindex="-1" aria-hidden="true"><span class="card" aria-hidden="true"><span class="strip" style="--j:0"><span class="face"><svg class="face__frame" viewBox="0 0 400 500" focusable="false"><use href="assets/frame.svg#frame"/></svg><span class="face__art"><svg class="spiral" viewBox="7 6 934 603" focusable="false" style="--turn:142deg"><use href="assets/brand.svg#spiral"/></svg></span><svg class="face__no" viewBox="0 0 400 24" focusable="false"><text x="200" y="16.2" text-anchor="middle">№&nbsp;71506</text></svg></span></span><span class="strip" style="--j:1"><span class="face"><svg class="face__frame" viewBox="0 0 400 500" focusable="false"><use href="assets/frame.svg#frame"/></svg><span class="face__art"><svg class="spiral" viewBox="7 6 934 603" focusable="false" style="--turn:142deg"><use href="assets/brand.svg#spiral"/></svg></span><svg class="face__no" viewBox="0 0 400 24" focusable="false"><text x="200" y="16.2" text-anchor="middle">№&nbsp;71506</text></svg></span></span><span class="strip" style="--j:2"><span class="face"><svg class="face__frame" viewBox="0 0 400 500" focusable="false"><use href="assets/frame.svg#frame"/></svg><span class="face__art"><svg class="spiral" viewBox="7 6 934 603" focusable="false" style="--turn:142deg"><use href="assets/brand.svg#spiral"/></svg></span><svg class="face__no" viewBox="0 0 400 24" focusable="false"><text x="200" y="16.2" text-anchor="middle">№&nbsp;71506</text></svg></span></span><span class="strip" style="--j:3"><span class="face"><svg class="face__frame" viewBox="0 0 400 500" focusable="false"><use href="assets/frame.svg#frame"/></svg><span class="face__art"><svg class="spiral" viewBox="7 6 934 603" focusable="false" style="--turn:142deg"><use href="assets/brand.svg#spiral"/></svg></span><svg class="face__no" viewBox="0 0 400 24" focusable="false"><text x="200" y="16.2" text-anchor="middle">№&nbsp;71506</text></svg></span></span><span class="strip" style="--j:4"><span class="face"><svg class="face__frame" viewBox="0 0 400 500" focusable="false"><use href="assets/frame.svg#frame"/></svg><span class="face__art"><svg class="spiral" viewBox="7 6 934 603" focusable="false" style="--turn:142deg"><use href="assets/brand.svg#spiral"/></svg></span><svg class="face__no" viewBox="0 0 400 24" focusable="false"><text x="200" y="16.2" text-anchor="middle">№&nbsp;71506</text></svg></span></span></span></a>
+        <div class="s-side">
+          <p class="s-price price"><span class="roll">3 900 ₽</span></p>
+          <p class="s-more"><span class="roll"><a class="more" href="item.html?id=71506">Смотреть<span class="sr-only"> футболка КЛОУН</span><svg class="more__arrow" viewBox="0 0 20 12" aria-hidden="true" focusable="false"><path d="M0 6h18M13 1l5 5-5 5" fill="none" stroke="currentColor" stroke-width="1.3"/></svg></a></span></p>
+        </div>
+      </li>
+      <li class="slide" id="v71494">
+        <h3 class="s-name"><span class="roll"><span class="s-kind">Футболка</span> ШИЗА</span></h3>
+        <a class="s-card" href="item.html?id=71494" tabindex="-1" aria-hidden="true"><span class="card" aria-hidden="true"><span class="strip" style="--j:0"><span class="face"><svg class="face__frame" viewBox="0 0 400 500" focusable="false"><use href="assets/frame.svg#frame"/></svg><span class="face__art"><svg class="spiral" viewBox="7 6 934 603" focusable="false" style="--turn:308deg"><use href="assets/brand.svg#spiral"/></svg></span><svg class="face__no" viewBox="0 0 400 24" focusable="false"><text x="200" y="16.2" text-anchor="middle">№&nbsp;71494</text></svg></span></span><span class="strip" style="--j:1"><span class="face"><svg class="face__frame" viewBox="0 0 400 500" focusable="false"><use href="assets/frame.svg#frame"/></svg><span class="face__art"><svg class="spiral" viewBox="7 6 934 603" focusable="false" style="--turn:308deg"><use href="assets/brand.svg#spiral"/></svg></span><svg class="face__no" viewBox="0 0 400 24" focusable="false"><text x="200" y="16.2" text-anchor="middle">№&nbsp;71494</text></svg></span></span><span class="strip" style="--j:2"><span class="face"><svg class="face__frame" viewBox="0 0 400 500" focusable="false"><use href="assets/frame.svg#frame"/></svg><span class="face__art"><svg class="spiral" viewBox="7 6 934 603" focusable="false" style="--turn:308deg"><use href="assets/brand.svg#spiral"/></svg></span><svg class="face__no" viewBox="0 0 400 24" focusable="false"><text x="200" y="16.2" text-anchor="middle">№&nbsp;71494</text></svg></span></span><span class="strip" style="--j:3"><span class="face"><svg class="face__frame" viewBox="0 0 400 500" focusable="false"><use href="assets/frame.svg#frame"/></svg><span class="face__art"><svg class="spiral" viewBox="7 6 934 603" focusable="false" style="--turn:308deg"><use href="assets/brand.svg#spiral"/></svg></span><svg class="face__no" viewBox="0 0 400 24" focusable="false"><text x="200" y="16.2" text-anchor="middle">№&nbsp;71494</text></svg></span></span><span class="strip" style="--j:4"><span class="face"><svg class="face__frame" viewBox="0 0 400 500" focusable="false"><use href="assets/frame.svg#frame"/></svg><span class="face__art"><svg class="spiral" viewBox="7 6 934 603" focusable="false" style="--turn:308deg"><use href="assets/brand.svg#spiral"/></svg></span><svg class="face__no" viewBox="0 0 400 24" focusable="false"><text x="200" y="16.2" text-anchor="middle">№&nbsp;71494</text></svg></span></span></span></a>
+        <div class="s-side">
+          <p class="s-price price"><span class="roll">3 900 ₽</span></p>
+          <p class="s-more"><span class="roll"><a class="more" href="item.html?id=71494">Смотреть<span class="sr-only"> футболка ШИЗА</span><svg class="more__arrow" viewBox="0 0 20 12" aria-hidden="true" focusable="false"><path d="M0 6h18M13 1l5 5-5 5" fill="none" stroke="currentColor" stroke-width="1.3"/></svg></a></span></p>
+        </div>
+      </li>
+      <li class="slide" id="v71512">
+        <h3 class="s-name"><span class="roll"><span class="s-kind">Футболка</span> ТАМАГОЧИ</span></h3>
+        <a class="s-card" href="item.html?id=71512" tabindex="-1" aria-hidden="true"><span class="card" aria-hidden="true"><span class="strip" style="--j:0"><span class="face"><svg class="face__frame" viewBox="0 0 400 500" focusable="false"><use href="assets/frame.svg#frame"/></svg><span class="face__art"><svg class="spiral" viewBox="7 6 934 603" focusable="false" style="--turn:286deg"><use href="assets/brand.svg#spiral"/></svg></span><svg class="face__no" viewBox="0 0 400 24" focusable="false"><text x="200" y="16.2" text-anchor="middle">№&nbsp;71512</text></svg></span></span><span class="strip" style="--j:1"><span class="face"><svg class="face__frame" viewBox="0 0 400 500" focusable="false"><use href="assets/frame.svg#frame"/></svg><span class="face__art"><svg class="spiral" viewBox="7 6 934 603" focusable="false" style="--turn:286deg"><use href="assets/brand.svg#spiral"/></svg></span><svg class="face__no" viewBox="0 0 400 24" focusable="false"><text x="200" y="16.2" text-anchor="middle">№&nbsp;71512</text></svg></span></span><span class="strip" style="--j:2"><span class="face"><svg class="face__frame" viewBox="0 0 400 500" focusable="false"><use href="assets/frame.svg#frame"/></svg><span class="face__art"><svg class="spiral" viewBox="7 6 934 603" focusable="false" style="--turn:286deg"><use href="assets/brand.svg#spiral"/></svg></span><svg class="face__no" viewBox="0 0 400 24" focusable="false"><text x="200" y="16.2" text-anchor="middle">№&nbsp;71512</text></svg></span></span><span class="strip" style="--j:3"><span class="face"><svg class="face__frame" viewBox="0 0 400 500" focusable="false"><use href="assets/frame.svg#frame"/></svg><span class="face__art"><svg class="spiral" viewBox="7 6 934 603" focusable="false" style="--turn:286deg"><use href="assets/brand.svg#spiral"/></svg></span><svg class="face__no" viewBox="0 0 400 24" focusable="false"><text x="200" y="16.2" text-anchor="middle">№&nbsp;71512</text></svg></span></span><span class="strip" style="--j:4"><span class="face"><svg class="face__frame" viewBox="0 0 400 500" focusable="false"><use href="assets/frame.svg#frame"/></svg><span class="face__art"><svg class="spiral" viewBox="7 6 934 603" focusable="false" style="--turn:286deg"><use href="assets/brand.svg#spiral"/></svg></span><svg class="face__no" viewBox="0 0 400 24" focusable="false"><text x="200" y="16.2" text-anchor="middle">№&nbsp;71512</text></svg></span></span></span></a>
+        <div class="s-side">
+          <p class="s-price price"><span class="roll">3 900 ₽</span></p>
+          <p class="s-more"><span class="roll"><a class="more" href="item.html?id=71512">Смотреть<span class="sr-only"> футболка ТАМАГОЧИ</span><svg class="more__arrow" viewBox="0 0 20 12" aria-hidden="true" focusable="false"><path d="M0 6h18M13 1l5 5-5 5" fill="none" stroke="currentColor" stroke-width="1.3"/></svg></a></span></p>
+        </div>
+      </li>
+      <li class="slide" id="v71294">
+        <h3 class="s-name"><span class="roll"><span class="s-kind">Бомбер</span> ЯПОНИЯ</span></h3>
+        <a class="s-card" href="item.html?id=71294" tabindex="-1" aria-hidden="true"><span class="card" aria-hidden="true"><span class="strip" style="--j:0"><span class="face"><svg class="face__frame" viewBox="0 0 400 500" focusable="false"><use href="assets/frame.svg#frame"/></svg><span class="face__art"><svg class="spiral" viewBox="7 6 934 603" focusable="false" style="--turn:334deg"><use href="assets/brand.svg#spiral"/></svg></span><svg class="face__no" viewBox="0 0 400 24" focusable="false"><text x="200" y="16.2" text-anchor="middle">№&nbsp;71294</text></svg></span></span><span class="strip" style="--j:1"><span class="face"><svg class="face__frame" viewBox="0 0 400 500" focusable="false"><use href="assets/frame.svg#frame"/></svg><span class="face__art"><svg class="spiral" viewBox="7 6 934 603" focusable="false" style="--turn:334deg"><use href="assets/brand.svg#spiral"/></svg></span><svg class="face__no" viewBox="0 0 400 24" focusable="false"><text x="200" y="16.2" text-anchor="middle">№&nbsp;71294</text></svg></span></span><span class="strip" style="--j:2"><span class="face"><svg class="face__frame" viewBox="0 0 400 500" focusable="false"><use href="assets/frame.svg#frame"/></svg><span class="face__art"><svg class="spiral" viewBox="7 6 934 603" focusable="false" style="--turn:334deg"><use href="assets/brand.svg#spiral"/></svg></span><svg class="face__no" viewBox="0 0 400 24" focusable="false"><text x="200" y="16.2" text-anchor="middle">№&nbsp;71294</text></svg></span></span><span class="strip" style="--j:3"><span class="face"><svg class="face__frame" viewBox="0 0 400 500" focusable="false"><use href="assets/frame.svg#frame"/></svg><span class="face__art"><svg class="spiral" viewBox="7 6 934 603" focusable="false" style="--turn:334deg"><use href="assets/brand.svg#spiral"/></svg></span><svg class="face__no" viewBox="0 0 400 24" focusable="false"><text x="200" y="16.2" text-anchor="middle">№&nbsp;71294</text></svg></span></span><span class="strip" style="--j:4"><span class="face"><svg class="face__frame" viewBox="0 0 400 500" focusable="false"><use href="assets/frame.svg#frame"/></svg><span class="face__art"><svg class="spiral" viewBox="7 6 934 603" focusable="false" style="--turn:334deg"><use href="assets/brand.svg#spiral"/></svg></span><svg class="face__no" viewBox="0 0 400 24" focusable="false"><text x="200" y="16.2" text-anchor="middle">№&nbsp;71294</text></svg></span></span></span></a>
+        <div class="s-side">
+          <p class="s-price price"><span class="roll">19 800 ₽</span></p>
+          <p class="s-more"><span class="roll"><a class="more" href="item.html?id=71294">Смотреть<span class="sr-only"> бомбер ЯПОНИЯ</span><svg class="more__arrow" viewBox="0 0 20 12" aria-hidden="true" focusable="false"><path d="M0 6h18M13 1l5 5-5 5" fill="none" stroke="currentColor" stroke-width="1.3"/></svg></a></span></p>
+        </div>
+      </li>
+      <li class="slide" id="v71486">
+        <h3 class="s-name"><span class="roll"><span class="s-kind">Футболка</span> РЫЦАРЬ ВОЛК</span></h3>
+        <a class="s-card" href="item.html?id=71486" tabindex="-1" aria-hidden="true"><span class="card" aria-hidden="true"><span class="strip" style="--j:0"><span class="face"><svg class="face__frame" viewBox="0 0 400 500" focusable="false"><use href="assets/frame.svg#frame"/></svg><span class="face__art"><svg class="spiral" viewBox="7 6 934 603" focusable="false" style="--turn:201deg"><use href="assets/brand.svg#spiral"/></svg></span><svg class="face__no" viewBox="0 0 400 24" focusable="false"><text x="200" y="16.2" text-anchor="middle">№&nbsp;71486</text></svg></span></span><span class="strip" style="--j:1"><span class="face"><svg class="face__frame" viewBox="0 0 400 500" focusable="false"><use href="assets/frame.svg#frame"/></svg><span class="face__art"><svg class="spiral" viewBox="7 6 934 603" focusable="false" style="--turn:201deg"><use href="assets/brand.svg#spiral"/></svg></span><svg class="face__no" viewBox="0 0 400 24" focusable="false"><text x="200" y="16.2" text-anchor="middle">№&nbsp;71486</text></svg></span></span><span class="strip" style="--j:2"><span class="face"><svg class="face__frame" viewBox="0 0 400 500" focusable="false"><use href="assets/frame.svg#frame"/></svg><span class="face__art"><svg class="spiral" viewBox="7 6 934 603" focusable="false" style="--turn:201deg"><use href="assets/brand.svg#spiral"/></svg></span><svg class="face__no" viewBox="0 0 400 24" focusable="false"><text x="200" y="16.2" text-anchor="middle">№&nbsp;71486</text></svg></span></span><span class="strip" style="--j:3"><span class="face"><svg class="face__frame" viewBox="0 0 400 500" focusable="false"><use href="assets/frame.svg#frame"/></svg><span class="face__art"><svg class="spiral" viewBox="7 6 934 603" focusable="false" style="--turn:201deg"><use href="assets/brand.svg#spiral"/></svg></span><svg class="face__no" viewBox="0 0 400 24" focusable="false"><text x="200" y="16.2" text-anchor="middle">№&nbsp;71486</text></svg></span></span><span class="strip" style="--j:4"><span class="face"><svg class="face__frame" viewBox="0 0 400 500" focusable="false"><use href="assets/frame.svg#frame"/></svg><span class="face__art"><svg class="spiral" viewBox="7 6 934 603" focusable="false" style="--turn:201deg"><use href="assets/brand.svg#spiral"/></svg></span><svg class="face__no" viewBox="0 0 400 24" focusable="false"><text x="200" y="16.2" text-anchor="middle">№&nbsp;71486</text></svg></span></span></span></a>
+        <div class="s-side">
+          <p class="s-price price"><span class="roll">4 900 ₽</span></p>
+          <p class="s-more"><span class="roll"><a class="more" href="item.html?id=71486">Смотреть<span class="sr-only"> футболка РЫЦАРЬ ВОЛК</span><svg class="more__arrow" viewBox="0 0 20 12" aria-hidden="true" focusable="false"><path d="M0 6h18M13 1l5 5-5 5" fill="none" stroke="currentColor" stroke-width="1.3"/></svg></a></span></p>
+        </div>
+      </li>
+      <li class="slide" id="v71466">
+        <h3 class="s-name"><span class="roll"><span class="s-kind">Худи</span> БИТВА</span></h3>
+        <a class="s-card" href="item.html?id=71466" tabindex="-1" aria-hidden="true"><span class="card" aria-hidden="true"><span class="strip" style="--j:0"><span class="face"><svg class="face__frame" viewBox="0 0 400 500" focusable="false"><use href="assets/frame.svg#frame"/></svg><span class="face__art"><svg class="spiral" viewBox="7 6 934 603" focusable="false" style="--turn:143deg"><use href="assets/brand.svg#spiral"/></svg></span><svg class="face__no" viewBox="0 0 400 24" focusable="false"><text x="200" y="16.2" text-anchor="middle">№&nbsp;71466</text></svg></span></span><span class="strip" style="--j:1"><span class="face"><svg class="face__frame" viewBox="0 0 400 500" focusable="false"><use href="assets/frame.svg#frame"/></svg><span class="face__art"><svg class="spiral" viewBox="7 6 934 603" focusable="false" style="--turn:143deg"><use href="assets/brand.svg#spiral"/></svg></span><svg class="face__no" viewBox="0 0 400 24" focusable="false"><text x="200" y="16.2" text-anchor="middle">№&nbsp;71466</text></svg></span></span><span class="strip" style="--j:2"><span class="face"><svg class="face__frame" viewBox="0 0 400 500" focusable="false"><use href="assets/frame.svg#frame"/></svg><span class="face__art"><svg class="spiral" viewBox="7 6 934 603" focusable="false" style="--turn:143deg"><use href="assets/brand.svg#spiral"/></svg></span><svg class="face__no" viewBox="0 0 400 24" focusable="false"><text x="200" y="16.2" text-anchor="middle">№&nbsp;71466</text></svg></span></span><span class="strip" style="--j:3"><span class="face"><svg class="face__frame" viewBox="0 0 400 500" focusable="false"><use href="assets/frame.svg#frame"/></svg><span class="face__art"><svg class="spiral" viewBox="7 6 934 603" focusable="false" style="--turn:143deg"><use href="assets/brand.svg#spiral"/></svg></span><svg class="face__no" viewBox="0 0 400 24" focusable="false"><text x="200" y="16.2" text-anchor="middle">№&nbsp;71466</text></svg></span></span><span class="strip" style="--j:4"><span class="face"><svg class="face__frame" viewBox="0 0 400 500" focusable="false"><use href="assets/frame.svg#frame"/></svg><span class="face__art"><svg class="spiral" viewBox="7 6 934 603" focusable="false" style="--turn:143deg"><use href="assets/brand.svg#spiral"/></svg></span><svg class="face__no" viewBox="0 0 400 24" focusable="false"><text x="200" y="16.2" text-anchor="middle">№&nbsp;71466</text></svg></span></span></span></a>
+        <div class="s-side">
+          <p class="s-price price"><span class="roll">9 800 ₽</span></p>
+          <p class="s-more"><span class="roll"><a class="more" href="item.html?id=71466">Смотреть<span class="sr-only"> худи БИТВА</span><svg class="more__arrow" viewBox="0 0 20 12" aria-hidden="true" focusable="false"><path d="M0 6h18M13 1l5 5-5 5" fill="none" stroke="currentColor" stroke-width="1.3"/></svg></a></span></p>
+        </div>
+      </li>
+      <li class="slide slide--end" id="vse">
+        <h3 class="s-name"><span class="roll"><span class="s-kind">Одежда и&nbsp;аксессуары</span> Каталог</span></h3>
+        <a class="s-card" href="catalog.html" tabindex="-1" aria-hidden="true"><span class="card" aria-hidden="true"><span class="strip" style="--j:0"><span class="face"><svg class="face__frame" viewBox="0 0 400 500" focusable="false"><use href="assets/frame.svg#frame"/></svg><span class="face__art"><svg class="spiral" viewBox="7 6 934 603" focusable="false" style="--turn:0deg"><use href="assets/brand.svg#spiral"/></svg></span><svg class="face__no" viewBox="0 0 400 24" focusable="false"><text x="200" y="16.2" text-anchor="middle">Каталог</text></svg></span></span><span class="strip" style="--j:1"><span class="face"><svg class="face__frame" viewBox="0 0 400 500" focusable="false"><use href="assets/frame.svg#frame"/></svg><span class="face__art"><svg class="spiral" viewBox="7 6 934 603" focusable="false" style="--turn:0deg"><use href="assets/brand.svg#spiral"/></svg></span><svg class="face__no" viewBox="0 0 400 24" focusable="false"><text x="200" y="16.2" text-anchor="middle">Каталог</text></svg></span></span><span class="strip" style="--j:2"><span class="face"><svg class="face__frame" viewBox="0 0 400 500" focusable="false"><use href="assets/frame.svg#frame"/></svg><span class="face__art"><svg class="spiral" viewBox="7 6 934 603" focusable="false" style="--turn:0deg"><use href="assets/brand.svg#spiral"/></svg></span><svg class="face__no" viewBox="0 0 400 24" focusable="false"><text x="200" y="16.2" text-anchor="middle">Каталог</text></svg></span></span><span class="strip" style="--j:3"><span class="face"><svg class="face__frame" viewBox="0 0 400 500" focusable="false"><use href="assets/frame.svg#frame"/></svg><span class="face__art"><svg class="spiral" viewBox="7 6 934 603" focusable="false" style="--turn:0deg"><use href="assets/brand.svg#spiral"/></svg></span><svg class="face__no" viewBox="0 0 400 24" focusable="false"><text x="200" y="16.2" text-anchor="middle">Каталог</text></svg></span></span><span class="strip" style="--j:4"><span class="face"><svg class="face__frame" viewBox="0 0 400 500" focusable="false"><use href="assets/frame.svg#frame"/></svg><span class="face__art"><svg class="spiral" viewBox="7 6 934 603" focusable="false" style="--turn:0deg"><use href="assets/brand.svg#spiral"/></svg></span><svg class="face__no" viewBox="0 0 400 24" focusable="false"><text x="200" y="16.2" text-anchor="middle">Каталог</text></svg></span></span></span></a>
+        <div class="s-side">
+          <div class="s-price"><ul class="roll s-links">
+            <li><a href="catalog.html#odezhda">Одежда<span class="muted"> 42</span></a></li>
+            <li><a href="catalog.html#aksessuary">Аксессуары<span class="muted"> 34</span></a></li>
+            <li><a href="catalog.html?f=sale">SALE<span class="muted"> 5</span></a></li>
+          </ul></div>
+          <p class="s-more"><span class="roll"><a class="button" href="catalog.html">Открыть каталог</a></span></p>
+        </div>
+      </li>
+<!-- /@feed -->
     </ol>
-    <div class="spin__act">
-      <button class="button spin__go" type="button" data-spin hidden>Крутануть</button>
-      <p class="spin__how muted">Юла остановится на&nbsp;одной из&nbsp;76 вещей магазина: имя, цена и&nbsp;ссылка.</p>
-    </div>
-  </div>
-  <div class="spin__fact" aria-live="polite" data-rise style="--i:2">
-<!-- @fact -->
-    <span class="price">6 666 ₽</span>
-    <span class="meta">Верхняя одежда</span><br>
-    <a class="link" href="https://volchok.ru/shop/71385-dozhdevik_demon_dozhdevik_demon/">Смотреть на volchok.ru</a>
-<!-- /@fact -->
   </div>
 </section>
 
-<section class="section" id="glavy" aria-labelledby="glavy-title">
-  <div class="shelf__head">
-    <h2 class="h2" id="glavy-title" data-rise>22 главы</h2>
-    <p data-rise style="--i:1">Каждая коллекция Волчка — глава со&nbsp;своим манифестом, с&nbsp;2016 года по&nbsp;сегодня. Корешок ведёт к&nbsp;главе на&nbsp;volchok.ru.</p>
-  </div>
-  <ol class="shelf" aria-label="Главы по порядку">
-<!-- @spines -->
-    <li class="spine" data-kind="col" style="--i:0"><a href="https://volchok.ru/collection/net-tsarey-net-bogov/"><span class="spine__name">Нет царей нет богов</span><span class="spine__kind">коллекция, 2016</span></a></li>
-    <li class="spine" data-kind="col" style="--i:1"><a href="https://volchok.ru/collection/les/"><span class="spine__name">Лес</span><span class="spine__kind">коллекция, 2016</span></a></li>
-    <li class="spine" data-kind="col" style="--i:2"><a href="https://volchok.ru/collection/smertelnaya-bitva/"><span class="spine__name">Смертельная битва</span><span class="spine__kind">коллекция, 2017</span></a></li>
-    <li class="spine" data-kind="col" style="--i:3"><a href="https://volchok.ru/collection/finalnaya-fantaziya/"><span class="spine__name">Финальная фантазия</span><span class="spine__kind">коллекция, 2017</span></a></li>
-    <li class="spine" data-kind="collab" style="--i:4"><a href="https://volchok.ru/collection/posthuman/"><span class="spine__name">Posthuman</span><span class="spine__kind">коллаборация, 2017</span></a></li>
-    <li class="spine" data-kind="col" style="--i:5"><a href="https://volchok.ru/collection/replika/"><span class="spine__name">Реплика</span><span class="spine__kind">коллекция, 2018</span></a></li>
-    <li class="spine" data-kind="col" style="--i:6"><a href="https://volchok.ru/collection/crash-test/"><span class="spine__name">Crash test</span><span class="spine__kind">коллекция, 2018</span></a></li>
-    <li class="spine" data-kind="collab" style="--i:7"><a href="https://volchok.ru/collection/edinstvo/"><span class="spine__name">Единство</span><span class="spine__kind">коллаборация, 2019</span></a></li>
-    <li class="spine" data-kind="col" style="--i:8"><a href="https://volchok.ru/collection/khishchnye-veshchi-veka/"><span class="spine__name">Хищные вещи века</span><span class="spine__kind">коллекция, 2019</span></a></li>
-    <li class="spine" data-kind="col" style="--i:9"><a href="https://volchok.ru/collection/sekta/"><span class="spine__name">Секта</span><span class="spine__kind">коллекция, 2020</span></a></li>
-    <li class="spine" data-kind="col" style="--i:10"><a href="https://volchok.ru/collection/tiran/"><span class="spine__name">Тиран</span><span class="spine__kind">коллекция, 2020</span></a></li>
-    <li class="spine" data-kind="drop" style="--i:11"><a href="https://volchok.ru/collection/volchok-x-bharata-danu/"><span class="spine__name">Дроп 7</span><span class="spine__kind">дроп, 2021</span></a></li>
-    <li class="spine" data-kind="col" style="--i:12"><a href="https://volchok.ru/collection/po-tu-storonu-steny/"><span class="spine__name">По ту сторону стены</span><span class="spine__kind">коллекция, 2021</span></a></li>
-    <li class="spine" data-kind="col" style="--i:13"><a href="https://volchok.ru/collection/epokha-vozrozhdeniya/"><span class="spine__name">Эпоха Возрождения</span><span class="spine__kind">коллекция, 2021</span></a></li>
-    <li class="spine" data-kind="collab" style="--i:14"><a href="https://volchok.ru/collection/volchok-kh-sila-vetra/"><span class="spine__name">Волчок × Сила ветра</span><span class="spine__kind">коллаборация, 2022</span></a></li>
-    <li class="spine" data-kind="collab" style="--i:15"><a href="https://volchok.ru/collection/volchok-kh-signal/"><span class="spine__name">Волчок × Signal</span><span class="spine__kind">коллаборация, 2022</span></a></li>
-    <li class="spine" data-kind="collab" style="--i:16"><a href="https://volchok.ru/collection/volchok-kh-sensor/"><span class="spine__name">Волчок × Sensor</span><span class="spine__kind">коллаборация, 2022</span></a></li>
-    <li class="spine" data-kind="col" style="--i:17"><a href="https://volchok.ru/collection/no-hope/"><span class="spine__name">No hope</span><span class="spine__kind">коллекция, 2022</span></a></li>
-    <li class="spine" data-kind="col" style="--i:18"><a href="https://volchok.ru/collection/aralez/"><span class="spine__name">Aralez</span><span class="spine__kind">коллекция, 2022</span></a></li>
-    <li class="spine" data-kind="collab" style="--i:19"><a href="https://volchok.ru/collection/internal-struggle/"><span class="spine__name">Internal struggle</span><span class="spine__kind">коллаборация, 2022</span></a></li>
-    <li class="spine" data-kind="col" style="--i:20"><a href="https://volchok.ru/collection/purgatory/"><span class="spine__name">Purgatory</span><span class="spine__kind">коллекция, 2023</span></a></li>
-    <li class="spine" data-kind="col" style="--i:21"><a href="https://volchok.ru/collection/logic-games/"><span class="spine__name">Logic Games</span><span class="spine__kind">коллекция, 2024</span></a></li>
-<!-- /@spines -->
-  </ol>
-  <p class="shelf__key" aria-hidden="true"><span>коллекция</span><span class="k-collab">коллаборация</span><span class="k-drop">дроп</span></p>
-</section>
-
-<section class="section grid about" id="about" aria-labelledby="about-title">
-  <h2 class="h2 about__title" id="about-title" data-rise>О&nbsp;бренде</h2>
-  <dl class="about__facts" data-rise style="--i:1">
-    <div><dt>Где</dt><dd>Петербург и&nbsp;Армения</dd></div>
-    <div><dt>С&nbsp;какого года</dt><dd>С&nbsp;2014-го</dd></div>
-    <div><dt>Как связаться</dt><dd><a class="link" href="mailto:order@volchok.ru">order@volchok.ru</a></dd></div>
-  </dl>
-  <div class="about__text">
-    <p class="statement" data-rise style="--i:1"><img class="dropcap" src="assets/img/patch-spiral.webp" width="600" height="398" loading="lazy" alt="">Волчок — петербургский бренд одежды с&nbsp;2014 года: 22 главы-коллекции и&nbsp;футболки с&nbsp;именами вроде «Сатан банана».</p>
-    <p class="about__more" data-rise style="--i:2">Бренд основал Василий Волчок-Русакович. Название значит сразу две вещи: волчонка из&nbsp;колыбельной и&nbsp;юлу, отсюда спираль в&nbsp;знаке. В&nbsp;2018 году Волчок показывался на&nbsp;Pitti Uomo во&nbsp;Флоренции, в&nbsp;2021-м одел геймеров павильона России на&nbsp;Венецианской архитектурной биеннале. С&nbsp;2022 года часть команды работает в&nbsp;Армении, оттуда глава Aralez.</p>
-  </div>
+<section class="cols" id="kollekcii" aria-labelledby="kollekcii-title">
+  <h2 class="h2 cols__title" id="kollekcii-title" data-rise>Коллекции</h2>
+  <ul class="cols__list" data-rise-list>
+<!-- @collections -->
+    <li style="--i:0"><a href="https://volchok.ru/collection/logic-games/">LOGIC GAMES</a></li>
+    <li style="--i:1"><a href="https://volchok.ru/collection/purgatory/">PURGATORY</a></li>
+    <li style="--i:2"><a href="https://volchok.ru/collection/internal-struggle/">INTERNAL STRUGGLE</a></li>
+    <li style="--i:3"><a href="https://volchok.ru/collection/aralez/">ARALEZ</a></li>
+    <li style="--i:4"><a href="https://volchok.ru/collection/no-hope/">NO HOPE</a></li>
+    <li style="--i:5"><a href="https://volchok.ru/collection/volchok-kh-sensor/">ВОЛЧОК х SENSOR</a></li>
+    <li style="--i:6"><a href="https://volchok.ru/collection/volchok-kh-signal/">ВОЛЧОК х SIGNAL</a></li>
+    <li style="--i:7"><a href="https://volchok.ru/collection/volchok-kh-sila-vetra/">Волчок х Сила ветра</a></li>
+    <li style="--i:8"><a href="https://volchok.ru/collection/epokha-vozrozhdeniya/">ЭПОХА ВОЗРОЖДЕНИЯ</a></li>
+    <li style="--i:9"><a href="https://volchok.ru/collection/po-tu-storonu-steny/">ПО ТУ СТОРОНУ СТЕНЫ</a></li>
+    <li style="--i:10"><a href="https://volchok.ru/collection/volchok-x-bharata-danu/">Дроп 7</a></li>
+    <li style="--i:11"><a href="https://volchok.ru/collection/tiran/">ТИРАН</a></li>
+    <li style="--i:12"><a href="https://volchok.ru/collection/sekta/">СЕКТА</a></li>
+    <li style="--i:13"><a href="https://volchok.ru/collection/khishchnye-veshchi-veka/">ХИЩНЫЕ ВЕЩИ ВЕКА</a></li>
+    <li style="--i:14"><a href="https://volchok.ru/collection/edinstvo/">ЕДИНСТВО</a></li>
+    <li style="--i:15"><a href="https://volchok.ru/collection/crash-test/">Crash test</a></li>
+    <li style="--i:16"><a href="https://volchok.ru/collection/replika/">РЕПЛИКА</a></li>
+    <li style="--i:17"><a href="https://volchok.ru/collection/posthuman/">POSTHUMAN</a></li>
+    <li style="--i:18"><a href="https://volchok.ru/collection/finalnaya-fantaziya/">ФИНАЛЬНАЯ ФАНТАЗИЯ</a></li>
+    <li style="--i:19"><a href="https://volchok.ru/collection/smertelnaya-bitva/">СМЕРТЕЛЬНАЯ БИТВА</a></li>
+    <li style="--i:20"><a href="https://volchok.ru/collection/les/">Лес</a></li>
+    <li style="--i:21"><a href="https://volchok.ru/collection/net-tsarey-net-bogov/">НЕТ ЦАРЕЙ НЕТ БОГОВ</a></li>
+<!-- /@collections -->
+  </ul>
+  <h3 class="cols__sub" data-rise>Капсулы</h3>
+  <ul class="cols__caps" data-rise-list>
+<!-- @capsules -->
+    <li style="--i:0"><a href="https://volchok.ru/shop/baza/">БАЗОВАЯ ЛИНЕЙКА</a></li>
+    <li style="--i:1"><a href="https://volchok.ru/shop/volchok-x-fabula/">VOLCHOK X FABULA</a></li>
+    <li style="--i:2"><a href="https://volchok.ru/shop/konkurs-printov/">КОНКУРС ПРИНТОВ</a></li>
+    <li style="--i:3"><a href="https://volchok.ru/shop/volchok-x-dave-levi/">VOLCHOK X DAVE LEVI</a></li>
+    <li style="--i:4"><a href="https://volchok.ru/shop/volki-lyubite/">VOLCHOK X ВОЛКИ ЛЮБИТЕ</a></li>
+    <li style="--i:5"><a href="https://volchok.ru/shop/volchok-x-sasha-sulim/">VOLCHOK X SASHA SULIM</a></li>
+    <li style="--i:6"><a href="https://volchok.ru/shop/volchok-x-kitana/">VOLCHOK X КИТАНА</a></li>
+<!-- /@capsules -->
+  </ul>
 </section>
 
 </main>
-</div>
 
-<footer class="footer">
-  <div class="grid footer__cols">
+<footer class="footer" id="svyaz">
+  <div class="footer__cols">
     <div class="footer__col">
       <h2>Магазин</h2>
+      <a href="#novoe">Новое</a>
       <a href="catalog.html">Каталог</a>
-      <a href="https://volchok.ru/nashi-magaziny-i-partnery/">Магазины и&nbsp;партнёры</a>
-      <a href="https://volchok.ru/client/">Помощь покупателю</a>
+      <a href="#kollekcii">Коллекции</a>
+      <a href="catalog.html?f=sale">SALE</a>
     </div>
     <div class="footer__col">
-      <h2>Разделы</h2>
-      <a href="#mechi">Линия «Мечи»</a>
-      <a href="#spin">Крутани волчок</a>
-      <a href="#glavy">22 главы</a>
-      <a href="#about">О&nbsp;бренде</a>
+      <h2>Покупателю</h2>
+      <a href="https://volchok.ru/client/">Помощь покупателю</a>
+      <a href="https://volchok.ru/nashi-magaziny-i-partnery/">Наши магазины и&nbsp;партнеры</a>
+      <a href="https://volchok.ru/contacts/">Контакты</a>
+      <a href="https://volchok.ru/offer/">Оферта</a>
+      <a href="https://volchok.ru/privacy-policy/">О&nbsp;конфиденциальности</a>
     </div>
     <div class="footer__col">
       <h2>Связь</h2>
       <a href="mailto:order@volchok.ru">order@volchok.ru</a>
       <a href="tel:+79684406757">+7 (968) 440-67-57</a>
-      <a href="https://volchok.ru/contacts/">Контакты</a>
+      <a href="https://vk.com/volchok">ВКонтакте</a>
+      <a href="https://www.youtube.com/volchokclothing">YouTube</a>
+      <a href="https://www.instagram.com/volchokclothing/">Instagram</a>
+      <a href="https://www.facebook.com/volchokstore">Facebook</a>
     </div>
     <div class="footer__col">
       <h2>Прототип</h2>
       <a href="system.html">Основа визуала</a>
-      <span>Черновик 2, октябрь 2026</span>
+      <span>Черновик 3, октябрь 2026</span>
       <a href="https://noeasy.xyz/">noeasy.xyz</a>
     </div>
   </div>
   <div class="footer__name" aria-hidden="true">
     <svg viewBox="-1 5 875 223" focusable="false"><use href="assets/brand.svg#wordmark"/></svg>
   </div>
-  <p class="footer__legal">© 2026 Волчок. Это прототип редизайна: вещи продаются на&nbsp;volchok.ru.</p>
+  <p class="footer__legal">© 2026 Волчок. Прототип оболочки: вещи, цены и&nbsp;разделы с&nbsp;volchok.ru, покупка там&nbsp;же.</p>
 </footer>
 
-<script src="assets/items.js"></script>
-<script src="assets/volchok.js"></script>
+<script src="assets/fx.js" defer></script>
+<script src="assets/vendor/gsap.min.js" defer></script>
+<script src="assets/vendor/ScrollTrigger.min.js" defer></script>
+<script src="assets/volchok.js" defer></script>
+<script src="assets/feed.js" defer></script>
+<script>addEventListener('load', function () { if (!window.VOLCHOK_FEED) document.documentElement.classList.remove('feed-on'); });</script>
 </body>
 </html>
