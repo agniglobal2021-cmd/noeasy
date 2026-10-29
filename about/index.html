@@ -10,10 +10,21 @@
 <meta name="msapplication-navbutton-color" content="#5D5143">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>About | NOEASY</title>
+<meta name="description" content="About NOEASY: a largely self-taught artist working between medieval symbolism, Western esotericism, street culture and frame-by-frame animation.">
+<link rel="canonical" href="https://noeasy.xyz/about/">
+<meta property="og:type" content="profile">
+<meta property="og:site_name" content="NOEASY">
+<meta property="og:url" content="https://noeasy.xyz/about/">
+<meta property="og:title" content="About | NOEASY">
+<meta property="og:description" content="A largely self-taught artist working between medieval symbolism, Western esotericism, street culture and frame-by-frame animation.">
+<meta property="og:image" content="https://noeasy.xyz/assets/og/brand.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@noeasyvision">
 <style>
-@font-face { font-family:'MEKZANTINE'; src:url('../fonts/MEKZANTINE-Regular.otf') format('truetype'); }
-@font-face { font-family:'DotGothic16'; src:url('../fonts/DotGothic16-Regular.ttf') format('truetype'); }
-@font-face { font-family:'Fixedsys'; src:url('../fonts/DotGothic16-Regular.ttf') format('truetype'); }
+@font-face { font-family:'MEKZANTINE'; src:url('/fonts/MEKZANTINE.woff2') format('woff2'), url('/fonts/MEKZANTINE-Regular.otf') format('opentype'); font-display:swap; }
+@font-face { font-family:'DotGothic16'; src:url('/fonts/DotGothic16.woff2') format('woff2'), url('/fonts/DotGothic16-Regular.ttf') format('truetype'); font-display:swap; }
 
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
 
@@ -29,10 +40,8 @@ html,body{height:100%;overflow:hidden;background:#5D5143;}
 body{font-family:'DotGothic16',monospace;background:var(--bg);-webkit-tap-highlight-color:transparent;-webkit-font-smoothing:none;}
 body::before{content:'';position:fixed;top:-100vh;left:0;right:0;height:100vh;background:#5D5143;z-index:9001;pointer-events:none;}
 
-#grain{position:fixed;top:-60px;bottom:-60px;left:-10px;right:-10px;z-index:9998;pointer-events:none;}
-#cursor{position:fixed;z-index:9999;pointer-events:none;width:28px;height:28px;border-radius:50%;border:1px solid rgba(53,53,53,0.35);transform:translate(-50%,-50%) scale(0);transition:transform .22s cubic-bezier(.34,1.56,.64,1),opacity .2s;opacity:0;mix-blend-mode:multiply;}
-#cursor.active{transform:translate(-50%,-50%) scale(1);opacity:1;}
-#cursor.pressed{transform:translate(-50%,-50%) scale(0.6);}
+/* film grain and the ring cursor: /assets/site.js */
+#grain{z-index:9998;}
 
 header{position:fixed;top:0;left:0;right:0;width:100%;z-index:500;display:flex;flex-direction:column;pointer-events:none;opacity:0;transition:opacity 0.7s ease;background:var(--desk);box-sizing:border-box;}
 header.visible{opacity:1;}
@@ -41,7 +50,7 @@ header>*{pointer-events:auto;}
 .header-pill{display:flex;align-items:center;position:relative;height:var(--header-pill-h);background:#AFA191;border-top:1px solid #d4cdc4;border-bottom:2px solid #7a7068;box-shadow:0 1px 0 #404040;padding:0 4px;width:100%;}
 .pill-divider{width:2px;height:26px;background:#808080;border-right:1px solid #d4cdc4;margin:0 2px;flex-shrink:0;}
 .pill-center{position:absolute;left:50%;transform:translateX(-50%);pointer-events:none;user-select:none;white-space:nowrap;}
-.pill-section{font-family:'MEKZANTINE',serif;font-size:19px;letter-spacing:0.08em;opacity:0.9;color:#000;}
+.pill-section{margin:0;font-family:'MEKZANTINE',serif;font-size:19px;font-weight:400;line-height:normal;letter-spacing:0.08em;opacity:0.9;color:#000;}
 .sword-btn{height:calc(100% - 10px);padding:0 12px;margin:0 2px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;background:#AFA191;border-top:2px solid #d4cdc4;border-left:2px solid #d4cdc4;border-right:2px solid #3d3830;border-bottom:2px solid #3d3830;box-shadow:inset 1px 1px 0 #d4cdc4,inset -1px -1px 0 #7a7068;cursor:pointer;-webkit-tap-highlight-color:transparent;flex-shrink:0;}
 .sword-btn:active,.sword-btn.open{border-top:2px solid #3d3830;border-left:2px solid #3d3830;border-right:2px solid #d4cdc4;border-bottom:2px solid #d4cdc4;box-shadow:inset 1px 1px 0 #7a7068;}
 .sword-btn .line{position:relative;height:2px;background:#000;border-radius:0;opacity:0.8;transition:transform 0.38s cubic-bezier(0.16,1,0.3,1),opacity 0.25s,width 0.38s cubic-bezier(0.16,1,0.3,1);}
@@ -53,13 +62,15 @@ header>*{pointer-events:auto;}
 .sword-btn.open .line:nth-child(3){width:18px;transform:translateY(-6px) rotate(-45deg);}
 .sword-btn.open .line::after{opacity:0.55;}
 .burger-wrap{position:relative;height:100%;display:flex;align-items:center;}
-.nav-overlay{position:absolute;top:calc(100% + 4px);right:0;z-index:8999;min-width:160px;padding:2px;background:#AFA191;border-top:2px solid #d4cdc4;border-left:2px solid #d4cdc4;border-right:2px solid #3d3830;border-bottom:2px solid #3d3830;box-shadow:2px 2px 0 #2a2520;display:flex;flex-direction:column;opacity:0;pointer-events:none;transform:translateY(-4px);transform-origin:top right;transition:opacity 0.15s ease,transform 0.15s ease;}
-.nav-overlay.open{opacity:1;pointer-events:auto;transform:translateY(0);}
-.nav-overlay a{font-family:'DotGothic16',monospace;font-size:10px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:#000;text-decoration:none;padding:8px 12px 8px 8px;display:flex;align-items:center;}
+/* closed menu = visibility:hidden too, so Tab and screen readers skip it; it hides only after the fade-out */
+.nav-overlay{position:absolute;top:calc(100% + 4px);right:0;z-index:8999;min-width:160px;padding:2px;background:#AFA191;border-top:2px solid #d4cdc4;border-left:2px solid #d4cdc4;border-right:2px solid #3d3830;border-bottom:2px solid #3d3830;box-shadow:2px 2px 0 #2a2520;display:flex;flex-direction:column;opacity:0;visibility:hidden;pointer-events:none;transform:translateY(-4px);transform-origin:top right;transition:opacity 0.15s ease,transform 0.15s ease,visibility 0s linear 0.15s;}
+.nav-overlay.open{opacity:1;visibility:visible;pointer-events:auto;transform:translateY(0);transition-delay:0s;}
+.nav-overlay a{font-family:'DotGothic16',monospace;font-size:12px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#000;text-decoration:none;padding:9px 12px 9px 8px;display:flex;align-items:center;}
 .nav-overlay a::before{content:'/';margin-right:7px;}
-.nav-overlay a:hover{background:#5D5143;color:#f6f1da;}
 .nav-overlay a+a{border-top:1px solid #7a7068;}
 .nav-overlay a.current{background:#c8c2ba;}
+.nav-overlay a:hover,.nav-overlay a:focus-visible,.nav-overlay a.current:hover{background:#5D5143;color:#f6f1da;outline:none;}
+.sword-btn:focus-visible{outline:1px dotted #000;outline-offset:2px;}
 
 main{position:fixed;top:calc(var(--header-total-h) + var(--page-gap));left:12px;right:12px;bottom:var(--page-gap);display:flex;align-items:flex-start;justify-content:center;}
 
@@ -67,7 +78,7 @@ main{position:fixed;top:calc(var(--header-total-h) + var(--page-gap));left:12px;
 .win.visible{opacity:1;transform:none;}
 .tbar{height:22px;background:var(--btn);display:flex;align-items:stretch;padding:1px;flex-shrink:0;user-select:none;}
 .tbar-inner{flex:1;background:var(--tb);display:flex;align-items:center;padding:0 1px 0 6px;gap:2px;overflow:hidden;}
-.tbar-t{flex:1;font-size:8px;font-weight:700;letter-spacing:.12em;color:var(--ttxt);overflow:hidden;white-space:nowrap;text-overflow:ellipsis;line-height:1;}
+.tbar-t{flex:1;font-size:12px;font-weight:700;letter-spacing:.1em;color:var(--ttxt);overflow:hidden;white-space:nowrap;text-overflow:ellipsis;line-height:1;}
 .tbbtns{display:flex;gap:1px;flex-shrink:0;align-items:stretch;}
 .tbbtn{width:16px;height:16px;background:var(--btn);border-top:1px solid var(--blt);border-left:1px solid var(--blt);border-right:1px solid var(--bdk);border-bottom:1px solid var(--bdk);display:flex;align-items:center;justify-content:center;cursor:default;flex-shrink:0;padding:0;line-height:0;}
 .tbbtn:active{border-top:1px solid var(--bdk);border-left:1px solid var(--bdk);border-right:1px solid var(--blt);border-bottom:1px solid var(--blt);}
@@ -78,18 +89,26 @@ main{position:fixed;top:calc(var(--header-total-h) + var(--page-gap));left:12px;
 .con-body::-webkit-scrollbar-thumb{background:#7a6a58;border:1px solid #5D5143;}
 
 .about-hero{display:flex;flex-direction:column;align-items:center;padding:28px 24px 24px;gap:14px;border-bottom:1px solid rgba(42,37,32,0.15);}
-.hero-stack{display:inline-flex;flex-direction:column;align-items:stretch;gap:12px;}
+.hero-stack{display:flex;flex-direction:column;align-items:center;gap:12px;width:100%;max-width:420px;}
 .hero-avatar{width:100%;aspect-ratio:1/1;border-radius:50%;overflow:hidden;border:2px solid rgba(42,37,32,0.18);pointer-events:none;user-select:none;flex-shrink:0;}
 .hero-avatar img{width:100%;height:100%;object-fit:cover;display:block;pointer-events:none;-webkit-user-drag:none;}
-.hero-logo{width:100%;aspect-ratio:1609/590;object-fit:contain;display:block;pointer-events:none;user-select:none;-webkit-user-drag:none;}
-.about-role{font-family:'Fixedsys',monospace;font-size:9px;letter-spacing:0.2em;text-transform:uppercase;color:#5D5143;white-space:nowrap;text-align:center;}
+.hero-logo{width:100%;height:auto;aspect-ratio:1280/469;object-fit:contain;display:block;pointer-events:none;user-select:none;-webkit-user-drag:none;}
+.about-role{font-family:'DotGothic16',monospace;font-size:12px;letter-spacing:0.12em;text-transform:uppercase;color:#3d3830;white-space:nowrap;text-align:center;}
 .about-divider{font-size:15px;color:#7a6a58;opacity:0.45;letter-spacing:0.3em;align-self:center;}
 
-.about-section{padding:16px 22px 14px;border-bottom:1px solid rgba(42,37,32,0.1);}
-.about-section:last-child{border-bottom:none;padding-bottom:28px;}
-.section-label{font-family:'MEKZANTINE',serif;font-size:14px;letter-spacing:0.12em;color:#3d3830;margin-bottom:9px;}
-.section-text{font-family:'Fixedsys',monospace;font-size:10px;line-height:1.9;color:#5a4a38;letter-spacing:0.03em;}
-.section-text em{color:#2a2520;font-style:normal;}
+/* readable text: 16px (the pixel font's own grid), dark ink, lines up to ~65 characters */
+.about-section{padding:20px 24px 18px;border-bottom:1px solid rgba(42,37,32,0.1);}
+.about-section:last-child{border-bottom:none;padding-bottom:30px;}
+.section-label{margin:0 0 10px;font-family:'MEKZANTINE',serif;font-size:20px;font-weight:400;letter-spacing:0.1em;color:#2a2520;}
+.section-text{font-family:'DotGothic16',monospace;font-size:16px;line-height:1.6;color:#3d3830;letter-spacing:0.01em;max-width:65ch;}
+.section-text em{color:#1e1a12;font-style:normal;}
+
+/* desktop: a smaller avatar and logo, so the text starts on the first screen */
+@media (min-width:700px){
+  .about-hero{padding:24px 24px 18px;gap:10px;}
+  .hero-stack{max-width:400px;}
+  .hero-avatar{width:200px;}
+}
 
 @media (orientation:portrait){main{left:8px;right:8px;}.win{max-width:100%;}}
 @media (orientation:landscape){main{left:16px;right:16px;}.win{max-width:700px;}}
@@ -97,20 +116,21 @@ main{position:fixed;top:calc(var(--header-total-h) + var(--page-gap));left:12px;
 </style>
 <!-- NOEASY visit counter (no cookies) + newsletter helper; the Mindgate bot publishes assets/door.js -->
 <script src="/assets/door.js" defer></script>
+<!-- film grain + ring cursor, shared by every page -->
+<script src="/assets/site.js" defer></script>
 </head>
 <body>
 
-<canvas id="grain"></canvas>
-<div id="cursor"></div>
+<div id="grain" aria-hidden="true"></div>
 
 <header id="siteHeader">
   <div class="header-safe-top"></div>
   <div class="header-pill">
-    <span class="pill-center"><span class="pill-section">About</span></span>
+    <div class="pill-center"><h1 class="pill-section">About</h1></div>
     <div style="flex:1"></div>
     <div class="pill-divider"></div>
     <div class="burger-wrap">
-      <button class="sword-btn" id="swordBtn" aria-label="Menu">
+      <button class="sword-btn" id="swordBtn" aria-label="Menu" aria-expanded="false" aria-controls="navOverlay">
         <span class="line"></span><span class="line"></span><span class="line"></span>
       </button>
       <div class="nav-overlay" id="navOverlay">
@@ -135,12 +155,12 @@ main{position:fixed;top:calc(var(--header-total-h) + var(--page-gap));left:12px;
       <div class="about-hero">
         <div class="hero-stack">
           <div class="hero-avatar">
-            <img src="../assets/avatar.png" alt="" draggable="false">
+            <img src="/assets/avatar.webp" width="575" height="575" alt="" draggable="false">
           </div>
-          <img class="hero-logo" src="../assets/logo.png" alt="Noeasy" draggable="false">
+          <img class="hero-logo" src="/assets/logo.webp" width="1280" height="469" alt="Noeasy" draggable="false">
           <div class="about-role">Artist &amp; Illustrator ☩ Based Kazakhstan</div>
         </div>
-        <span class="about-divider">✠ ✠ ✠</span>
+        <span class="about-divider" aria-hidden="true">✠ ✠ ✠</span>
       </div>
       <div class="about-section">
         <div class="section-label">Origin</div>
@@ -167,19 +187,14 @@ main{position:fixed;top:calc(var(--header-total-h) + var(--page-gap));left:12px;
 </main>
 
 <script>
-document.addEventListener('contextmenu',e=>e.preventDefault());
-const grain=document.getElementById('grain');
-const gc=grain.getContext('2d');
-let gw,gh;
-function resizeGrain(){gw=grain.width=window.innerWidth+20;gh=grain.height=window.innerHeight+120;}
-resizeGrain();
-window.addEventListener('resize',resizeGrain);
-(function tick(){const img=gc.createImageData(gw,gh);for(let i=0;i<img.data.length;i+=4){const v=Math.random()*255|0;img.data[i]=img.data[i+1]=img.data[i+2]=v;img.data[i+3]=Math.random()*22|0;}gc.putImageData(img,0,0);requestAnimationFrame(tick);})();
-const cursor=document.getElementById('cursor');
-document.addEventListener('mousemove',e=>{cursor.style.left=e.clientX+'px';cursor.style.top=e.clientY+'px';});
-document.addEventListener('mousedown',()=>cursor.classList.add('pressed'));
-document.addEventListener('mouseup',()=>cursor.classList.remove('pressed'));
-(function(){const btn=document.getElementById('swordBtn');const overlay=document.getElementById('navOverlay');btn.addEventListener('click',e=>{e.stopPropagation();btn.classList.toggle('open');overlay.classList.toggle('open');});document.addEventListener('click',e=>{if(!overlay.contains(e.target)&&e.target!==btn){btn.classList.remove('open');overlay.classList.remove('open');}});})();
+/* film grain and the ring cursor: /assets/site.js */
+(function(){
+  const btn=document.getElementById('swordBtn');const overlay=document.getElementById('navOverlay');
+  const set=open=>{btn.classList.toggle('open',open);overlay.classList.toggle('open',open);btn.setAttribute('aria-expanded',open?'true':'false');};
+  btn.addEventListener('click',e=>{e.stopPropagation();set(!overlay.classList.contains('open'));});
+  document.addEventListener('click',e=>{if(!overlay.contains(e.target)&&e.target!==btn)set(false);});
+  document.addEventListener('keydown',e=>{if(e.key==='Escape'&&overlay.classList.contains('open')){set(false);btn.focus();}});
+})();
 const crossSVG=`<svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg" style="display:block;image-rendering:pixelated;shape-rendering:crispEdges"><rect x="4" y="0" width="2" height="10" fill="#1a1612"/><rect x="3" y="1" width="4" height="1" fill="#1a1612"/><rect x="3" y="8" width="4" height="1" fill="#1a1612"/><rect x="2" y="0" width="6" height="1" fill="#1a1612"/><rect x="2" y="9" width="6" height="1" fill="#1a1612"/><rect x="0" y="4" width="10" height="2" fill="#1a1612"/><rect x="1" y="3" width="1" height="4" fill="#1a1612"/><rect x="8" y="3" width="1" height="4" fill="#1a1612"/><rect x="0" y="2" width="1" height="6" fill="#1a1612"/><rect x="9" y="2" width="1" height="6" fill="#1a1612"/></svg>`;
 function makeBtns(c){['Minimize','Maximize','Close'].forEach(t=>{const b=document.createElement('div');b.className='tbbtn';b.title=t;b.innerHTML=crossSVG;c.appendChild(b);});}
 makeBtns(document.getElementById('abtns'));
