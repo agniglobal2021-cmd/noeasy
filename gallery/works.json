@@ -269,6 +269,38 @@
     }
   },
   {
+    "title": "Chronos",
+    "meta": "Digital Painting",
+    "date": "2024-01-09",
+    "year": 2024,
+    "style": "Digital Painting",
+    "workType": "Personal",
+    "avail": [],
+    "links": [],
+    "src": "images/chronos.jpg",
+    "ph": {
+      "color": "#78493b",
+      "ratio": "116.96%"
+    },
+    "srcHi": "hi/chronos.jpg"
+  },
+  {
+    "title": "Eden",
+    "meta": "Digital Painting",
+    "date": "2023-12-18",
+    "year": 2023,
+    "style": "Digital Painting",
+    "workType": "Commission",
+    "avail": [],
+    "links": [],
+    "src": "images/eden.jpg",
+    "ph": {
+      "color": "#4d4e8b",
+      "ratio": "100.00%"
+    },
+    "srcHi": "hi/eden.jpg"
+  },
+  {
     "title": "Jade Gardens",
     "meta": "Digital Painting",
     "date": "2023-12-05",
@@ -517,6 +549,22 @@
       "ratio": "100%"
     },
     "slot": "HB-02"
+  },
+  {
+    "title": "Final Fantasy",
+    "meta": "Digital Painting",
+    "date": "2022-05-14",
+    "year": 2022,
+    "style": "Digital Painting",
+    "workType": "Personal",
+    "avail": [],
+    "links": [],
+    "src": "images/final-fantasy.jpg",
+    "ph": {
+      "color": "#43344b",
+      "ratio": "125.00%"
+    },
+    "srcHi": "hi/final-fantasy.jpg"
   },
   {
     "title": "Dark Night of the Soul",
