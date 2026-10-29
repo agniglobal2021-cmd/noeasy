@@ -54,7 +54,7 @@ header>*{pointer-events:auto;}
 /* closed menu = visibility:hidden too, so Tab and screen readers skip it; it hides only after the fade-out */
 .nav-overlay{position:absolute;top:calc(100% + 4px);right:0;z-index:8999;min-width:170px;padding:2px;background:var(--btn);border-top:2px solid var(--blt);border-left:2px solid var(--blt);border-right:2px solid var(--bdk);border-bottom:2px solid var(--bdk);box-shadow:2px 2px 0 var(--bsh);display:flex;flex-direction:column;opacity:0;visibility:hidden;pointer-events:none;transform:translateY(-4px);transform-origin:top right;transition:opacity .15s,transform .15s,visibility 0s linear .15s;}
 .nav-overlay.open{opacity:1;visibility:visible;pointer-events:auto;transform:translateY(0);transition-delay:0s;}
-.nav-overlay a{font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#000;text-decoration:none;padding:9px 12px 9px 8px;display:flex;align-items:center;}
+.nav-overlay a{font-size:11px;font-weight:700;letter-spacing:.11em;text-transform:uppercase;color:#000;text-decoration:none;padding:9px 12px 9px 8px;display:flex;align-items:center;}
 .nav-overlay a::before{content:'/';margin-right:7px;opacity:.5;}
 .nav-overlay a + a{border-top:1px solid #7a7068;}
 .nav-overlay a:hover,.nav-overlay a:focus-visible{background:var(--desk);color:var(--ttxt);outline:none;}
@@ -65,18 +65,18 @@ main{min-height:100vh;min-height:100dvh;padding:calc(var(--header-total-h) + 22p
 .win.visible{opacity:1;transform:none;}
 .tbar{height:22px;background:var(--btn);display:flex;align-items:stretch;padding:1px;flex-shrink:0;user-select:none;}
 .tbar-inner{flex:1;background:var(--tb);display:flex;align-items:center;padding:0 1px 0 6px;gap:2px;overflow:hidden;min-width:0;}
-.tbar-t{flex:1;font-size:12px;font-weight:700;letter-spacing:.1em;color:var(--ttxt);overflow:hidden;white-space:nowrap;text-overflow:ellipsis;line-height:1;min-width:0;}
+.tbar-t{flex:1;font-size:10px;font-weight:700;letter-spacing:.11em;color:var(--ttxt);overflow:hidden;white-space:nowrap;text-overflow:ellipsis;line-height:1;min-width:0;}
 .tbbtns{display:flex;gap:1px;flex-shrink:0;align-items:center;}
 .tbbtn{width:16px;height:16px;background:var(--btn);border-top:1px solid var(--blt);border-left:1px solid var(--blt);border-right:1px solid var(--bdk);border-bottom:1px solid var(--bdk);display:flex;align-items:center;justify-content:center;cursor:default;flex-shrink:0;padding:0;line-height:0;}
 .con-body{padding:20px 18px 18px;border-top:2px solid #7a7068;}
 .msg{display:flex;gap:16px;align-items:flex-start;}
 .msg-icon{flex-shrink:0;width:40px;height:40px;display:flex;align-items:center;justify-content:center;background:var(--desk);border-top:2px solid var(--bdk);border-left:2px solid var(--bdk);border-right:2px solid var(--blt);border-bottom:2px solid var(--blt);}
 .msg-icon svg{display:block;width:20px;height:20px;image-rendering:pixelated;shape-rendering:crispEdges;}
-.msg-t{font-family:'Mekzantine',serif;font-weight:400;font-size:26px;letter-spacing:.03em;line-height:1.15;color:#1e1a12;}
-.msg-p{margin-top:8px;font-size:16px;line-height:1.6;color:#2a2520;}
-.msg-code{margin-top:6px;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:#3d3830;}
+.msg-t{font-family:'Mekzantine',serif;font-weight:400;font-size:22px;letter-spacing:.03em;line-height:1.15;color:#1e1a12;}
+.msg-p{margin-top:8px;font-size:13px;line-height:1.6;color:#2a2520;}
+.msg-code{margin-top:6px;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:#3d3830;}
 .btns{display:flex;justify-content:flex-end;gap:8px;margin-top:22px;}
-.b95{display:inline-flex;align-items:center;justify-content:center;min-width:96px;height:36px;padding:0 16px;font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink);text-decoration:none;background:var(--btn);border-top:2px solid var(--blt);border-left:2px solid var(--blt);border-right:2px solid var(--bdk);border-bottom:2px solid var(--bdk);box-shadow:inset 1px 1px 0 var(--blt),inset -1px -1px 0 #7a7068;-webkit-tap-highlight-color:transparent;}
+.b95{display:inline-flex;align-items:center;justify-content:center;min-width:96px;height:36px;padding:0 16px;font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink);text-decoration:none;background:var(--btn);border-top:2px solid var(--blt);border-left:2px solid var(--blt);border-right:2px solid var(--bdk);border-bottom:2px solid var(--bdk);box-shadow:inset 1px 1px 0 var(--blt),inset -1px -1px 0 #7a7068;-webkit-tap-highlight-color:transparent;}
 .b95:active{border-top:2px solid var(--bdk);border-left:2px solid var(--bdk);border-right:2px solid var(--blt);border-bottom:2px solid var(--blt);box-shadow:inset 1px 1px 0 #7a7068;padding:2px 15px 0 17px;}
 /* the default button of a Win95 dialog wears a black frame */
 .b95.default{outline:1px solid #000;outline-offset:0;}

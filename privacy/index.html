@@ -63,41 +63,41 @@ header>*{pointer-events:auto;}
 /* closed menu = visibility:hidden too, so Tab and screen readers skip it; it hides only after the fade-out */
 .nav-overlay{position:absolute;top:calc(100% + 4px);right:0;z-index:8999;min-width:170px;padding:2px;background:var(--btn);border-top:2px solid var(--blt);border-left:2px solid var(--blt);border-right:2px solid var(--bdk);border-bottom:2px solid var(--bdk);box-shadow:2px 2px 0 var(--bsh);display:flex;flex-direction:column;opacity:0;visibility:hidden;pointer-events:none;transform:translateY(-4px);transform-origin:top right;transition:opacity .15s,transform .15s,visibility 0s linear .15s;}
 .nav-overlay.open{opacity:1;visibility:visible;pointer-events:auto;transform:translateY(0);transition-delay:0s;}
-.nav-overlay a{font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#000;text-decoration:none;padding:9px 12px 9px 8px;display:flex;align-items:center;}
+.nav-overlay a{font-size:11px;font-weight:700;letter-spacing:.11em;text-transform:uppercase;color:#000;text-decoration:none;padding:9px 12px 9px 8px;display:flex;align-items:center;}
 .nav-overlay a::before{content:'/';margin-right:7px;opacity:.5;}
 .nav-overlay a + a{border-top:1px solid #7a7068;}
 .nav-overlay a:hover,.nav-overlay a:focus-visible{background:var(--desk);color:var(--ttxt);outline:none;}
 
 /* ══ WINDOW ══ */
 main{min-height:100vh;min-height:100dvh;padding:calc(var(--header-total-h) + 22px) 12px calc(env(safe-area-inset-bottom,0px) + 20px);display:flex;flex-direction:column;align-items:center;gap:16px;}
-.win{width:100%;max-width:640px;display:flex;flex-direction:column;border-top:2px solid var(--blt);border-left:2px solid var(--blt);border-right:2px solid var(--bdk);border-bottom:2px solid var(--bdk);box-shadow:2px 2px 0 var(--bsh);opacity:0;transform:translateY(14px);transition:opacity .6s cubic-bezier(.16,1,.3,1),transform .6s cubic-bezier(.16,1,.3,1);background:var(--btn);}
+.win{width:100%;max-width:520px;display:flex;flex-direction:column;border-top:2px solid var(--blt);border-left:2px solid var(--blt);border-right:2px solid var(--bdk);border-bottom:2px solid var(--bdk);box-shadow:2px 2px 0 var(--bsh);opacity:0;transform:translateY(14px);transition:opacity .6s cubic-bezier(.16,1,.3,1),transform .6s cubic-bezier(.16,1,.3,1);background:var(--btn);}
 .win.visible{opacity:1;transform:none;}
 .tbar{height:22px;background:var(--btn);display:flex;align-items:stretch;padding:1px;flex-shrink:0;user-select:none;}
 .tbar-inner{flex:1;background:var(--tb);display:flex;align-items:center;padding:0 1px 0 6px;gap:2px;overflow:hidden;min-width:0;}
-.tbar-t{flex:1;font-size:12px;font-weight:700;letter-spacing:.1em;color:var(--ttxt);overflow:hidden;white-space:nowrap;text-overflow:ellipsis;line-height:1;min-width:0;}
+.tbar-t{flex:1;font-size:10px;font-weight:700;letter-spacing:.11em;color:var(--ttxt);overflow:hidden;white-space:nowrap;text-overflow:ellipsis;line-height:1;min-width:0;}
 .tbbtns{display:flex;gap:1px;flex-shrink:0;align-items:center;}
 .tbbtn{width:16px;height:16px;background:var(--btn);border-top:1px solid var(--blt);border-left:1px solid var(--blt);border-right:1px solid var(--bdk);border-bottom:1px solid var(--bdk);display:flex;align-items:center;justify-content:center;cursor:default;flex-shrink:0;padding:0;line-height:0;}
 .con-body{padding:12px;border-top:2px solid #7a7068;}
 
-/* ══ NOTEPAD: the policy, 16px, dark ink on the light field ══ */
+/* ══ NOTEPAD: the policy, dark ink on the light field ══ */
 .notepad{background:var(--field);border-top:2px solid var(--bdk);border-left:2px solid var(--bdk);border-right:2px solid var(--blt);border-bottom:2px solid var(--blt);box-shadow:inset 1px 1px 0 #7a7068;padding:22px 22px 26px;}
 /* two classes: these beat the 16px of .notepad p */
-.notepad .np-title{font-family:'Mekzantine',serif;font-size:30px;letter-spacing:.03em;line-height:1.15;color:#1e1a12;}
-.notepad .np-date{margin:6px 0 4px;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:#3d3830;}
-.notepad h2{margin:28px 0 8px;font-family:'Mekzantine',serif;font-weight:400;font-size:21px;letter-spacing:.05em;line-height:1.2;color:#2a2520;}
-.notepad p,.notepad li{font-size:16px;line-height:1.6;color:#2a2520;max-width:65ch;}
+.notepad .np-title{font-family:'Mekzantine',serif;font-size:26px;letter-spacing:.03em;line-height:1.15;color:#1e1a12;}
+.notepad .np-date{margin:6px 0 4px;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:#3d3830;}
+.notepad h2{margin:28px 0 8px;font-family:'Mekzantine',serif;font-weight:400;font-size:17px;letter-spacing:.05em;line-height:1.2;color:#2a2520;}
+.notepad p,.notepad li{font-size:13px;line-height:1.6;color:#2a2520;max-width:65ch;}
 .notepad p + p{margin-top:12px;}
 .notepad ul{list-style:none;margin:10px 0 12px;display:flex;flex-direction:column;gap:3px;}
 .notepad li::before{content:'·';margin-right:10px;color:#5D5143;}
 .notepad a{color:#1e1a12;text-underline-offset:3px;}
 
 /* the line under the window, as on the home page */
-.page-foot{width:100%;max-width:640px;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:0 2px;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:#5D5143;opacity:0;transition:opacity .6s ease .3s;}
+.page-foot{width:100%;max-width:520px;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:0 2px;font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:#5D5143;opacity:0;transition:opacity .6s ease .3s;}
 .page-foot.visible{opacity:1;}
 .page-foot a{color:#5D5143;text-decoration:none;transition:color .2s;}
 .page-foot a:hover,.page-foot a:focus-visible{color:#1a1612;}
 
-@media (max-width:400px){main{padding-left:6px;padding-right:6px;}.con-body{padding:8px;}.notepad{padding:16px 14px 20px;}.notepad .np-title{font-size:26px;}}
+@media (max-width:400px){main{padding-left:6px;padding-right:6px;}.con-body{padding:8px;}.notepad{padding:16px 14px 20px;}.notepad .np-title{font-size:24px;}}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{transition-duration:.001ms!important;animation-duration:.001ms!important;}}
 </style>
 <!-- NOEASY visit counter (no cookies) + newsletter helper; the Mindgate bot publishes assets/door.js -->
