@@ -1,0 +1,49 @@
+name: Gallery previews
+
+# The Mindgate bot adds works straight to main. This makes their previews right after:
+# 700/1200 px WebP versions, their sizes and the tiny blurred stand-ins (tools/gallery_thumbs.py).
+# Only what is missing gets made; the files land in gallery/thumbs/.
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'gallery/works.json'
+      - 'gallery/images/**'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+
+concurrency:
+  group: gallery-thumbs
+  cancel-in-progress: false
+
+jobs:
+  thumbs:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install --quiet pillow
+      - run: python tools/gallery_thumbs.py
+      - name: Commit the new previews
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if [ -z "$(git status --porcelain gallery/thumbs)" ]; then echo "nothing new"; exit 0; fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add gallery/thumbs
+          git commit -m "gallery: превью для новых работ"
+          for i in 1 2 3; do
+            if git pull --rebase origin main && git push origin HEAD:main; then
+              # a push made by this workflow does not start the Pages build by itself: ask for one
+              gh api -X POST "repos/${GITHUB_REPOSITORY}/pages/builds" >/dev/null 2>&1 || true
+              exit 0
+            fi
+            sleep 5
+          done
+          exit 1
