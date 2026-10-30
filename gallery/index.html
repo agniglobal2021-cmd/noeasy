@@ -832,6 +832,40 @@ lb.addEventListener('touchend', e => {
   lbStep(dx < 0 ? 1 : -1);
 }, { passive: true });
 
+/* The title in the menu bar ("Gallery", the number of works) stands in the middle of the screen. The buttons on
+   the left are wider than those on the right, so on a narrow screen the middle of the screen is no longer the
+   middle of the free space: the title would hug Filter / Newest. It then moves over, just enough that the space
+   on its two sides looks even: exactly even on a phone, where the gaps are small and the eye compares them
+   closely; on a wide screen, where the gaps are large, it stays in the middle of the screen as before. */
+const pillEl = document.querySelector('.header-pill'), pillTitle = document.querySelector('.pill-center');
+function centreTitle() {
+  if (!pillEl || !pillTitle) return;
+  const kids = [...pillEl.children], at = kids.indexOf(pillTitle);
+  let left = -Infinity, right = Infinity;
+  kids.forEach((el, i) => {
+    if (i === at || el.style.flex) return;                       /* the title itself and the empty spacer */
+    const r = el.getBoundingClientRect();
+    if (!r.width) return;                                       /* hidden on this screen */
+    if (i < at) left = Math.max(left, r.right); else right = Math.min(right, r.left);
+  });
+  const pr = pillEl.getBoundingClientRect(), w = pillTitle.offsetWidth, mid = pr.left + pr.width / 2;
+  if (!isFinite(left) || !isFinite(right) || !w) { pillTitle.style.left = ''; pillTitle.style.transform = ''; return; }
+  const free = right - left - w;                                 /* room left over beside the title */
+  let x = mid;
+  if (free > 0) {
+    const gl = mid - w / 2 - left, gr = right - (mid + w / 2);  /* the gaps with the title in the middle of the screen */
+    const t = Math.min(1, Math.max(0, (free / 2 - 60) / 140)), even = 1 - 0.2 * t * t * (3 - 2 * t);   /* 1 on phones, 0.8 when roomy */
+    if (gl < even * gr) x = left + w / 2 + free * even / (1 + even);
+    else if (gr < even * gl) x = right - w / 2 - free * even / (1 + even);
+  } else x = (left + right) / 2;
+  pillTitle.style.left = Math.round(x - w / 2 - pr.left) + 'px';
+  pillTitle.style.transform = 'none';
+}
+if (window.ResizeObserver) { const ro = new ResizeObserver(centreTitle); [pillEl, pillTitle, ...pillEl.querySelectorAll('button')].forEach(el => el && ro.observe(el)); }
+window.addEventListener('resize', centreTitle);
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(centreTitle);
+centreTitle();
+
 setTimeout(() => headerEl.classList.add('visible'), 100);
 measureHeader();
 loadWorks();
