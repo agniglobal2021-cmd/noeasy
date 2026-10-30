@@ -308,17 +308,12 @@
     "style": "Digital Painting",
     "workType": "Personal",
     "avail": [
-      "Print",
-      "NFT"
+      "Print"
     ],
     "links": [
       {
         "label": "Print",
         "url": "https://www.inprnt.com/gallery/noeasy/jade-gardens/"
-      },
-      {
-        "label": "NFT",
-        "url": "https://foundation.app/mint/eth/0x70C4f47e3BE395f2e4F8b5A524806b84CA7D9096/5"
       }
     ],
     "src": "images/jade-gardens.JPG",
@@ -422,17 +417,12 @@
     "style": "Digital Painting",
     "workType": "Personal",
     "avail": [
-      "Crypto Art",
       "Print"
     ],
     "links": [
       {
         "label": "Print",
         "url": "https://www.inprnt.com/gallery/noeasy/heartbreak-land/"
-      },
-      {
-        "label": "NFT",
-        "url": "https://foundation.app/mint/eth/0x70C4f47e3BE395f2e4F8b5A524806b84CA7D9096/4"
       }
     ],
     "src": "images/heartbreak-land.JPG",
@@ -574,17 +564,12 @@
     "style": "Digital Painting",
     "workType": "Personal",
     "avail": [
-      "Crypto Art",
       "Print"
     ],
     "links": [
       {
         "label": "Print",
         "url": "https://www.inprnt.com/gallery/noeasy/dark-night-of-the-soul/"
-      },
-      {
-        "label": "NFT",
-        "url": "https://foundation.app/mint/eth/0x70C4f47e3BE395f2e4F8b5A524806b84CA7D9096/3"
       }
     ],
     "src": "images/dark-night-of-the-soul.JPG",
@@ -624,17 +609,12 @@
     "style": "Digital Painting",
     "workType": "Personal",
     "avail": [
-      "Print",
-      "Crypto Art"
+      "Print"
     ],
     "links": [
       {
         "label": "Print",
         "url": "https://www.inprnt.com/gallery/noeasy/oriental-sands/"
-      },
-      {
-        "label": "NFT",
-        "url": "https://foundation.app/mint/eth/0x70C4f47e3BE395f2e4F8b5A524806b84CA7D9096/2"
       }
     ],
     "src": "images/oriental-sands.JPG",
@@ -667,15 +647,8 @@
     "year": 2021,
     "style": "Digital Painting",
     "workType": "Personal",
-    "avail": [
-      "Crypto Art"
-    ],
-    "links": [
-      {
-        "label": "NFT",
-        "url": "https://www.foundation.app/mint/eth/0x3B3ee1931Dc30C1957379FAc9aba94D1C48a5405/74898"
-      }
-    ],
+    "avail": [],
+    "links": [],
     "src": "images/yama-s-gate.JPG",
     "ph": {
       "color": "#9b9b9b",
