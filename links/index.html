@@ -61,10 +61,12 @@ header>*{pointer-events:auto;}
 .sword-btn.open .line:nth-child(3){transform:translateY(-6px) rotate(-45deg);}
 .burger-wrap{position:relative;height:100%;display:flex;align-items:center;}
 /* closed menu = visibility:hidden too, so Tab and screen readers skip it; it hides only after the fade-out */
-.nav-overlay{position:absolute;top:calc(100% + 4px);right:0;z-index:8999;min-width:170px;padding:2px;background:var(--btn);border-top:2px solid var(--blt);border-left:2px solid var(--blt);border-right:2px solid var(--bdk);border-bottom:2px solid var(--bdk);box-shadow:2px 2px 0 var(--bsh);display:flex;flex-direction:column;opacity:0;visibility:hidden;pointer-events:none;transform:translateY(-4px);transform-origin:top right;transition:opacity .15s,transform .15s,visibility 0s linear .15s;}
+.nav-overlay{position:absolute;top:calc(100% + 4px);right:0;z-index:8999;min-width:160px;padding:2px;background:var(--btn);border-top:2px solid var(--blt);border-left:2px solid var(--blt);border-right:2px solid var(--bdk);border-bottom:2px solid var(--bdk);box-shadow:2px 2px 0 var(--bsh);display:flex;flex-direction:column;opacity:0;visibility:hidden;pointer-events:none;transform:translateY(-4px);transform-origin:top right;transition:opacity .15s,transform .15s,visibility 0s linear .15s;}
 .nav-overlay.open{opacity:1;visibility:visible;pointer-events:auto;transform:translateY(0);transition-delay:0s;}
-.nav-overlay a{font-size:11px;font-weight:700;letter-spacing:.11em;text-transform:uppercase;color:#000;text-decoration:none;padding:9px 12px 9px 8px;display:flex;align-items:center;}
-.nav-overlay a::before{content:'/';margin-right:7px;opacity:.5;}
+/* menu links: exactly as in the gallery (bold, normal smoothing; the page's pixel-sharp text looked thin here) */
+.nav-overlay a{font-family:'DotGothic16',monospace;font-size:11px;font-weight:700;letter-spacing:.11em;text-transform:uppercase;color:#000;text-decoration:none;padding:8px 12px 8px 8px;display:flex;align-items:center;-webkit-font-smoothing:auto;-moz-osx-font-smoothing:auto;}
+.nav-overlay a::before{content:'/';margin-right:7px;opacity:1;font-weight:700;letter-spacing:0;flex-shrink:0;}
+.nav-overlay a:hover::before,.nav-overlay a:focus-visible::before{opacity:.55;}
 .nav-overlay a + a{border-top:1px solid #7a7068;}
 .nav-overlay a.current{background:#c8c2ba;}
 .nav-overlay a:hover,.nav-overlay a:focus-visible,.nav-overlay a.current:hover{background:var(--desk);color:var(--ttxt);outline:none;}

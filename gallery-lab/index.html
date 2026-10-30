@@ -47,7 +47,7 @@
   html { background: #5D5143; overscroll-behavior-y: none; }
   body::before { content: ''; position: fixed; top: -100vh; left: 0; right: 0; height: 100vh; background: #5D5143; z-index: 9001; pointer-events: none; }
   body { min-height: 100vh; background: #e8e0c4; font-family: 'DotGothic16', monospace; color: var(--text); overscroll-behavior: none; }
-  header { position: fixed; top: 0; left: 0; z-index: 500; width: 100vw; padding: 0; display: flex; flex-direction: column; align-items: stretch; pointer-events: none; opacity: 0; transition: opacity 0.7s ease; background: var(--win95-titlebar-brown); }
+  header { position: fixed; top: 0; left: 0; right: 0; z-index: 500; padding: 0; display: flex; flex-direction: column; align-items: stretch; pointer-events: none; opacity: 0; transition: opacity 0.7s ease; background: var(--win95-titlebar-brown); }
   header.visible { opacity: 1; }
   header > * { pointer-events: auto; }
   .header-safe-top { height: env(safe-area-inset-top, 0px); background: var(--win95-titlebar-brown); flex-shrink: 0; }
@@ -105,11 +105,7 @@
   .img-win95 .img-wrap { margin: 0; overflow: hidden; }
   .img-wrap { width: 100%; overflow: hidden; cursor: zoom-in; position: relative; z-index: 20; clip-path: inset(0 0 100% 0); transition: clip-path 0.75s cubic-bezier(0.77, 0, 0.18, 1); }
   .work-item.visible .img-wrap { clip-path: inset(0 0 0% 0); }
-  /* loading: a tiny blurred copy of the painting stands in until the picture arrives, then the picture fades in over it */
-  .img-wrap .lqip { position: absolute; inset: 0; background-size: cover; background-position: center; filter: blur(10px); transform: scale(1.1); pointer-events: none; }
   .img-wrap img, .img-placeholder { position: relative; width: 100%; display: block; height: auto; object-fit: fill; user-select: none; -webkit-user-drag: none; }
-  .img-wrap img { opacity: 0; transition: opacity 0.6s ease; }
-  .img-wrap img.loaded { opacity: 1; }
   .img-placeholder { position: relative; }
   .work-left { display: flex; flex-direction: column; gap: 14px; }
   .work-title-row { display: flex; align-items: baseline; gap: 0; flex-wrap: wrap; }
@@ -131,20 +127,18 @@
   .purchase-dropdown a:hover, .purchase-dropdown a:focus-visible { background: #5D5143; color: #f6f1da; outline: none; }
   .sep { width: min(820px, 88vw, 68vh); height: 1px; background: var(--text); opacity: 0.07; position: relative; z-index: 20; }
   #empty-state { position: relative; z-index: 20; display: none; padding: 100px 0; font-size: 11px; font-weight: 300; letter-spacing: 0.24em; text-transform: uppercase; color: #5D5143; text-align: center; }
-  #lightbox { position: fixed; inset: 0; z-index: 9999; width: 100vw; background: rgba(14,12,10,0.94); backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; opacity: 0; visibility: hidden; pointer-events: none; transition: opacity 0.45s ease, visibility 0s linear 0.45s; cursor: zoom-out; }
+  #lightbox { position: fixed; inset: 0; z-index: 9999; background: rgba(14,12,10,0.94); backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; opacity: 0; visibility: hidden; pointer-events: none; transition: opacity 0.45s ease, visibility 0s linear 0.45s; cursor: zoom-out; }
   #lightbox.open { opacity: 1; visibility: visible; pointer-events: auto; transition-delay: 0s; }
-  /* with the incense on, the darkness of the viewer is the smoke canvas itself (/assets/incense.js) */
-  html.incense-on #lightbox { background: transparent; -webkit-backdrop-filter: none; backdrop-filter: none; }
-  /* while the window unfolds out of the feed (or folds back), a copy flies and the viewer's own picture waits */
+  /* the picture leaves its window and flies to the viewer (and back): a copy flies, the viewer's own picture waits */
   #lightbox.lb-flying #lb-img { opacity: 0 !important; transition: none !important; }
-  .lb-ghost-img, .lb-ghost-cap { position: fixed; z-index: 10001; pointer-events: none; margin: 0; }
-  .lb-ghost-img { transform-origin: 0 0; object-fit: cover; will-change: transform; }
-  .lb-ghost-cap { display: flex; align-items: center; padding: 0 6px; background: #5D5143; outline: 1px solid #AFA191; color: #f6f1da; font-family: 'DotGothic16', monospace; font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; line-height: 1; }
-  .lb-source .img-win95 { visibility: hidden; }
+  .lb-ghost-img { position: fixed; z-index: 10001; pointer-events: none; margin: 0; transform-origin: 0 0; object-fit: fill; will-change: transform; }
+  /* the window stays in the feed, empty, until its picture comes back */
+  .lb-out .img-wrap { background: #3d3830; }
+  .lb-out .img-wrap img { visibility: hidden; }
   /* swiping the picture down fades the controls with it */
   #lb-close, #lb-buy, #lb-bottom { opacity: var(--ui, 1); }
-  #lb-img { max-width: 92vw; max-height: 80vh; object-fit: contain; display: block; transform: scale(0.94) translateY(14px); transition: transform 0.56s cubic-bezier(0.16,1,0.3,1); user-select: none; -webkit-user-drag: none; touch-action: none; }
-  #lightbox.open #lb-img { transform: translate(0px, 0px) scale(1); }
+  #lb-img { display: block; object-fit: fill; transform: scale(0.94) translateY(14px); transition: transform 0.56s cubic-bezier(0.16,1,0.3,1); user-select: none; -webkit-user-drag: none; touch-action: none; }
+  #lightbox.open #lb-img { transform: none; }
   #lb-img.lb-zoomed { cursor: grab; }
   #lb-img.lb-panning { cursor: grabbing; }
   #lb-img.lb-nozoomtransition { transition: none; }
@@ -163,31 +157,6 @@
   .skel-line { display: none; }
   .img-error { display: flex; align-items: center; justify-content: center; background: rgba(53,53,53,0.04) !important; }
   .img-error-label { font-size: 10px; letter-spacing: 0.21em; text-transform: uppercase; color: #5D5143; user-select: none; }
-  /* pull to refresh: the page itself stays put, so the menu never leaves the top; this bar slides out from under it */
-  #ptr { position: fixed; top: calc(var(--header-total-h) - 34px); left: 50%; z-index: 498; width: 176px; margin-left: -88px; height: 26px; padding: 4px; background: #AFA191; border-top: 2px solid #d4cdc4; border-left: 2px solid #d4cdc4; border-right: 2px solid #3d3830; border-bottom: 2px solid #3d3830; box-shadow: 1px 1px 0 #2a2520; opacity: 0; pointer-events: none; transition: transform 0.25s cubic-bezier(0.16,1,0.3,1), opacity 0.2s ease; }
-  #ptr.on { opacity: 1; transition: none; }
-  #ptr .ptr-track { height: 100%; padding: 2px; overflow: hidden; background: #c8c2b8; border-top: 1px solid #3d3830; border-left: 1px solid #3d3830; border-right: 1px solid #d4cdc4; border-bottom: 1px solid #d4cdc4; }
-  #ptr .ptr-fill { height: 100%; width: 0; background: repeating-linear-gradient(90deg, #5D5143 0 7px, transparent 7px 9px); }
-  /* edges of the screen: under the menu and at the bottom the works blur and thin out a little, so the eye rests on the middle.
-     Four layers, each blurring a little more and covering a narrower strip nearer the edge: the blur grows without a seam. */
-  .edge { position: fixed; left: 0; right: 0; z-index: 30; height: clamp(64px, 14vh, 140px); pointer-events: none; }
-  .edge-top { top: var(--header-total-h); opacity: 0; }      /* at the very top nothing has gone under the menu yet: it appears as the page scrolls */
-  .edge-bottom { bottom: 0; }
-  .edge i { position: absolute; inset: 0; }
-  .edge i:nth-child(1) { -webkit-backdrop-filter: blur(0.6px); backdrop-filter: blur(0.6px); }
-  .edge i:nth-child(2) { -webkit-backdrop-filter: blur(1.2px); backdrop-filter: blur(1.2px); }
-  .edge i:nth-child(3) { -webkit-backdrop-filter: blur(2.5px); backdrop-filter: blur(2.5px); }
-  .edge i:nth-child(4) { -webkit-backdrop-filter: blur(5px); backdrop-filter: blur(5px); }
-  .edge-bottom i:nth-child(1) { -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 20%, #000 40%, transparent 60%); mask-image: linear-gradient(to bottom, transparent 0%, #000 20%, #000 40%, transparent 60%); }
-  .edge-bottom i:nth-child(2) { -webkit-mask-image: linear-gradient(to bottom, transparent 20%, #000 40%, #000 60%, transparent 80%); mask-image: linear-gradient(to bottom, transparent 20%, #000 40%, #000 60%, transparent 80%); }
-  .edge-bottom i:nth-child(3) { -webkit-mask-image: linear-gradient(to bottom, transparent 40%, #000 60%, #000 80%, transparent 100%); mask-image: linear-gradient(to bottom, transparent 40%, #000 60%, #000 80%, transparent 100%); }
-  .edge-bottom i:nth-child(4) { -webkit-mask-image: linear-gradient(to bottom, transparent 60%, #000 80%); mask-image: linear-gradient(to bottom, transparent 60%, #000 80%); }
-  .edge-top i:nth-child(1) { -webkit-mask-image: linear-gradient(to top, transparent 0%, #000 20%, #000 40%, transparent 60%); mask-image: linear-gradient(to top, transparent 0%, #000 20%, #000 40%, transparent 60%); }
-  .edge-top i:nth-child(2) { -webkit-mask-image: linear-gradient(to top, transparent 20%, #000 40%, #000 60%, transparent 80%); mask-image: linear-gradient(to top, transparent 20%, #000 40%, #000 60%, transparent 80%); }
-  .edge-top i:nth-child(3) { -webkit-mask-image: linear-gradient(to top, transparent 40%, #000 60%, #000 80%, transparent 100%); mask-image: linear-gradient(to top, transparent 40%, #000 60%, #000 80%, transparent 100%); }
-  .edge-top i:nth-child(4) { -webkit-mask-image: linear-gradient(to top, transparent 60%, #000 80%); mask-image: linear-gradient(to top, transparent 60%, #000 80%); }
-  html.lb-is-open .edge { visibility: hidden; }
-  @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) { .edge { display: none; } }
   .work-item:hover .work-title { opacity: 0.92; }
   .view-btn { height: calc(100% - 10px); padding: 0 12px; margin: 0 2px; display: flex; align-items: center; justify-content: center; background: #AFA191; border-top: 2px solid #d4cdc4; border-left: 2px solid #d4cdc4; border-right: 2px solid #3d3830; border-bottom: 2px solid #3d3830; box-shadow: inset 1px 1px 0 #d4cdc4, inset -1px -1px 0 #7a7068; border-radius: 0; cursor: pointer; -webkit-tap-highlight-color: transparent; transition: none; flex-shrink: 0; }
   .view-btn:active, .view-btn.grid-active { border-top: 2px solid #3d3830; border-left: 2px solid #3d3830; border-right: 2px solid #d4cdc4; border-bottom: 2px solid #d4cdc4; box-shadow: inset 1px 1px 0 #7a7068; }
@@ -243,8 +212,8 @@
 <script src="/assets/door.js" defer></script>
 <!-- film grain + ring cursor, shared by every page -->
 <script src="/assets/site.js" defer></script>
-<!-- incense smoke behind the works; the darkness of the viewer -->
-<script src="/assets/incense.js" defer></script>
+<!-- sepia ink on the paper behind the works -->
+<script src="/assets/ink.js" defer></script>
 </head>
 <body>
 
@@ -271,9 +240,6 @@
     </div>
   </div>
 </header>
-<div id="ptr" aria-hidden="true"><div class="ptr-track"><div class="ptr-fill"></div></div></div>
-<div class="edge edge-top" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
-<div class="edge edge-bottom" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
 
 <div class="filter-panel" id="filter-panel">
   <div class="filter-group"><span class="filter-group-label">Style</span><div class="filter-group-tags"><button class="tag-btn style-btn active" data-tag="all">All</button><button class="tag-btn style-btn" data-tag="Graphic">Graphic</button><button class="tag-btn style-btn" data-tag="Digital Painting">Digital Painting</button><button class="tag-btn style-btn" data-tag="Mixed">Mixed</button></div></div>
@@ -293,26 +259,24 @@
 
 <script>
 'use strict';
-/* film grain and the ring cursor: /assets/site.js · the incense and the viewer's darkness: /assets/incense.js */
-const NOFX = { on: false, dim: () => Promise.resolve(), setDark() {}, still() {} };
-function fx() { return window.noeasyIncense || NOFX; }
+/* film grain, ring cursor, pull-to-refresh, scrollbar: /assets/site.js · the ink behind the works: /assets/ink.js */
+const NOINK = { on: false, drop() {}, pause() {} };
+function ink() { return window.noeasyInk || NOINK; }
 
-let works = [], thumbSizes = {}, lqip = {};
+let works = [], thumbSizes = {};
 async function loadWorks() {
-  const getJSON = url => fetch(url).then(r => r.ok ? r.json() : {}).catch(() => ({}));
-  const sizes = getJSON('thumbs/sizes.json'), tiny = getJSON('thumbs/lqip.json');
+  const sizes = fetch('thumbs/sizes.json').then(r => r.ok ? r.json() : {}).catch(() => ({}));
   try { const r = await fetch('works.json'); if (!r.ok) throw new Error('not found'); works = await r.json(); } catch (e) { works = []; }
   if (!Array.isArray(works)) works = [];
-  [thumbSizes, lqip] = await Promise.all([sizes, tiny]);
+  thumbSizes = await sizes;
   assignSlugs(works);
   render();
   openFromHash();
 }
 /* Previews: gallery/thumbs/<file>.700.webp and <file>.1200.webp, made from the originals; the browser
    picks the size the screen needs. thumbs/sizes.json holds their width and height, so the page keeps the
-   space before the picture arrives; thumbs/lqip.json holds a 24 px copy of every work, shown blurred
-   while the picture loads. The viewer opens the original (the HD file, if the bot made one).
-   New works get all of this from tools/gallery_thumbs.py (a GitHub Action runs it). */
+   space before the picture arrives. The viewer opens the original. A work that has no previews yet
+   simply shows its original (the GitHub Action makes them a minute after the bot publishes a work). */
 function thumbOf(src, w) { return 'thumbs/' + src.split('/').pop() + '.' + w + '.webp'; }
 const BUY_LABEL = { 'NFT': 'Crypto Art' };          /* one name for the same thing everywhere */
 function buyLabel(label) { return BUY_LABEL[label] || label; }
@@ -348,10 +312,11 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 const feed = document.getElementById('feed'), empty = document.getElementById('empty-state'), headerEl = document.querySelector('header');
-let observer;
+let observer, inkObserver;
 
 function render(scrollTop = false) {
   if (observer) observer.disconnect();
+  if (inkObserver) inkObserver.disconnect();
   feed.innerHTML = '';
   itemEls = [];
   currentList = getFiltered();
@@ -369,26 +334,15 @@ function render(scrollTop = false) {
     if (isGrid) item.dataset.col = i % numCols;
     const wrap = document.createElement('div'); wrap.className = 'img-wrap';
     if (work.src) {
-      /* while it loads: a blurred 24 px copy of the painting, or at least its main colour */
-      const tinySrc = lqip[work.src];
-      let tiny = null;
-      if (tinySrc) { tiny = document.createElement('div'); tiny.className = 'lqip'; tiny.setAttribute('aria-hidden', 'true'); tiny.style.backgroundImage = `url("${tinySrc}")`; wrap.appendChild(tiny); }
-      else if (work.ph && work.ph.color) wrap.style.backgroundColor = work.ph.color;
       const img = document.createElement('img'); img.alt = work.title;
       img.decoding = 'async'; img.loading = i < 3 ? 'eager' : 'lazy';
       const dims = thumbSizes[work.src];
       if (dims) { img.width = dims[0]; img.height = dims[1]; }
-      else { const ratio = work.ph && parseFloat(work.ph.ratio); if (ratio) wrap.style.aspectRatio = `100 / ${ratio}`; }
-      img.addEventListener('load', () => {
-        img.classList.add('loaded');
-        wrap.style.backgroundColor = ''; wrap.style.aspectRatio = '';
-        if (tiny) setTimeout(() => tiny.remove(), 700);
-      });
       let usingThumb = !!dims;
       let retries = 0; const MAX_RETRIES = 3; let retryTimer = null;
       img.addEventListener('error', () => {
         if (usingThumb) { usingThumb = false; img.removeAttribute('srcset'); img.removeAttribute('sizes'); img.src = work.src; return; }
-        if (retryTimer) return; if (retries < MAX_RETRIES) { retries++; const delay = 800 * Math.pow(2, retries - 1); retryTimer = setTimeout(() => { retryTimer = null; img.src = work.src + `?r=${retries}`; }, delay); } else { const fb = document.createElement('div'); fb.className = 'img-placeholder img-error'; fb.style.paddingTop = '100%'; fb.innerHTML = '<span class="img-error-label">image unavailable</span>'; img.replaceWith(fb); if (tiny) tiny.remove(); } });
+        if (retryTimer) return; if (retries < MAX_RETRIES) { retries++; const delay = 800 * Math.pow(2, retries - 1); retryTimer = setTimeout(() => { retryTimer = null; img.src = work.src + `?r=${retries}`; }, delay); } else { const fb = document.createElement('div'); fb.className = 'img-placeholder img-error'; fb.style.paddingTop = '100%'; fb.innerHTML = '<span class="img-error-label">image unavailable</span>'; img.replaceWith(fb); } });
       if (usingThumb) {
         img.sizes = isGrid ? '(min-width: 1100px) min(420px, 31vw), min(420px, 46vw)' : 'min(820px, 88vw, 68vh)';
         img.srcset = thumbOf(work.src, 700) + ' 700w, ' + thumbOf(work.src, 1200) + ' 1200w';
@@ -440,35 +394,36 @@ function render(scrollTop = false) {
   const items = feed.querySelectorAll('.work-item');
   observer = new IntersectionObserver(entries => { entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); } }); kick(); }, { threshold: 0.01, rootMargin: '0px 0px 60px 0px' });
   items.forEach(el => observer.observe(el));
+  /* ink: a drop by each window when it has risen a third of the way up the screen, once */
+  inkObserver = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (!e.isIntersecting) return;
+      inkObserver.unobserve(e.target);
+      const win = e.target.querySelector('.img-win95');
+      if (win && !lb.classList.contains('open')) ink().drop(win.getBoundingClientRect());
+    });
+  }, { threshold: 0, rootMargin: '0px 0px -30% 0px' });
+  items.forEach(el => inkObserver.observe(el));
   if (isGrid) { requestAnimationFrame(() => { const cols = feed.querySelectorAll('.grid-col'); let maxBottom = 0; cols.forEach(col => { const r = col.getBoundingClientRect(); const bottom = r.bottom + window.scrollY; if (bottom > maxBottom) maxBottom = bottom; }); const feedTop = feed.getBoundingClientRect().top + window.scrollY; feed.style.minHeight = (maxBottom - feedTop + 100) + 'px'; }); } else { feed.style.minHeight = ''; }
   initParallax();
 }
 
-/* Appearance, parallax and the edges. A work rises a little and its picture is unveiled from the top;
-   the parallax stays as it was. Near the edges of the screen (under the menu, at the bottom) the works
-   thin out a little while the edge strips blur them. The loop runs only while something moves and only
-   for the works near the screen; it stops by itself a second after the last movement.
-   Reduced motion: none of this, the works simply stand there. */
+/* Appearance and parallax. A work rises a little and its picture is unveiled from the top; the parallax
+   is as it was. The loop runs only while something moves and only for the works near the screen;
+   it stops by itself a second after the last movement. Reduced motion: the works simply stand there. */
 const COL_FACTORS = [0.030, 0.062, 0.096], FEED_FACTOR = 0.088;
-const DURATION = 900, OFFSET = 32, EDGE_MIN = 0.6;
-let rafId = null, lastKick = 0, nearObserver = null, edgeBand = 0, headerBottom = 0;
+const DURATION = 900, OFFSET = 32;
+let rafId = null, lastKick = 0, nearObserver = null, headerBottom = 0;
 const revealStart = new WeakMap();
 const nearItems = new Set();
-function measureEdges() {
-  const e = document.querySelector('.edge-bottom');
-  edgeBand = e && getComputedStyle(e).display !== 'none' ? e.offsetHeight : 0;
-  headerBottom = headerEl.getBoundingClientRect().bottom;
-}
-const edgeTop = document.querySelector('.edge-top');
-function fadeTopEdge() { if (edgeTop) edgeTop.style.opacity = Math.min(1, window.scrollY / 120).toFixed(2); }
-window.addEventListener('scroll', fadeTopEdge, { passive: true });
+function measureHeader() { headerBottom = headerEl.getBoundingClientRect().bottom; }
 function kick() {
   if (reduceMotion) return;
   lastKick = performance.now();
   if (!rafId) rafId = requestAnimationFrame(tick);
 }
 window.addEventListener('scroll', kick, { passive: true });
-window.addEventListener('resize', () => { measureEdges(); kick(); if (lb.classList.contains('open') && lbAspect) sizeLbImg(lbAspect); });
+window.addEventListener('resize', () => { measureHeader(); kick(); if (lb.classList.contains('open') && lbAspect) sizeLbImg(lbAspect); });
 function initParallax() {
   if (nearObserver) nearObserver.disconnect();
   nearItems.clear();
@@ -487,20 +442,13 @@ function placeItem(item, vh, now) {
   const colIdx = parseInt(item.dataset.col ?? '-1');
   const factor = isGrid && colIdx >= 0 ? COL_FACTORS[colIdx] ?? COL_FACTORS[0] : FEED_FACTOR;
   const rect = win95.getBoundingClientRect();
-  if (!item.classList.contains('visible')) { win95.style.transform = `translateY(${OFFSET}px)`; revealStart.delete(item); }
-  else {
-    if (!revealStart.has(item)) revealStart.set(item, now);
-    const t = Math.min((now - revealStart.get(item)) / DURATION, 1);
-    const ease = 1 - Math.pow(1 - t, 3);
-    const y = (OFFSET * (1 - ease) + ((rect.top + rect.height / 2) - vh / 2) * factor).toFixed(2);
-    win95.style.transform = `translateY(${y}px)`;
-    if (footer) footer.style.transform = `translateY(${y}px)`;
-  }
-  if (edgeBand) {
-    const bottom = footer ? Math.max(rect.bottom, footer.getBoundingClientRect().bottom) : rect.bottom;
-    const k = Math.max(0, Math.min(1, (vh - rect.top) / edgeBand, (bottom - headerBottom) / edgeBand));
-    item.style.opacity = k >= 1 ? '' : (EDGE_MIN + (1 - EDGE_MIN) * k).toFixed(3);
-  }
+  if (!item.classList.contains('visible')) { win95.style.transform = `translateY(${OFFSET}px)`; revealStart.delete(item); return; }
+  if (!revealStart.has(item)) revealStart.set(item, now);
+  const t = Math.min((now - revealStart.get(item)) / DURATION, 1);
+  const ease = 1 - Math.pow(1 - t, 3);
+  const y = (OFFSET * (1 - ease) + ((rect.top + rect.height / 2) - vh / 2) * factor).toFixed(2);
+  win95.style.transform = `translateY(${y}px)`;
+  if (footer) footer.style.transform = `translateY(${y}px)`;
 }
 function tick() {
   const vh = window.innerHeight, now = performance.now();
@@ -529,31 +477,32 @@ filterPanel.addEventListener('click', e => {
 document.getElementById('sort-btn').addEventListener('click', function() { sortAsc = !sortAsc; this.textContent = sortAsc ? 'Oldest ↑' : 'Newest ↓'; haptic('light'); render(true); });
 
 /* ---------- THE VIEWER ----------
-   Opening: the room goes dark (the incense shows in it), the window's caption flies first, as Windows 95
-   did when a window was maximised, then the picture opens out of its place in the feed. It shows the
-   picture already loaded in the feed at once and swaps in the original (HD) when that is ready; the
-   neighbours load ahead. Closing (Close, Escape, a click beside the picture, the Back button, a swipe down):
-   the light comes back and the picture folds back into its place in the feed.
+   Opening: the picture comes out of its window and grows into the viewer; the window stays in the feed,
+   empty, while the room behind goes dark. Closing (Close, Escape, a click beside the picture, Back, a swipe
+   down): the picture flies back into its window. The viewer shows the original file, as before.
    Each painting has its own address (#slug): Back closes the painting instead of leaving the gallery. */
 const lb = document.getElementById('lightbox'), lbImg = document.getElementById('lb-img'), lbTitle = document.getElementById('lb-title'), lbPrev = document.getElementById('lb-prev'), lbNext = document.getElementById('lb-next'), lbBuy = document.getElementById('lb-buy'), lbClose = document.getElementById('lb-close');
 let lbOpener = null;   /* the element that had focus before the viewer opened; focus goes back to it */
 let lbToken = 0, lbAspect = null, lbClosing = false, lbFlight = null;
 const LB_KEY = 'noeasyWork';
 /* while the viewer is open the page behind it is inert: Tab and screen readers stay inside the viewer */
-function setPageInert(on) { for (const el of document.body.children) { if (el !== lb && el.tagName !== 'SCRIPT') el.inert = on; } }
+function setPageInert(on) { for (const el of document.body.children) { if (el !== lb && el.tagName !== 'SCRIPT' && el.id !== 'ink') el.inert = on; } }
 const MAX_ZOOM = 3.5, DBL_TAP_ZOOM = 2.2;
 let lbZoom = 1, lbPanX = 0, lbPanY = 0;
+const flying = () => lb.classList.contains('lb-flying');
 
+/* at rest the picture carries no transform at all: a scaled layer left behind after zooming drew hairlines at its sides */
 function applyLbTransform() {
-  lbImg.style.transform = `translate(${lbPanX}px, ${lbPanY}px) scale(${lbZoom})`;
-  lbImg.classList.toggle('lb-zoomed', lbZoom > 1.001);
+  const zoomed = lbZoom > 1.001;
+  lbImg.style.transform = zoomed || lbPanX || lbPanY ? `translate(${lbPanX}px, ${lbPanY}px) scale(${lbZoom})` : '';
+  lbImg.style.willChange = zoomed ? 'transform' : '';
+  lbImg.classList.toggle('lb-zoomed', zoomed);
 }
 function clampPan() {
   if (lbZoom <= 1) { lbPanX = 0; lbPanY = 0; return; }
-  const rect = lbImg.getBoundingClientRect();
-  const baseW = rect.width / lbZoom, baseH = rect.height / lbZoom;
-  const maxX = Math.max(0, (baseW * lbZoom - baseW) / 2);
-  const maxY = Math.max(0, (baseH * lbZoom - baseH) / 2);
+  const w = lbImg.offsetWidth, h = lbImg.offsetHeight;
+  const maxX = Math.max(0, (w * lbZoom - w) / 2);
+  const maxY = Math.max(0, (h * lbZoom - h) / 2);
   lbPanX = Math.min(maxX, Math.max(-maxX, lbPanX));
   lbPanY = Math.min(maxY, Math.max(-maxY, lbPanY));
 }
@@ -569,28 +518,35 @@ function setLbZoom(newZoom, originClientX, originClientY, smooth) {
   lbPanX = (lbPanX - offsetX) * (newZoom / lbZoom) + offsetX;
   lbPanY = (lbPanY - offsetY) * (newZoom / lbZoom) + offsetY;
   lbZoom = newZoom;
+  if (lbZoom <= 1.001) { lbZoom = 1; lbPanX = 0; lbPanY = 0; }
   clampPan();
   lbImg.classList.toggle('lb-nozoomtransition', !smooth);
   applyLbTransform();
 }
 
-/* the picture's box in the viewer, worked out ahead so the flight lands exactly on it */
+/* the picture's box in the viewer: whole pixels, the picture's proportions, and centred on a whole pixel.
+   A box with fractional edges, once zoomed and set back, could leave hairlines at its sides. */
 function aspectOf(work, img) {
-  const d = thumbSizes[work.src]; if (d && d[0] && d[1]) return d[0] / d[1];
   if (img && img.naturalWidth) return img.naturalWidth / img.naturalHeight;
+  const d = thumbSizes[work.src]; if (d && d[0] && d[1]) return d[0] / d[1];
   const r = work.ph && parseFloat(work.ph.ratio); if (r) return 100 / r;
-  return null;
+  return 0.8;
 }
 function sizeLbImg(ar) {
   lbAspect = ar;
-  if (!ar) { lbImg.style.width = lbImg.style.height = ''; return; }
-  const vw = window.innerWidth, vh = window.innerHeight;
-  const w = Math.min(vw * 0.92, vh * (vw < 680 ? 0.74 : 0.8) * ar);
-  lbImg.style.width = Math.round(w) + 'px'; lbImg.style.height = Math.round(w / ar) + 'px';
+  const vw = lb.clientWidth || document.documentElement.clientWidth, vh = lb.clientHeight || window.innerHeight;
+  let w = Math.floor(Math.min(vw * 0.92, vh * (vw < 680 ? 0.74 : 0.8) * ar));
+  if ((vw - w) % 2) w -= 1;
+  let h = Math.round(w / ar);
+  if ((vh - h) % 2) h += w / ar > h ? 1 : -1;
+  lbImg.style.width = w + 'px'; lbImg.style.height = h + 'px';
 }
+/* where the picture sits in the open viewer */
 function lbTarget() {
-  const w = parseFloat(lbImg.style.width) || lbImg.offsetWidth, h = parseFloat(lbImg.style.height) || lbImg.offsetHeight;
-  return { left: (window.innerWidth - w) / 2, top: (window.innerHeight - h) / 2, width: w, height: h };
+  const r = lbImg.getBoundingClientRect();
+  if (r.width > 0) return { left: r.left, top: r.top, width: r.width, height: r.height };
+  const w = parseFloat(lbImg.style.width), h = parseFloat(lbImg.style.height);
+  return { left: (lb.clientWidth - w) / 2, top: (lb.clientHeight - h) / 2, width: w, height: h };
 }
 function feedImgOf(i) { const it = itemEls[i]; return it ? it.querySelector('.img-wrap img') : null; }
 function onScreen(el) { if (!el) return false; const r = el.getBoundingClientRect(); return r.width > 0 && r.bottom > headerBottom + 20 && r.top < window.innerHeight - 20; }
@@ -601,105 +557,88 @@ function dropFlight() {
   if (!lbFlight) return;
   lbFlight.anims.forEach(a => { try { a.cancel(); } catch (e) {} });
   lbFlight.els.forEach(el => el.remove());
+  clearTimeout(lbFlight.timer);
   lbFlight = null;
   lb.classList.remove('lb-flying');
+}
+function whenLoaded(img, fn) {
+  if (img.complete && img.naturalWidth) { fn(); return; }
+  const done = () => { img.removeEventListener('load', done); img.removeEventListener('error', done); fn(); };
+  img.addEventListener('load', done); img.addEventListener('error', done);
 }
 
 function openLb(idx, opts = {}) {
   if (idx !== undefined) lbIndex = idx;
   const work = currentList[lbIndex]; if (!work || !work.src) return;
-  if (lbClosing) finishClose(true);              /* opened again while folding back */
+  if (lbClosing) finishClose(true);              /* opened again while flying back */
   const wasOpen = lb.classList.contains('open');
   const token = ++lbToken;
   if (window.noeasy) noeasy.track('view', {t: work.title});
   resetLbZoom();
   const feedImg = feedImgOf(lbIndex);
   const ready = !!(feedImg && feedImg.complete && feedImg.naturalWidth);
-  sizeLbImg(aspectOf(work, feedImg));
-  const quick = ready ? feedImg.currentSrc : (thumbSizes[work.src] ? thumbOf(work.src, 1200) : work.src);
   lbImg.alt = work.title; lbTitle.textContent = work.title;
   /* buy links of this work (Print → INPRNT, Crypto Art), top left of the viewer */
   lbBuy.innerHTML = '';
   (work.links || []).forEach(lk => { const a = document.createElement('a'); a.className = 'lb-buy'; a.href = lk.url; a.target = '_blank'; a.rel = 'noopener'; a.textContent = buyLabel(lk.label) + ' '; const arrow = document.createElement('span'); arrow.setAttribute('aria-hidden', 'true'); arrow.textContent = '↗'; a.appendChild(arrow); a.addEventListener('click', e => e.stopPropagation()); lbBuy.appendChild(a); });
   const hasPrev = currentList.slice(0, lbIndex).some(w => w.src); const hasNext = currentList.slice(lbIndex + 1).some(w => w.src);
   lbPrev.classList.toggle('hidden', !hasPrev); lbNext.classList.toggle('hidden', !hasNext);
+  /* the original, as before; the box follows its real proportions once it is known */
+  lbImg.onload = () => { if (token !== lbToken) return; if (lbImg.naturalWidth) sizeLbImg(lbImg.naturalWidth / lbImg.naturalHeight); lbImg.style.opacity = '1'; };
   if (wasOpen) {
     dropFlight();
+    document.querySelectorAll('.lb-out').forEach(el => el.classList.remove('lb-out'));   /* the last picture is back in its window */
+    sizeLbImg(aspectOf(work, ready ? feedImg : null));
     lbImg.style.opacity = '0';
-    lbImg.onload = () => { if (token === lbToken) lbImg.style.opacity = '1'; };
-    lbImg.src = quick;
+    lbImg.src = work.src;
     if (lbState()) history.replaceState({ [LB_KEY]: work._slug }, '', pageURL(work._slug));
-  } else {
-    lbOpener = document.activeElement;
-    const scrollbarW = window.innerWidth - document.documentElement.clientWidth; document.body.style.paddingRight = scrollbarW + 'px'; document.body.style.overflow = 'hidden';
-    lbImg.onload = null; lbImg.style.opacity = '1';
-    lbImg.src = quick;
-    const unfold = !reduceMotion && !opts.instant && ready && onScreen(feedImg);
-    if (unfold) lb.classList.add('lb-flying');
-    lb.classList.add('open'); document.documentElement.classList.add('lb-is-open');
-    fx().dim(true, 480);
-    setPageInert(true);
-    if (!opts.fromHistory) history.pushState({ [LB_KEY]: work._slug }, '', pageURL(work._slug));
-    if (unfold) flyOpen(itemEls[lbIndex], feedImg);
-    setTimeout(() => { try { lbClose.focus({ preventScroll: true }); } catch (e) {} }, 50);
+    return;
   }
-  loadHD(work, token);
-  preloadAround(lbIndex);
+  lbOpener = document.activeElement;
+  const scrollbarW = window.innerWidth - document.documentElement.clientWidth; document.body.style.paddingRight = scrollbarW + 'px'; headerEl.style.right = scrollbarW ? scrollbarW + 'px' : ''; document.body.style.overflow = 'hidden';
+  sizeLbImg(aspectOf(work, ready ? feedImg : null));
+  lbImg.style.opacity = '0';
+  lbImg.src = work.src;
+  const unfold = !reduceMotion && !opts.instant && ready && onScreen(feedImg);
+  if (unfold) lb.classList.add('lb-flying');
+  lb.classList.add('open'); document.documentElement.classList.add('lb-is-open');
+  ink().pause(true);
+  setPageInert(true);
+  if (!opts.fromHistory) history.pushState({ [LB_KEY]: work._slug }, '', pageURL(work._slug));
+  if (unfold) flyOut(itemEls[lbIndex], feedImg, token);
+  setTimeout(() => { try { lbClose.focus({ preventScroll: true }); } catch (e) {} }, 50);
 }
 
-function flyOpen(item, feedImg) {
-  const target = lbTarget();
-  const win = item.querySelector('.img-win95'), bar = item.querySelector('.img-win95-titlebar');
-  const wr = win.getBoundingClientRect();
-  const br = bar && bar.offsetHeight ? bar.getBoundingClientRect() : { left: wr.left, top: wr.top, width: wr.width, height: 20 };
-  const ir = feedImg.getBoundingClientRect();
-  /* 1. the caption flies to the top edge of where the picture will be */
-  const cap = document.createElement('div'); cap.className = 'lb-ghost-cap';
-  const tt = item.querySelector('.img-win95-titlebar-text'); cap.textContent = tt ? tt.textContent : '';
-  const capFrom = { left: br.left + 'px', top: br.top + 'px', width: br.width + 'px', height: br.height + 'px' };
-  const capTo = { left: target.left + 'px', top: Math.max(6, target.top - 26) + 'px', width: target.width + 'px', height: '20px' };
-  Object.assign(cap.style, capFrom);
-  document.body.appendChild(cap);
-  /* 2. the picture opens out of the card, a beat later */
+/* the picture leaves its window: a copy grows from the window's picture to the viewer's box */
+function flyOut(item, feedImg, token) {
+  const target = lbTarget(), ir = feedImg.getBoundingClientRect();
   const g = document.createElement('img'); g.className = 'lb-ghost-img'; g.alt = ''; g.src = feedImg.currentSrc;
-  Object.assign(g.style, { left: target.left + 'px', top: target.top + 'px', width: target.width + 'px', height: target.height + 'px', visibility: 'hidden' });
+  Object.assign(g.style, { left: target.left + 'px', top: target.top + 'px', width: target.width + 'px', height: target.height + 'px' });
   const start = `translate(${(ir.left - target.left).toFixed(1)}px, ${(ir.top - target.top).toFixed(1)}px) scale(${(ir.width / target.width).toFixed(4)}, ${(ir.height / target.height).toFixed(4)})`;
   g.style.transform = start;
   document.body.appendChild(g);
-  const flight = { els: [cap, g], anims: [] };
+  item.classList.add('lb-out');                        /* the window stays, empty */
+  const anim = g.animate([{ transform: start }, { transform: 'none' }], { duration: 520, easing: 'cubic-bezier(.16,1,.3,1)', fill: 'forwards' });
+  const flight = { els: [g], anims: [anim], timer: 0, landed: false };
   lbFlight = flight;
-  flight.anims.push(cap.animate([capFrom, capTo], { duration: 260, easing: 'cubic-bezier(.45,0,.2,1)', fill: 'forwards' }));
-  const launch = () => {
-    if (lbFlight !== flight) return;
-    g.style.visibility = '';
-    item.classList.add('lb-source');                       /* the card's window has left the feed */
-    const anim = g.animate([{ transform: start }, { transform: 'none' }], { duration: 560, delay: 120, easing: 'cubic-bezier(.16,1,.3,1)', fill: 'both' });
-    flight.anims.push(anim);
-    anim.finished.then(() => {
-      if (lbFlight !== flight) return;
-      lb.classList.remove('lb-flying');                    /* the viewer's picture sits under the copy, pixel for pixel */
-      requestAnimationFrame(() => {
-        g.remove();
-        cap.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 220, fill: 'forwards' }).finished.then(() => cap.remove(), () => cap.remove());
-        if (lbFlight === flight) lbFlight = null;
-      });
-    }, () => {});
+  /* when it has landed and the original is loaded and decoded underneath, the copy steps aside:
+     the original shows at once, in the same place, so the swap cannot be seen */
+  const land = () => {
+    if (lbFlight !== flight || token !== lbToken || flight.landed) return;
+    flight.landed = true;
+    whenLoaded(lbImg, () => {
+      const swap = () => {
+        if (lbFlight !== flight) return;
+        lb.classList.remove('lb-flying');
+        requestAnimationFrame(() => requestAnimationFrame(() => { g.remove(); if (lbFlight === flight) lbFlight = null; }));
+      };
+      if (lbImg.naturalWidth && lbImg.decode) lbImg.decode().then(swap, swap); else swap();
+    });
   };
-  (g.decode ? g.decode() : Promise.resolve()).then(launch, launch);
+  anim.finished.then(land, () => {});
+  flight.timer = setTimeout(land, 1500);            /* in case the animation never reports back */
 }
 
-function loadHD(work, token) {
-  const hd = work.srcHi || work.src;
-  if (!hd || new URL(hd, document.baseURI).href === lbImg.currentSrc) return;      /* already the original */
-  const im = new Image(); im.decoding = 'async'; im.src = hd;
-  const swap = () => { if (token === lbToken && lb.classList.contains('open') && !lbClosing) lbImg.src = hd; };
-  if (im.decode) im.decode().then(swap, () => {}); else im.onload = swap;
-}
-function preloadAround(i) {
-  for (const j of [i + 1, i - 1]) { const w = currentList[j]; if (!w || !w.src) continue; const im = new Image(); im.decoding = 'async'; im.src = thumbSizes[w.src] ? thumbOf(w.src, 1200) : w.src; }
-  const next = currentList[i + 1];
-  if (next && next.src) setTimeout(() => { if (lb.classList.contains('open')) { const im = new Image(); im.decoding = 'async'; im.src = next.srcHi || next.src; } }, 1200);
-}
 function lbStep(dir) { let idx = lbIndex + dir; while (idx >= 0 && idx < currentList.length) { if (currentList[idx].src) { openLb(idx); return; } idx += dir; } }
 
 /* Close, Escape, a click beside the picture and a swipe all go through history: Back and Close behave the same */
@@ -720,37 +659,34 @@ function ensureInView(item) {
   const r = item.querySelector('.img-win95').getBoundingClientRect(), vh = window.innerHeight;
   if (r.bottom > headerBottom + 40 && r.top < vh - 40) return;
   window.scrollTo(0, Math.max(0, window.scrollY + r.top - Math.max(headerBottom + 16, (vh - r.height) / 2)));
-  fx().still();
 }
 function closeLb() {
   if (!lb.classList.contains('open') || lbClosing) return;
   lbClosing = true;
   const token = ++lbToken;
   dropFlight();
-  document.querySelectorAll('.lb-source').forEach(el => el.classList.remove('lb-source'));
   if (lbZoom > 1.001) resetLbZoom();
   const item = itemEls[lbIndex];
-  const canFold = !reduceMotion && item && lbImg.complete && lbImg.naturalWidth > 0 && lbImg.style.opacity !== '0';
+  const canFly = !reduceMotion && item && lbImg.complete && lbImg.naturalWidth > 0 && lbImg.style.opacity !== '0';
   const from = lbImg.getBoundingClientRect();
-  fx().dim(false, 420);                                     /* the light comes back */
   lb.classList.remove('open'); document.documentElement.classList.remove('lb-is-open');
-  document.body.style.overflow = ''; document.body.style.paddingRight = '';
+  document.body.style.overflow = ''; document.body.style.paddingRight = ''; headerEl.style.right = '';
   setPageInert(false);
   if (location.hash) history.replaceState(null, '', pageURL(''));
-  if (canFold) {
+  if (canFly) {
     ensureInView(item);
     placeItem(item, window.innerHeight, performance.now());   /* parallax for where the page is now */
     const feedImg = item.querySelector('.img-wrap img');
     const to = feedImg && feedImg.getBoundingClientRect();
     if (to && to.width > 0 && from.width > 0) {
-      item.classList.add('lb-source');
+      item.classList.add('lb-out');
       const g = document.createElement('img'); g.className = 'lb-ghost-img'; g.alt = ''; g.src = lbImg.currentSrc;
       Object.assign(g.style, { left: from.left + 'px', top: from.top + 'px', width: from.width + 'px', height: from.height + 'px' });
       document.body.appendChild(g);
       lb.classList.add('lb-flying');
       const end = `translate(${(to.left - from.left).toFixed(1)}px, ${(to.top - from.top).toFixed(1)}px) scale(${(to.width / from.width).toFixed(4)}, ${(to.height / from.height).toFixed(4)})`;
       const anim = g.animate([{ transform: 'none' }, { transform: end }], { duration: 440, easing: 'cubic-bezier(.4,0,.2,1)', fill: 'forwards' });
-      lbFlight = { els: [g], anims: [anim] };
+      lbFlight = { els: [g], anims: [anim], timer: setTimeout(() => { if (token === lbToken) finishClose(); }, 800) };
       anim.finished.then(() => { if (token === lbToken) finishClose(); }, () => {});
       return;
     }
@@ -759,12 +695,13 @@ function closeLb() {
 }
 function finishClose(reopening) {
   dropFlight();
-  document.querySelectorAll('.lb-source').forEach(el => el.classList.remove('lb-source'));
+  document.querySelectorAll('.lb-out').forEach(el => el.classList.remove('lb-out'));
   lbClosing = false;
   lb.style.removeProperty('--ui'); lb.style.backgroundColor = '';
   if (reopening) return;
-  lbImg.removeAttribute('src'); lbTitle.textContent = ''; lbBuy.innerHTML = '';
+  lbImg.onload = null; lbImg.removeAttribute('src'); lbTitle.textContent = ''; lbBuy.innerHTML = '';
   lbImg.style.opacity = '1';
+  ink().pause(false);
   if (lbOpener && lbOpener.focus) { try { lbOpener.focus({ preventScroll: true }); } catch (e) {} }
   lbOpener = null;
 }
@@ -788,6 +725,7 @@ let lbSuppressClick = false;
 // Desktop: wheel zoom
 lbImg.addEventListener('wheel', e => {
   e.preventDefault();
+  if (flying()) return;
   const factor = Math.exp(-e.deltaY * 0.0016);
   setLbZoom(lbZoom * factor, e.clientX, e.clientY, false);
 }, { passive: false });
@@ -822,11 +760,12 @@ window.addEventListener('mouseup', () => {
 // Double-click toggle zoom (desktop)
 lbImg.addEventListener('dblclick', e => {
   e.preventDefault();
+  if (flying()) return;
   if (lbZoom > 1.001) { resetLbZoom(); } else { setLbZoom(DBL_TAP_ZOOM, e.clientX, e.clientY, true); }
 });
 
 // Touch: pinch-zoom, single-finger pan when zoomed; when not zoomed: swipe sideways to the next work,
-// swipe down to close (the picture follows the finger, the light comes up), double-tap to zoom
+// swipe down to close (the picture follows the finger, the darkness lifts), double-tap to zoom
 let lbTouchX = null, lbTouchY = 0, lbTouchT = 0, lbGesture = null, lbDragY = 0;
 let lbPinchStartDist = 0, lbPinchStartZoom = 1, lbPinchMidX = 0, lbPinchMidY = 0;
 let lbLastTap = 0;
@@ -836,6 +775,7 @@ function touchDist(t0, t1) { return Math.hypot(t1.clientX - t0.clientX, t1.clien
 function touchMid(t0, t1) { return { x: (t0.clientX + t1.clientX) / 2, y: (t0.clientY + t1.clientY) / 2 }; }
 
 lb.addEventListener('touchstart', e => {
+  if (flying()) { lbTouchX = null; lbGesture = null; return; }
   if (e.touches.length === 2) {
     lbTouchX = null; lbGesture = null;
     lbPinchStartDist = touchDist(e.touches[0], e.touches[1]);
@@ -862,6 +802,7 @@ lb.addEventListener('touchstart', e => {
 }, { passive: true });
 
 lb.addEventListener('touchmove', e => {
+  if (flying()) return;
   if (e.touches.length === 2) {
     e.preventDefault();
     const dist = touchDist(e.touches[0], e.touches[1]);
@@ -886,8 +827,7 @@ lb.addEventListener('touchmove', e => {
     lbImg.classList.add('lb-nozoomtransition');
     lbImg.style.transform = `translate(0px, ${lbDragY.toFixed(1)}px) scale(${(1 - k * 0.18).toFixed(4)})`;
     lb.style.setProperty('--ui', Math.max(0, 1 - k * 1.6).toFixed(3));
-    if (fx().on) fx().setDark(1 - k * 0.85);
-    else lb.style.backgroundColor = `rgba(14,12,10,${(0.94 * (1 - k * 0.85)).toFixed(3)})`;   /* no WebGL: the viewer's own darkness lifts */
+    lb.style.backgroundColor = `rgba(14,12,10,${(0.94 * (1 - k * 0.85)).toFixed(3)})`;   /* the darkness lifts with the finger */
   }
 }, { passive: false });
 
@@ -897,8 +837,8 @@ lb.addEventListener('touchend', e => {
     const speed = lbDragY / Math.max(1, Date.now() - lbTouchT);      /* px per ms */
     lbGesture = null; lbTouchX = null;
     lbSuppressClick = true; setTimeout(() => { lbSuppressClick = false; }, 50);
-    if (lbDragY > 110 || (speed > 0.6 && lbDragY > 40)) requestClose();   /* folds back from where the finger left it */
-    else { lb.style.removeProperty('--ui'); lb.style.backgroundColor = ''; applyLbTransform(); fx().dim(true, 220); }
+    if (lbDragY > 110 || (speed > 0.6 && lbDragY > 40)) requestClose();   /* flies back into its window from where the finger left it */
+    else { lb.style.removeProperty('--ui'); lb.style.backgroundColor = ''; applyLbTransform(); }
     lbDragY = 0;
     return;
   }
@@ -912,51 +852,8 @@ lb.addEventListener('touchend', e => {
   lbStep(dx < 0 ? 1 : -1);
 }, { passive: true });
 
-/* ---------- PULL TO REFRESH ----------
-   The browser's own pull is off (it dragged the whole page, menu and all, down from the top).
-   At the very top of the page, pulling down slides this bar out from under the menu; the page itself
-   does not move. Let go when the bar is full and the page reloads. */
-(function pullToRefresh() {
-  const ptr = document.getElementById('ptr'), fill = ptr.querySelector('.ptr-fill');
-  const NEED = 64, MAX = 78;
-  let y0 = null, pull = 0, active = false, decided = false;
-  const blocked = t => lb.classList.contains('open') || filterPanel.classList.contains('open') || (t && t.closest && t.closest('#filter-panel, .nav-overlay, #lightbox'));
-  document.addEventListener('touchstart', e => {
-    if (e.touches.length !== 1 || window.scrollY > 0 || blocked(e.target)) { y0 = null; return; }
-    y0 = e.touches[0].clientY; pull = 0; active = false; decided = false;
-  }, { passive: true });
-  document.addEventListener('touchmove', e => {
-    if (y0 === null) return;
-    if (e.touches.length !== 1) { y0 = null; return; }
-    const dy = e.touches[0].clientY - y0;
-    if (!decided) {
-      if (Math.abs(dy) < 4) return;
-      decided = true;
-      if (dy < 0 || window.scrollY > 0) { y0 = null; return; }     /* scrolling down the page as usual */
-      active = true; ptr.classList.add('on');
-    }
-    if (!active) return;
-    e.preventDefault();                                              /* the page stays put: the menu stays glued to the top */
-    pull = Math.min(MAX, Math.max(0, dy) * 0.5);
-    const p = Math.min(1, pull / NEED);
-    ptr.style.transform = `translateY(${(pull * 0.75).toFixed(1)}px)`;
-    if (p >= 1 && !ptr.classList.contains('ready')) haptic('light');
-    ptr.classList.toggle('ready', p >= 1);
-    fill.style.width = (p * 100).toFixed(1) + '%';
-  }, { passive: false });
-  const end = () => {
-    if (!active) { y0 = null; return; }
-    active = false; y0 = null;
-    if (pull >= NEED) { fill.style.width = '100%'; setTimeout(() => location.reload(), 160); return; }
-    ptr.classList.remove('on', 'ready'); ptr.style.transform = ''; fill.style.width = '0%';
-  };
-  document.addEventListener('touchend', end, { passive: true });
-  document.addEventListener('touchcancel', end, { passive: true });
-})();
-
 setTimeout(() => headerEl.classList.add('visible'), 100);
-measureEdges();
-fadeTopEdge();
+measureHeader();
 loadWorks();
 </script>
 </body>
