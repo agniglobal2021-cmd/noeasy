@@ -85,8 +85,10 @@ main{position:fixed;top:calc(var(--header-total-h) + var(--page-gap));left:12px;
 .tbbtn{width:16px;height:16px;background:var(--btn);border-top:1px solid var(--blt);border-left:1px solid var(--blt);border-right:1px solid var(--bdk);border-bottom:1px solid var(--bdk);display:flex;align-items:center;justify-content:center;cursor:default;flex-shrink:0;padding:0;line-height:0;}
 .tbbtn:active{border-top:1px solid var(--bdk);border-left:1px solid var(--bdk);border-right:1px solid var(--blt);border-bottom:1px solid var(--blt);}
 
-/* the window scrolls inside itself, with a Windows 95 scrollbar (/assets/site.js) */
-.con-body{flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;background:#AFA191;-webkit-overflow-scrolling:touch;overscroll-behavior-y:none;}
+.con-body{flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;background:#AFA191;-webkit-overflow-scrolling:touch;overscroll-behavior-y:none;scrollbar-width:thin;scrollbar-color:#7a6a58 #9e9080;}
+.con-body::-webkit-scrollbar{width:8px;}
+.con-body::-webkit-scrollbar-track{background:#9e9080;}
+.con-body::-webkit-scrollbar-thumb{background:#7a6a58;border:1px solid #5D5143;}
 
 .about-hero{display:flex;flex-direction:column;align-items:center;padding:28px 24px 24px;gap:14px;border-bottom:1px solid rgba(42,37,32,0.15);}
 .hero-stack{display:flex;flex-direction:column;align-items:center;gap:12px;width:100%;max-width:420px;}
@@ -153,7 +155,7 @@ main{position:fixed;top:calc(var(--header-total-h) + var(--page-gap));left:12px;
         <div class="tbbtns" id="abtns"></div>
       </div>
     </div>
-    <div class="con-body" data-w95-scroll>
+    <div class="con-body">
       <div class="about-hero">
         <div class="hero-stack">
           <div class="hero-avatar">
