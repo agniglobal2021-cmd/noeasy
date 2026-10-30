@@ -44,7 +44,7 @@
   html { background: #5D5143; }
   body::before { content: ''; position: fixed; top: -100vh; left: 0; right: 0; height: 100vh; background: #5D5143; z-index: 9001; pointer-events: none; }
   body { background: #e8e0c4; font-family: 'DotGothic16', monospace; color: var(--text); overscroll-behavior: none; }
-  header { position: fixed; top: 0; left: 0; z-index: 500; width: 100vw; padding: 0; display: flex; flex-direction: column; align-items: stretch; pointer-events: none; opacity: 0; transition: opacity 0.7s ease; background: var(--win95-titlebar-brown); }
+  header { position: fixed; top: 0; left: 0; right: 0; z-index: 500; padding: 0; display: flex; flex-direction: column; align-items: stretch; pointer-events: none; opacity: 0; transition: opacity 0.7s ease; background: var(--win95-titlebar-brown); }
   header.visible { opacity: 1; }
   header > * { pointer-events: auto; }
   .header-safe-top { height: env(safe-area-inset-top, 0px); background: var(--win95-titlebar-brown); flex-shrink: 0; }
@@ -128,7 +128,7 @@
   .purchase-dropdown a:hover, .purchase-dropdown a:focus-visible { background: #5D5143; color: #f6f1da; outline: none; }
   .sep { width: min(820px, 88vw, 68vh); height: 1px; background: var(--text); opacity: 0.07; position: relative; z-index: 20; }
   #empty-state { display: none; padding: 100px 0; font-size: 11px; font-weight: 300; letter-spacing: 0.24em; text-transform: uppercase; color: #5D5143; text-align: center; }
-  #lightbox { position: fixed; inset: 0; z-index: 9999; width: 100vw; background: rgba(14,12,10,0.94); backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; opacity: 0; visibility: hidden; pointer-events: none; transition: opacity 0.45s ease, visibility 0s linear 0.45s; cursor: zoom-out; }
+  #lightbox { position: fixed; inset: 0; z-index: 9999; background: rgba(14,12,10,0.94); backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; opacity: 0; visibility: hidden; pointer-events: none; transition: opacity 0.45s ease, visibility 0s linear 0.45s; cursor: zoom-out; }
   #lightbox.open { opacity: 1; visibility: visible; pointer-events: auto; transition-delay: 0s; }
   #lb-img { max-width: 92vw; max-height: 80vh; object-fit: contain; display: block; transform: scale(0.94) translateY(14px); transition: transform 0.56s cubic-bezier(0.16,1,0.3,1); user-select: none; -webkit-user-drag: none; touch-action: none; }
   #lightbox.open #lb-img { transform: translate(0px, 0px) scale(1); }
@@ -506,9 +506,9 @@ function openLb(idx) { if (idx !== undefined) lbIndex = idx; const work = curren
   /* buy links of this work (Print → INPRNT, Crypto Art), top left of the viewer */
   lbBuy.innerHTML = '';
   (work.links || []).forEach(lk => { const a = document.createElement('a'); a.className = 'lb-buy'; a.href = lk.url; a.target = '_blank'; a.rel = 'noopener'; a.textContent = buyLabel(lk.label) + ' '; const arrow = document.createElement('span'); arrow.setAttribute('aria-hidden', 'true'); arrow.textContent = '↗'; a.appendChild(arrow); a.addEventListener('click', e => e.stopPropagation()); lbBuy.appendChild(a); });
-  const wasOpen = lb.classList.contains('open'); if (!wasOpen) lbOpener = document.activeElement; const scrollbarW = window.innerWidth - document.documentElement.clientWidth; document.body.style.paddingRight = scrollbarW + 'px'; lb.classList.add('open'); document.body.style.overflow = 'hidden'; const hasPrev = currentList.slice(0, lbIndex).some(w => w.src); const hasNext = currentList.slice(lbIndex + 1).some(w => w.src); lbPrev.classList.toggle('hidden', !hasPrev); lbNext.classList.toggle('hidden', !hasNext); if (!wasOpen) { setPageInert(true); setTimeout(() => lbClose.focus(), 50); } }
+  const wasOpen = lb.classList.contains('open'); if (!wasOpen) lbOpener = document.activeElement; const scrollbarW = window.innerWidth - document.documentElement.clientWidth; document.body.style.paddingRight = scrollbarW + 'px'; document.querySelector('header').style.right = scrollbarW ? scrollbarW + 'px' : ''; lb.classList.add('open'); document.body.style.overflow = 'hidden'; const hasPrev = currentList.slice(0, lbIndex).some(w => w.src); const hasNext = currentList.slice(lbIndex + 1).some(w => w.src); lbPrev.classList.toggle('hidden', !hasPrev); lbNext.classList.toggle('hidden', !hasNext); if (!wasOpen) { setPageInert(true); setTimeout(() => lbClose.focus(), 50); } }
 function lbStep(dir) { let idx = lbIndex + dir; while (idx >= 0 && idx < currentList.length) { if (currentList[idx].src) { lbIndex = idx; openLb(); return; } idx += dir; } }
-function closeLb() { if (!lb.classList.contains('open')) return; lb.classList.remove('open'); document.body.style.overflow = ''; document.body.style.paddingRight = ''; resetLbZoom(); setTimeout(() => { lbImg.removeAttribute('src'); lbTitle.textContent = ''; lbBuy.innerHTML = ''; }, 420); setPageInert(false); if (lbOpener && lbOpener.focus) lbOpener.focus(); lbOpener = null; }
+function closeLb() { if (!lb.classList.contains('open')) return; lb.classList.remove('open'); document.body.style.overflow = ''; document.body.style.paddingRight = ''; document.querySelector('header').style.right = ''; resetLbZoom(); setTimeout(() => { lbImg.removeAttribute('src'); lbTitle.textContent = ''; lbBuy.innerHTML = ''; }, 420); setPageInert(false); if (lbOpener && lbOpener.focus) lbOpener.focus(); lbOpener = null; }
 lb.addEventListener('click', e => { if (e.target === lb && !lbSuppressClick) closeLb(); });
 document.getElementById('lb-close').addEventListener('click', closeLb);
 lbPrev.addEventListener('click', e => { e.stopPropagation(); lbStep(-1); });
