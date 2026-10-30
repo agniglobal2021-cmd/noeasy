@@ -1,7 +1,7 @@
 name: Gallery previews
 
 # The Mindgate bot adds works straight to main. This makes their previews right after:
-# 700/1200 px WebP versions, their sizes and the tiny blurred stand-ins (tools/gallery_thumbs.py).
+# 700/1200 px WebP versions and their sizes (tools/gallery_thumbs.py).
 # Only what is missing gets made; the files land in gallery/thumbs/.
 on:
   push:
