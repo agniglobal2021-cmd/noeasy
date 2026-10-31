@@ -3462,12 +3462,15 @@ let bobPh=0, camY=null, aSpd=0;
     D.g.attributes.position.needsUpdate=true; D.g.attributes.aA.needsUpdate=true; }
 
   if(frames%15===0) zoneTick();
+  if(window.__presence) window.__presence(dt, camY-P.EYE, yaw);   // другие посетители — призраки (presence.js)
   renderer.render(scene,camera);
   artTick();
   frames++; if(frames>8 && window.__texok && !window.__ready) window.__ready=true;
   requestAnimationFrame(loop);
 })();
 </script>
+<!-- другие посетители зала: призраки в шести цветах, без звука (сервер — бот Mindgate, api/halls.py) -->
+<script src="/the-halls/presence.js?v=1" defer></script>
 <script>
 // Отладка света. Включается только по ?dbg=1, в обычном режиме кода не видно.
 // Гасит слои по одному: вершинный тон, лампы, рисованные плоскости, текстуры, заполняющий свет.
