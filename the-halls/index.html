@@ -164,7 +164,9 @@ canvas{display:block}
 #pause a+a{border-top:1px solid #7a7068}
 #pause a:hover{background:#5D5143;color:#f6f1da}
 #vig{position:fixed;inset:0;pointer-events:none;background:radial-gradient(ellipse 120% 95% at 50% 46%, rgba(0,0,0,0) 55%, rgba(5,3,1,.62) 100%)}
-#grain{position:fixed;inset:-64px;pointer-events:none;opacity:.0423}
+/* зерно в зале: тайл шума 128 px, показан на 12 % крупнее (128 × 1.12 = 143.36 px) */
+#grain{position:fixed;inset:-64px;pointer-events:none;opacity:.0423;background-size:143.36px 143.36px}
+@media (max-resolution:1.49dppx),(-webkit-max-device-pixel-ratio:1.49){ #grain{image-rendering:pixelated} }   /* на обычных экранах растяжение на 1.12 размыло бы зерно в сетку — там оно остаётся чётким */
 /* ПОДСКАЗКА УПРАВЛЕНИЯ — один раз после входа, под устройство: клавиатура и мышь или касания.
    Проступает, когда гаснет название зоны, держится несколько секунд и растворяется, поднимаясь, как дым.
    Нажатий не ловит (pointer-events:none): джойстик и взгляд под ней работают как обычно. */
@@ -2651,7 +2653,7 @@ addEventListener('mousemove',e=>{if(!mDown)return;
   const id=g.createImageData(128,128);for(let i=0;i<id.data.length;i+=4){const v=Math.random()*255;
     id.data[i]=id.data[i+1]=id.data[i+2]=v;id.data[i+3]=255;}
   g.putImageData(id,0,0);const el=document.getElementById('grain');
-  el.style.background='url('+c.toDataURL()+')';
+  el.style.backgroundImage='url('+c.toDataURL()+')';   // только картинка: размер зерна задан в стиле #grain
   setInterval(()=>{el.style.transform=`translate(${(Math.random()*48)|0}px,${(Math.random()*48)|0}px)`;},90);})();
 
 addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();
