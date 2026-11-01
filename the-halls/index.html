@@ -180,16 +180,17 @@ canvas{display:block}
    логотип и зерно появляются сразу, пока строится зал.
    ЗЕРНО — пять готовых кадров шума, они просто сменяют друг друга (90 мс каждый); рисуется в том же
    канвасе, что и дым, и только когда кадр сменился — второго слоя, который надо перерисовывать, нет.
-   ДЫМ ЛАДАНА (NoeasySmoke) — два кадила по краям, дым из точек, как призраки в зале; разгорается,
-   когда зал построен, и рассыпается на ENTER. До этого у меню нет своей WebGL-графики вовсе: только
+   ДЫМ ЛАДАНА (NoeasySmoke) — дым из точек, как призраки в зале, по всему фону и без видимого
+   источника, как на сайте Volchok; проступает, когда зал построен, и рассыпается на ENTER. До этого у меню нет своей WebGL-графики вовсе: только
    один неподвижный кадр зерна (#mgrain) — второй WebGL-канвас рядом со сборкой зала замедлял её в разы. */
 /* NOEASY · The Halls · menu smoke — incense smoke and film grain drawn as dots, like the ghosts in the hall.
 
    One small WebGL canvas, rendered at one pixel per dot (CELL CSS px) and stretched with
-   image-rendering: pixelated, so every lit cell is a crisp square dot. The smoke is a few incense
-   streams rising from below the screen: thin and steady low down, then swaying, folding and thinning
-   out as they rise, over a faint haze. Density becomes dots through a 4×4 Bayer threshold, so the
-   smoke has no soft edges at all: thick smoke is many dots, thin smoke is few.
+   image-rendering: pixelated, so every lit cell is a crisp square dot. The smoke hangs over the whole
+   background with no visible source, the way it does on the Volchok site: noise folded through itself
+   twice (domain warping), drifting slowly and rising a little, as if the censer were somewhere out of
+   sight. Density becomes dots through a 4×4 Bayer threshold, so the smoke has no soft edges at all:
+   thick smoke is many dots, thin smoke is few.
    The grain lives in the same canvas: five fixed frames of noise that take turns (grainMs each),
    so nothing is generated anew and no second layer has to be redrawn.
 
@@ -203,82 +204,37 @@ canvas{display:block}
   var VS = 'attribute vec2 p;void main(){gl_Position=vec4(p,0.0,1.0);}';
   var FS_BODY = [
     'uniform vec2 uRes;uniform float uTime;uniform float uAmount;uniform vec3 uBg;uniform vec3 uInk;uniform vec3 uInk2;',
-    'uniform float uSx;uniform float uGrain;uniform float uFrame;',
-    // 3D simplex noise (Ian McEwan, Ashima Arts, MIT)
-    'vec4 permute(vec4 x){return mod(((x*34.0)+1.0)*x,289.0);}',
-    'vec4 taylorInvSqrt(vec4 r){return 1.79284291400159-0.85373472095314*r;}',
-    'float snoise(vec3 v){',
-    ' const vec2 C=vec2(1.0/6.0,1.0/3.0);const vec4 D=vec4(0.0,0.5,1.0,2.0);',
-    ' vec3 i=floor(v+dot(v,C.yyy));vec3 x0=v-i+dot(i,C.xxx);',
-    ' vec3 g=step(x0.yzx,x0.xyz);vec3 l=1.0-g;vec3 i1=min(g.xyz,l.zxy);vec3 i2=max(g.xyz,l.zxy);',
-    ' vec3 x1=x0-i1+C.xxx;vec3 x2=x0-i2+C.yyy;vec3 x3=x0-D.yyy;',
-    ' i=mod(i,289.0);',
-    ' vec4 p=permute(permute(permute(i.z+vec4(0.0,i1.z,i2.z,1.0))+i.y+vec4(0.0,i1.y,i2.y,1.0))+i.x+vec4(0.0,i1.x,i2.x,1.0));',
-    ' float n_=1.0/7.0;vec3 ns=n_*D.wyz-D.xzx;',
-    ' vec4 j=p-49.0*floor(p*ns.z*ns.z);vec4 x_=floor(j*ns.z);vec4 y_=floor(j-7.0*x_);',
-    ' vec4 x=x_*ns.x+ns.yyyy;vec4 y=y_*ns.x+ns.yyyy;vec4 h=1.0-abs(x)-abs(y);',
-    ' vec4 b0=vec4(x.xy,y.xy);vec4 b1=vec4(x.zw,y.zw);',
-    ' vec4 s0=floor(b0)*2.0+1.0;vec4 s1=floor(b1)*2.0+1.0;vec4 sh=-step(h,vec4(0.0));',
-    ' vec4 a0=b0.xzyw+s0.xzyw*sh.xxyy;vec4 a1=b1.xzyw+s1.xzyw*sh.zzww;',
-    ' vec3 p0=vec3(a0.xy,h.x);vec3 p1=vec3(a0.zw,h.y);vec3 p2=vec3(a1.xy,h.z);vec3 p3=vec3(a1.zw,h.w);',
-    ' vec4 norm=taylorInvSqrt(vec4(dot(p0,p0),dot(p1,p1),dot(p2,p2),dot(p3,p3)));',
-    ' p0*=norm.x;p1*=norm.y;p2*=norm.z;p3*=norm.w;',
-    ' vec4 m=max(0.6-vec4(dot(x0,x0),dot(x1,x1),dot(x2,x2),dot(x3,x3)),0.0);m=m*m;',
-    ' return 42.0*dot(m*m,vec4(dot(p0,x0),dot(p1,x1),dot(p2,x2),dot(p3,x3)));',
-    '}',
-    'float fbm(vec3 p){float a=0.5,s=0.0;for(int i=0;i<4;i++){s+=a*snoise(p);p=p*2.03+vec3(1.7,9.2,3.1);a*=0.5;}return s;}',
+    'uniform float uGrain;uniform float uFrame;',
+    // a cheap hash: value noise for the smoke, and the grain (the dot plus the frame number)
+    'float hash(vec2 p){vec3 q=fract(p.xyx*0.1031);q+=dot(q,q.yzx+33.33);return fract((q.x+q.y)*q.z);}',
+    'float noise(vec2 p){vec2 i=floor(p);vec2 f=fract(p);f=f*f*(3.0-2.0*f);',
+    ' return mix(mix(hash(i),hash(i+vec2(1.0,0.0)),f.x),mix(hash(i+vec2(0.0,1.0)),hash(i+vec2(1.0,1.0)),f.x),f.y);}',
+    'const mat2 m=mat2(0.80,0.60,-0.60,0.80);',
+    'float fbm(vec2 p){float f=0.0;',
+    ' f+=0.5000*noise(p);p=m*p*2.02;f+=0.2500*noise(p);p=m*p*2.03;',
+    ' f+=0.1250*noise(p);p=m*p*2.01;f+=0.0625*noise(p);p=m*p*2.04;',
+    ' f+=0.03125*noise(p);return f/0.96875;}',
     'float b2(vec2 a){a=floor(a);return fract(a.x*0.5+a.y*a.y*0.75);}',
     'float bayer(vec2 a){return b2(0.25*a)*0.0625+b2(0.5*a)*0.25+b2(a);}',
-    // grain: a cheap hash of the dot and the frame number — the same five frames over and over
-    'float hash(vec2 p){vec3 q=fract(p.xyx*0.1031);q+=dot(q,q.yzx+33.33);return fract((q.x+q.y)*q.z);}',
-    // one incense stream: a thin line low down that sways, widens and frays as it rises and drifts in
-    // towards the middle; core = the stream itself, env = the plume around it, where its wisps live
-    'float stream(vec2 p,float x0,float y0,float seed,float t,out float env){',
-    ' float y=p.y-y0;',
-    ' float rise=clamp(y,0.0,1.6);',
-    ' float sway=snoise(vec3(y*1.2-t*0.20,seed,t*0.05))*(0.015+0.12*rise)+snoise(vec3(y*2.8-t*0.33,seed+4.0,t*0.08))*0.045*rise*rise;',
-    ' float xc=x0*(1.0-0.55*smoothstep(0.15,0.95,p.y))+sway*uSx;',
-    ' float dx=p.x-xc;',
-    ' float w=(0.004+0.05*rise*rise)*uSx;',
-    ' float W=(0.03+0.17*rise)*uSx;',
-    ' env=exp(-dx*dx/(W*W))*smoothstep(0.05,0.45,y);',
-    ' return exp(-dx*dx/(w*w))*smoothstep(-0.02,0.06,y);',
-    '}',
-    'float smoke(vec2 p,float asp,float t){',
-    // curl the whole field: the smoke folds over on itself higher up
-    ' vec2 q=p;',
-    ' float k=smoothstep(0.1,0.9,p.y);',
-    ' if(k>0.0){',
-    '  q.x+=0.06*k*snoise(vec3(p*2.0+vec2(0.0,-t*0.11),t*0.06));',
-    '  q.y+=0.035*k*snoise(vec3(p*2.0+vec2(5.3,-t*0.11),t*0.06));',
-    ' }',
-    ' float e1,e2,e3=0.0;',
-    ' float hw=asp*0.5;',
-    // two censers flank the menu; on wide screens a third, fainter stream rises in the middle
-    ' float mid=0.55*smoothstep(1.0,1.5,asp);',
-    ' float side=mix(0.8,0.62,smoothstep(0.6,1.2,asp));',     // on a phone the censers stand nearer the edges, clear of the lettering
-    ' float c=stream(q,-side*hw,-0.06,1.0,t,e1)+0.9*stream(q,(side-0.04)*hw,-0.02,7.3,t*1.07+3.0,e2);',
-    ' if(mid>0.0) c+=mid*stream(q,-0.08*hw,-0.15,13.1,t*0.93+8.0,e3);',
-    ' float env=max(e1,max(0.9*e2,mid*e3));',
-    // wisps: ridged noise that rises with the smoke, only inside the plumes
-    ' float wisp=0.0;',
-    ' if(env>0.002){ float r=1.0-abs(fbm(vec3(q.x*3.0,q.y*1.8-t*0.11,t*0.05))); wisp=pow(clamp(r,0.0,1.0),7.0)*env; }',
-    ' float fray=smoothstep(0.25,0.8,q.y);',
-    ' float dens=0.75*c*(1.0-0.65*fray)+wisp*(0.3+0.7*fray);',
-    ' dens*=1.0-0.8*smoothstep(0.7,1.2,q.y);',               // it thins out towards the top of the screen
-    ' dens=1.15*(1.0-exp(-1.3*dens));',                    // where plumes meet they thicken, but never into a solid wall
-    // a few patches of haze left behind higher up
-    ' if(q.y>0.2){ float haze=smoothstep(0.62,0.95,0.5+0.5*fbm(vec3(q*1.1+vec2(0.0,-t*0.04),t*0.02))); dens+=0.10*haze*smoothstep(0.2,0.9,q.y); }',
-    ' dens=max(0.0,dens-0.05);',                           // no thin even veil of dots over everything
-    // the column with the buttons stays calmer, so the lettering reads over the smoke
-    ' float shield=exp(-pow(p.x/(0.3*hw),2.0))*smoothstep(0.08,0.22,p.y)*(1.0-smoothstep(0.55,0.7,p.y));',
-    ' return dens*(1.0-0.6*shield);',
+    // the smoke: the same folding as the Volchok background (fx.js), with the field rising slowly;
+    // a faint layer over most of the screen and the brighter folds of the smoke itself
+    'float smoke(vec2 uv,float time){',
+    ' float t=(time+40.0)*0.032;',                         // start mid-flow, not from the first frame of the noise
+    ' vec2 p=uv*1.55+vec2(0.0,-time*0.008);',
+    ' vec2 q=vec2(fbm(p+vec2(0.0,t)),fbm(p+vec2(5.2,1.3)-t*0.7));',
+    ' vec2 r=vec2(fbm(p+3.0*q+vec2(1.7,9.2)+t*0.5),fbm(p+3.0*q+vec2(8.3,2.8)-t*0.4));',
+    ' float f=fbm(p+2.6*r);',
+    ' return 0.20*smoothstep(0.22,0.55,f)+0.95*smoothstep(0.52,0.95,f)*(0.30+0.70*clamp(length(q)-0.35,0.0,1.0));',
     '}',
     'void main(){',
-    ' vec2 uv=gl_FragCoord.xy/uRes;float asp=uRes.x/uRes.y;',
+    ' vec2 s=gl_FragCoord.xy/uRes;float asp=uRes.x/uRes.y;',
     ' vec3 col=uBg;',
     ' if(uAmount>0.001){',                                  // no smoke yet (or any more): skip all the noise
-    '  float dens=smoke(vec2((uv.x-0.5)*asp,uv.y),asp,uTime)*uAmount;',
+    '  float dens=smoke(gl_FragCoord.xy/uRes.y,uTime);',
+    '  vec2 v=s-0.5;dens*=1.0-dot(v,v)*0.9;',               // thinner towards the edges
+    // the column with the buttons stays calmer, so the lettering reads over the smoke
+    '  float shield=exp(-pow((s.x-0.5)/0.15,2.0))*smoothstep(0.08,0.22,s.y)*(1.0-smoothstep(0.55,0.7,s.y));',
+    '  dens*=(1.0-0.6*shield)*uAmount;',
     '  float on=step(bayer(gl_FragCoord.xy)+0.02,dens);',
     '  col=mix(uBg,mix(uInk2,uInk,smoothstep(0.25,0.9,dens)),on);',
     ' }',
@@ -304,8 +260,8 @@ canvas{display:block}
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
     var loc = gl.getAttribLocation(pr, 'p'); gl.enableVertexAttribArray(loc); gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
     var U = {};
-    ['uRes', 'uTime', 'uAmount', 'uBg', 'uInk', 'uInk2', 'uSx', 'uGrain', 'uFrame'].forEach(function (n) { U[n] = gl.getUniformLocation(pr, n); });
-    var o = { bg: [0.082, 0.078, 0.075], ink: [0.86, 0.82, 0.72], ink2: [0.42, 0.40, 0.36], amount: 1, target: null,
+    ['uRes', 'uTime', 'uAmount', 'uBg', 'uInk', 'uInk2', 'uGrain', 'uFrame'].forEach(function (n) { U[n] = gl.getUniformLocation(pr, n); });
+    var o = { bg: [0.082, 0.078, 0.075], ink: [0.56, 0.534, 0.469], ink2: [0.25, 0.238, 0.214], amount: 1, target: null,
               speed: 1, cell: 2, fps: 30, grain: 0.056, grainMs: 90, hold: false, time: null };
     var t = 0, last = 0, raf = 0, alive = true, lastDraw = -1e9, frame = 0, drawnFrame = -1;
     function set(n) { for (var k in n) o[k] = n[k]; size(); draw(); }
@@ -316,7 +272,6 @@ canvas{display:block}
     }
     function draw() {
       gl.uniform2f(U.uRes, canvas.width, canvas.height);
-      gl.uniform1f(U.uSx, Math.max(0.45, Math.min(1, 0.9 * canvas.width / canvas.height)));
       gl.uniform1f(U.uTime, o.time == null ? t : o.time);
       gl.uniform1f(U.uAmount, o.amount);
       gl.uniform1f(U.uGrain, o.grain);
@@ -332,7 +287,7 @@ canvas{display:block}
       raf = requestAnimationFrame(loop);
       var dt = Math.min(0.1, (now - (last || now)) / 1000); last = now;
       t += dt * o.speed;
-      if (o.target != null && o.amount !== o.target) {      // kindling up slowly, scattering faster
+      if (o.target != null && o.amount !== o.target) {      // the smoke gathers slowly and scatters faster
         var a = o.amount, k = Math.min(1, dt * (o.target < a ? 1.4 : 0.7));
         o.amount = Math.abs(o.target - a) < 0.002 ? o.target : a + (o.target - a) * k;
       }
@@ -2731,7 +2686,7 @@ window.__started=false; window.__uiOpen=false;
   if(view){ window.__started=true; L.remove(); if(window.__joyHome) __joyHome(); }   // скриншот-режим — без лоадера
   else {
     // дым ладана и живое зерно: запускаются, когда зал построен (см. опрос загрузки), — до этого второй
-    // WebGL-канвас делил бы со сборкой зала видеокарту; кадила разгораются за пару секунд
+    // WebGL-канвас делил бы со сборкой зала видеокарту; дым проступает за пару секунд
     let smoke=null;
     const startSmoke=()=>{
       const still=!!(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches);
