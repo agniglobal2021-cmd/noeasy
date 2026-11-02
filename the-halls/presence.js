@@ -173,6 +173,8 @@
 
   /* ---------- the line to the server ---------- */
   var ws = null, myId = null, mine = {}, retry = 0, retryTimer = 0, hiddenTimer = 0, paused = false;
+  var listed = false;   // the server's list of who is already here has come: only then does this visitor show up
+  var entry = null;     // where and when this visitor came in: {x, z, t}
   var sent = { x: 1e9, y: 0, z: 0, r: 0, at: 0 };
   function endpoint() {
     if (window.__hallsLive) return window.__hallsLive;
@@ -192,9 +194,9 @@
     ws.onmessage = function (e) {
       var o; try { o = JSON.parse(e.data); } catch (x) { return; }
       if (!o) return;
-      if (o.t === 'hi') { myId = o.id; mine[o.id] = 1; retry = 0; sent.x = 1e9; return; }
-      if (o.t === 'all') { (o.v || []).forEach(add); return; }
-      if (o.t === 'j') { add(o.v); return; }
+      if (o.t === 'hi') { myId = o.id; mine[o.id] = 1; retry = 0; sent.x = 1e9; listed = false; return; }
+      if (o.t === 'all') { (o.v || []).forEach(add); makeRoom(o.v || [], true); listed = true; return; }
+      if (o.t === 'j') { add(o.v); makeRoom([o.v], false); return; }
       if (o.t === 'm') {
         (o.v || []).forEach(function (r) {
           var f = guests[r[0]]; if (!f || f.leaving) return;
@@ -219,6 +221,28 @@
     if (Object.keys(guests).length >= 80) return;
     try { guests[row[0]] = new Ghost(row); } catch (e) { stop(e); }
   }
+  /* Everyone comes in at the same spot. Two people standing there are inside each other's camera and
+     cannot see each other, and a third sees the two of them as one figure. So whoever arrives and finds
+     someone on the entry spot takes a step aside before showing up (the entry screen is still fading,
+     nobody sees the step). If two arrive at the same moment, neither is on the other's list yet: then
+     the one with the larger number steps aside, so they never both step into the same place. */
+  var ROOM = 1.0;
+  var SPOTS = [[1.3, 0], [-1.3, 0], [2.6, 0], [-2.6, 0], [0, -1.3], [1.3, -1.3], [-1.3, -1.3], [0, -2.6], [2.6, -1.3], [-2.6, -1.3]];
+  function makeRoom(rows, wasHere) {
+    var C = window.__camera;
+    if (!C || !entry || performance.now() - entry.t > 10000) return;                  // only right after coming in
+    if (Math.hypot(C.position.x - entry.x, C.position.z - entry.z) > 0.25) return;      // already walked off: nothing to fix
+    var crowded = rows.some(function (r) {
+      return r && !mine[r[0]] && Math.hypot(+r[3] - C.position.x, +r[5] - C.position.z) < ROOM && (wasHere || (myId && myId > r[0]));
+    });
+    if (!crowded) return;
+    for (var i = 0; i < SPOTS.length; i++) {
+      var x = entry.x + SPOTS[i][0], z = entry.z + SPOTS[i][1], ok = true;
+      for (var id in guests) { var f = guests[id]; if (!f.leaving && Math.hypot(f.tx - x, f.tz - z) < ROOM) { ok = false; break; } }
+      try { if (ok && window.__insideP && !window.__insideP(x, z)) ok = false; } catch (e) {}
+      if (ok) { C.position.x = entry.x = x; C.position.z = entry.z = z; return; }
+    }
+  }
   /* a tab in the background stops being a statue in other people's hall after half a minute */
   document.addEventListener('visibilitychange', function () {
     clearTimeout(hiddenTimer);
@@ -232,12 +256,13 @@
   var cam = new THREE.Vector3(), lp = new THREE.Vector3(), buf = new THREE.Vector2();
   function tick(dt, groundY, yaw) {
     if (!window.__started || !window.__scene || !window.__camera) return;
+    if (!entry) entry = { x: window.__camera.position.x, z: window.__camera.position.z, t: performance.now() };
     if (!ws && !retryTimer && !paused) connect();
     var R = window.__renderer;
     if (R) U.cell.value = Math.max(2, Math.round(2 * R.getPixelRatio()));
     U.time.value += dt;
     var now = performance.now(), C = window.__camera;
-    if (ws && ws.readyState === 1 && myId && isFinite(groundY)) {
+    if (ws && ws.readyState === 1 && myId && listed && isFinite(groundY)) {
       var x = C.position.x, z = C.position.z, moved = Math.hypot(x - sent.x, z - sent.z) > 0.03 || Math.abs(groundY - sent.y) > 0.05 ||
         Math.abs(angle(yaw - sent.r)) > 0.04;
       if (now - sent.at > SEND_EVERY && (moved || now - sent.at > IDLE_SEND)) {
