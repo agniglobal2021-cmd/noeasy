@@ -863,7 +863,10 @@ for(let i=0;i<=P.NB;i++) for(const s of [-1,1]){
       addPart(ownParts, rockOwn, cx+ox, 0.25+Math.random()*0.15, cz+oz,
         Math.random()*3,Math.random()*3,0, sxr,syr,szr);}
   } else if(i===P.NB){
-    addPart(shaftParts, shaftLit(shaftTallN,cx,13.6,cz,[-Math.sign(cx),0,0]), cx, 13.6, cz);
+    // пара у портала стоит уже в зале: светлая сторона — к ближайшему окну зала (восток, x 12, z -66),
+    // а не к оси нефа, как у колонн нефа: иначе у восточной колонны к окнам смотрел тёмный бок
+    const wx=12-cx, wz=-66-cz, wl=Math.hypot(wx,wz);
+    addPart(shaftParts, shaftLit(shaftTallN,cx,13.6,cz,[wx/wl,0,wz/wl]), cx, 13.6, cz);
     addPart(shaftParts, beltNave, cx, 8.6, cz);
   } else {
     addPart(shaftParts, shaftLit(shaft,cx,P.COLH/2+0.3,cz,[-Math.sign(cx),0,0]), cx, P.COLH/2+0.3, cz);
@@ -2105,7 +2108,8 @@ function COL_OCC(){ if(__colOcc) return __colOcc; const a=[];
     const wx=b.max.x-b.min.x, wz=b.max.z-b.min.z, h=b.max.y-b.min.y;
     if(h>1.5 && wx<1.6 && wz<1.6) a.push((b.min.x+b.max.x)/2,(b.min.z+b.max.z)/2,Math.max(wx,wz)/2,b.min.y,b.max.y); }
   window.__colOccN=a.length/5; return __colOcc=Float64Array.from(a); }
-const NAVE_COLS=(()=>{ const a=[]; for(let i=0;i<=P.NB;i++) for(const sgn of [-1,1]) a.push(sgn*(P.W/2-0.4), -i*P.BAY-(i===P.NB?0.75:0));
+// пара у портала (i = P.NB) сюда не входит: она стоит в зале, и свет у неё — зала, на её настоящем месте
+const NAVE_COLS=(()=>{ const a=[]; for(let i=0;i<P.NB;i++) for(const sgn of [-1,1]) a.push(sgn*(P.W/2-0.4), -i*P.BAY);
   return {cols:Float64Array.from(a), zRef:-25}; })();
 function bakeLampsFlat(){ const L=lampList(); const A=new Float64Array(L.length*8);
   L.forEach((l,i)=>A.set([l.p.x,l.p.y,l.p.z,l.c.r,l.c.g,l.c.b,l.d,l.dec],i*8)); return A; }
